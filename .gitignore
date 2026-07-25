@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.pytest_tmp/
+.ruff_cache/
+
+# Large temp/working directories (not source code)
+.tmp/
+tmp/
+
+# Large artifacts (calibration outputs, not suitable for git)
+artifacts/
+
+# IDE / agent internals
+.trae/
+.agents/
+.aris/
+.vscode/
+
+# OS files
+Thumbs.db
+.DESKTOP
+.DS_Store
+
+# Keep data/ (small reference data), docs/, src/, scripts/, tests/, refine-logs/

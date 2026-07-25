@@ -1,0 +1,45 @@
+{
+  "contains_images": false,
+  "evidence_class": "PUBLIC_ANNOTATION_ACQUISITION",
+  "files": [
+    {
+      "bytes": 51915,
+      "filename": "gold_progression_pairs.parquet",
+      "sha256": "22cda4e85c01c1d67d905fbba0c8a1a9169e2e5b99f754b93782b5c67dfed14b",
+      "source_url": "https://huggingface.co/datasets/anonaccount107240/CheXTemporal/resolve/81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79/gold_progression_pairs.parquet?download=true",
+      "status": "DOWNLOADED_VERIFIED"
+    },
+    {
+      "bytes": 91676,
+      "filename": "gold_bboxes.parquet",
+      "sha256": "20f114c7f81a66986ed0a697d4056d2b9c4029e7df77c97217db4908726f2064",
+      "source_url": "https://huggingface.co/datasets/anonaccount107240/CheXTemporal/resolve/81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79/gold_bboxes.parquet?download=true",
+      "status": "DOWNLOADED_VERIFIED"
+    },
+    {
+      "bytes": 2326,
+      "filename": "LICENSE",
+      "sha256": "64b72273169c3b87e317c965f9a03b14f9f2e28462326e705219c900ca18483a",
+      "source_url": "https://huggingface.co/datasets/anonaccount107240/CheXTemporal/resolve/81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79/LICENSE?download=true",
+      "status": "DOWNLOADED_VERIFIED"
+    },
+    {
+      "bytes": 10546,
+      "filename": "README.md",
+      "sha256": "dddc0a9deae853c4968e15394c6a3dd33c515e4753800f9c09255eb30e0bfc38",
+      "source_url": "https://huggingface.co/datasets/anonaccount107240/CheXTemporal/resolve/81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79/README.md?download=true",
+      "status": "DOWNLOADED_VERIFIED"
+    },
+    {
+      "bytes": 7132,
+      "filename": "DATASHEET.md",
+      "sha256": "2e04fb08f129fd442f8b51f58cecf2781cf1b0f83c0cc74443386a65d90deefc",
+      "source_url": "https://huggingface.co/datasets/anonaccount107240/CheXTemporal/resolve/81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79/DATASHEET.md?download=true",
+      "status": "DOWNLOADED_VERIFIED"
+    }
+  ],
+  "formal_claim_allowed": false,
+  "repo_id": "anonaccount107240/CheXTemporal",
+  "revision": "81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79",
+  "status": "PASS"
+}

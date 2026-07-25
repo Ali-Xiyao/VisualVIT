@@ -1,0 +1,625 @@
+{
+  "bbox_profile": {
+    "box_validation": {
+      "duplicate_box_labels_within_side_count": 37,
+      "image_bound_check": "NOT_EVALUABLE_WITHOUT_PARENT_IMAGES",
+      "invalid_geometry_count": 0,
+      "invalid_schema_count": 0,
+      "rows_with_duplicate_box_labels_by_side": {
+        "current_bboxes": 19,
+        "prior_bboxes": 16
+      },
+      "rows_with_duplicate_box_labels_within_side": 23,
+      "total_boxes": 4702
+    },
+    "dataset_counts": [
+      {
+        "dataset": "chexpert",
+        "rows": 917
+      },
+      {
+        "dataset": "mimic",
+        "rows": 540
+      },
+      {
+        "dataset": "rexgradient",
+        "rows": 108
+      }
+    ],
+    "duplicate_row_keys": 0,
+    "label_counts": [
+      {
+        "progression": "Improved",
+        "rows": 357
+      },
+      {
+        "progression": "New",
+        "rows": 146
+      },
+      {
+        "progression": "Resolved",
+        "rows": 110
+      },
+      {
+        "progression": "Stable",
+        "rows": 569
+      },
+      {
+        "progression": "Worse",
+        "rows": 383
+      }
+    ],
+    "matched_pair_rows": 1565,
+    "nulls": {
+      "current_bboxes": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "dataset": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "disease_name": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "img_path_curr": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "img_path_prev": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "patient_id": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "prior_bboxes": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "progression": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "study_id_curr": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "study_id_prev": {
+        "null_count": 0,
+        "null_rate": 0.0
+      }
+    },
+    "orphan_bbox_rows": 0,
+    "pair_row_coverage": 0.8757694459988808,
+    "semantics": {
+      "annotation_protocol_source": "https://arxiv.org/html/2605.11304#Sx5.SS3",
+      "at_least_two_shared_box_labels_rows": 586,
+      "both_sides_have_at_least_two_boxes_rows": 596,
+      "both_sides_nonempty_rows": 1407,
+      "current_box_count_distribution": {
+        "0": 70,
+        "1": 810,
+        "2": 527,
+        "3": 115,
+        "4": 43
+      },
+      "identity_warning": "The paper defines Box1-Box5 as case-local cross-image correspondence identities, not globally persistent entity IDs. The released data also contain duplicate labels within a side and omit per-box progression.",
+      "legacy_whole_row_empty_side_mismatch_counts": {
+        "new_requires_prior_empty_current_nonempty": 68,
+        "persistent_requires_both_sides_nonempty": 22,
+        "resolved_requires_prior_nonempty_current_empty": 73
+      },
+      "legacy_whole_row_empty_side_rule": "NOT_USED_FOR_VALIDATION: a multifocal case can contain persistent and new/resolved regions together, so the whole prior/current box array need not be empty for a New/Resolved progression row.",
+      "multi_progression_keys_with_identical_full_box_payloads": 251,
+      "multi_progression_prediction_keys": 251,
+      "potential_nontrivial_persistent_by_label_dataset": [
+        {
+          "dataset": "chexpert",
+          "progression": "Improved",
+          "rows": 91
+        },
+        {
+          "dataset": "mimic",
+          "progression": "Improved",
+          "rows": 62
+        },
+        {
+          "dataset": "rexgradient",
+          "progression": "Improved",
+          "rows": 17
+        },
+        {
+          "dataset": "chexpert",
+          "progression": "Stable",
+          "rows": 97
+        },
+        {
+          "dataset": "mimic",
+          "progression": "Stable",
+          "rows": 77
+        },
+        {
+          "dataset": "rexgradient",
+          "progression": "Stable",
+          "rows": 26
+        },
+        {
+          "dataset": "chexpert",
+          "progression": "Worse",
+          "rows": 101
+        },
+        {
+          "dataset": "mimic",
+          "progression": "Worse",
+          "rows": 63
+        },
+        {
+          "dataset": "rexgradient",
+          "progression": "Worse",
+          "rows": 24
+        }
+      ],
+      "potential_nontrivial_persistent_rows": 558,
+      "prior_box_count_distribution": {
+        "0": 112,
+        "1": 804,
+        "2": 489,
+        "3": 105,
+        "4": 51,
+        "5": 4
+      },
+      "progression_support_compatibility_rule": {
+        "New": "at least one current-only correspondence label",
+        "Resolved": "at least one prior-only correspondence label",
+        "Stable/Worse/Improved": "at least one label shared across both images"
+      },
+      "progression_support_incompatible_by_label": [
+        {
+          "progression": "Improved",
+          "rows": 4
+        },
+        {
+          "progression": "New",
+          "rows": 19
+        },
+        {
+          "progression": "Resolved",
+          "rows": 32
+        },
+        {
+          "progression": "Stable",
+          "rows": 10
+        },
+        {
+          "progression": "Worse",
+          "rows": 8
+        }
+      ],
+      "progression_support_incompatible_rows": 73,
+      "progression_to_box_identity_mapping": "NOT_IDENTIFIABLE_FOR_MULTI_PROGRESSION_KEYS: every such key repeats the same complete prior/current box payload on each progression row, and released box structs have no per-box progression field."
+    },
+    "unique_patients_raw": 190
+  },
+  "checks": {
+    "allowed_progression_values_exact": true,
+    "bbox_correspondence_labels_unique_within_side": false,
+    "bbox_geometry_valid_without_image_bounds": true,
+    "bbox_has_pair_columns_plus_boxes": true,
+    "bbox_multi_progression_entity_mapping_identifiable": false,
+    "bbox_progression_has_compatible_correspondence_support": false,
+    "bbox_required_fields_nonnull": true,
+    "bbox_row_count_matches_card": false,
+    "bbox_row_count_matches_non_edema_pairs": true,
+    "bbox_row_key_unique": true,
+    "bbox_rows_are_pair_subset": true,
+    "bbox_rows_exactly_match_non_edema_pairs": true,
+    "bbox_schema_valid": true,
+    "pair_columns_exact": true,
+    "pair_required_fields_nonnull": true,
+    "pair_row_count_matches_card": true,
+    "pair_row_key_unique": true,
+    "single_progression_target_per_prediction_key": false
+  },
+  "evidence_class": "PUBLIC_ANNOTATION_QUALIFICATION",
+  "files": {
+    "gold_bboxes.parquet": {
+      "bytes": 91676,
+      "columns": 10,
+      "rows": 1565,
+      "sha256": "20f114c7f81a66986ed0a697d4056d2b9c4029e7df77c97217db4908726f2064"
+    },
+    "gold_progression_pairs.parquet": {
+      "bytes": 51915,
+      "columns": 8,
+      "rows": 1787,
+      "sha256": "22cda4e85c01c1d67d905fbba0c8a1a9169e2e5b99f754b93782b5c67dfed14b"
+    }
+  },
+  "formal_claim_allowed": false,
+  "intended_grain": "patient image-pair x finding",
+  "material_findings": [
+    {
+      "finding": "README declares 1,562 bbox rows, while the pinned parquet has 1,565 and exactly matches all 1,787 progression rows except the 222 edema rows that the protocol exempts from boxes.",
+      "impact": "This is a three-row documentation drift, not three unexplained or orphan annotations; disclose it and retain the file hash.",
+      "severity": "MEDIUM"
+    },
+    {
+      "finding": "At the released model-input grain (image pair x finding), 258 keys have multiple progression targets across 548 rows.",
+      "impact": "Without a region/entity query or a declared multi-label policy, the deterministic single-label accuracy ceiling is 0.837717.",
+      "severity": "CRITICAL_FOR_SINGLE_LABEL_EVALUATION"
+    },
+    {
+      "finding": "All 251 multi-progression bbox keys repeat the same complete box arrays on every progression row; box structs omit per-box progression.",
+      "impact": "The release does not identify which correspondence identity owns which progression label in multifocal cases.",
+      "severity": "CRITICAL_FOR_B4"
+    },
+    {
+      "finding": "23 bbox rows repeat a Box label within at least one image side, and 73 rows lack even set-level correspondence support for their progression label.",
+      "impact": "Case-local correspondence cannot be treated as a clean persistent-entity oracle without an upstream correction or adjudicated mapping.",
+      "severity": "HIGH_FOR_B4"
+    },
+    {
+      "finding": "Bounding-box labels are documented only as case-local correspondence identities, not globally persistent lesion/entity IDs.",
+      "impact": "Five-label progression plus boxes does not automatically identify the CAPES-CI persistent-entity causal estimand.",
+      "severity": "CRITICAL_FOR_B4"
+    },
+    {
+      "finding": "Parent images are not included in the annotation package.",
+      "impact": "Image access, source licenses, patient-level lineage and image hashes must qualify separately before any real run.",
+      "severity": "HIGH"
+    },
+    {
+      "finding": "The dataset card describes gold as held-out evaluation.",
+      "impact": "No model evaluation was run; a patient-level dev/power-dev/test seal must be frozen before using any gold rows for method decisions.",
+      "severity": "HIGH"
+    }
+  ],
+  "model_evaluation_performed": false,
+  "pair_profile": {
+    "dataset_counts": [
+      {
+        "dataset": "chexpert",
+        "rows": 1074
+      },
+      {
+        "dataset": "mimic",
+        "rows": 594
+      },
+      {
+        "dataset": "rexgradient",
+        "rows": 119
+      }
+    ],
+    "disease_counts": [
+      {
+        "disease_name": "atelectasis",
+        "rows": 200
+      },
+      {
+        "disease_name": "cardiomegaly",
+        "rows": 133
+      },
+      {
+        "disease_name": "consolidation",
+        "rows": 104
+      },
+      {
+        "disease_name": "edema",
+        "rows": 222
+      },
+      {
+        "disease_name": "enlarged cardiomediastinum",
+        "rows": 32
+      },
+      {
+        "disease_name": "lung lesion",
+        "rows": 34
+      },
+      {
+        "disease_name": "lung opacity",
+        "rows": 453
+      },
+      {
+        "disease_name": "pleural effusion",
+        "rows": 455
+      },
+      {
+        "disease_name": "pleural other",
+        "rows": 24
+      },
+      {
+        "disease_name": "pneumonia",
+        "rows": 63
+      },
+      {
+        "disease_name": "pneumothorax",
+        "rows": 67
+      }
+    ],
+    "duplicate_row_keys": 0,
+    "exact_duplicate_rows": 0,
+    "label_counts": [
+      {
+        "progression": "Improved",
+        "rows": 424
+      },
+      {
+        "progression": "New",
+        "rows": 154
+      },
+      {
+        "progression": "Resolved",
+        "rows": 115
+      },
+      {
+        "progression": "Stable",
+        "rows": 654
+      },
+      {
+        "progression": "Worse",
+        "rows": 440
+      }
+    ],
+    "label_dataset_counts": [
+      {
+        "dataset": "chexpert",
+        "progression": "Improved",
+        "rows": 250
+      },
+      {
+        "dataset": "mimic",
+        "progression": "Improved",
+        "rows": 147
+      },
+      {
+        "dataset": "rexgradient",
+        "progression": "Improved",
+        "rows": 27
+      },
+      {
+        "dataset": "chexpert",
+        "progression": "New",
+        "rows": 105
+      },
+      {
+        "dataset": "mimic",
+        "progression": "New",
+        "rows": 39
+      },
+      {
+        "dataset": "rexgradient",
+        "progression": "New",
+        "rows": 10
+      },
+      {
+        "dataset": "chexpert",
+        "progression": "Resolved",
+        "rows": 68
+      },
+      {
+        "dataset": "mimic",
+        "progression": "Resolved",
+        "rows": 44
+      },
+      {
+        "dataset": "rexgradient",
+        "progression": "Resolved",
+        "rows": 3
+      },
+      {
+        "dataset": "chexpert",
+        "progression": "Stable",
+        "rows": 391
+      },
+      {
+        "dataset": "mimic",
+        "progression": "Stable",
+        "rows": 218
+      },
+      {
+        "dataset": "rexgradient",
+        "progression": "Stable",
+        "rows": 45
+      },
+      {
+        "dataset": "chexpert",
+        "progression": "Worse",
+        "rows": 260
+      },
+      {
+        "dataset": "mimic",
+        "progression": "Worse",
+        "rows": 146
+      },
+      {
+        "dataset": "rexgradient",
+        "progression": "Worse",
+        "rows": 34
+      }
+    ],
+    "nulls": {
+      "dataset": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "disease_name": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "img_path_curr": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "img_path_prev": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "patient_id": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "progression": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "study_id_curr": {
+        "null_count": 0,
+        "null_rate": 0.0
+      },
+      "study_id_prev": {
+        "null_count": 0,
+        "null_rate": 0.0
+      }
+    },
+    "raw_patient_ids_in_multiple_sources": 0,
+    "target_conflict_audit": {
+      "conflict_dataset_counts": [
+        {
+          "dataset": "chexpert",
+          "rows": 138
+        },
+        {
+          "dataset": "mimic",
+          "rows": 93
+        },
+        {
+          "dataset": "rexgradient",
+          "rows": 27
+        }
+      ],
+      "conflict_disease_counts": [
+        {
+          "disease_name": "atelectasis",
+          "rows": 38
+        },
+        {
+          "disease_name": "consolidation",
+          "rows": 18
+        },
+        {
+          "disease_name": "edema",
+          "rows": 7
+        },
+        {
+          "disease_name": "enlarged cardiomediastinum",
+          "rows": 1
+        },
+        {
+          "disease_name": "lung lesion",
+          "rows": 3
+        },
+        {
+          "disease_name": "lung opacity",
+          "rows": 93
+        },
+        {
+          "disease_name": "pleural effusion",
+          "rows": 84
+        },
+        {
+          "disease_name": "pneumonia",
+          "rows": 11
+        },
+        {
+          "disease_name": "pneumothorax",
+          "rows": 3
+        }
+      ],
+      "conflict_label_set_counts": [
+        {
+          "label_set": "Improved|New",
+          "rows": 10
+        },
+        {
+          "label_set": "Improved|New|Resolved|Stable",
+          "rows": 1
+        },
+        {
+          "label_set": "Improved|New|Worse",
+          "rows": 3
+        },
+        {
+          "label_set": "Improved|Resolved",
+          "rows": 13
+        },
+        {
+          "label_set": "Improved|Resolved|Stable",
+          "rows": 4
+        },
+        {
+          "label_set": "Improved|Resolved|Stable|Worse",
+          "rows": 1
+        },
+        {
+          "label_set": "Improved|Resolved|Worse",
+          "rows": 2
+        },
+        {
+          "label_set": "Improved|Stable",
+          "rows": 48
+        },
+        {
+          "label_set": "Improved|Stable|Worse",
+          "rows": 12
+        },
+        {
+          "label_set": "Improved|Worse",
+          "rows": 55
+        },
+        {
+          "label_set": "New|Resolved",
+          "rows": 6
+        },
+        {
+          "label_set": "New|Resolved|Stable",
+          "rows": 2
+        },
+        {
+          "label_set": "New|Resolved|Stable|Worse",
+          "rows": 1
+        },
+        {
+          "label_set": "New|Stable",
+          "rows": 12
+        },
+        {
+          "label_set": "New|Stable|Worse",
+          "rows": 2
+        },
+        {
+          "label_set": "New|Worse",
+          "rows": 20
+        },
+        {
+          "label_set": "Resolved|Stable",
+          "rows": 8
+        },
+        {
+          "label_set": "Resolved|Stable|Worse",
+          "rows": 1
+        },
+        {
+          "label_set": "Resolved|Worse",
+          "rows": 4
+        },
+        {
+          "label_set": "Stable|Worse",
+          "rows": 53
+        }
+      ],
+      "conflicting_prediction_key_rate": 0.17234468937875752,
+      "conflicting_prediction_keys": 258,
+      "deterministic_single_label_accuracy_ceiling": 0.8377168438724119,
+      "deterministic_single_label_correct_ceiling_rows": 1497,
+      "prediction_keys": 1497,
+      "rows_in_conflicting_prediction_key_rate": 0.30665920537213204,
+      "rows_in_conflicting_prediction_keys": 548
+    },
+    "unique_dataset_patients": 197,
+    "unique_patients_raw": 197
+  },
+  "status": "FAIL_DATA_QUALITY"
+}
