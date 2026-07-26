@@ -1164,3 +1164,21 @@
   metrics and per-seed directions.
 - Wrote `reports/R26_C1_ORACLE_BINDING_RESULT.md`. Per the frozen stop rule,
   C2, learned matcher, RAD-DINO, frozen VLM, DIVE, and scale-up remain locked.
+
+## 2026-07-26 — GitHub pre-push validation
+
+- Target remote verified as `https://github.com/Ali-Xiyao/VisualVIT`; active
+  branch is `r25.1-semantic-repair` and runtime evidence remains outside Git.
+- Fresh full regression: `488 passed, 1 xfailed` in 229.78 seconds. The xfail
+  is the registered unrecoverable R14 frozen-bundle case.
+- Ruff passed on all 11 Python files changed relative to `origin/main`;
+  compileall passed for `src`, `scripts`, and `tests`.
+- A repository-wide Ruff scan also surfaced 25 pre-existing findings in five
+  unchanged legacy scripts. They are outside this submission diff and were not
+  silently rewritten.
+- One first PowerShell changed-file reporting command hit the known parser
+  rule forbidding a pipeline directly after a `foreach` block. The corrected
+  command collected the rows first and completed successfully.
+- The R25.1 frozen protocol retains its intentional trailing blank line because
+  its exact SHA-256 is certified by process A/B. Non-frozen Markdown EOF
+  warnings were normalized in commit `6c426fe`.
