@@ -54,4 +54,3 @@ The R25 runner currently emits zero for every `prior_anatomy` and
 inactive: its compatibility mask removes no candidate edges. R25.1 now records
 this explicitly in the matcher mechanics output. Visual+geometry results must
 not be attributed to an active anatomy constraint.
-
