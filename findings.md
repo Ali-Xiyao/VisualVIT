@@ -991,3 +991,24 @@ R24 base protocol alongside R23 in `_copy_complete_allowlist_workspace`.
   `active_on_cohort=false`，visual+geometry 结果不得归因于 anatomy mask。
 - 全量回归为 `483 passed, 1 xfailed`；唯一 xfail 是既有的 R14 冻结
   bundle 字节不可恢复项，与 R25.1 无关。
+
+## 2026-07-26 — R25.1 process A
+
+- Process A status: `AWAITING_FRESH_PROCESS_REPRODUCTION`; Q0-Q5 and Q7 all
+  passed.
+- Matching results:
+  - visual-only persistent-edge F1: `0.9420123768049508`;
+  - geometry-only persistent-edge F1: `0.988081595232638`;
+  - visual+geometry persistent-edge F1: `0.9821223928489572`.
+- `delta_match = +97.9052 pp`, patient-bootstrap 95% interval
+  `[+95.9731, +99.6007]`, 170 contributing patients.
+- `matching_event_macro_f1` remains exactly `1/3` for all variants because
+  the event vocabulary is persistent/death/birth and this cohort is
+  persistent-only. It is descriptive and no longer a gate.
+- Progression namespace is exactly `NOT_EVALUATED`.
+- Anatomy constraint is configured but inactive: zero candidate edges removed.
+- Process A summary SHA-256:
+  `8db2ec2e23b3e93f5a4757e4e0a9aeed5f27e388c7494a56250074850c3b88b2`.
+- Geometry-only exceeds visual-only and visual+geometry on this cohort.
+  Therefore the matching result is dominated by stable spatial layout; it
+  must not be described as evidence that BiomedCLIP alone learned identity.

@@ -16,7 +16,17 @@ Stable/Improved/Worse 结果。当前分支为 `r25.1-semantic-repair`。
 - [x] S1c：增加 progression target 真实进入评估的契约与回归测试
 - [x] S1d：focused tests、ruff、全量 pytest 通过
 - [x] S2：构建 pair-level matching manifest 与 entity-level progression manifest
+- [ ] S3：冻结 R25.1 matching protocol，在空闲 GPU1 顺序运行 process A/B
+  - [x] Process A：`AWAITING_FRESH_PROCESS_REPRODUCTION`
+  - [ ] Process B：GPU1 watcher PID 27888 active; waits for two idle samples
+- [ ] S4：独立验证 A/B 并发布 matching qualification certificate
 - [ ] C1：运行真正的 oracle-correct vs deranged progression classifier
+  - [x] Draft protocol written; status `DRAFT_AWAITING_R25_1_Q6`
+  - [ ] Pin R25.1 certificate/feature hashes and freeze
+  - [ ] Implement and verify runner
+    - [x] Representation, B4 isomorphism, folds, head, bootstrap, and gates implemented
+    - [x] Focused verification: 9 passed, ruff clean
+  - [ ] Run only after S4 is green
 - [ ] C2：仅 C1 通过后训练 learned matcher
 - [ ] VLM/DIVE：仅 C1、C2、VLM transfer 依次通过后解锁
 
@@ -29,6 +39,11 @@ S1/S2 验证结果：focused tests `49 passed`；全量
 Worse 262。下一阶段是先冻结 R26 structured-classifier 协议与最小
 pipeline；C1 运行前仍需完成 head、split、seed、bootstrap 与正式 test
 封存细节，当前未启动训练。
+
+2026-07-26 续跑现场复核：VisualVIT 无活动实验；GPU0 上存在外部
+`n5_rebind_tf_eval.py` smoke（约 9.3 GiB），不得停止或竞争；GPU1 为
+0 MiB / 0% 空闲。S3/S4 优先于 C1，因为 R26 必须消费新鲜、已复现的
+R25.1 特征与 matching 资格证书。
 
 ## Goal
 将 `CAPES_Final_Complete_Proposal_CN.md` 与 `DIVE_Proposal.md` 融合为一套研究问题清晰、资源可获得、代码可复现、实验可审计、结果可用于正式论文写作的完整执行方案，并在用户批准设计后按门槛顺序完成全部正式实验。

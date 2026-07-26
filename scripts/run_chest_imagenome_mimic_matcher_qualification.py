@@ -63,10 +63,11 @@ CLIP_STD = (0.26862954, 0.26130258, 0.27577711)
 
 R25_PROTOCOL_PATH = (
     WORKSPACE
-    / "docs/superpowers/specs/2026-07-25-chest-imagenome-real-data-protocol-v1.md"
+    / "docs/superpowers/specs/"
+    "2026-07-26-r25-1-matching-qualification-v1.md"
 )
 R25_PROTOCOL_SHA256 = (
-    "9862dac5b2bc304129b619b5d247919797979e4e80ed80c12ae535d79d10d1fc"
+    "78636fcf2673ddf80f7ad1c6672f4eb3558ce80948b26bc020b05f845fa873d6"
 )
 
 CI_ROOT_DEFAULT = Path(
@@ -1382,12 +1383,12 @@ def main() -> int:
         }
 
     protocol_text = args.protocol.read_text(encoding="utf-8")
-    if "Status: `PRE_FREEZE_DESIGN_CANDIDATE`" not in protocol_text:
-        raise RuntimeError("R25 qualification protocol is not in pre-freeze state")
+    if "Status: `FROZEN_BEFORE_EXECUTION`" not in protocol_text:
+        raise RuntimeError("R25.1 qualification protocol is not frozen")
     protocol_hash = sha256_file(args.protocol)
     if protocol_hash != R25_PROTOCOL_SHA256:
         raise RuntimeError(
-            f"R25 protocol hash mismatch: {protocol_hash} "
+            f"R25.1 protocol hash mismatch: {protocol_hash} "
             f"(expected {R25_PROTOCOL_SHA256})"
         )
 

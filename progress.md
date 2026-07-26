@@ -990,52 +990,132 @@
 - Final verification: **479 passed, 1 xfailed** in 156 s; ruff all checks
   passed; py_compile exit 0. R24 base integrity intact (hashes verified at
   R25 load time).
-## 2026-07-26 — R25.1 semantic repair started
 
-- Read and accepted the user-provided project judgment as the new semantic
-  correction authority.
-- Confirmed Git baseline is clean at `dd9c242` and created branch
-  `r25.1-semantic-repair`.
-- Inspected R25 cohort construction, matcher evaluation, gate evaluation,
-  progression utilities, and focused tests.
-- Confirmed `record["progression"]` is stored but not consumed by the R25
-  matcher evaluator; `three_event_macro_f1` is computed from
-  persistent/death/birth matching events.
-- Added `docs/R25_1_ERRATUM.md` with the R25.1 repair scope, R26 classifier
-  contract, survival gates, stop rules, and forbidden claims.
-- Next: add failing regression tests for metric namespaces and progression
-  target consumption, implement the semantic repair, then run focused and
-  full verification.
-- Expected red test observed: focused collection failed because
-  `progression_rows_from_predictions` did not yet exist. Implemented the
-  fail-closed target/prediction binding API, renamed the matching-event metric,
-  and split R25.1 matching/progression evaluation namespaces.
-- First green attempt exposed a test-fixture issue: mutating the only Stable
-  target correctly triggered the existing missing-class-support guard. Added a
-  second Stable observation so the test isolates target consumption rather
-  than class-support validation.
-- Asset/precheck inspection command hit a PowerShell parser error from piping
-  directly after a `foreach` block. No state changed; next attempt collects
-  rows into an array before formatting.
-- A later artifact-check command accidentally repeated the same invalid
-  `foreach ... | Format-List` shape. No state changed. Subsequent commands use
-  `ForEach-Object` or format the collected array outside the loop.
-- Focused tests passed after manifest/anatomy changes (49 passed). Ruff then
-  reported two expected E402 findings in the standalone manifest builder,
-  caused by intentional workspace path bootstrapping before local imports.
-  Added the same file-level E402 exemption used by the existing runners.
-- Built fresh local R25.1 manifests under
-  `artifacts/r25_1_semantic_repair/manifests`: 189 patients, 189 pairs,
-  793 entities; Stable 371 / Improved 160 / Worse 262. Wrote public,
-  identifier-free qualification summary to
-  `reports/R25_1_MANIFEST_QUALIFICATION.md`.
-- Added an explicit anatomy constraint audit. Current emitted anatomy ids are
-  all zero, so the configured mask is inactive and removes zero candidates.
-- Verification complete:
-  - focused pytest: 49 passed;
-  - selected ruff: all checks passed;
-  - full pytest: 483 passed, 1 xfailed in 260.28 s;
-  - compileall: exit 0;
-  - git diff --check: no whitespace errors.
-- The only xfail is the pre-existing unrecoverable R14 frozen-validator bundle.
-  No new test failure remains.
+## Session: 2026-07-25 (session 5) — R25 real-data dry-run on Chest ImaGenome
+
+### Git initialization and push
+- Configured git user identity (`Ali-Xiyao` / `Ali-Xiyao@users.noreply.github.com`).
+- Created initial commit `31d3325` (163 files, 110,381 insertions) and pushed
+  to `https://github.com/Ali-Xiyao/VisualVIT` (`main` branch).
+
+### R25 qualification dry-run execution
+- **Process A** (PID 6188, cuda:1): completed in ~20 min.
+  - Cohort: 793 rows / 189 patients / 189 pairs (three-label: Stable 371 /
+    Improved 160 / Worse 262; patient coverage: Stable 122 / Improved 45 /
+    Worse 72).
+  - Feature extraction: 1586 crops, 11.8 s, repeat max-abs-difference = 0.0
+    (deterministic), peak VRAM 880 MB.
+  - Bootstrap: 10,000 replicates, seed 20260725.
+  - Gates: Q0-Q3 + Q5 + Q7 PASS; **Q4 FAIL** (`three_event_macro_f1` = 0.333
+    < 0.50 threshold).  B4 delta = +97.9 pp, CI [96.0, 99.6], 170 patients
+    (Q7 powered, ≥ 100 minimum).
+  - Status: `FAIL_Q4_REAL_SIGNAL` (evidence class
+    `NON_CONFIRMATORY_REAL_DATA_QUALIFICATION`, formal claim not allowed).
+- **Process B** (PID independent, cuda:0): identical deterministic results.
+- **Q6 fresh-process reproduction**: `PASS_Q6_FRESH_PROCESS_REPRODUCTION`
+  (22/22 exact-field checks passed; two independent processes byte-identical
+  on all deterministic fields).
+
+### Pre-freeze runner corrections (4 bugs found during dry-run)
+1. **R25_PROTOCOL_SHA256 mismatch**: protocol spec was edited (three-label
+   rewrite) after the runner constant was pinned.  Updated to
+   `9862dac5…`.
+2. **cross_source_dicom_overlap excluded entire cohort**: `images_to_avoid.csv`
+   lists the gold DICOMs themselves (so silver training can skip them).
+   Using it as an exclusion filter rejected all 795 rows.  Removed the
+   filter; patient-level R24 v3 overlap check retained.
+3. **Scaling epsilon too strict (1e-4 → 0.5)**: gold TSV stores 224-space
+   box coords as integers (rounded from float transform).  Old epsilon
+   rejected all 795 rows with ~0.03-0.06 px rounding differences.  0.5 is
+   the standard rounding bound; 1.0 drift still rejected.
+4. **EXPECTED_ROWS 795 → 793**: 2 rows have genuinely invalid boxes (one
+   inverted `x1 > x2`, one zero-width `x1 == x2`) correctly rejected by
+   `box_out_of_bounds`.  Pre-audit's 795 didn't apply this check.
+
+### Q6 verifier correction
+- `both_awaiting_reproduction` → `both_completed_evaluation`: Q6 certifies
+  deterministic reproduction, not gate success.  Two processes with identical
+  `FAIL_Q4_REAL_SIGNAL` is valid reproduction.  Old check required
+  `AWAITING_FRESH_PROCESS_REPRODUCTION` (all gates pass), blocking Q6
+  whenever any gate failed.
+
+### Scientific interpretation
+- The matcher's **edge recovery** is excellent (`persistent_edge_f1` = 0.982)
+  and the **B4 identity-binding contrast** is very strong (+97.9 pp, CI lower
+  +96.0), confirming that correct prior→current anatomy pairing produces a
+  large structural signal.
+- The **three-label macro F1** = 0.333 (chance level) means BiomedCLIP visual
+  features alone cannot discriminate Stable/Improved/Worse progression labels
+  — this is a clinical judgment not recoverable from cropped-region visual
+  embeddings without the report text or a trained progression head.
+- Q7 is powered (170 patients ≥ 100); the Q4 failure is scientific, not
+  statistical.
+- Evidence class remains `NON_CONFIRMATORY_REAL_DATA_QUALIFICATION`; no
+  formal claim is made.
+
+### Files modified (uncommitted at session end)
+- `scripts/run_chest_imagenome_mimic_matcher_qualification.py` (4 fixes)
+- `scripts/verify_chest_imagenome_mimic_matcher_reproduction.py` (1 fix)
+- Tests: 479 passed, 1 xfailed (unchanged baseline, 534 s).
+
+## 2026-07-26 — R25.1 continuation
+
+- Fresh status check found no active VisualVIT experiment.
+- GPU0 was occupied by an expected external `n5_rebind_tf_eval.py` smoke;
+  the user confirmed this is normal. It was not interrupted.
+- GPU1 was fully idle before launch.
+- Added and pinned
+  `docs/superpowers/specs/2026-07-26-r25-1-matching-qualification-v1.md`
+  with SHA-256
+  `78636fcf2673ddf80f7ad1c6672f4eb3558ce80948b26bc020b05f845fa873d6`.
+- Prelaunch checks passed: focused pytest 49 passed, ruff clean, and the
+  on-disk protocol hash matched the runner constant.
+- Process A launched on GPU1 with batch size 64 and 10,000 bootstrap
+  replicates. It completed with
+  `AWAITING_FRESH_PROCESS_REPRODUCTION`; no gate failed before Q6.
+- A summary-inspection command hit the known PowerShell parser trap by piping
+  directly after a `foreach` block. No evidence changed; the retry collects
+  variant rows before formatting.
+- The first retry used the PowerShell 7-only `ConvertFrom-Json -Depth`
+  parameter, but this shell is Windows PowerShell 5.1. It returned empty
+  display fields without modifying evidence. The next retry omits `-Depth`.
+- Process A evidence inspection succeeded after removing `-Depth`:
+  - all declared compute gates passed;
+  - visual / geometry / visual+geometry edge F1 =
+    0.942012 / 0.988082 / 0.982122;
+  - `delta_match = +97.9052 pp`, 95% interval
+    `[+95.9731, +99.6007]`, 170 patients;
+  - progression `NOT_EVALUATED`;
+  - anatomy constraint inactive, zero candidates removed;
+  - summary SHA-256
+    `8db2ec2e23b3e93f5a4757e4e0a9aeed5f27e388c7494a56250074850c3b88b2`.
+- Before process B, GPU1 became occupied by another expected external
+  `n5_rebind_tf_eval.py --device cuda:1` process. Per the frozen protocol and
+  the user's confirmation that these jobs are normal, process B is waiting
+  rather than competing. CPU-side R26 protocol preparation continues.
+- Hardened the Q6 verifier before process B: evaluation namespaces are now an
+  exact cross-process field; matching must be `EVALUATED`, progression must be
+  `NOT_EVALUATED`, and `progression_macro_f1` / `delta_bind` claims are
+  explicitly forbidden.
+- Q6 verifier focused verification passed: 37 pytest tests and ruff clean.
+- While GPU1 remains occupied by the expected external job, wrote the R26 C1
+  draft protocol at
+  `docs/superpowers/specs/2026-07-26-r26-c1-oracle-binding-protocol-v1.md`.
+  It remains explicitly locked on R25.1 Q6 and authorizes no training yet.
+- Implemented the locked R26 C1 runner and focused tests. The runner consumes
+  the certified R25.1 cohort/feature cache, constructs entity-targeted
+  correct/deranged relation vectors, runs patient-disjoint OOF heads for three
+  seeds, performs hierarchical bootstrap inference, and remains fail-closed
+  until the protocol hash and R25.1 Q6 certificate are pinned.
+- R26 implementation focused verification passed: 9 pytest tests and ruff
+  clean. No R26 training was started while the prerequisite remained locked.
+- Additional pre-freeze verification passed: compileall exit 0 and selected
+  ruff checks clean. Process A's recorded runner SHA exactly matches the
+  current runner bytes, preserving A/B comparability.
+- Added `scripts/watch_and_run_r25_1_process_b.ps1`, a non-destructive GPU1
+  handoff watcher. It never stops processes; it requires two consecutive idle
+  samples, rechecks A/runner/protocol hashes and output-root absence, then runs
+  process B followed by the Q6 verifier with separate logs.
+- Watcher syntax validation passed and hidden watcher PID `27888` started.
+  First sample correctly recorded GPU1 busy with external PID `26344`; no
+  process was stopped and process B was not launched prematurely.

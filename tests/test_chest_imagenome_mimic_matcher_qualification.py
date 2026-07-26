@@ -627,6 +627,16 @@ def _verifier_summary(
         "feature_ledger_sha256": "features",
         "prediction_sha256": "predictions",
         "aggregate_sha256": "aggregate",
+        "evaluation_namespaces": {
+            "matching_evaluation": {
+                "status": "EVALUATED",
+                "event_labels": ["persistent", "death", "birth"],
+            },
+            "progression_evaluation": {
+                "status": "NOT_EVALUATED",
+                "labels": ["Stable", "Improved", "Worse"],
+            },
+        },
         "gates": {"Q0_ASSET_LINEAGE": True},
         "q7_power_estimate": {"delta_lower_pp": 60.0},
         "aggregate": {"metric": 1.0},
