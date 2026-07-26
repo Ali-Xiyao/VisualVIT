@@ -1,11 +1,16 @@
 import torch
 
 from scripts.run_r33_token_survival import (
+    benefit_router_features,
+    benefit_router_targets,
     bootstrap_systems,
+    fit_batched_mlp,
+    fit_benefit_router,
     mask_token_types,
     route_behavior,
     training_weights,
     weighted_confusion,
+    predict_batched_mlp,
 )
 
 
@@ -60,3 +65,50 @@ def test_route_behavior_reports_correction_without_harm():
     assert behavior["correction_rate"] > 0
     assert behavior["harm_rate"] == 0
     assert behavior["net_corrected"] > 0
+
+
+def test_benefit_target_and_router_are_label_free_at_evaluation():
+    labels = torch.tensor([0, 1, 2, 0])
+    robust = torch.tensor(
+        [
+            [[0.0, 2.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 2.0], [2.0, 0.0, 0.0]],
+            [[0.0, 2.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 2.0], [2.0, 0.0, 0.0]],
+            [[0.0, 2.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 2.0], [2.0, 0.0, 0.0]],
+        ]
+    )
+    rich = robust.clone()
+    rich[:, 0] = torch.tensor([2.0, 0.0, 0.0])
+    rich[:, 1] = torch.tensor([2.0, 0.0, 0.0])
+    features = benefit_router_features(robust, rich)
+    targets, decisive, score = benefit_router_targets(robust, rich, labels)
+    assert features.shape[0] == len(labels)
+    assert score.tolist() == [3, -3, 0, 0]
+    assert decisive.tolist() == [True, True, False, False]
+    repeated_features = torch.cat((features[:2], features[:2] + 0.1))
+    repeated_targets = torch.tensor([1, 0, 1, 0])
+    route, audit = fit_benefit_router(
+        repeated_features,
+        repeated_targets,
+        features,
+        seed=7,
+    )
+    assert route.shape == labels.shape
+    assert audit["finite"]
+
+
+def test_batched_mlp_probe_has_matched_model_axis():
+    features = torch.randn(2, 12, 6)
+    labels = torch.tensor([0, 1, 2] * 4)
+    models = fit_batched_mlp(
+        features,
+        labels,
+        torch.ones(12),
+        seed=9,
+        device=torch.device("cpu"),
+        epochs=1,
+        batch_size=6,
+        hidden_dim=4,
+    )
+    logits = predict_batched_mlp(models, features, torch.device("cpu"))
+    assert logits.shape == (2, 12, 3)
+    assert bool(torch.isfinite(logits).all())

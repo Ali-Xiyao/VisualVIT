@@ -1,4 +1,4 @@
-# Task Plan: TIER-CXR-VLM R32-R36 Execution
+# Task Plan: TIER-CXR-VLM R33A Case-Study Rescue
 
 ## Authority
 
@@ -11,10 +11,16 @@
 
 ## Objective
 
-Execute the proposal in gate order, beginning with R32. Continue into R33 only
-after every R32 authority and engineering gate is green. Do not train the
-formal frozen VLM before R33 GO, do not read the 483-patient sealed VLM test
-during R33, and do not read gold outcomes before the registered R35 gate.
+Preserve the completed R32 GO and R33 STOP as immutable evidence, then diagnose
+R33 at case level and develop a mechanistically different R33A candidate. Use
+only the 1,574-patient train partition for case-study-driven iteration. Freeze
+one candidate before a single 300-patient dev confirmation. Unlock R34 only if
+the new registered gate passes. Never read the 483-patient sealed VLM test or
+gold outcomes during R33A.
+
+Passing is not guaranteed by repeated attempts: every attempt must correspond
+to a distinct, documented hypothesis, and the formal candidate is evaluated
+once after freeze.
 
 ## Lightweight provenance policy
 
@@ -84,6 +90,53 @@ row-count, split-disjointness, and smoke checks during ordinary iteration.
 - [x] Follow the first failed gate and stop downstream scaling when required.
 - **Status:** complete — R34-R36 remain locked after R33 STOP
 
+### Phase 5 — R33A forensic case study
+
+- [x] Build train-only correction/harm case registry from R33 OOF artifacts.
+- [x] Quantify failures by label, finding, fold, route confidence, and
+  robust-vs-rich disagreement.
+- [x] Audit representation construction, route target, and control semantics.
+- [x] Select non-overlapping rescue hypotheses and freeze each before use.
+- **Status:** complete
+
+### Phase 6 — R33A exploratory rescue
+
+- [x] Implement Attempt A direct-transition tokens with patient-disjoint inner
+  validation; retained as a documented failure.
+- [x] Implement Attempt B cross-fitted benefit routing; retained as a
+  documented failure.
+- [x] Implement Attempt C common-width nonlinear token reader; retained as a
+  documented failure.
+- [x] Implement Attempt D anatomy/context token bridge; retained as the
+  strongest selected-bundle failure.
+- [x] Reject raw token geometry, finding interactions, and confidence-threshold
+  tuning as benefit-router rescues.
+- [x] Implement Attempt E/E2 explicit prior/current coherence bridge and
+  projection-matched audit.
+- [x] Require Attempt E to improve the prior-shuffle control before considering
+  another routing mutation.
+- [x] Implement Attempt F fold-trained 64-dimensional bridge.
+- [x] Implement Attempt G cross-fitted benefit-conditioned learned bridge.
+- [x] Continue train-only case-study experiments and reject failed hypotheses.
+- [x] Close the frozen-cache premise after no candidate passes all gates.
+- **Status:** complete — `STOP_R33A_FROZEN_CACHE_PREMISE`
+
+### Phase 7 — One-shot dev confirmation
+
+- [x] Do not fit/evaluate dev because no train-only candidate survived.
+- [ ] Fit the frozen candidate on train only and evaluate the 300-patient dev
+  split once.
+- [ ] Require primary delta, uncertainty, seed, random-route, prior-shuffle,
+  query-only, and leakage gates.
+- [ ] Reproduce only after scientific GO.
+- **Status:** locked — no surviving R33A candidate
+
+### Phase 8 — Conditional R34-R36
+
+- [ ] Unlock R34 only after R33A confirmation GO.
+- [ ] Keep the 483-patient sealed test and gold outcomes unread until then.
+- **Status:** locked — R33A survival gate failed
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -96,3 +149,9 @@ row-count, split-disjointness, and smoke checks during ordinary iteration.
 | FP32 real-Qwen batch-shape roundoff was 2.96e-5, above the toy-scale 1e-6 assertion | 1 | Protocol v1.2 freezes real-model FP32 equivalence at max abs diff <=1e-4 plus identical argmax; toy deterministic tests remain 1e-6 |
 | R33 feature preflight retained the proposal's pre-quarantine 1,900 train+dev count | 1 | Correct to the registered v1.1 split: 1,574 train + 300 dev = 1,874 patients; no feature output had been created |
 | First R33 GPU launch was rejected by PyTorch deterministic cuBLAS guard | 1 | Set `CUBLAS_WORKSPACE_CONFIG=:4096:8` before importing torch; failure occurred before any fitted probe or result output |
+| R33A Attempt A scoped lint found an unused `defaultdict` import | 1 | Removed the import before feature generation; tests already passed |
+| Attempt D treated a comma-separated multi-anatomy string as one intersected region and produced an empty mask | 1 | Split registered anatomy components, build each fixed mask independently, and use their union; failure occurred before feature output |
+| Attempt E v1 omitted three legacy runner audit booleans although its adapter and cache were frozen | 1 | Add the explicit audit fields and promote the already-built binary payload to a fresh v2 path without recomputing patches or adapter features |
+| Attempt E changed all projection seeds while expanding the relation input, confounding its P3 reference | 1 | Freeze E2 before rerun: preserve every Attempt D projection row and append only the 64 new coherence rows |
+| First E2 tensor-comparison command indexed payload keys instead of `payload["features"]` | 1 | Corrected the read-only comparison; no artifact was written or changed |
+| Attempt F scoped lint found an unused `Any` import | 1 | Removed the import before feature generation; all focused tests already passed |

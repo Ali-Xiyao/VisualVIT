@@ -15,8 +15,9 @@
 
 ## Current action
 
-Closed at the first failed survival gate: `STOP_R33_TOKEN_SURVIVAL`. Preserve
-the unread 483-patient sealed test and do not start R34-R36.
+R33A forensic case study on the 1,574-patient train partition. Preserve the
+300-patient dev split for one frozen-candidate confirmation and keep the
+483-patient sealed test and gold outcomes unread.
 
 ## 2026-07-26 — R32 source reconstruction
 
@@ -119,3 +120,107 @@ the unread 483-patient sealed test and do not start R34-R36.
   remains supported by multiple P0-independent failures.
 - R34-R36 remain locked; the 483-patient sealed test and gold outcomes remain
   unread.
+
+## 2026-07-26 — R33A rescue opened
+
+- User authorized continued case-study-driven mechanism repair after R33 STOP.
+- Preserved R33 as immutable negative evidence and opened R33A as a distinct
+  exploratory protocol lane.
+- Restricted case-level iteration to the 1,574-patient train partition; the
+  300-patient dev split is reserved for one frozen-candidate confirmation.
+- Initial code audit identifies two high-priority hypotheses: a randomly frozen
+  token builder and a route target based on label-prediction agreement rather
+  than expected rich-over-robust benefit.
+- R34 sealed test and gold outcomes remain locked.
+- Compared the implementation against proposal Sections 11 and 14. The
+  proposal permits trained resamplers/relation adapters/token MLP/projector,
+  while R33 froze a randomly initialized token builder and fixed random
+  768-to-64 compression. Registered this as the first mechanism-level failure
+  rather than rerunning the same configuration.
+- Built the R33A train-only failure registry (13,566 rows, 1,574 patients).
+  Rich-helped and rich-harmed rates are 11.00% and 11.58%; hard consensus has
+  only 47.67% help precision and net -136 selected help-minus-harm units.
+- Confirmed substantial case-oracle headroom (+10.60 pp) but no deployable
+  route enrichment. This motivates rebuilding competent expert/token
+  representations before testing a new router.
+- Attempt A direct-transition features completed in 19.2 seconds from the
+  existing cache. Nested OOF completed in 185.3 seconds.
+- Attempt A improved robust P3 to 0.4874 and made literal query-only/global
+  controls meaningful, but P6 remained below P3 by 0.461 pp
+  (CI [-1.298,+0.357] pp) with all three seed deltas negative.
+- Registered Attempt B before execution: preserve Attempt A tokens and replace
+  unanimity with a fully cross-fitted rich-benefit router.
+- Attempt B completed in 193.7 seconds and failed: P6-P3 -0.676 pp,
+  CI [-1.539,+0.162] pp, all seed directions negative.
+- Post-attempt output-fusion case study found R31-style unanimous-rich /
+  robust-majority reaches 0.49963 (+1.223 pp over pooled P3), while direct
+  benefit routing gives essentially zero gain. Registered Attempt C to test a
+  capacity-matched nonlinear common token reader rather than tuning routes.
+- Attempt C completed in 296.1 seconds and failed: P6-P3 -0.468 pp,
+  CI [-1.337,+0.358] pp. P3 improved to 0.4946 while P4 stayed at 0.4794,
+  excluding reader capacity as the main bottleneck.
+- Registered Attempt D to restore R31's anatomy-aware exact/context transition
+  structure from cached 14x14 patches.
+- Attempt D's first preflight stopped before feature output on a mixed
+  costophrenic/upper-lung anatomy string. Corrected multi-anatomy handling to
+  union independently valid component masks rather than intersect conflicting
+  vertical constraints.
+- Attempt D features completed in 17.7 seconds; nested OOF completed in 193.8
+  seconds. P6-P3 improved to -0.082 pp (CI [-0.882,+0.724]) with two positive
+  seeds, but prior shuffle still failed.
+- A fair seed-majority analysis shows R31-style output routing adds only 0.051
+  pp over majority P3 on Attempt D. Opened a train-only benefit-learnability
+  case study before choosing the next mechanism mutation.
+- Benefit-learnability v2 found a real but sub-threshold signal: logits-only
+  cross-fold routing gives +1.003 pp over P3. Token geometry and confidence
+  thresholds worsen it, so both are rejected.
+- Benefit-learnability v3 added fixed finding-by-expert interactions. Direct
+  routed F1 is 0.50436, +1.074 pp over pooled P3, but decisive accuracy drops
+  to 61.52% and every threshold above 0.50 is worse. This route family remains
+  below gate and is closed.
+- Attempt E is now the active hypothesis: introduce an explicit
+  prior/current-coherence relation while preserving the cached patch tensors,
+  train-only scope, and sealed dev/test/gold boundaries.
+- Froze Attempt E before execution. Both GPUs are currently occupied by
+  unrelated `r1_local_differential_eval.py` shards, so feature preparation is
+  assigned to CPU and no existing GPU process will be stopped or contended.
+- Attempt E feature preparation completed on CPU in 122.1 seconds. The
+  outcome-free adapter separates real pairs from the untouched formal
+  prior-shuffle mapping with AUC 0.9353 and accuracy 0.8487.
+- Pre-run payload validation found that v1 omitted three legacy boolean audit
+  fields required by the common R33 runner. The underlying tensors are valid;
+  register the booleans in a fresh v2 payload without recomputing cached
+  patches, hashes, or adapter features.
+- Attempt E OOF completed on CPU in 313.5 seconds. It is the first attempt to
+  pass prior-shuffle attenuation and has a positive +0.571 pp mean delta, but
+  misses +2 pp, CI, and all-seed gates.
+- Full-metric review found a projection-seed confound: P3 drifted to 0.48668
+  because all block projections changed. E2 was frozen before execution to
+  preserve every Attempt D projection row and append only the new coherence
+  rows. Attempt E remains immutable and cannot be promoted.
+- E2 features completed from the existing patch cache in 136.6 seconds. The
+  robust and prior-shuffle-robust summaries match Attempt D within one
+  float16 quantization step (maximum absolute difference 0.001953125 for every
+  seed). Projection-matched train-only OOF is running on CPU.
+- E2 projection-matched OOF stopped: P6-P3 -0.098 pp, CI
+  [-0.906,+0.707] pp, prior-shuffle +0.511 pp. The projection-matched result
+  rejects the coherence adapter as a sufficient bridge.
+- Froze Attempt F before execution: outcome-free 256-dimensional per-type
+  prebridge followed by a fold-trained 64-unit bottleneck for every
+  capacity-matched system. Seven focused tests pass; the only scoped lint issue
+  was an unused import removed before feature generation.
+- Attempt F completed in 810.2 seconds and stopped: P3 0.50720, P4 0.50741,
+  P6 0.50597, delta -0.123 pp with CI [-0.936,+0.693] pp. The rich expert is
+  now capacity-matched and equally competent, but consensus selection has
+  essentially zero net correction and prior-shuffle still fails.
+- Froze Attempt G before execution. It keeps the learned bridge and changes
+  only the route target to the previously implemented fully cross-fitted
+  rich-benefit rule. A failure closes benefit routing on this frozen cache.
+- Attempt G completed in 930.8 seconds and stopped: P6 0.50504 versus P3
+  0.50720, delta -0.217 pp with CI [-1.033,+0.581] pp. Seeds 17/29 are
+  negative; prior-shuffle does not meet registered attenuation.
+- Registered `STOP_R33A_FROZEN_CACHE_PREMISE`. No train-only candidate can be
+  frozen for dev; the 300 dev patients, 483 sealed-test patients, and all gold
+  outcomes remain uninspected in R33A.
+- Final verification passed: 579 pytest tests passed with one registered
+  historical xfail; all R33A scoped Ruff checks and script compilation passed.
