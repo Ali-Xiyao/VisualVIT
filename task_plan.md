@@ -20,15 +20,17 @@ Stable/Improved/Worse 结果。当前分支为 `r25.1-semantic-repair`。
   - [x] Process A：`AWAITING_FRESH_PROCESS_REPRODUCTION`
   - [x] Process B：completed independently on GPU1; summary SHA `91dd4f9a...1be7`
 - [x] S4：独立验证 A/B 并发布 matching qualification certificate
-- [ ] C1：运行真正的 oracle-correct vs deranged progression classifier
+- [x] C1：运行真正的 oracle-correct vs deranged progression classifier；终态 `STOP_C1`
   - [x] Protocol frozen; status `FROZEN_BEFORE_EXECUTION`
   - [x] Pin R25.1 certificate/feature hashes and freeze
   - [x] Implement and verify runner
     - [x] Representation, B4 isomorphism, folds, head, bootstrap, and gates implemented
     - [x] Frozen-pin verification: 5 passed, ruff and compileall clean
-  - [ ] Run on idle GPU1 with fresh output root; S4 is green
-- [ ] C2：仅 C1 通过后训练 learned matcher
-- [ ] VLM/DIVE：仅 C1、C2、VLM transfer 依次通过后解锁
+  - [x] Ran on idle GPU1 with fresh output root after S4 turned green
+  - [x] Primary result: `+1.1724 pp`, 95% CI `[-2.7765, +5.1436] pp`
+  - [x] Applied registered stop: effect < 5 pp and CI lower bound <= 0
+- [ ] C2：`BLOCKED_BY_STOP_C1`; learned matcher must not be trained
+- [ ] VLM/DIVE：`BLOCKED_BY_STOP_C1`; no RAD-DINO, frozen-VLM, DIVE, or Slurm scale-up
 
 当前硬停规则：禁止 RAD-DINO rescue、learned matcher、frozen VLM、
 DIVE Phase II 和扩大 GPU 实验，直到前置 gate 明确为 green。
@@ -49,7 +51,11 @@ R25.1 特征与 matching 资格证书。
 将 `CAPES_Final_Complete_Proposal_CN.md` 与 `DIVE_Proposal.md` 融合为一套研究问题清晰、资源可获得、代码可复现、实验可审计、结果可用于正式论文写作的完整执行方案，并在用户批准设计后按门槛顺序完成全部正式实验。
 
 ## Next Step
-R25 protocol spec three-label rewrite COMPLETE (`docs/superpowers/specs/2026-07-25-chest-imagenome-real-data-protocol-v1.md`, 467 lines, PRE_FREEZE). All 5 open design questions resolved by pre-audit. Three-label persistent endpoint (Stable/Improved/Worse) is frozen as primary; five-label dropped (infeasible: Chest ImaGenome attribute files cover only previous images). Pre-audit confirmed 189 patients / 795 persistent rows (margin +89 over Q7 threshold). **NEXT: implement the R25 qualification runner** as a new namespace (not modifying R24 frozen source), align the 2 R25-bound pytest fixes (`test_query_anchor_r4_runner.py:274` dry_run_authorized + r16 bundle regeneration via R16 finalizer), then freeze R25 protocol/registry and run 3 independent Gate-0 processes. Target: 444/444 pytest before R25 freeze.
+
+R26 C1 is terminal `STOP_C1`. Preserve and audit the result package at
+`reports/R26_C1_ORACLE_BINDING_RESULT.md`; do not run C2, learned-matcher,
+RAD-DINO, frozen-VLM, DIVE, or Slurm scale-up without a new user-approved
+research premise and a separately frozen protocol.
 
 ## Current Phase
 **Authoritative update (2026-07-25 session 4): R25 protocol spec three-label rewrite COMPLETE.** Full consistency audit passed (467 lines, all five-label/birth/death references are in infeasibility-explanation context only). 15 replacements applied via Python scripts to bypass the Edit tool cache issue. The spec now reflects: (1) three-label persistent endpoint as primary (Stable/Improved/Worse), matching R24 v3; (2) five-label dropped as infeasible (Chest ImaGenome attribute files cover only previous images, zero current images); (3) pre-audit cohort counts frozen (189 patients / 189 pairs / 795 persistent rows, margin +89 over Q7 threshold); (4) all 5 open design questions resolved with frozen decisions. pytest is 442/444 (verified by fresh rerun); both remaining failures are R25-bound and will be fixed alongside the R25 implementation (test_query_anchor_r4_runner.py:274 dry_run_authorized + r16 bundle regeneration). **NEXT: implement R25 qualification runner as new namespace, align 2 pytest fixes, freeze R25, run 3 Gate-0.**

@@ -1026,3 +1026,21 @@ R24 base protocol alongside R23 in `_copy_complete_allowlist_workspace`.
 - This qualifies matching mechanics only. Progression remains
   `NOT_EVALUATED`, formal and clinical claims remain false, and R26 C1 is the
   first authorized progression mechanism gate.
+
+## 2026-07-26 — R26 C1 terminal finding
+
+- C1 is a scientific `STOP_C1`, not a technical failure.
+- Oracle-correct binding improved patient-balanced progression macro F1 over
+  deranged binding by only `+1.1724 pp`, with 95% interval
+  `[-2.7765, +5.1436] pp`.
+- All three seed directions were positive, but the effect was below the
+  registered 5 pp threshold and its interval crossed zero.
+- B4 isomorphism, patient-disjoint folds, bootstrap validity, and finite fits
+  all passed. The negative decision is therefore attributable to insufficient
+  mechanism effect rather than a broken experiment.
+- The strong R25.1 matching result did not translate into a defensible
+  Stable/Improved/Worse benefit. Correct identity pairing may carry a weak
+  directional signal, but the current frozen representation does not support
+  CAPES identity binding as a main progression mechanism claim.
+- Registered consequence: stop before C2 and all larger learned-matcher,
+  RAD-DINO, frozen-VLM, DIVE, or Slurm experiments.

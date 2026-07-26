@@ -1139,3 +1139,28 @@
 - R26 now fail-closes on exact certificate, A/B summary, cohort, and
   feature-cache pins. Focused verification passed: 5 tests, ruff, compileall.
 - GPU1 is idle and the fresh C1 output root does not exist; launch is next.
+
+## 2026-07-26 — R26 C1 terminal execution
+
+- R26 C1 launched from frozen commit `8c2ea0b` on idle GPU1 with a fresh
+  `run_v1` output root. GPU0's unrelated job was not interrupted.
+- The runner exited normally with scientific status `STOP_C1`; this was not a
+  runtime failure.
+- Qualified cohort: 170 patients / 170 pairs / 774 entities; Improved 159,
+  Stable 355, Worse 260.
+- Primary B4b-oracle minus B4a-deranged result: `+1.1724 pp`; 95% patient /
+  seed / crossed-derangement bootstrap interval `[-2.7765, +5.1436] pp`.
+- Seed directions were all positive: +1.6368, +1.1382, +0.7395 pp.
+- Two registered gates failed: effect at least 5 pp and CI lower bound
+  positive. All cohort, fold, B4 isomorphism, bootstrap, finite-fit, and seed
+  direction gates passed.
+- Summary SHA-256:
+  `2fbb63a5fb97d4be30a6c13daa8c91015cfa2450bd8026c4546540ee1df8e5c0`.
+- All six declared artifact hashes and the protocol hash were independently
+  rechecked and matched.
+- A first read-only independent recomputation attempt omitted `src` from
+  `sys.path` and failed with `ModuleNotFoundError: visualvit`; the corrected
+  command inserted `src` explicitly and reproduced the registered system
+  metrics and per-seed directions.
+- Wrote `reports/R26_C1_ORACLE_BINDING_RESULT.md`. Per the frozen stop rule,
+  C2, learned matcher, RAD-DINO, frozen VLM, DIVE, and scale-up remain locked.
