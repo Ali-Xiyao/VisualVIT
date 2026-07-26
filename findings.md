@@ -1,225 +1,215 @@
-# Findings: R28 Case Study and TIER MVP
+# Findings: R29 Case-Driven Contextual Transition Repair
 
-## Inherited evidence
+## Inherited failures
 
-- R26: oracle binding minus deranged binding was only `+1.17 pp`, with CI
-  crossing zero; the universal-binding proposal failed.
-- R27: only 20.50% of registered derangements changed progression semantics.
-- R27 B4b minus B4a was not monotonic in BII; High-BII was `-6.24 pp`, with
-  all three seed directions negative.
-- High-BII nevertheless showed oracle minus current-only `+23.42 pp`. This
-  suggests temporal information may matter for some cases, while precise
-  identity binding is not the demonstrated reason.
+- R26 universal binding effect: `+1.17 pp`, CI crosses zero.
+- R27 high-BII binding effect: `-6.24 pp`, all seeds negative.
+- R28 A1/A2 router effects: `-1.80 pp` and `-0.61 pp`.
+- R28b B1/B2 effects: `-1.43 pp` and `-0.87 pp`.
+- R28 case oracle headroom remains large at `+25.61 pp`, but it reads labels.
 
-## Working hypothesis
+## Case-derived repair hypothesis
 
-The viable proposal is no longer “binding is conditionally necessary as
-measured by BII.” It is:
+The next attempt should not optimize another router over the same expert
+logits. The failure panels indicate the expert representations themselves are
+underspecified:
 
-> Longitudinal cases differ in whether current state, global transition, or
-> entity-local transition evidence is useful; a label-free router may allocate
-> capacity among these experts more effectively than a single uniform fusion.
+- tiny edge ROIs lose surrounding change context;
+- global disease change can dominate a local registered box;
+- acquisition/device/position changes contaminate naive global deltas;
+- first-correct route targets reward the cheap state shortcut.
 
-This remains a hypothesis until the case oracle establishes headroom and a
-label-free nested-OOF router survives its frozen gate.
+R29 will test an expanded-ROI plus global-context transition representation
+with explicit signed direction features and train-only survival controls.
 
-## Failure categories to investigate
+## Hard boundary
 
-- **Endpoint shortcut:** current-only may solve many progression labels.
-- **Intervention weakness:** identity derangement often preserves label
-  semantics.
-- **Representation weakness:** frozen ROI features may not encode change
-  direction.
-- **Estimator adaptation:** separately trained B4a heads may learn to ignore
-  corrupted prior evidence.
-- **Support failure:** binding-critical cases are sparse.
-- **Model-selection leakage risk:** repeated use of the same 170 patients can
-  create optimistic development evidence.
-- **Provenance gaps:** R26 did not serialize assignment indices.
+No scientific result can be called new if it reuses the repeatedly inspected
+170 R26-R28b patients as the outer evaluation cohort. A fresh zero-overlap
+patient set is the first survival gate.
 
-## Open questions
+## Preliminary asset audit
 
-- Where is the exact frozen feature cache consumed by R26?
-- Can global prior/current pair summaries be constructed without image
-  re-encoding?
-- Does an analysis-only best-expert selector show enough headroom for routing?
-- Which label-free descriptors correlate with expert advantage without using
-  BII or outcome labels at inference?
+- The repository contains SHA-pinned CheXTemporal gold annotations and its
+  dataset card describes a much larger silver training corpus with report
+  impressions and anatomy masks.
+- The local CheXTemporal directory did not surface silver/report files in the
+  first filesystem filter; exact inventory is still required.
+- Local MIMIC metadata and split files exist under
+  `H:\Xiyao_Wang\000_Public Dataset\mimic_cxr_other`.
+- The first guessed Chest ImaGenome root did not exist; use the runner's exact
+  pinned `CI_ROOT_DEFAULT` before concluding the asset is absent.
+- Historical R24/R25 cohort and summary artifacts are present, enabling an
+  explicit patient/DICOM overlap audit rather than relying on naming.
 
-## Frozen case registry
+## Resolved local data surfaces
 
-Before inspecting individual images or case outcomes, the selection rules were
-frozen in
-`docs/superpowers/specs/2026-07-26-r28-case-study-registry-v1.md`.
-Five descriptive archetypes are selected deterministically from frozen
-correctness summaries: state-sufficient, temporal-helped, binding-helped,
-binding-harmed, and all-experts-fail.
+- The exact Chest ImaGenome root is present under
+  `F:\VisualVIT_runtime\050_routeC\data\chest_imagenome\...`.
+- It contains the full silver scene-graph package, split CSVs, processed report
+  sentences, gold comparison/attribute files, and license/hash manifests.
+- Raw MIMIC-CXR images and de-identified reports are both present locally under
+  `H:\Xiyao_Wang\000_Public Dataset\mimic-cxr\mimic-cxr`.
+- The official CheXTemporal dataset page states that silver annotations are
+  CC-BY-NC 4.0, parent MIMIC images remain governed by PhysioNet terms, and
+  individual clinical use/commercial use is out of scope.
+- The official silver schema provides 282,214 finding-level pair rows with
+  progression, anatomy, evidence, and optional anatomy masks. This is a viable
+  training/development source if we restrict to locally authorized MIMIC rows
+  and exclude every previously used patient.
+- The local repository currently has only CheXTemporal gold parquet files, so
+  silver annotations would need an official pinned download; MIMIC images and
+  reports do not need to be downloaded again.
 
-The registry deliberately retains inconvenient or visually unclear selected
-cases and discloses overlaps. It is exploratory and cannot become the TIER
-evaluation set.
+## Official silver registry
 
-## Provenance and representation inspection
+- Hugging Face repository metadata confirms the annotation license tag
+  `cc-by-nc-4.0`, a May 2026 update, and that images are not redistributed.
+- Dataset Viewer reports one train split for each config:
+  - `silver_findings`: 282,214 rows;
+  - `silver_sentences`: 695,929 rows;
+  - `silver_studies`: 128,071 rows.
+- R29 needs only `silver_findings` and possibly `silver_studies`; sentence rows
+  and the full mask archive are not authorized until the minimal cohort audit
+  proves they are necessary.
+- The current Hub revision is the same SHA already pinned by the repository:
+  `81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79`.
+- Exact LFS pins:
+  - `silver_findings.parquet`: 29,502,280 bytes, SHA-256
+    `31237f859d940d6b03748c845ec7c1c791b1837ba6e46e88e69bca7f45e3c807`;
+  - `silver_studies.parquet`: 28,072,434 bytes, SHA-256
+    `b53e5a491850e5d839158847efcdae6ca840bef0070ed9598fd2021e0fc148a2`.
+- Storage is not a blocker: E, F, and H each have more than 200 GB free.
 
-- The exact R26 feature cache is available, contains 1,586 deterministic
-  float32 vectors, and each crop embedding has dimension 768.
-- Source images referenced by the frozen cohort remain readable as
-  de-identified 224×224 grayscale JPEGs, so deterministic prior/current ROI
-  panels can be produced without new downloads or re-encoding.
-- A newly surfaced intervention flaw is material: the R25.1 summary states
-  `anatomy_constraint.active_on_cohort=false`, with all emitted anatomy IDs
-  identical and zero candidates removed. Therefore R26's
-  `anatomy_compatible_derangement` name overstates the realized constraint:
-  derangements were zero-fixed-point across the whole pair, not restricted by
-  a meaningful anatomy-group mask.
-- This does not reverse `STOP_C1`; it strengthens the need for case-level
-  transition analysis and a new protocol. It also means “binding harmed” cases
-  may partly reflect implausible cross-anatomy corruption rather than precise
-  within-group identity perturbations.
+## Fresh MIMIC silver support
 
-## Frozen case-study result
+- Silver MIMIC contains 79,476 finding rows from 8,497 patients.
+- 79,464 rows / all 8,497 patients resolve both prior and current DICOM IDs in
+  MIMIC metadata and both scene graphs in the local Chest ImaGenome archive.
+- A deterministic 100-row probe verified all 200 referenced image files.
+- Class support among complete rows is large:
+  - Stable 33,115;
+  - Worse 21,513;
+  - Improved 13,518;
+  - New 9,965;
+  - Resolved 1,353.
+- The known R24 MIMIC qualification cohort has zero patient overlap with the
+  silver rows. The first R26 lookup used the wrong root leaf; the correct
+  immutable cohort is under `r26_c1_oracle_binding\run_v1\cohort.json` and
+  still needs an exact overlap check.
+- Scene graphs provide 36 fixed anatomical boxes per image, including small
+  costophrenic/hilar ROIs and broader lung/mediastinal/card cardiac regions.
+  Silver anatomy phrases concentrate strongly in these regions, so expanded
+  ROI context can be constructed without downloading the separate mask ZIP.
 
-- Registry support is broad enough for descriptive analysis:
-  - state-sufficient: 319 eligible
-  - temporal-helped: 135
-  - binding-helped: 125
-  - binding-harmed: 130
-  - all-experts-fail: 135
-- The deterministic registry selected 24 unique cases; one case legitimately
-  overlaps state-sufficient and binding-harmed.
-- The analysis-only label oracle selects:
-  - current-only for 556 entities
-  - oracle binding for 136 entities
-  - deranged expert for 82 entities
-- Label-oracle routing headroom over the best fixed consensus expert is
-  `+25.61 pp`, with patient-bootstrap 95% CI `[+22.87, +28.37] pp`.
-- This is not a model result because the selector reads the target label, but
-  it decisively passes the “is routing headroom present?” prerequisite.
+## Exact exclusion and compute boundary
 
-## Non-clinical panel observations
+- R25/R26 patients do overlap CheXTemporal silver, so a blanket “silver is
+  fresh” assumption would have been wrong:
+  - R26 overlap: 72 patients / 94 DICOMs;
+  - R25 overlap: 78 patients / 99 DICOMs.
+- After excluding the union of R24-MIMIC, R25, and R26 patients:
+  - 8,419 fresh patients remain;
+  - 78,877 finding rows remain;
+  - 34,419 prior/current study pairs remain;
+  - 45,989 unique images remain.
+- Every class has ample patient support after exclusion; the smallest,
+  Resolved, still has 1,125 patients.
+- GPU 0 is currently effectively free (366 MiB display/system use), while GPU
+  1 has an unrelated 11.4 GiB Python workload. R29 may use only GPU 0 and must
+  not stop or compete with GPU 1.
 
-Visual inspection was restricted to the immutable registered cases. No case
-was replaced after viewing.
+## Human-gold availability boundary
 
-- A state-sufficient Stable right-lung example shows broadly similar target
-  appearance across acquisitions despite exposure/position differences,
-  consistent with current-state sufficiency.
-- A temporal-helped mediastinum example contains substantial whole-image
-  acquisition and support-device differences. This argues for a global
-  transition expert and warns that local binding alone may encode nuisance.
-- A binding-helped Improved right-lung example shows subtle diffuse
-  prior/current changes under different positioning; the local ROI is useful
-  but not obviously sufficient by itself.
-- A binding-harmed Worse hilar example shows large global deterioration while
-  the registered hilar ROI is small. A deranged/global shortcut can outperform
-  the oracle-local representation when the endpoint is globally visible.
-- An all-experts-fail costophrenic-angle example uses a very small edge ROI.
-  The crop captures little context, supporting a representation/ROI-context
-  failure rather than a matching failure.
+- CheXTemporal gold has only 197 patients total: 77 CheXpert, 43 MIMIC, and 77
+  ReXGradient.
+- Prior formal work already consumed 70/77 CheXpert and 34/43 MIMIC patients.
+  Only 7 CheXpert and 9 MIMIC patients remain untouched, which is far below a
+  defensible confirmation sample.
+- All 77 ReXGradient gold patients are untouched, but their parent images are
+  not present locally and Resolved has only three rows.
+- Therefore R29 can be a genuinely fresh, patient-disjoint silver-development
+  experiment, but cannot honestly be labeled human-gold confirmatory evidence.
+  A later external confirmation still requires new expert labels or a new
+  licensed image source.
 
-These observations motivate three concrete changes: preserve a state expert,
-add global pair context, and let the binding expert operate as one optional
-source rather than the universal representation.
+## Frozen R29 cohort
 
-## Implementation feasibility
+- Cohort freeze status: `PASS_R29_FRESH_COHORT_FREEZE`.
+- Cohort SHA-256:
+  `0a52d2c84c99c9c3cdc91063b801eb3c0d1304dfa454c16e55c86edbd2197d6e`.
+- Active support:
+  - train: 700 patients / 3,977 rows;
+  - dev: 200 patients / 1,074 rows;
+  - sealed test: 300 patients / 1,657 rows.
+- Reserve remains sealed at 6,883 patients / 57,879 three-label rows.
+- All partitions are patient-disjoint, prior-patient overlap is zero, and all
+  6,708 active records have both local images.
 
-- The existing R26 classifier is a non-affine LayerNorm plus Linear head,
-  trained independently per outer fold/system/seed. It can be reused as the
-  capacity reference.
-- A proper TIER stack must avoid training the router on in-sample expert
-  outputs. The admissible design is nested patient OOF:
-  inner-fold expert logits train the router on the outer-training patients;
-  experts are then refit on the full outer-training set and evaluated once on
-  the outer-held-out patients.
-- Both RTX 3090 GPUs currently have unrelated Python workloads and about
-  11–12 GiB allocated. Per shared-GPU policy, R28 will run the small frozen-head
-  MVP on CPU and will not stop or compete with those jobs.
-- The CPU route is practical because all 1,586 image crops are already encoded
-  and the new models operate only on small tensors.
+## Pre-outcome case audit and repair hypothesis
 
-## A1/A2 TIER result
+- A label-free full-cohort scene-graph pass resolved all 6,708 active records.
+- Exact target boxes are often small: median area is 18.24% of image area and
+  the tenth percentile is 6.20%. This supports the R28 case-study diagnosis
+  that exact local crops can remove clinically relevant surrounding context.
+- Acquisition-view changes are uncommon (0.27%), so view transition is a
+  useful nuisance feature but cannot plausibly explain most failures.
+- 114 records (1.70%) have different available anatomy granularity across
+  timepoints. Protocol v1.1 therefore freezes per-image anatomy resolution and
+  a same-side parent/landmark fallback before any encoder or model outcome.
+- Frozen repair hypothesis: a single context-transition representation that
+  combines global, exact ROI, 1.5x ROI context, signed/absolute/product
+  temporal interactions, and geometry will outperform post-hoc uniform fusion
+  because it can condition direction on both local evidence and surrounding
+  change instead of choosing among independently trained summaries.
+- Protocol v1.1 SHA-256:
+  `e2e1f00f2ba66dcf11fd8583e0818b87496a213f8db3877f41c0967403450be8`.
+- Rebuilt cohort v1.1 preserves the exact cohort SHA-256
+  `0a52d2c84c99c9c3cdc91063b801eb3c0d1304dfa454c16e55c86edbd2197d6e`;
+  only the protocol/manifest pins changed.
 
-- Engineering gates passed for both attempts: complete nested OOF predictions,
-  finite fits, patient-disjoint inner/outer folds, and valid bootstrap.
-- Expert performance:
-  - state: 0.4037 patient-balanced macro F1
-  - global: 0.4388
-  - binding: 0.4187
-  - uniform fusion: 0.4368
-- A1 linear TIER: 0.4188; delta versus uniform `-1.80 pp`, 95% CI
-  `[-6.07, +2.49]`; scientific NO-GO.
-- A2 nonlinear TIER: 0.4307; delta versus uniform `-0.61 pp`, 95% CI
-  `[-4.36, +3.35]`; scientific NO-GO.
-- A2 is within 1 pp of the strongest single expert, but fails the registered
-  positive-effect, CI, and all-seed gates.
-- Mean router weights diagnose a selection problem:
-  - A1: state 0.423 / global 0.289 / binding 0.287
-  - A2: state 0.370 / global 0.325 / binding 0.305
-- The strongest expert is global, yet both routers overweight the weakest
-  state expert. This is consistent with uncalibrated expert-logit scales and an
-  indirect mixture-loss signal, not an absence of expert diversity.
+## R29 formal stop and R30 selection
 
-## Next admissible mutation
+- R29 formal status is `STOP_R29_DEV_SURVIVAL`; the test remained sealed.
+- Context minus uniform was -1.80 pp. Only seed 17 was positive; seeds 29 and
+  43 were negative.
+- Base global/local heads reached near-perfect train accuracy but weak dev
+  macro F1, establishing overfit as the dominant actionable failure.
+- Retrospective R29 train/dev capacity audit selected a standardized,
+  patient/class-weighted logistic head with `C=0.001`.
+- With independent per-scale 128-dimensional projections, the selected repair
+  scored 0.5331, 0.5210, and 0.5283 across seeds, while train accuracy stayed
+  near 0.53. No R29 test row was used.
+- R30 will use only R29 sealed-reserve patients under a new protocol and
+  patient split.
 
-The frozen A1/A2 protocol does not authorize another silent router change.
-After fresh-process reproduction, a separate attempt may test:
+## R30 formal stop and R31 selection
 
-1. temperature calibration learned only from inner-OOF outer-training logits;
-2. direct OOF best-expert pseudo-label supervision with fixed cost tie-break
-   state → global → binding;
-3. hard or guarded routing at outer-test inference;
-4. the same folds, seeds, representations, metrics, and GO thresholds.
+- R30 passed development survival at +2.30 pp with all three seed directions
+  positive, then failed the one-shot test at +0.77 pp with CI
+  [-1.61, +3.18] pp.
+- The R30 test is now development evidence for R31; its formal NO-GO remains
+  immutable.
+- Regularized and uniform majorities agree on only 61.46% of observations;
+  their selection oracle is 0.6781 macro F1.
+- Among five disclosed label-free discrete rules, using regularized prediction
+  only under three-seed unanimity and otherwise falling back to uniform
+  majority reached 0.5276.
+- Retrospective R30 case-study contrast versus pooled uniform is +3.15 pp with
+  CI [+0.91, +5.34] pp.
+- R31 will validate this exact consensus rule on R30 sealed-reserve patients.
 
-This changes the supervision/mixture mechanism rather than tuning the failed
-A2 architecture.
+## R31 reproduced scientific GO
 
-## Fresh-process reproduction
-
-- The R28 v1 verifier passed all 43 checks across the formal and reproduction
-  roots.
-- The two independent processes produced the same registered metric table and
-  the same deterministic prediction digest:
-  `982591076381cacb5597015a3dfdea399d22c3ef74186e6d25691630fc825135`.
-- Reproduction status is `PASS_R28_TIER_FRESH_PROCESS_REPRODUCTION`.
-- The engineering objective is therefore complete for R28 v1; the scientific
-  verdict remains NO-GO for both A1 and A2.
-- The reproduction certificate is stored outside Git at
-  `F:\VisualVIT_runtime\050_routeC\r28_case_study_tier\tier_mvp_v1_reproduction_certificate.json`.
-
-## R28b authority boundary
-
-R28b will be a new, separately hashed development protocol. It may use labels
-only on outer-training patients to construct inner-OOF expert-choice targets
-and calibration parameters. Outer-test inference remains image/geometry only.
-It inherits the exact folds, seeds, representations, metrics, and scientific
-thresholds from R28 v1. This preserves the failed A1/A2 record and prevents
-post-result threshold, seed, or evaluation-set tuning.
-
-## R28b calibrated-choice result
-
-- B1 hard choice routing reached 0.4225 macro F1 versus 0.4368 for uniform
-  fusion: `-1.43 pp`, 95% CI `[-5.98,+2.82]`; scientific NO-GO.
-- B2 registered guarded routing reached 0.4281: `-0.87 pp`, 95% CI
-  `[-5.13,+3.20]`; scientific NO-GO.
-- Both attempts passed complete-prediction, finite-fit, bootstrap, and nested
-  patient-disjoint engineering checks.
-- Calibration was active: 45 fitted temperatures ranged from 4.23 to 6.88.
-- Mean choice-router training accuracy was 93.50%, so failure is not an
-  optimizer crash.
-- The cost-ordered first-correct target created a new shortcut: 51.55% of
-  training choice targets were state, 28.59% global, and 19.86% binding.
-- The hard router selected state on 1,114/2,322 seed-entity predictions.
-  Guarded routing still accepted 86.22% of routes, so global fallback did not
-  prevent negative transfer.
-- This target-design diagnosis is post-result. It cannot authorize retuning the
-  same held-out cohort.
-
-## Terminal interpretation
-
-- R28 and R28b are both fresh-process reproducible.
-- R28b source-closed verifier passed 42/42 checks with deterministic predictions SHA-256
-  `44bbe466d5199f328a9ffdb9ca9e85b9be3ac9835e9a5678834ae1d2505c565a`.
-- Engineering status: `REPRODUCED`.
-- Scientific status: `NO_GO_CURRENT_PROPOSAL`.
-- Further work requires a fresh cohort, or a separately audited legal report
-  source/new representation followed by one-shot evaluation on fresh patients.
+- R31 dev survival passed at +4.53 pp versus pooled uniform; all three
+  per-uniform-seed directions were positive.
+- The one-shot 500-patient test scored 0.5033 for confidence consensus versus
+  0.4728 for uniform, a +3.05 pp gain.
+- Patient-bootstrap 95% CI is [+0.42, +5.60] pp with 10,000/10,000 valid
+  replicates.
+- Test per-seed directions are +4.26, +2.90, and +2.00 pp.
+- A fresh process reproduced the exact dev predictions, dev gate, test
+  predictions, test result, representation manifests, and report hashes.
+- Final status: `PASS_R31_SCIENTIFIC_GO_REPRODUCED`.
+- Claim boundary: this is a fresh-silver development GO for label-free
+  confidence consensus. R26 human-gold `STOP_C1` remains unchanged.

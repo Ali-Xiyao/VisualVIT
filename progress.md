@@ -1,92 +1,82 @@
-# Progress: R28 Case Study and TIER MVP
+# Progress: R29 Case-Driven Contextual Transition Repair
 
 ## 2026-07-26 — Authority reset
 
-- User authorized a new case-study-driven proposal attempt and iterative
-  execution.
-- Preserved the distinction between engineering completion and scientific GO.
-- Created branch `r28-case-study-tier-mvp`.
-- Archived the complete R27 active planning bundle under
-  `history/2026-07-26-r27-closure/`.
-- Rebuilt the active planning surface around a gated mutation ladder:
-  A0 oracle headroom, A1 linear TIER, A2 nonlinear TIER, and conditional A3
-  transition repair.
-- R26/R27 artifacts remain immutable.
-
-## 2026-07-26 — Case registry freeze
-
-- Located the exact R25.1 process-A feature cache consumed by R26:
-  `F:\VisualVIT_runtime\050_routeC\r25_1_matching_qualification\process_a\crop_features.pt`.
-- Confirmed its registered SHA-256 is
-  `2a1df98fb3a3d0ef430698da7846b314a7cbcbe73c9e50f6241bfa57dc623326`.
-- Froze deterministic case archetype and tie-break rules before viewing
-  individual case images or per-case outcomes.
-- Verified the cache schema: 1,586 vectors × 768 float32 dimensions.
-- Verified a frozen cohort source image opens successfully at 224×224.
-- Recorded the previously implicit R25/R26 limitation that anatomy constraints
-  were configured but inactive because all emitted anatomy IDs were zero.
-- Implemented the frozen case-registry runner and nine focused tests.
-- First focused test run passed 9/9; Ruff found one unused import, removed
-  before generating the registry.
-- Generated the frozen registry, 24 restricted local case panels, case-level
-  prediction table, case panel manifest, and repository failure-analysis
-  report.
-- Case oracle headroom passed strongly: +25.61 pp, patient-bootstrap 95% CI
-  [+22.87, +28.37] pp over the best fixed consensus expert.
-- Inspected one immutable representative panel per archetype and recorded
-  non-clinical observations without changing the registry.
-- Inspected the R26 head/training implementation and selected it as the
-  capacity reference.
-- Verified both GPUs are occupied by unrelated jobs; chose CPU-only TIER MVP
-  execution to preserve ownership boundaries.
-- Froze the R28 TIER MVP protocol before any model execution. It defines exact
-  state/global/binding representations, label-free descriptors, nested
-  patient-OOF stacking, A1/A2 mutation rules, scientific gates, and engineering
-  completion criteria.
-- Implemented capacity-matched 128-dimensional signed projections, three
-  linear experts, linear/nonlinear routers, nested patient-OOF stacking,
-  patient/seed bootstrap inference, sanity gates, and fail-closed manifests.
-- TIER-focused verification passed: 8/8 pytest tests, Ruff clean, and
-  compileall clean.
-- Completed A1 and protocol-authorized A2 on CPU.
-- Both attempts passed engineering gates but failed scientific GO:
-  A1 -1.80 pp and A2 -0.61 pp versus uniform fusion.
-- Diagnosed that both routers overweight the weakest state expert while the
-  global expert is strongest; recorded this before defining any next attempt.
-- Re-ran the complete R28 v1 pipeline in a fresh process and separate runtime
-  root.
-- The reproduction verifier passed 43/43 checks. Both processes have identical
-  results and deterministic prediction SHA-256
-  `982591076381cacb5597015a3dfdea399d22c3ef74186e6d25691630fc825135`.
-- Closed R28 v1 as engineering-reproduced and scientific NO-GO.
-- Declared any calibration/choice-supervision repair to be a separate R28b
-  protocol rather than a silent mutation of A1/A2.
-- Froze the initial R28b protocol and passed 13 focused R28/R28b tests.
-- The expert-cache startup log exposed a protocol transcription error before
-  any R28b router or outer-test result: the document listed date-like values
-  instead of inherited training seeds 17/29/43.
-- Stopped the invalid pre-run, corrected the protocol, and required a new hash
-  pin before formal execution.
-- Refroze R28b with protocol SHA-256
-  `9f5fe2779662f1b976dbf2df5f3dab88d48d5e596e8290b4e784e9f233207034`.
-- Completed B1 and protocol-authorized B2. Both passed engineering gates and
-  failed scientific GO: B1 -1.43 pp and B2 -0.87 pp versus uniform fusion.
-- Completed a second independent R28b process. The verifier passed 40/40 checks
-  with deterministic prediction SHA-256
-  `44bbe466d5199f328a9ffdb9ca9e85b9be3ac9835e9a5678834ae1d2505c565a`.
-- Wrote the final case-study/proposal closure and updated the active CAPES
-  proposal with an execution addendum that supersedes its historical claims.
-- Full regression initially reached 526 pass / 1 expected xfail / 1 fail. The
-  failure correctly detected that adding R28b helpers to the R28 `tier.py`
-  invalidated R28's historical source hash.
-- Moved all R28b-only helpers into `src/visualvit/tier_choice.py`, restoring the
-  exact R28 `tier.py` SHA-256
-  `e7c4427eaf9ede73bc8676c2859ffbd43e0036b663377fab120653789743467e`.
-- Re-executed both R28b processes from the source-closed layout. R28 remained
-  43/43 reproduced; R28b passed an expanded 42/42 verifier with the same
-  deterministic prediction digest and unchanged scientific NO-GO.
-- Final full regression passed: 527 tests passed and one registered historical
-  xfail remained.
-- All changed Python files pass Ruff and the full `src/scripts/tests` tree
-  passes compileall. Repository-wide Ruff still reports 25 pre-existing errors
-  in untouched historical proxy/smoke scripts; they were not mixed into R28.
+- User explicitly requested continued case-study-driven attempts after R28b
+  scientific NO-GO.
+- Created branch `codex/r29-case-driven-transition-repair`.
+- Archived the complete R28 active planning bundle under
+  `history/2026-07-26-r28-closure/`.
+- Defined R29 as a representation repair on a fresh zero-overlap cohort, not a
+  threshold/seed/router retune on the exhausted R28 development patients.
+- Next action is a read-only asset, report-source, overlap, and legality audit.
+- Began the read-only inventory. Confirmed local MIMIC metadata/split and
+  historical R24/R25 cohort artifacts; CheXTemporal silver/report availability
+  and the exact Chest ImaGenome root remain to be resolved.
+- Resolved the exact Chest ImaGenome and MIMIC roots. Full local reports,
+  images, silver scene graphs, and split tables exist.
+- Verified from the official CheXTemporal source that silver annotations are
+  available for noncommercial research under CC-BY-NC 4.0 while parent MIMIC
+  terms continue to apply.
+- Queried the official Dataset Viewer API and confirmed exact silver config
+  row counts and parquet availability. No download has been performed yet.
+- Resolved the exact pinned Hub revision, LFS SHA-256 values, and file sizes
+  for the two minimal silver parquet inputs. Storage feasibility passed.
+- First download command failed at PowerShell parse time before any network or
+  file action; corrected the output collection structure for the next attempt.
+- Downloaded both minimal silver parquet files and verified both exact hashes.
+- The first full-support audit was stopped because 150k+ individual H-drive
+  path probes were I/O-bound. The next audit will use an indexed image
+  inventory rather than repeating per-row filesystem calls.
+- Replaced per-row filesystem probing with MIMIC-metadata and scene-archive
+  indexes plus a deterministic 100-row real-file probe.
+- Established 79,464 complete fresh-source silver rows across all five
+  progression labels; R24 MIMIC overlap is zero.
+- Located the correct R26 cohort leaf for the remaining exact overlap audit.
+- Completed exact overlap: R25/R26 do overlap silver, so their full patient
+  union is now a mandatory exclusion.
+- After exclusion, 8,419 patients and 78,877 rows remain with strong five-class
+  support.
+- Inspected shared GPU state: GPU 0 is available; GPU 1 is owned by an
+  unrelated Python workload and remains untouched.
+- Audited remaining CheXTemporal human-gold patients. Only 16 locally usable
+  CheXpert/MIMIC patients are untouched, so human-gold confirmation is not
+  supportable in R29; the evidence class must remain fresh silver development.
+- Froze and executed the R29 cohort builder. The active 1,200-patient cohort is
+  zero-overlap and complete; 6,883 patients remain sealed for later protocols.
+- A full-cohort scene-graph dry-run exposed time-asymmetric anatomy coverage;
+  repaired the label-free mapper to resolve each image independently and audit
+  cross-time parent-region fallbacks.
+- Froze the pre-outcome clarification as protocol v1.1, rebuilt the cohort
+  manifest, and proved the cohort JSON hash remained identical.
+- Focused implementation suite passes 7/7; changed Python sources pass Ruff
+  and compilation. The next action is the formal development survival run.
+- R29 formal dev survival failed at -1.80 pp versus uniform; the test remained
+  sealed and empty as registered.
+- Completed a disclosed R29 train/dev failure audit. Strong regularization and
+  separate scale projections removed memorization and beat uniform for all
+  three projection seeds.
+- Froze the audit narrative in `reports/R29_FAILURE_CASE_STUDY.md`; next is a
+  new R30 cohort drawn only from R29 sealed-reserve patients.
+- The first R30 builder reached artifact creation but failed at its final
+  console print because of a nonexistent helper. Preserved that runtime,
+  corrected the print, and reserved a fresh `cohort_v1_1` formal root.
+- The first R30 formal run completed feature/model computation but stopped
+  while serializing a NumPy boolean in `dev_gate.json`. Partial predictions
+  were not inspected. Pinned the completed feature cache and prepared a
+  model-identical recovery run to a fresh output root.
+- R30 recovery proved dev survival but closed `STOP_R30_TEST_NO_GO`: +0.77 pp
+  on test with CI crossing zero.
+- Verified identical dev-prediction hashes between the pre-serialization
+  failure and recovery.
+- Completed a disclosed five-rule R30 disagreement study and froze a
+  three-seed confidence-consensus controller for independent R31 validation.
+- Built a zero-overlap R31 cohort from R30 reserve: 1,200 train, 300 dev, 500
+  sealed test, with 2,383 patients still reserved.
+- R31 passed dev and one-shot test: +3.05 pp, CI [+0.42, +5.60], all three
+  seed directions positive.
+- Fresh-process reproduction produced exact scientific artifact hashes.
+- Final verifier status is `PASS_R31_SCIENTIFIC_GO_REPRODUCED`; updated the
+  active CAPES proposal while preserving R26 `STOP_C1`.
+- Final repository verification: 545 passed, 1 expected xfail; changed-source
+  Ruff, compileall, and `git diff --check` all pass.
