@@ -960,3 +960,34 @@ R24 base protocol alongside R23 in `_copy_complete_allowlist_workspace`.
   (R14-era bundle bytes unrecoverable, strict xfail).  All R25 runner,
   verifier, and three-label tests pass.  ruff clean; py_compile clean.
   R24 base integrity verified at R25 load time.
+## 2026-07-26 — R25.1 semantic repair
+
+- `scripts/run_chest_imagenome_mimic_matcher_qualification.py::_strict_cohort`
+  将 Chest ImaGenome `comparison` 映射后保存为
+  `record["progression"]`，但 `_evaluate` 不读取该字段。
+- 当前 `_evaluate` 只构造 MatchPlan，并调用
+  `match_sufficient_statistics`；其 3×3 confusion 的类别是
+  persistent/death/birth，而不是 Stable/Improved/Worse。
+- `metrics_from_sufficient_statistics` 将上述 matching-event confusion
+  命名为 `three_event_macro_f1`；R25 Q4 又把它与三类 progression 文本并列，
+  形成实质性语义错误。
+- 当前 B4 bootstrap 比较 predicted plan 相对 gold 与 deranged assignment
+  的 persistent-edge F1；这是 `delta_match`，不是 progression
+  `delta_bind`。
+- R25.1 的首要实现不是更换 encoder，而是重命名 matching 指标、修改 Q4
+  资格门、显式记录 progression `NOT_EVALUATED`，并增加能捕获该混淆的测试。
+- 正式执行规范已写入 `docs/R25_1_ERRATUM.md`。
+- 新鲜 manifest 构建通过：189 patients / 189 pairs / 793 entities；
+  Stable 371、Improved 160、Worse 262。pair/entity 分离证据见
+  `reports/R25_1_MANIFEST_QUALIFICATION.md`。
+- 产物 SHA-256：pair
+  `d89efc92d50058e25a40ea47259a0975a492e69455e33ba54d8f48e9fe9ed585`；
+  entity
+  `1e0048fe7149df910f2b36d3657c7fc38225a50fc76996d121c7aefc8333fbf3`；
+  audit
+  `5fc4cfe0cbad32976839de5ace4f6085cab351c7ce41f4aa7c729c2b8766bdbb`。
+- `_region_batch` 当前把所有 anatomy id 设为 0；因此配置的 anatomy
+  constraint 在 cohort 上不移除任何候选。R25.1 mechanics 已显式报告
+  `active_on_cohort=false`，visual+geometry 结果不得归因于 anatomy mask。
+- 全量回归为 `483 passed, 1 xfailed`；唯一 xfail 是既有的 R14 冻结
+  bundle 字节不可恢复项，与 R25.1 无关。

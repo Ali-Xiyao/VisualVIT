@@ -1,5 +1,35 @@
 # Task Plan: 两份 VisualVIT Proposal 融合与正式实验落地
 
+## Authoritative Update — 2026-07-26 R25.1 Semantic Repair
+
+用户提供的审计文本已被采纳为新的执行依据，正式规范见
+`docs/R25_1_ERRATUM.md`。历史 `dd9c242` 只保留为 R25 Session 5
+dry-run，禁止将 `three_event_macro_f1` 或 B4 matching contrast 解释为
+Stable/Improved/Worse 结果。当前分支为 `r25.1-semantic-repair`。
+
+当前 survival-gate 顺序：
+
+- [x] S0a：建立 R25.1 分支，历史基线不改写
+- [x] S0b：写入 R25.1 勘误、术语、结论边界与 R26 门控
+- [x] S1a：把 matching event 与 progression label 指标命名空间彻底拆开
+- [x] S1b：修复 R25 Q4，使 matcher qualification 不再伪装为 progression 评估
+- [x] S1c：增加 progression target 真实进入评估的契约与回归测试
+- [x] S1d：focused tests、ruff、全量 pytest 通过
+- [x] S2：构建 pair-level matching manifest 与 entity-level progression manifest
+- [ ] C1：运行真正的 oracle-correct vs deranged progression classifier
+- [ ] C2：仅 C1 通过后训练 learned matcher
+- [ ] VLM/DIVE：仅 C1、C2、VLM transfer 依次通过后解锁
+
+当前硬停规则：禁止 RAD-DINO rescue、learned matcher、frozen VLM、
+DIVE Phase II 和扩大 GPU 实验，直到前置 gate 明确为 green。
+
+S1/S2 验证结果：focused tests `49 passed`；全量
+`483 passed, 1 xfailed`；ruff 与 compileall 通过。新鲜 manifest 为
+189 patients / 189 pairs / 793 entities，Stable 371 / Improved 160 /
+Worse 262。下一阶段是先冻结 R26 structured-classifier 协议与最小
+pipeline；C1 运行前仍需完成 head、split、seed、bootstrap 与正式 test
+封存细节，当前未启动训练。
+
 ## Goal
 将 `CAPES_Final_Complete_Proposal_CN.md` 与 `DIVE_Proposal.md` 融合为一套研究问题清晰、资源可获得、代码可复现、实验可审计、结果可用于正式论文写作的完整执行方案，并在用户批准设计后按门槛顺序完成全部正式实验。
 

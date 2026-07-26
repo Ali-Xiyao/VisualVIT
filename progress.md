@@ -990,3 +990,52 @@
 - Final verification: **479 passed, 1 xfailed** in 156 s; ruff all checks
   passed; py_compile exit 0. R24 base integrity intact (hashes verified at
   R25 load time).
+## 2026-07-26 — R25.1 semantic repair started
+
+- Read and accepted the user-provided project judgment as the new semantic
+  correction authority.
+- Confirmed Git baseline is clean at `dd9c242` and created branch
+  `r25.1-semantic-repair`.
+- Inspected R25 cohort construction, matcher evaluation, gate evaluation,
+  progression utilities, and focused tests.
+- Confirmed `record["progression"]` is stored but not consumed by the R25
+  matcher evaluator; `three_event_macro_f1` is computed from
+  persistent/death/birth matching events.
+- Added `docs/R25_1_ERRATUM.md` with the R25.1 repair scope, R26 classifier
+  contract, survival gates, stop rules, and forbidden claims.
+- Next: add failing regression tests for metric namespaces and progression
+  target consumption, implement the semantic repair, then run focused and
+  full verification.
+- Expected red test observed: focused collection failed because
+  `progression_rows_from_predictions` did not yet exist. Implemented the
+  fail-closed target/prediction binding API, renamed the matching-event metric,
+  and split R25.1 matching/progression evaluation namespaces.
+- First green attempt exposed a test-fixture issue: mutating the only Stable
+  target correctly triggered the existing missing-class-support guard. Added a
+  second Stable observation so the test isolates target consumption rather
+  than class-support validation.
+- Asset/precheck inspection command hit a PowerShell parser error from piping
+  directly after a `foreach` block. No state changed; next attempt collects
+  rows into an array before formatting.
+- A later artifact-check command accidentally repeated the same invalid
+  `foreach ... | Format-List` shape. No state changed. Subsequent commands use
+  `ForEach-Object` or format the collected array outside the loop.
+- Focused tests passed after manifest/anatomy changes (49 passed). Ruff then
+  reported two expected E402 findings in the standalone manifest builder,
+  caused by intentional workspace path bootstrapping before local imports.
+  Added the same file-level E402 exemption used by the existing runners.
+- Built fresh local R25.1 manifests under
+  `artifacts/r25_1_semantic_repair/manifests`: 189 patients, 189 pairs,
+  793 entities; Stable 371 / Improved 160 / Worse 262. Wrote public,
+  identifier-free qualification summary to
+  `reports/R25_1_MANIFEST_QUALIFICATION.md`.
+- Added an explicit anatomy constraint audit. Current emitted anatomy ids are
+  all zero, so the configured mask is inactive and removes zero candidates.
+- Verification complete:
+  - focused pytest: 49 passed;
+  - selected ruff: all checks passed;
+  - full pytest: 483 passed, 1 xfailed in 260.28 s;
+  - compileall: exit 0;
+  - git diff --check: no whitespace errors.
+- The only xfail is the pre-existing unrecoverable R14 frozen-validator bundle.
+  No new test failure remains.

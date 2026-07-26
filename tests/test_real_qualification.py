@@ -90,8 +90,10 @@ def test_match_statistics_cover_persistent_death_and_birth_events() -> None:
         "persistent_edge_recall": 1.0,
         "persistent_edge_f1": 1.0,
         "exact_row_recovery": 1.0,
-        "three_event_macro_f1": 1.0,
+        "matching_event_macro_f1": 1.0,
     }
+    assert "progression_macro_f1" not in perfect_metrics
+    assert "three_event_macro_f1" not in perfect_metrics
 
     wrong_transport = torch.zeros_like(gold.transport)
     wrong_transport[0, 0, 1] = 1

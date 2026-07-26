@@ -851,7 +851,7 @@ def main() -> int:
         "Q3_MATCHPLAN_MECHANICS": mechanics["global_objective_never_below_greedy"],
         "Q4_REAL_SIGNAL": (
             primary["persistent_edge_f1"] >= 0.50
-            and primary["three_event_macro_f1"] >= 0.50
+            and primary["matching_event_macro_f1"] >= 0.50
             and delta["lower"] > 0.0
         ),
         "Q5_B4_STRUCTURE": mechanics["b4_all_passed"],
