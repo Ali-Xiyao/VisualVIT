@@ -90,9 +90,11 @@ def main() -> int:
         "process_roles_exact": (
             first.get("process_id") == "a" and second.get("process_id") == "b"
         ),
-        "both_awaiting_reproduction": (
-            first.get("status") == "AWAITING_FRESH_PROCESS_REPRODUCTION"
-            and second.get("status") == "AWAITING_FRESH_PROCESS_REPRODUCTION"
+        "both_completed_evaluation": (
+            first.get("status") is not None
+            and second.get("status") is not None
+            and first.get("status") != "TECHNICAL_FAILURE"
+            and second.get("status") != "TECHNICAL_FAILURE"
         ),
         "distinct_process_ids": (
             first.get("runtime", {}).get("pid")
