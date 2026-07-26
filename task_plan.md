@@ -1,107 +1,98 @@
-# Task Plan: R29-R31 Case-Driven Proposal Repair
+# Task Plan: TIER-CXR-VLM R32-R36 Execution
 
 ## Authority
 
-- User explicitly requested continued case studies and materially new attempts
-  until the current proposal has the strongest honest chance to pass.
-- R26 `STOP_C1`, R27, R28, and R28b results remain immutable.
-- Active branch: `codex/r29-case-driven-transition-repair`.
-- R29 may not change prior thresholds, seeds, cases, or conclusions.
+- Primary protocol: `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`.
+- Result registry: `TIER_CXR_VLM_Empty_Result_Tables_CN.md`.
+- Inherited scientific boundary: R31 is a reproduced fresh-silver development
+  GO; R26 human-gold `STOP_C1` remains immutable.
+- Branch: `codex/r32-tier-cxr-vlm`, created from `7c4c51e`.
+- Historical R26-R31 artifacts are frozen and may only be read for lineage.
 
 ## Objective
 
-Test whether the failed proposal is repairable by replacing underspecified
-local/global expert summaries with an explicitly contextual, direction-aware
-transition representation on a fresh patient cohort.
+Execute the proposal in gate order, beginning with R32. Continue into R33 only
+after every R32 authority and engineering gate is green. Do not train the
+formal frozen VLM before R33 GO, do not read the 483-patient sealed VLM test
+during R33, and do not read gold outcomes before the registered R35 gate.
 
-“Run through” continues to mean:
+## Lightweight provenance policy
 
-1. engineering reproduction must pass; and
-2. scientific GO must pass the frozen endpoint, CI, seed, support, and leakage
-   gates.
+Per user direction, do not repeatedly recompute large file or cache hashes.
+Record existing authoritative lineage once, compute a protocol/cohort/cache
+identifier only when an artifact is first frozen, and use existence, schema,
+row-count, split-disjointness, and smoke checks during ordinary iteration.
 
-Repeated tuning on the R26-R28b 170-patient cohort is forbidden.
+## Gate order
 
-## R29 Gate Order
-
-1. **G0 Fresh-data authority:** locate unused patients, verify local
-   provenance/DUA boundary, and prove zero patient overlap with R26-R28b.
-2. **G1 Case-derived hypothesis:** freeze failure archetypes and a
-   representation repair before viewing R29 outcomes.
-3. **G2 Label/report audit:** determine whether report-supervised transition
-   targets are legally and technically available. If not, use image-only
-   self-supervision and record the limitation.
-4. **G3 Train-only survival:** on R29 training patients only, prove the new
-   representation encodes change direction and beats shuffled controls.
-5. **G4 Protocol freeze:** register cohort, folds, seeds, systems, primary
-   metric, uncertainty, and mutation ladder before outer-test reveal.
-6. **G5 One-shot evaluation:** run the minimal attempt once.
-7. **G6 Reproduction and verdict:** reproduce engineering results, then record
-   GO/NO-GO without threshold or subset changes.
-
-## Allowed Mutation Ladder
-
-1. `R29-A0`: train-only label oracle and representation survival audit.
-2. `R29-A1`: contextual transition expert using target ROI, expanded ROI
-   context, global pair context, geometry, and explicit signed/absolute deltas.
-3. `R29-A2`: report-supervised transition target only if G2 establishes a
-   legal local report source and patient-disjoint generation protocol.
-
-No VLM/DIVE/RAD-DINO/scale-up until R29-A1 or A2 passes the survival and
-scientific gates.
+1. **R32 Authority and engineering freeze**
+   - Build the 2,383-patient zero-overlap five-class master cohort with
+     1,574 Train, 300 Dev/Calibration, and 483 Sealed VLM Test patients after
+     quarantining 26 registered gold patients from the 2,383-person master.
+   - Quarantine all gold/external patient IDs and establish an access log.
+   - Audit data/license/support/power without reading gold outcomes.
+   - Implement exact-64 robust/rich token bundles and OOF routing contracts.
+   - Build/reuse the BiomedCLIP patch cache.
+   - Pass Qwen3-VL-4B exact-64 injection smoke.
+   - Run unit tests; do not reveal formal test outcomes.
+2. **R33 Token Survival**
+   - Run patient-disjoint 5-fold OOF probe routing on Train+Dev only.
+   - Compare P3/P4/P5/P6/P7, seeds 17/29/43, bootstrap and shortcuts.
+   - GO only if all proposal gates pass; otherwise STOP VLM scale-up.
+3. **R34 Frozen-VLM Transfer**
+   - Unlock only after R33 GO.
+   - Freeze model/prompt/layout/loss/seeds, then reveal the 483 test once.
+4. **R35 Human-Gold / External**
+   - Unlock only with adequate registered support and quarantine intact.
+5. **R36 Grounding, generation, and paper tables**
+   - Unlock only according to the proposal decision tree.
 
 ## Phases
 
-### Phase 0 — Reset and provenance
+### Phase 0 — Reset and audit
 
-- [x] Create R29 branch.
-- [x] Archive R28 planning bundle.
-- [x] Inventory unused patient/data/report assets.
-- [x] Verify overlap, licensing/DUA boundary, and storage feasibility.
+- [x] Create R32 branch from `7c4c51e`.
+- [x] Archive the completed R31 planning bundle.
+- [x] Reconstruct the exact remaining R31 reserve and local model/data assets.
+- [x] Freeze the minimal R32 execution specification.
 - **Status:** complete
 
-### Phase 1 — Case-study expansion
+### Phase 1 — R32 implementation
 
-- [x] Freeze selection rules for R28 failure cases and candidate R29 analogues.
-- [x] Quantify ROI-size/context, acquisition, and anatomy-granularity effects.
-- [x] Write the R29 repair hypothesis before outcome evaluation.
+- [x] Implement master split and gold quarantine.
+- [x] Implement exact-64 token bundle and OOF route contracts.
+- [x] Implement lightweight cache and exact-64 smoke paths.
+- [x] Add focused unit tests.
 - **Status:** complete
 
-### Phase 2 — Protocol and implementation
+### Phase 2 — R32 execution
 
-- [x] Freeze R29 protocol and hashes.
-- [x] Implement cohort builder, contextual representation, audits, and tests.
-- [x] Execute R29 survival and preserve its failed, sealed-test verdict.
-- **Status:** complete (R29 stopped; test sealed)
+- [x] Run cohort/quarantine/support audits.
+- [x] Build or reuse patch cache.
+- [x] Run exact-64 Qwen smoke and R32 test suite.
+- [x] Fill R32 result tables and issue GO/STOP.
+- **Status:** complete — `GO_R32_READY_R33`
 
-### Phase 3 — Formal execution
+### Phase 3 — R33 execution
 
-- [x] Execute allowed R29 mutation ladder in order.
-- [x] Freeze and execute R30 on R29 sealed-reserve patients.
-- [x] Freeze and execute R31 on R30 sealed-reserve patients.
-- [x] Fresh-process reproduce the best admissible attempt.
-- [x] Write proposal/result/manifest updates.
-- **Status:** complete
+- [x] Run only if R32 GO.
+- [x] Fill R33 tables, shortcuts, uncertainty, and decision.
+- **Status:** complete — `STOP_R33_TOKEN_SURVIVAL`
 
-### Phase 4 — Verification and handoff
+### Phase 4 — Conditional R34-R36
 
-- [x] Run final full tests, lint, compile, and source-hash verification.
-- [x] Commit and push the case-driven closure branch.
-- **Status:** complete
-
-## Next Step
-
-No further silver tuning is authorized. The next scientific step is a newly
-authorized human-gold or external confirmation protocol.
+- [x] Follow the first failed gate and stop downstream scaling when required.
+- **Status:** complete — R34-R36 remain locked after R33 STOP
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
-| Initial planning-bundle move used an empty hunk | 1 | Retried with preserved heading context |
-| PowerShell download audit piped directly after `foreach` | 1 | Use an explicit results array, then format it |
-| Per-row H-drive `is_file` audit did not finish promptly | 1 | Stopped the owned read-only process; replace with one indexed image inventory and vectorized joins |
-| Full-cohort dry-run found asymmetric anatomy granularity across timepoints | 1 | Resolve anatomy independently for each image and audit deterministic parent-region fallbacks |
-| R30 cohort builder called a nonexistent console-only JSON helper after writing artifacts | 1 | Preserve failed runtime, use stdlib `json.dumps`, and rerun to a fresh `cohort_v1_1` root |
-| First R30 weight test expected class balance without multiplying patient balance | 1 | Corrected the test's combined inverse-patient and inverse-class ratio; implementation unchanged |
-| R30 run completed model computation but NumPy `bool_` blocked `dev_gate.json` serialization | 1 | Do not inspect partial predictions; cast the check to builtin `bool` and resume from the SHA-pinned feature cache into a fresh output root |
+| Vectorized toy scoring differed from serial by floating-point batch-order roundoff | 1 | Test elementwise numerical equivalence at `atol=rtol=1e-6`; formulas and predictions are unchanged |
+| Literal 1,600/300/483 split left only 2,357 patients after mandatory gold quarantine | 1 | Registered protocol v1.1 before any model run: preserve 300 dev and 483 sealed test; use 1,574 train and keep the 26 gold patients quarantined |
+| First v1.1 audit reported the 26 deliberately quarantined master patients as active gold leakage | 1 | Separate `quarantined_master_patients=26` from `active_gold_patient_overlap=0`; cohort selection itself was correct |
+| Qwen smoke script could not import `visualvit` outside an editable install | 1 | Add the repository `src` directory to `sys.path`, matching the other standalone runners |
+| Real Qwen BF16 expanded-batch scores preserved argmax but differed from serial scores by 0.17 | 1 | Preserve the failed BF16 diagnostic; run the engineering equivalence reference in FP32 while retaining a separate BF16 exact-64/freeze/no-pixel audit |
+| FP32 real-Qwen batch-shape roundoff was 2.96e-5, above the toy-scale 1e-6 assertion | 1 | Protocol v1.2 freezes real-model FP32 equivalence at max abs diff <=1e-4 plus identical argmax; toy deterministic tests remain 1e-6 |
+| R33 feature preflight retained the proposal's pre-quarantine 1,900 train+dev count | 1 | Correct to the registered v1.1 split: 1,574 train + 300 dev = 1,874 patients; no feature output had been created |
+| First R33 GPU launch was rejected by PyTorch deterministic cuBLAS guard | 1 | Set `CUBLAS_WORKSPACE_CONFIG=:4096:8` before importing torch; failure occurred before any fitted probe or result output |

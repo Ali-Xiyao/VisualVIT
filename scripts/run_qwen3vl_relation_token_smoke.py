@@ -1,22 +1,33 @@
 from __future__ import annotations
 
+# ruff: noqa: E402
+
 import argparse
 import hashlib
 import json
 import os
 import platform
+import sys
 import time
 from pathlib import Path
 from typing import Any
 
+WORKSPACE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(WORKSPACE / "src"))
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+
 import torch
 
-from visualvit.projector import RelationProjector
-from visualvit.qwen_adapter import FrozenVLMAdapter, PROGRESSION_LABELS
+from visualvit.hierarchical_temporal_tokens import (
+    TOKEN_LAYOUT,
+    fixed_token_types,
+)
+from visualvit.qwen_adapter import PROGRESSION_LABELS
 from visualvit.schemas import TokenBundle
+from visualvit.tier_cxr_vlm import TierCXRAdapter
+from visualvit.tier_token_projector import TierTokenProjector
 
 
-TOKEN_LAYOUT = (4, 28, 28, 4)
 SENTINEL_TOKEN = "<|fim_pad|>"
 
 
@@ -28,6 +39,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--seed", default=2401, type=int)
     parser.add_argument("--input-dim", default=16, type=int)
+    parser.add_argument(
+        "--dtype", choices=("bfloat16", "float32"), default="bfloat16"
+    )
     return parser.parse_args()
 
 
@@ -69,16 +83,9 @@ def build_token_bundle(
     tokens = torch.randn(1, 64, input_dim, generator=generator).to(
         device=device, dtype=dtype
     )
-    token_types = torch.tensor(
-        [0] * TOKEN_LAYOUT[0]
-        + [1] * TOKEN_LAYOUT[1]
-        + [2] * TOKEN_LAYOUT[2]
-        + [3] * TOKEN_LAYOUT[3],
-        dtype=torch.long,
-        device=device,
-    )
+    token_types = fixed_token_types(device)
     valid_mask = torch.ones(1, 64, dtype=torch.bool, device=device)
-    valid_mask[:, -TOKEN_LAYOUT[3] :] = False
+    valid_mask[:, -TOKEN_LAYOUT[-1] :] = False
     anatomy_ids = torch.full((1, 64), -1, dtype=torch.long, device=device)
     anatomy_ids[:, 4:60] = torch.arange(56, device=device).remainder(28)
     temporal_ids = torch.full((1, 64), -1, dtype=torch.long, device=device)
@@ -125,6 +132,7 @@ def main() -> int:
         "hostname": platform.node(),
         "pid": os.getpid(),
         "torch_version": torch.__version__,
+        "dtype": args.dtype,
     }
     try:
         if not args.model.is_dir():
@@ -170,9 +178,11 @@ def main() -> int:
         if placeholder_token_id in forbidden_ids:
             raise RuntimeError("sentinel collides with pad/eos/bos/unk token")
 
+        model_dtype = getattr(torch, args.dtype)
         model = Qwen3VLForConditionalGeneration.from_pretrained(
             args.model,
-            dtype=torch.bfloat16,
+            dtype=model_dtype,
+            attn_implementation="eager",
             local_files_only=True,
             trust_remote_code=False,
             low_cpu_mem_usage=True,
@@ -184,10 +194,10 @@ def main() -> int:
         if placeholder_token_id in {image_token_id, video_token_id}:
             raise RuntimeError("sentinel collides with a visual token ID")
 
-        projector = RelationProjector(
+        projector = TierTokenProjector(
             input_dim=args.input_dim,
             hidden_size=hidden_size,
-        ).to(device=device, dtype=torch.bfloat16)
+        ).to(device=device, dtype=model_dtype)
         projector.eval()
         token_bundle = build_token_bundle(
             args.seed,
@@ -199,13 +209,17 @@ def main() -> int:
             projected = projector(token_bundle)
 
         prompt = build_prompt(tokenizer, placeholder_token_id).to(device)
-        adapter = FrozenVLMAdapter.from_tokenizer(
+        adapter = TierCXRAdapter.from_tokenizer(
             model,
             tokenizer,
             placeholder_token_id,
         ).to(device)
         with torch.no_grad():
-            scores, audit = adapter.score_labels(
+            serial_scores = adapter.score_labels(
+                prompt,
+                projected,
+            )
+            scores, audit = adapter.score_labels_vectorized(
                 prompt,
                 projected,
                 return_audit=True,
@@ -225,9 +239,18 @@ def main() -> int:
                 source_ids=token_bundle.source_ids,
             )
             intervened_projected = projector(intervened_bundle)
-            intervened_scores = adapter.score_labels(prompt, intervened_projected)
+            intervened_scores = adapter.score_labels_vectorized(
+                prompt, intervened_projected
+            )
 
         score_delta = (scores - intervened_scores).abs().mean()
+        vectorized_serial_max_abs_diff = float(
+            (scores - serial_scores).abs().max()
+        )
+        equivalence_atol = 1e-4 if args.dtype == "float32" else 0.25
+        same_argmax = int(scores.argmax(dim=-1).item()) == int(
+            serial_scores.argmax(dim=-1).item()
+        )
         all_finite = bool(
             torch.isfinite(scores).all() and torch.isfinite(intervened_scores).all()
         )
@@ -244,6 +267,10 @@ def main() -> int:
             "model_frozen": bool(freeze_audit["all_frozen"]),
             "five_finite_scores": all_finite and tuple(scores.shape) == (1, 5),
             "relation_intervention_changes_scores": bool(score_delta > 1e-8),
+            "vectorized_matches_serial": (
+                vectorized_serial_max_abs_diff <= equivalence_atol
+                and same_argmax
+            ),
         }
         result.update(
             {
@@ -265,6 +292,13 @@ def main() -> int:
                     for index, label in enumerate(PROGRESSION_LABELS)
                 },
                 "scores": scores,
+                "serial_scores": serial_scores,
+                "vectorized_serial_max_abs_diff": (
+                    vectorized_serial_max_abs_diff
+                ),
+                "vectorized_serial_atol": equivalence_atol,
+                "vectorized_serial_same_argmax": same_argmax,
+                "attention_implementation": "eager",
                 "intervened_scores": intervened_scores,
                 "mean_absolute_score_delta": float(score_delta),
                 "adapter_audit": audit,
