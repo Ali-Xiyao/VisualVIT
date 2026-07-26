@@ -414,7 +414,7 @@ def metrics_from_sufficient_statistics(
         "persistent_edge_recall": recall,
         "persistent_edge_f1": edge_f1,
         "exact_row_recovery": int(statistics["exact_rows"]) / max(rows, 1),
-        "three_event_macro_f1": sum(event_f1) / EVENT_COUNT,
+        "matching_event_macro_f1": sum(event_f1) / EVENT_COUNT,
     }
 
 
@@ -476,7 +476,7 @@ def patient_cluster_bootstrap(
     generator = random.Random(seed)
     replicate_metrics: dict[str, list[float]] = {
         "persistent_edge_f1": [],
-        "three_event_macro_f1": [],
+        "matching_event_macro_f1": [],
     }
     delta_values: list[float] = []
     for _ in range(replicates):

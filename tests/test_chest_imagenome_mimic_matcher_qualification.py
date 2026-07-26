@@ -253,6 +253,16 @@ def test_real_region_batch_assigns_unique_cross_temporal_source_ids() -> None:
 
     assert source_ids.tolist() == [[0, 1, 2, 3]]
     assert len(source_ids.unique()) == source_ids.numel()
+    assert runner._anatomy_constraint_audit(regions) == {
+        "configured": True,
+        "active_on_batch": False,
+        "valid_candidates": 4,
+        "compatible_candidates": 4,
+        "removed_candidates": 0,
+        "reason": (
+            "All emitted anatomy ids are identical, so the mask removes no candidates."
+        ),
+    }
 
 
 @pytest.mark.parametrize("empty_side", ["prior", "current"])
@@ -446,7 +456,7 @@ def _aggregate() -> dict[str, Any]:
         "visual_geometry_equal": {
             "point": {
                 "persistent_edge_f1": 0.99,
-                "three_event_macro_f1": 0.95,
+                "matching_event_macro_f1": 0.95,
             }
         }
     }
@@ -483,11 +493,11 @@ def test_evaluate_gates_q7_underpowered_when_few_patients() -> None:
         _aggregate(),
     )
 
-    assert gates["Q4_REAL_SIGNAL"] is True
-    assert gates["Q7_B4_POWER_ESTIMATE"] is False
+    assert gates["Q4_MATCHING_SIGNAL"] is True
+    assert gates["Q7_MATCHING_POWER_ESTIMATE"] is False
     assert q7_details["effective_unique_patients"] == 50
-    assert q7_details["delta_lower_pp"] == 60.0
-    assert first_failed == "Q7_B4_POWER_ESTIMATE"
+    assert q7_details["delta_match_lower_pp"] == 60.0
+    assert first_failed == "Q7_MATCHING_POWER_ESTIMATE"
 
 
 def test_evaluate_gates_q7_passes_when_threshold_met() -> None:
@@ -508,7 +518,7 @@ def test_evaluate_gates_q7_passes_when_threshold_met() -> None:
         _aggregate(),
     )
 
-    assert gates["Q7_B4_POWER_ESTIMATE"] is True
+    assert gates["Q7_MATCHING_POWER_ESTIMATE"] is True
     assert first_failed is None
 
 
@@ -530,9 +540,9 @@ def test_evaluate_gates_q7_fails_when_ci_crosses_zero() -> None:
         _aggregate(),
     )
 
-    assert gates["Q4_REAL_SIGNAL"] is False
-    assert gates["Q7_B4_POWER_ESTIMATE"] is False
-    assert first_failed == "Q4_REAL_SIGNAL"
+    assert gates["Q4_MATCHING_SIGNAL"] is False
+    assert gates["Q7_MATCHING_POWER_ESTIMATE"] is False
+    assert first_failed == "Q4_MATCHING_SIGNAL"
 
 
 def test_evaluate_gates_first_stop_on_q1_cohort_drift() -> None:
@@ -554,6 +564,28 @@ def test_evaluate_gates_first_stop_on_q1_cohort_drift() -> None:
 
     assert gates["Q1_COHORT_GEOMETRY"] is False
     assert first_failed == "Q1_COHORT_GEOMETRY"
+
+
+def test_metric_namespaces_do_not_claim_progression_evaluation() -> None:
+    namespaces = runner._evaluation_namespaces(_aggregate())
+
+    assert namespaces["matching_evaluation"]["status"] == "EVALUATED"
+    assert namespaces["matching_evaluation"]["event_labels"] == [
+        "persistent",
+        "death",
+        "birth",
+    ]
+    assert namespaces["progression_evaluation"] == {
+        "status": "NOT_EVALUATED",
+        "labels": ["Stable", "Improved", "Worse"],
+        "reason": (
+            "R25.1 qualifies correspondence only; no progression prediction "
+            "head is executed."
+        ),
+    }
+    serialized = json.dumps(namespaces, sort_keys=True)
+    assert "progression_macro_f1" not in serialized
+    assert "three_event_macro_f1" not in serialized
 
 
 def test_persistent_label_coverage_counts_distinct_patients() -> None:
@@ -595,6 +627,16 @@ def _verifier_summary(
         "feature_ledger_sha256": "features",
         "prediction_sha256": "predictions",
         "aggregate_sha256": "aggregate",
+        "evaluation_namespaces": {
+            "matching_evaluation": {
+                "status": "EVALUATED",
+                "event_labels": ["persistent", "death", "birth"],
+            },
+            "progression_evaluation": {
+                "status": "NOT_EVALUATED",
+                "labels": ["Stable", "Improved", "Worse"],
+            },
+        },
         "gates": {"Q0_ASSET_LINEAGE": True},
         "q7_power_estimate": {"delta_lower_pp": 60.0},
         "aggregate": {"metric": 1.0},

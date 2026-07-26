@@ -212,6 +212,130 @@ def classification_metrics(
     }
 
 
+def progression_rows_from_predictions(
+    records: Sequence[Mapping[str, Any]],
+    predictions: Mapping[str, str],
+    *,
+    labels: Sequence[str],
+    record_id_key: str = "qualification_id",
+) -> list[dict[str, str]]:
+    """Bind model predictions to the registered progression targets.
+
+    This is the semantic boundary between a cohort that merely carries
+    progression annotations and an evaluation that actually consumes them.
+    Prediction ids must match cohort ids exactly; missing, extra, duplicate,
+    or out-of-vocabulary values fail closed.
+    """
+
+    label_set = set(labels)
+    record_ids = [str(record[record_id_key]) for record in records]
+    if len(set(record_ids)) != len(record_ids):
+        raise ValueError("record ids must be unique")
+    prediction_ids = {str(value) for value in predictions}
+    if prediction_ids != set(record_ids):
+        missing = sorted(set(record_ids) - prediction_ids)
+        extra = sorted(prediction_ids - set(record_ids))
+        raise ValueError(
+            "prediction ids must match record ids exactly; "
+            f"missing={missing}, extra={extra}"
+        )
+
+    rows = []
+    for record, observation_id in zip(records, record_ids, strict=True):
+        target = str(record["progression"])
+        prediction = str(predictions[observation_id])
+        if target not in label_set:
+            raise ValueError(f"progression target is outside registered labels: {target!r}")
+        if prediction not in label_set:
+            raise ValueError(
+                f"progression prediction is outside registered labels: {prediction!r}"
+            )
+        rows.append(
+            {
+                "patient_id": str(record["patient_id"]),
+                "observation_id": observation_id,
+                "target": target,
+                "prediction": prediction,
+            }
+        )
+    return rows
+
+
+def build_pair_and_entity_manifests(
+    records: Sequence[Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split repeated entity rows from their independent temporal-pair units."""
+
+    required = {
+        "qualification_id",
+        "patient_id",
+        "prior_dicom_id",
+        "current_dicom_id",
+        "anatomy",
+        "label_name",
+        "progression",
+    }
+    groups: dict[tuple[str, str, str], list[Mapping[str, Any]]] = defaultdict(list)
+    qualification_ids: set[str] = set()
+    for record in records:
+        missing = sorted(required - set(record))
+        if missing:
+            raise ValueError(f"manifest record missing required fields: {missing}")
+        qualification_id = str(record["qualification_id"])
+        if qualification_id in qualification_ids:
+            raise ValueError(f"duplicate qualification_id: {qualification_id}")
+        qualification_ids.add(qualification_id)
+        key = (
+            str(record["patient_id"]),
+            str(record["prior_dicom_id"]),
+            str(record["current_dicom_id"]),
+        )
+        groups[key].append(record)
+
+    pair_manifest: list[dict[str, Any]] = []
+    entity_manifest: list[dict[str, Any]] = []
+    for key in sorted(groups):
+        patient_id, prior_dicom_id, current_dicom_id = key
+        pair_id = hashlib.sha256("|".join(key).encode("utf-8")).hexdigest()[:20]
+        members = sorted(
+            groups[key],
+            key=lambda item: (
+                str(item["anatomy"]),
+                str(item["label_name"]),
+                str(item["qualification_id"]),
+            ),
+        )
+        pair_manifest.append(
+            {
+                "pair_id": pair_id,
+                "patient_id": patient_id,
+                "prior_dicom_id": prior_dicom_id,
+                "current_dicom_id": current_dicom_id,
+                "entity_count": len(members),
+                "anatomies": sorted({str(item["anatomy"]) for item in members}),
+                "progression_counts": dict(
+                    sorted(Counter(str(item["progression"]) for item in members).items())
+                ),
+            }
+        )
+        for item in members:
+            entity_manifest.append(
+                {
+                    "qualification_id": str(item["qualification_id"]),
+                    "pair_id": pair_id,
+                    "patient_id": patient_id,
+                    "prior_dicom_id": prior_dicom_id,
+                    "current_dicom_id": current_dicom_id,
+                    "anatomy": str(item["anatomy"]),
+                    "label_name": str(item["label_name"]),
+                    "progression": str(item["progression"]),
+                }
+            )
+
+    entity_manifest.sort(key=lambda item: item["qualification_id"])
+    return pair_manifest, entity_manifest
+
+
 def hierarchical_patient_bootstrap(
     rows: Iterable[Mapping[str, Any]],
     *,

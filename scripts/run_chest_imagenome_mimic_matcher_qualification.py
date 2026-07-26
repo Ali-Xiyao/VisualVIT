@@ -63,10 +63,11 @@ CLIP_STD = (0.26862954, 0.26130258, 0.27577711)
 
 R25_PROTOCOL_PATH = (
     WORKSPACE
-    / "docs/superpowers/specs/2026-07-25-chest-imagenome-real-data-protocol-v1.md"
+    / "docs/superpowers/specs/"
+    "2026-07-26-r25-1-matching-qualification-v1.md"
 )
 R25_PROTOCOL_SHA256 = (
-    "9862dac5b2bc304129b619b5d247919797979e4e80ed80c12ae535d79d10d1fc"
+    "78636fcf2673ddf80f7ad1c6672f4eb3558ce80948b26bc020b05f845fa873d6"
 )
 
 CI_ROOT_DEFAULT = Path(
@@ -1012,6 +1013,28 @@ def _matcher(regions: RegionBatch, variant: str) -> InvariantPartialOTMatcher:
     ).eval()
 
 
+def _anatomy_constraint_audit(regions: RegionBatch) -> dict[str, Any]:
+    valid = regions.prior_valid[:, :, None] & regions.current_valid[:, None, :]
+    compatible = valid & (
+        regions.prior_anatomy[:, :, None] == regions.current_anatomy[:, None, :]
+    )
+    valid_candidates = int(valid.sum().item())
+    compatible_candidates = int(compatible.sum().item())
+    removed_candidates = valid_candidates - compatible_candidates
+    return {
+        "configured": True,
+        "active_on_batch": removed_candidates > 0,
+        "valid_candidates": valid_candidates,
+        "compatible_candidates": compatible_candidates,
+        "removed_candidates": removed_candidates,
+        "reason": (
+            None
+            if removed_candidates > 0
+            else "All emitted anatomy ids are identical, so the mask removes no candidates."
+        ),
+    }
+
+
 def _evaluate(
     records: list[dict[str, Any]],
     features: dict[str, torch.Tensor],
@@ -1024,6 +1047,7 @@ def _evaluate(
     b4_correct: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
     b4_deranged: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
     b4_checks: list[dict[str, Any]] = []
+    anatomy_audits: list[dict[str, Any]] = []
 
     for row_index, record in enumerate(records):
         output: dict[str, Any] = {
@@ -1033,6 +1057,8 @@ def _evaluate(
         }
         for variant in variants:
             regions = _region_batch(record, features, variant)
+            if variant == "visual_geometry_equal":
+                anatomy_audits.append(_anatomy_constraint_audit(regions))
             gold = oracle_plan_from_entity_ids(regions)
             matcher = _matcher(regions, variant)
             edge, prior_null, current_null = matcher.compute_utilities(regions)
@@ -1154,6 +1180,27 @@ def _evaluate(
 
     mechanics: dict[str, Any] = {
         "global_objective_never_below_greedy": global_greedy_dominance,
+        "anatomy_constraint": {
+            "configured": True,
+            "active_on_cohort": any(
+                item["active_on_batch"] for item in anatomy_audits
+            ),
+            "batches": len(anatomy_audits),
+            "valid_candidates": sum(
+                item["valid_candidates"] for item in anatomy_audits
+            ),
+            "removed_candidates": sum(
+                item["removed_candidates"] for item in anatomy_audits
+            ),
+            "reason": (
+                None
+                if any(item["active_on_batch"] for item in anatomy_audits)
+                else (
+                    "All emitted anatomy ids are identical, so the configured "
+                    "mask removes no candidates."
+                )
+            ),
+        },
         "b4_rows": len(b4_checks),
         "b4_all_passed": (
             all(item["passed"] for item in b4_checks) if b4_checks else True
@@ -1214,9 +1261,8 @@ def _evaluate_gates(
         "Q3_MATCHPLAN_MECHANICS": mechanics[
             "global_objective_never_below_greedy"
         ],
-        "Q4_REAL_SIGNAL": (
+        "Q4_MATCHING_SIGNAL": (
             primary["persistent_edge_f1"] >= 0.50
-            and primary["three_event_macro_f1"] >= 0.50
             and (
                 mechanics.get("b4_bootstrap") is not None
                 and mechanics["b4_bootstrap"]["persistent_edge_f1_delta"][
@@ -1232,25 +1278,44 @@ def _evaluate_gates(
     q7_passes = False
     if b4_bootstrap is not None:
         delta = b4_bootstrap["persistent_edge_f1_delta"]
-        q7_details["delta_bind_pp"] = 100.0 * delta["point"]
-        q7_details["delta_lower_pp"] = 100.0 * delta["lower"]
-        q7_details["delta_upper_pp"] = 100.0 * delta["upper"]
+        q7_details["delta_match_pp"] = 100.0 * delta["point"]
+        q7_details["delta_match_lower_pp"] = 100.0 * delta["lower"]
+        q7_details["delta_match_upper_pp"] = 100.0 * delta["upper"]
         q7_details["effective_unique_patients"] = b4_bootstrap["patient_count"]
         q7_passes = (
             delta["lower"] > 0.0
             and b4_bootstrap["patient_count"] >= Q7_MIN_PATIENTS
         )
     else:
-        q7_details["delta_bind_pp"] = None
-        q7_details["delta_lower_pp"] = None
-        q7_details["delta_upper_pp"] = None
+        q7_details["delta_match_pp"] = None
+        q7_details["delta_match_lower_pp"] = None
+        q7_details["delta_match_upper_pp"] = None
         q7_details["effective_unique_patients"] = 0
-    gates["Q7_B4_POWER_ESTIMATE"] = q7_passes
+    gates["Q7_MATCHING_POWER_ESTIMATE"] = q7_passes
 
     first_failed = next(
         (name for name, passed in gates.items() if not passed), None
     )
     return gates, first_failed, q7_details
+
+
+def _evaluation_namespaces(aggregate: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "matching_evaluation": {
+            "status": "EVALUATED",
+            "task": "cross_temporal_correspondence",
+            "event_labels": ["persistent", "death", "birth"],
+            "aggregate": aggregate,
+        },
+        "progression_evaluation": {
+            "status": "NOT_EVALUATED",
+            "labels": list(LABELS),
+            "reason": (
+                "R25.1 qualifies correspondence only; no progression prediction "
+                "head is executed."
+            ),
+        },
+    }
 
 
 def main() -> int:
@@ -1318,12 +1383,12 @@ def main() -> int:
         }
 
     protocol_text = args.protocol.read_text(encoding="utf-8")
-    if "Status: `PRE_FREEZE_DESIGN_CANDIDATE`" not in protocol_text:
-        raise RuntimeError("R25 qualification protocol is not in pre-freeze state")
+    if "Status: `FROZEN_BEFORE_EXECUTION`" not in protocol_text:
+        raise RuntimeError("R25.1 qualification protocol is not frozen")
     protocol_hash = sha256_file(args.protocol)
     if protocol_hash != R25_PROTOCOL_SHA256:
         raise RuntimeError(
-            f"R25 protocol hash mismatch: {protocol_hash} "
+            f"R25.1 protocol hash mismatch: {protocol_hash} "
             f"(expected {R25_PROTOCOL_SHA256})"
         )
 
@@ -1417,6 +1482,7 @@ def main() -> int:
         "feature_ledger_sha256": canonical_hash(feature_ledger),
         "prediction_sha256": canonical_hash(row_outputs),
         "aggregate_sha256": canonical_hash(aggregate),
+        "evaluation_namespaces": _evaluation_namespaces(aggregate),
         "gates": gates,
         "q7_power_estimate": q7_details,
         "aggregate": aggregate,
@@ -1456,9 +1522,10 @@ def main() -> int:
             ),
         },
         "interpretation_boundary": (
-            "Real-data matcher qualification only on the three-label persistent "
-            "endpoint (Stable/Improved/Worse); no per-box progression, clinical, "
-            "formal B4, frozen-VLM, or allocation-4161 claim.  Q6 "
+            "Real-data matcher qualification only. Stable/Improved/Worse labels "
+            "are audited in the cohort but are not predicted or evaluated. "
+            "Matching-event metrics and delta_match cannot support a progression, "
+            "clinical, formal B4, frozen-VLM, or allocation-4161 claim. Q6 "
             "(fresh-process reproduction) is evaluated externally."
         ),
     }

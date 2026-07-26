@@ -960,3 +960,87 @@ R24 base protocol alongside R23 in `_copy_complete_allowlist_workspace`.
   (R14-era bundle bytes unrecoverable, strict xfail).  All R25 runner,
   verifier, and three-label tests pass.  ruff clean; py_compile clean.
   R24 base integrity verified at R25 load time.
+## 2026-07-26 — R25.1 semantic repair
+
+- `scripts/run_chest_imagenome_mimic_matcher_qualification.py::_strict_cohort`
+  将 Chest ImaGenome `comparison` 映射后保存为
+  `record["progression"]`，但 `_evaluate` 不读取该字段。
+- 当前 `_evaluate` 只构造 MatchPlan，并调用
+  `match_sufficient_statistics`；其 3×3 confusion 的类别是
+  persistent/death/birth，而不是 Stable/Improved/Worse。
+- `metrics_from_sufficient_statistics` 将上述 matching-event confusion
+  命名为 `three_event_macro_f1`；R25 Q4 又把它与三类 progression 文本并列，
+  形成实质性语义错误。
+- 当前 B4 bootstrap 比较 predicted plan 相对 gold 与 deranged assignment
+  的 persistent-edge F1；这是 `delta_match`，不是 progression
+  `delta_bind`。
+- R25.1 的首要实现不是更换 encoder，而是重命名 matching 指标、修改 Q4
+  资格门、显式记录 progression `NOT_EVALUATED`，并增加能捕获该混淆的测试。
+- 正式执行规范已写入 `docs/R25_1_ERRATUM.md`。
+- 新鲜 manifest 构建通过：189 patients / 189 pairs / 793 entities；
+  Stable 371、Improved 160、Worse 262。pair/entity 分离证据见
+  `reports/R25_1_MANIFEST_QUALIFICATION.md`。
+- 产物 SHA-256：pair
+  `d89efc92d50058e25a40ea47259a0975a492e69455e33ba54d8f48e9fe9ed585`；
+  entity
+  `1e0048fe7149df910f2b36d3657c7fc38225a50fc76996d121c7aefc8333fbf3`；
+  audit
+  `5fc4cfe0cbad32976839de5ace4f6085cab351c7ce41f4aa7c729c2b8766bdbb`。
+- `_region_batch` 当前把所有 anatomy id 设为 0；因此配置的 anatomy
+  constraint 在 cohort 上不移除任何候选。R25.1 mechanics 已显式报告
+  `active_on_cohort=false`，visual+geometry 结果不得归因于 anatomy mask。
+- 全量回归为 `483 passed, 1 xfailed`；唯一 xfail 是既有的 R14 冻结
+  bundle 字节不可恢复项，与 R25.1 无关。
+
+## 2026-07-26 — R25.1 process A
+
+- Process A status: `AWAITING_FRESH_PROCESS_REPRODUCTION`; Q0-Q5 and Q7 all
+  passed.
+- Matching results:
+  - visual-only persistent-edge F1: `0.9420123768049508`;
+  - geometry-only persistent-edge F1: `0.988081595232638`;
+  - visual+geometry persistent-edge F1: `0.9821223928489572`.
+- `delta_match = +97.9052 pp`, patient-bootstrap 95% interval
+  `[+95.9731, +99.6007]`, 170 contributing patients.
+- `matching_event_macro_f1` remains exactly `1/3` for all variants because
+  the event vocabulary is persistent/death/birth and this cohort is
+  persistent-only. It is descriptive and no longer a gate.
+- Progression namespace is exactly `NOT_EVALUATED`.
+- Anatomy constraint is configured but inactive: zero candidate edges removed.
+- Process A summary SHA-256:
+  `8db2ec2e23b3e93f5a4757e4e0a9aeed5f27e388c7494a56250074850c3b88b2`.
+- Geometry-only exceeds visual-only and visual+geometry on this cohort.
+  Therefore the matching result is dominated by stable spatial layout; it
+  must not be described as evidence that BiomedCLIP alone learned identity.
+
+## 2026-07-26 — R25.1 Q6 reproduced qualification
+
+- Process B independently reproduced process A and completed all matching
+  gates. Its summary SHA-256 is
+  `91dd4f9a7747ae7915e6e26191b7515abfa239817d0d09ae4f52cee0d9551be7`.
+- The Q6 certificate status is `PASS_Q6_FRESH_PROCESS_REPRODUCTION`, with all
+  26 exactness and namespace checks true. Certificate SHA-256:
+  `29625d1e50797df91d34c39cbedd45f0bd1e0751c4bfc6d74de975e12d6b0530`.
+- The reproduced feature cache is byte-exact across A/B:
+  `2a1df98fb3a3d0ef430698da7846b314a7cbcbe73c9e50f6241bfa57dc623326`.
+- This qualifies matching mechanics only. Progression remains
+  `NOT_EVALUATED`, formal and clinical claims remain false, and R26 C1 is the
+  first authorized progression mechanism gate.
+
+## 2026-07-26 — R26 C1 terminal finding
+
+- C1 is a scientific `STOP_C1`, not a technical failure.
+- Oracle-correct binding improved patient-balanced progression macro F1 over
+  deranged binding by only `+1.1724 pp`, with 95% interval
+  `[-2.7765, +5.1436] pp`.
+- All three seed directions were positive, but the effect was below the
+  registered 5 pp threshold and its interval crossed zero.
+- B4 isomorphism, patient-disjoint folds, bootstrap validity, and finite fits
+  all passed. The negative decision is therefore attributable to insufficient
+  mechanism effect rather than a broken experiment.
+- The strong R25.1 matching result did not translate into a defensible
+  Stable/Improved/Worse benefit. Correct identity pairing may carry a weak
+  directional signal, but the current frozen representation does not support
+  CAPES identity binding as a main progression mechanism claim.
+- Registered consequence: stop before C2 and all larger learned-matcher,
+  RAD-DINO, frozen-VLM, DIVE, or Slurm experiments.

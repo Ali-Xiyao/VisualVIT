@@ -18,7 +18,7 @@ def sha256_file(path: Path) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Q6 fresh-process verifier for the R25 Chest ImaGenome real-data "
+            "Q6 fresh-process verifier for the R25.1 Chest ImaGenome matching "
             "qualification.  Compares two process summaries and certifies "
             "independent reproduction only when every deterministic field is "
             "byte-identical."
@@ -66,6 +66,7 @@ EXACT_FIELDS = (
     "feature_ledger_sha256",
     "prediction_sha256",
     "aggregate_sha256",
+    "evaluation_namespaces",
     "gates",
     "q7_power_estimate",
     "aggregate",
@@ -123,6 +124,32 @@ def main() -> int:
         "r24_prerequisite_exact": (
             first.get("r24_prerequisite") == second.get("r24_prerequisite")
         ),
+        "matching_namespace_evaluated": (
+            first.get("evaluation_namespaces", {})
+            .get("matching_evaluation", {})
+            .get("status")
+            == "EVALUATED"
+            and second.get("evaluation_namespaces", {})
+            .get("matching_evaluation", {})
+            .get("status")
+            == "EVALUATED"
+        ),
+        "progression_namespace_not_evaluated": (
+            first.get("evaluation_namespaces", {})
+            .get("progression_evaluation", {})
+            .get("status")
+            == "NOT_EVALUATED"
+            and second.get("evaluation_namespaces", {})
+            .get("progression_evaluation", {})
+            .get("status")
+            == "NOT_EVALUATED"
+        ),
+        "no_progression_metric_claim": (
+            "progression_macro_f1" not in json.dumps(first, sort_keys=True)
+            and "progression_macro_f1" not in json.dumps(second, sort_keys=True)
+            and "delta_bind" not in json.dumps(first, sort_keys=True)
+            and "delta_bind" not in json.dumps(second, sort_keys=True)
+        ),
         **exact_checks,
     }
     passed = all(checks.values())
@@ -149,10 +176,10 @@ def main() -> int:
             "process_uuid": second.get("runtime", {}).get("process_uuid"),
         },
         "interpretation_boundary": (
-            "Independent reproduction of a non-confirmatory real matcher "
-            "qualification on the three-label persistent endpoint "
-            "(Stable/Improved/Worse); no per-box progression, clinical, "
-            "formal B4, frozen-VLM, or allocation-4161 claim."
+            "Independent reproduction of a non-confirmatory real matching "
+            "qualification. Stable/Improved/Worse labels were audited but not "
+            "predicted or evaluated. No progression, clinical, formal B4, "
+            "frozen-VLM, or allocation-4161 claim."
         ),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
