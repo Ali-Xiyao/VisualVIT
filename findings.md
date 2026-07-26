@@ -1012,3 +1012,17 @@ R24 base protocol alongside R23 in `_copy_complete_allowlist_workspace`.
 - Geometry-only exceeds visual-only and visual+geometry on this cohort.
   Therefore the matching result is dominated by stable spatial layout; it
   must not be described as evidence that BiomedCLIP alone learned identity.
+
+## 2026-07-26 — R25.1 Q6 reproduced qualification
+
+- Process B independently reproduced process A and completed all matching
+  gates. Its summary SHA-256 is
+  `91dd4f9a7747ae7915e6e26191b7515abfa239817d0d09ae4f52cee0d9551be7`.
+- The Q6 certificate status is `PASS_Q6_FRESH_PROCESS_REPRODUCTION`, with all
+  26 exactness and namespace checks true. Certificate SHA-256:
+  `29625d1e50797df91d34c39cbedd45f0bd1e0751c4bfc6d74de975e12d6b0530`.
+- The reproduced feature cache is byte-exact across A/B:
+  `2a1df98fb3a3d0ef430698da7846b314a7cbcbe73c9e50f6241bfa57dc623326`.
+- This qualifies matching mechanics only. Progression remains
+  `NOT_EVALUATED`, formal and clinical claims remain false, and R26 C1 is the
+  first authorized progression mechanism gate.

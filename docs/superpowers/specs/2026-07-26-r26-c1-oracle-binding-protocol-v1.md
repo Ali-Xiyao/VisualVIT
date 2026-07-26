@@ -1,6 +1,6 @@
 # R26 C1 Oracle-Binding Progression Protocol v1
 
-Status: `DRAFT_AWAITING_R25_1_Q6`
+Status: `FROZEN_BEFORE_EXECUTION`
 
 Date: 2026-07-26
 
@@ -27,8 +27,25 @@ Execution is locked until R25.1 process A/B and the Q6 verifier establish:
 - explicit progression `NOT_EVALUATED`;
 - no source, protocol, or anatomy-audit drift.
 
-The terminal R25.1 reproduction certificate hash and reproduced feature-cache
-hash will be pinned when this draft is frozen.
+Pinned R25.1 prerequisite evidence:
+
+- reproduction certificate SHA-256:
+  `29625d1e50797df91d34c39cbedd45f0bd1e0751c4bfc6d74de975e12d6b0530`;
+- process-A summary SHA-256:
+  `8db2ec2e23b3e93f5a4757e4e0a9aeed5f27e388c7494a56250074850c3b88b2`;
+- process-B summary SHA-256:
+  `91dd4f9a7747ae7915e6e26191b7515abfa239817d0d09ae4f52cee0d9551be7`;
+- reproduced cohort SHA-256:
+  `80fe901c96ecda11a185f047648c93b8451e98856c09ad20b027da161290244b`;
+- reproduced crop-feature cache SHA-256:
+  `2a1df98fb3a3d0ef430698da7846b314a7cbcbe73c9e50f6241bfa57dc623326`;
+- reproduced feature-ledger SHA-256:
+  `35c2f65f60b0fd06cf9bfb962b207973ee1c8445b55e9f4529e51ba11a4dc1df`.
+
+Execution must fail closed if any consumed prerequisite differs from these
+pins. The Q6 certificate binds process A and process B; C1 consumes the
+process-A cohort and feature cache only after verifying the certificate,
+summary, cohort, and feature-cache bytes.
 
 ## 3. Data and split
 
@@ -142,4 +159,3 @@ Any failed isomorphism check stops C1 before training.
 - block metrics;
 - hierarchical bootstrap result;
 - gate certificate and interpretation boundary.
-

@@ -47,7 +47,24 @@ PROTOCOL_PATH = (
     / "docs/superpowers/specs/"
     "2026-07-26-r26-c1-oracle-binding-protocol-v1.md"
 )
-PROTOCOL_SHA256: str | None = None
+PROTOCOL_SHA256 = (
+    "42cc4a37ba909ab88d15da865f76c8bd8c9f42f81002237ff905c39c95a75838"
+)
+R25_CERTIFICATE_SHA256 = (
+    "29625d1e50797df91d34c39cbedd45f0bd1e0751c4bfc6d74de975e12d6b0530"
+)
+R25_PROCESS_A_SUMMARY_SHA256 = (
+    "8db2ec2e23b3e93f5a4757e4e0a9aeed5f27e388c7494a56250074850c3b88b2"
+)
+R25_PROCESS_B_SUMMARY_SHA256 = (
+    "91dd4f9a7747ae7915e6e26191b7515abfa239817d0d09ae4f52cee0d9551be7"
+)
+R25_COHORT_SHA256 = (
+    "80fe901c96ecda11a185f047648c93b8451e98856c09ad20b027da161290244b"
+)
+R25_FEATURE_CACHE_SHA256 = (
+    "2a1df98fb3a3d0ef430698da7846b314a7cbcbe73c9e50f6241bfa57dc623326"
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -262,6 +279,14 @@ def main() -> int:
 
     certificate = _read_json(args.r25_certificate, dict)
     summary = _read_json(args.r25_summary, dict)
+    if sha256_file(args.r25_certificate) != R25_CERTIFICATE_SHA256:
+        raise RuntimeError("R25.1 reproduction certificate hash mismatch")
+    if sha256_file(args.r25_summary) != R25_PROCESS_A_SUMMARY_SHA256:
+        raise RuntimeError("R25.1 process-A summary pin mismatch")
+    if sha256_file(args.cohort) != R25_COHORT_SHA256:
+        raise RuntimeError("R25.1 cohort hash mismatch")
+    if sha256_file(args.features) != R25_FEATURE_CACHE_SHA256:
+        raise RuntimeError("R25.1 feature-cache pin mismatch")
     if (
         certificate.get("status") != "PASS_Q6_FRESH_PROCESS_REPRODUCTION"
         or certificate.get("qualified") is not True
@@ -282,10 +307,15 @@ def main() -> int:
         args.r25_summary
     ):
         raise RuntimeError("R25.1 process-A summary hash is not certified")
+    if (
+        certificate.get("process_b", {}).get("sha256")
+        != R25_PROCESS_B_SUMMARY_SHA256
+    ):
+        raise RuntimeError("R25.1 process-B summary hash is not certified")
     expected_feature_hash = (
         summary.get("encoder", {}).get("feature_cache", {}).get("sha256")
     )
-    if expected_feature_hash != sha256_file(args.features):
+    if expected_feature_hash != R25_FEATURE_CACHE_SHA256:
         raise RuntimeError("R25.1 feature cache hash mismatch")
 
     records = _read_json(args.cohort, list)

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import torch
 
 from scripts import run_r26_c1_oracle_binding as runner
@@ -103,3 +105,35 @@ def test_representations_are_entity_specific_and_b4_isomorphic() -> None:
     assert all(value.shape == invariant["B4b_oracle"].shape for value in deranged.values())
     assert audits[0]["passed"]
     assert all(item["passed"] for item in audits[0]["derangements"])
+
+
+def test_r26_protocol_and_r25_prerequisites_are_frozen_and_pinned() -> None:
+    protocol_text = runner.PROTOCOL_PATH.read_text(encoding="utf-8")
+
+    assert "Status: `FROZEN_BEFORE_EXECUTION`" in protocol_text
+    assert runner.sha256_file(runner.PROTOCOL_PATH) == runner.PROTOCOL_SHA256
+    assert runner.R25_CERTIFICATE_SHA256 in protocol_text
+    assert runner.R25_PROCESS_A_SUMMARY_SHA256 in protocol_text
+    assert runner.R25_PROCESS_B_SUMMARY_SHA256 in protocol_text
+    assert runner.R25_COHORT_SHA256 in protocol_text
+    assert runner.R25_FEATURE_CACHE_SHA256 in protocol_text
+
+
+def test_live_r25_prerequisite_hashes_match_frozen_pins() -> None:
+    root = Path(r"F:\VisualVIT_runtime\050_routeC\r25_1_matching_qualification")
+
+    assert runner.sha256_file(root / "reproduction_certificate.json") == (
+        runner.R25_CERTIFICATE_SHA256
+    )
+    assert runner.sha256_file(root / "process_a/summary.json") == (
+        runner.R25_PROCESS_A_SUMMARY_SHA256
+    )
+    assert runner.sha256_file(root / "process_b/summary.json") == (
+        runner.R25_PROCESS_B_SUMMARY_SHA256
+    )
+    assert runner.sha256_file(root / "process_a/cohort.json") == (
+        runner.R25_COHORT_SHA256
+    )
+    assert runner.sha256_file(root / "process_a/crop_features.pt") == (
+        runner.R25_FEATURE_CACHE_SHA256
+    )

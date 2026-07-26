@@ -1119,3 +1119,23 @@
 - Watcher syntax validation passed and hidden watcher PID `27888` started.
   First sample correctly recorded GPU1 busy with external PID `26344`; no
   process was stopped and process B was not launched prematurely.
+
+## 2026-07-26 — R25.1 Q6 closure and R26 freeze
+
+- The GPU1 watcher observed two consecutive idle samples and started process B
+  at 12:15:17 local time without stopping or competing with another process.
+- Process B completed at 12:21:05 with empty stderr and status
+  `AWAITING_FRESH_PROCESS_REPRODUCTION`.
+- The independent verifier completed at 12:21:09 with
+  `PASS_Q6_FRESH_PROCESS_REPRODUCTION`; all 26 certificate checks are true.
+- Certificate SHA-256:
+  `29625d1e50797df91d34c39cbedd45f0bd1e0751c4bfc6d74de975e12d6b0530`.
+- Process-B summary SHA-256:
+  `91dd4f9a7747ae7915e6e26191b7515abfa239817d0d09ae4f52cee0d9551be7`.
+- A/B cohort, crop-feature cache, and feature-ledger hashes are exact.
+- R26 C1 protocol status changed to `FROZEN_BEFORE_EXECUTION`; protocol
+  SHA-256 is
+  `42cc4a37ba909ab88d15da865f76c8bd8c9f42f81002237ff905c39c95a75838`.
+- R26 now fail-closes on exact certificate, A/B summary, cohort, and
+  feature-cache pins. Focused verification passed: 5 tests, ruff, compileall.
+- GPU1 is idle and the fresh C1 output root does not exist; launch is next.

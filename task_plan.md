@@ -16,17 +16,17 @@ Stable/Improved/Worse 结果。当前分支为 `r25.1-semantic-repair`。
 - [x] S1c：增加 progression target 真实进入评估的契约与回归测试
 - [x] S1d：focused tests、ruff、全量 pytest 通过
 - [x] S2：构建 pair-level matching manifest 与 entity-level progression manifest
-- [ ] S3：冻结 R25.1 matching protocol，在空闲 GPU1 顺序运行 process A/B
+- [x] S3：冻结 R25.1 matching protocol，在空闲 GPU1 顺序运行 process A/B
   - [x] Process A：`AWAITING_FRESH_PROCESS_REPRODUCTION`
-  - [ ] Process B：GPU1 watcher PID 27888 active; waits for two idle samples
-- [ ] S4：独立验证 A/B 并发布 matching qualification certificate
+  - [x] Process B：completed independently on GPU1; summary SHA `91dd4f9a...1be7`
+- [x] S4：独立验证 A/B 并发布 matching qualification certificate
 - [ ] C1：运行真正的 oracle-correct vs deranged progression classifier
-  - [x] Draft protocol written; status `DRAFT_AWAITING_R25_1_Q6`
-  - [ ] Pin R25.1 certificate/feature hashes and freeze
-  - [ ] Implement and verify runner
+  - [x] Protocol frozen; status `FROZEN_BEFORE_EXECUTION`
+  - [x] Pin R25.1 certificate/feature hashes and freeze
+  - [x] Implement and verify runner
     - [x] Representation, B4 isomorphism, folds, head, bootstrap, and gates implemented
-    - [x] Focused verification: 9 passed, ruff clean
-  - [ ] Run only after S4 is green
+    - [x] Frozen-pin verification: 5 passed, ruff and compileall clean
+  - [ ] Run on idle GPU1 with fresh output root; S4 is green
 - [ ] C2：仅 C1 通过后训练 learned matcher
 - [ ] VLM/DIVE：仅 C1、C2、VLM transfer 依次通过后解锁
 
