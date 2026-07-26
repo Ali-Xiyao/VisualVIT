@@ -1,0 +1,14 @@
+from __future__ import annotations
+
+from scripts import verify_r28b_calibrated_choice_tier as verifier
+
+
+def test_frozen_processes_pass_r28b_reproduction_verifier() -> None:
+    result = verifier.verify(
+        verifier.PROCESS_A_DEFAULT, verifier.PROCESS_B_DEFAULT
+    )
+    assert result["status"] == "PASS_R28B_FRESH_PROCESS_REPRODUCTION"
+    assert result["qualified"] is True
+    assert result["failed"] == []
+    assert result["engineering_reproduced"] is True
+    assert result["scientific_go"] is False

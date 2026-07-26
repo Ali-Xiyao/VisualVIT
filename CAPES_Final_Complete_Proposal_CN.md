@@ -12,11 +12,62 @@ tags:
   - visual-tokenizer
   - longitudinal-cxr
   - oral-target
-status: proposal-final-merged
-version: final (merged v1 + v2 + v3)
-updated: 2026-07-05
+status: original-premise-stopped-r28-engineering-closed
+version: final historical proposal + 2026-07-26 execution addendum
+updated: 2026-07-26
 target: CVPR / AAAI oral · TMI landmark
 merges: Change_Aware_Persistent_Entity_Slots_Proposal_CN.md (v1) · CAPES_v2_VisualSide_Proposal_CN.md (v2) · CAPES_v3_Finding_and_Method_Proposal_CN.md (v3)
+---
+
+# 2026-07-26 正式执行附录（优先于下文历史 proposal）
+
+> [!danger] 当前结论
+> 下文保留的是实验前 proposal，不能再按“已获支持的研究主张”阅读。
+> 原主命题“精确跨检查实体绑定是纵向进展判断的决定性变量”已在 R26
+> 触发 `STOP_C1`。不修改阈值、不换种子、不挑案例的 R27、R28、R28b
+> 后续工作均未恢复该科学命题。
+
+## 执行结果总表
+
+| 波次 | 正式问题 | 结果 | 当前效力 |
+|---|---|---|---|
+| R26 | oracle binding 是否显著优于 deranged binding | `+1.17 pp`, 95% CI `[-2.78,+5.14]` | `STOP_C1`，原 universal-binding 主命题否定 |
+| R27 | 高 binding-identifiability 病例是否显示更强绑定收益 | High-BII `-6.24 pp`, 三个种子全负 | 探索性机制审计；不救回 R26 |
+| R28 A0 | 是否存在按病例选择专家的理论上界 | case oracle `+25.61 pp`, CI `[+22.87,+28.37]` | 只证明专家互补上界；oracle 读取标签，不能部署 |
+| R28 A1 | label-free 线性 TIER | `-1.80 pp` vs uniform | 工程 PASS，科学 NO-GO |
+| R28 A2 | label-free 非线性 TIER | `-0.61 pp` vs uniform | 工程 PASS，科学 NO-GO |
+| R28b B1 | 温度校准 + choice-supervised 硬路由 | `-1.43 pp` vs uniform | 工程 PASS，科学 NO-GO |
+| R28b B2 | 预注册保护路由，否则回退 global | `-0.87 pp` vs uniform | 工程 PASS，科学 NO-GO |
+
+R28 与 R28b 均已完成独立新进程复现。正式含义是：
+
+- **项目工程已跑通**：病例注册、嵌套患者 OOF、泄漏审计、bootstrap、
+  artifact manifest 和双进程复现全部闭合。
+- **proposal 科学命题未跑通**：没有一个 label-free TIER 变体通过
+  `+2 pp`、CI 下界大于零、三个种子同向等冻结门槛。
+- **禁止解释**：不得通过重选种子、病例、保护阈值或重复查看同一
+  170-patient development cohort，把 NO-GO 改写成 GO。
+
+## 当前可继续的唯一正式方向
+
+当前证据支持“存在病例级专家互补”，但不支持“现有 label-free 描述符能
+可靠预测该互补”。下一轮若继续，必须另立协议，并满足至少一个独立边界：
+
+1. 在未反复开发的新患者 cohort 上做确认；
+2. 先审计合法 report source，再训练 report-supervised transition target；
+3. 更换 transition/ROI-context 表征，但先在训练内证明它编码 change
+   direction，再接触新的 held-out cohort。
+
+VLM、DIVE、RAD-DINO 和规模化训练没有被本轮结果解锁。
+
+正式入口：
+
+- `reports/R28_FINAL_CASE_STUDY_AND_PROPOSAL_CLOSURE.md`
+- `reports/R28_CASE_STUDY_AND_FAILURE_ANALYSIS.md`
+- `reports/R28_TIER_MVP_RESULT.md`
+- `reports/R28B_CALIBRATED_CHOICE_TIER_RESULT.md`
+- `docs/superpowers/specs/2026-07-26-r28b-calibrated-choice-tier-v1.md`
+
 ---
 
 # CAPES — Change-Aware Persistent Entity Slots

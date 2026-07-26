@@ -1,83 +1,92 @@
-# Progress: R27 Binding Identifiability Audit
+# Progress: R28 Case Study and TIER MVP
 
 ## 2026-07-26 — Authority reset
 
-- Read the user-provided reset document and treated it as the new source
-  authority.
-- Verified the repository is a Git worktree and the pre-reset worktree was
-  clean on `r25.1-semantic-repair`.
-- Verified the frozen R26 runtime package exists and independently computed
-  SHA-256 values for all seven files.
-- Created branch `r27-binding-identifiability-audit`.
-- Preserved the old active planning bundle under
-  `history/2026-07-26-pre-r27-planning/`.
-- Rebuilt the active planning bundle around R27 and the `STOP_C1` boundary.
-- No model training, prediction regeneration, threshold change, backbone swap,
-  VLM run, DIVE run, or R26 mutation was performed.
+- User authorized a new case-study-driven proposal attempt and iterative
+  execution.
+- Preserved the distinction between engineering completion and scientific GO.
+- Created branch `r28-case-study-tier-mvp`.
+- Archived the complete R27 active planning bundle under
+  `history/2026-07-26-r27-closure/`.
+- Rebuilt the active planning surface around a gated mutation ladder:
+  A0 oracle headroom, A1 linear TIER, A2 nonlinear TIER, and conditional A3
+  transition repair.
+- R26/R27 artifacts remain immutable.
 
-## 2026-07-26 — R26 schema inspection
+## 2026-07-26 — Case registry freeze
 
-- Confirmed the R26 prediction design is complete:
-  774 entities × 5 systems × 3 training seeds × 3 derangements = 34,830 rows.
-- Confirmed every pair has a unique anatomy-to-progression map and identical
-  ordered box lists across its entity rows.
-- Identified an R26 provenance limitation: the frozen isomorphism audit stores
-  zero-fixed-point checks but not assignment indices.
-- Chose a fail-closed deterministic reconstruction route pinned to the frozen
-  R26 runner/matching source and pair-seed basis. The report will not describe
-  the reconstruction as a directly serialized assignment.
-- Preliminary pair-composition support is 122 / 5 / 35 / 8 patients across
-  BII-0 / Low / Mid / High.
-
-## 2026-07-26 — R27 implementation and focused verification
-
-- Froze the R27 v1 protocol with exact R26 input and source hashes.
-- Added the read-only audit runner and 14 focused tests covering input pins,
-  BII toys, LPD/LCD classification, zero-fixed-point reconstruction,
-  patient-cluster bootstrap, support precedence, non-training imports, and
-  exclusive output behavior.
-- The first focused test run found one implementation error in the monotonicity
-  check: strict zip was incorrectly used for two intentionally offset
-  sequences. Removed strict mode; no evidence had been generated.
-
-## 2026-07-26 — R27 formal execution
-
-- The original R27 process completed after the orchestration wrapper returned
-  early; it generated the five required artifacts and repository report.
-- A diagnostic second launch reached the output boundary after the first run
-  had completed and correctly refused to overwrite the existing fresh root.
-- R27 terminal verdict: `C_SPARSE_HIGH_BII_SUPPORT`.
-- Audited 2,322 registered entity/derangement assignments:
-  1,846 label-preserving and 476 label-changing; semantic corruption rate
-  20.50%; reconstructed fixed points 0.
-- BII support: 122 / 5 / 35 / 8 patients for 0 / Low / Mid / High.
-- B4b minus B4a by stratum:
-  - BII-0: +2.36 pp, 95% CI [-2.23, +6.97]
-  - BII-Low: +4.92 pp, CI invalid (91.28% valid bootstrap)
-  - BII-Mid: -1.50 pp, 95% CI [-9.11, +5.56]
-  - BII-High: -6.24 pp, 95% CI [-19.10, +7.75]
-- High-BII B4b-B4a direction was negative for all seeds
-  (-8.04 / -6.24 / -4.44 pp). There is no monotonic binding-benefit pattern.
-- High-BII also has only 8 patients / 27 entities, so the registered
-  support-first verdict is sparse evidence, not a subgroup claim.
-- Independent verifier passed all 31 checks, including every R26/R27 artifact
-  hash, protocol/source pins, manifest self-binding, cohort conservation,
-  patient-only bootstrap, report boundary, and R28 lock.
-- Focused tests passed 15/15. The first lint pass found only the verifier's
-  deliberate post-`sys.path` import (E402); it was given the same explicit
-  file-level exemption as the formal runner.
-
-## 2026-07-26 — Full verification closure
-
-- Focused Ruff passed after the verifier import-boundary exemption.
-- Compileall passed for `src`, `scripts`, and `tests`.
-- Full regression completed: 503 passed, 1 registered xfail in 292.80 s.
-- The xfail is the existing frozen R14 bundle case and is unrelated to R27.
-- Runtime manifest SHA-256:
-  `459de46617603936f45884b9279c3f92b3a7a119276ea5533afb725734ff49b3`.
-- Repository report SHA-256:
-  `a49d52fc5cb03e86c15f693798444824573fd39ac5032a4dde38a50ba43d46d6`.
-- R26 remained untouched. R28 and all downstream training/VLM work remain
-  locked.
-- Created the final commit on branch
-  `r27-binding-identifiability-audit`, including the planning-status writeback.
+- Located the exact R25.1 process-A feature cache consumed by R26:
+  `F:\VisualVIT_runtime\050_routeC\r25_1_matching_qualification\process_a\crop_features.pt`.
+- Confirmed its registered SHA-256 is
+  `2a1df98fb3a3d0ef430698da7846b314a7cbcbe73c9e50f6241bfa57dc623326`.
+- Froze deterministic case archetype and tie-break rules before viewing
+  individual case images or per-case outcomes.
+- Verified the cache schema: 1,586 vectors × 768 float32 dimensions.
+- Verified a frozen cohort source image opens successfully at 224×224.
+- Recorded the previously implicit R25/R26 limitation that anatomy constraints
+  were configured but inactive because all emitted anatomy IDs were zero.
+- Implemented the frozen case-registry runner and nine focused tests.
+- First focused test run passed 9/9; Ruff found one unused import, removed
+  before generating the registry.
+- Generated the frozen registry, 24 restricted local case panels, case-level
+  prediction table, case panel manifest, and repository failure-analysis
+  report.
+- Case oracle headroom passed strongly: +25.61 pp, patient-bootstrap 95% CI
+  [+22.87, +28.37] pp over the best fixed consensus expert.
+- Inspected one immutable representative panel per archetype and recorded
+  non-clinical observations without changing the registry.
+- Inspected the R26 head/training implementation and selected it as the
+  capacity reference.
+- Verified both GPUs are occupied by unrelated jobs; chose CPU-only TIER MVP
+  execution to preserve ownership boundaries.
+- Froze the R28 TIER MVP protocol before any model execution. It defines exact
+  state/global/binding representations, label-free descriptors, nested
+  patient-OOF stacking, A1/A2 mutation rules, scientific gates, and engineering
+  completion criteria.
+- Implemented capacity-matched 128-dimensional signed projections, three
+  linear experts, linear/nonlinear routers, nested patient-OOF stacking,
+  patient/seed bootstrap inference, sanity gates, and fail-closed manifests.
+- TIER-focused verification passed: 8/8 pytest tests, Ruff clean, and
+  compileall clean.
+- Completed A1 and protocol-authorized A2 on CPU.
+- Both attempts passed engineering gates but failed scientific GO:
+  A1 -1.80 pp and A2 -0.61 pp versus uniform fusion.
+- Diagnosed that both routers overweight the weakest state expert while the
+  global expert is strongest; recorded this before defining any next attempt.
+- Re-ran the complete R28 v1 pipeline in a fresh process and separate runtime
+  root.
+- The reproduction verifier passed 43/43 checks. Both processes have identical
+  results and deterministic prediction SHA-256
+  `982591076381cacb5597015a3dfdea399d22c3ef74186e6d25691630fc825135`.
+- Closed R28 v1 as engineering-reproduced and scientific NO-GO.
+- Declared any calibration/choice-supervision repair to be a separate R28b
+  protocol rather than a silent mutation of A1/A2.
+- Froze the initial R28b protocol and passed 13 focused R28/R28b tests.
+- The expert-cache startup log exposed a protocol transcription error before
+  any R28b router or outer-test result: the document listed date-like values
+  instead of inherited training seeds 17/29/43.
+- Stopped the invalid pre-run, corrected the protocol, and required a new hash
+  pin before formal execution.
+- Refroze R28b with protocol SHA-256
+  `9f5fe2779662f1b976dbf2df5f3dab88d48d5e596e8290b4e784e9f233207034`.
+- Completed B1 and protocol-authorized B2. Both passed engineering gates and
+  failed scientific GO: B1 -1.43 pp and B2 -0.87 pp versus uniform fusion.
+- Completed a second independent R28b process. The verifier passed 40/40 checks
+  with deterministic prediction SHA-256
+  `44bbe466d5199f328a9ffdb9ca9e85b9be3ac9835e9a5678834ae1d2505c565a`.
+- Wrote the final case-study/proposal closure and updated the active CAPES
+  proposal with an execution addendum that supersedes its historical claims.
+- Full regression initially reached 526 pass / 1 expected xfail / 1 fail. The
+  failure correctly detected that adding R28b helpers to the R28 `tier.py`
+  invalidated R28's historical source hash.
+- Moved all R28b-only helpers into `src/visualvit/tier_choice.py`, restoring the
+  exact R28 `tier.py` SHA-256
+  `e7c4427eaf9ede73bc8676c2859ffbd43e0036b663377fab120653789743467e`.
+- Re-executed both R28b processes from the source-closed layout. R28 remained
+  43/43 reproduced; R28b passed an expanded 42/42 verifier with the same
+  deterministic prediction digest and unchanged scientific NO-GO.
+- Final full regression passed: 527 tests passed and one registered historical
+  xfail remained.
+- All changed Python files pass Ruff and the full `src/scripts/tests` tree
+  passes compileall. Repository-wide Ruff still reports 25 pre-existing errors
+  in untouched historical proxy/smoke scripts; they were not mixed into R28.

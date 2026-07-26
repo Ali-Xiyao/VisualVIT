@@ -1,112 +1,154 @@
-# Task Plan: R27 Binding Identifiability Audit
+# Task Plan: R28 Case Study and TIER MVP
 
 ## Authority
 
-- Source authority: the user-provided 2026-07-26 project-reset document.
-- Preserved terminal fact: R26 C1 remains `STOP_C1`.
-- R27 evidence class: exploratory, post-hoc, read-only mechanism audit.
-- Active branch: `r27-binding-identifiability-audit`.
-- Frozen input root:
-  `F:\VisualVIT_runtime\050_routeC\r26_c1_oracle_binding\run_v1`.
+- User instruction: summarize prior failures, conduct a case study, make new
+  attempts, and continue until the current proposal has a working execution.
+- Scientific inheritance:
+  - R26 remains `STOP_C1`.
+  - R27 remains exploratory and reports no monotonic BII/binding benefit.
+- Active branch: `r28-case-study-tier-mvp`.
+- R26/R27 artifacts are immutable inputs, not targets for repair.
 
-## Goal
+## What “run through” means
 
-Reorganize VisualVIT around the R26 negative result and execute the authorized
-R27 audit without retraining, regenerating predictions, or modifying any R26
-artifact. Produce patient-level label composition, semantic-corruption audits,
-BII-stratified effects with patient-cluster bootstrap intervals, support
-diagnostics, a manifest, and a formal exploratory report.
+Two acceptance levels are kept separate:
+
+1. **Engineering success:** a deterministic, leak-audited, patient-disjoint
+   case-study/TIER pipeline runs end to end, reproduces from a fresh process,
+   and emits a complete manifest and report.
+2. **Scientific GO:** a frozen primary comparison passes its preregistered
+   effect, uncertainty, support, and seed-direction gates.
+
+Engineering success may be achieved by debugging and changing implementation.
+Scientific GO may not be manufactured by changing thresholds, selecting lucky
+seeds/cases, or repeatedly revealing the same held-out result. A scientifically
+failed attempt must be recorded before the next materially different proposal
+is frozen.
 
 ## Hard Boundaries
 
-- Do not change R26 thresholds, seeds, protocol, report, predictions, or hashes.
-- Do not train or fine-tune any model or classifier.
-- Do not run learned matcher, RAD-DINO, frozen VLM, DIVE, TIER, or scale-up.
-- Do not claim a confirmatory result from a post-hoc BII stratum.
-- Stop after the R27 verdict. R28+ require a separately reviewed protocol.
+- Do not modify R26/R27 protocols, reports, predictions, or runtime files.
+- Case selection may illustrate mechanisms but may not define the evaluation
+  subset after inspecting outcomes.
+- Label-derived BII, correctness, LPD/LCD class, or progression labels may be
+  used for offline analysis and oracle upper bounds, never as router inputs.
+- No VLM/DIVE/scale-up before the structured TIER MVP passes its survival gate.
+- Preserve patient-disjoint folds and patient-cluster inference.
+- Stop at the first failed survival gate; the next action is diagnosis and a
+  materially changed attempt, not scale-up.
 
-## Formal Gate Order
+## Gate Order
 
-1. **G0 Frozen input integrity:** all R26 files exist and match registered hashes.
-2. **G1 Read-only provenance:** runner accepts only frozen R26 inputs and writes
-   to a fresh R27 output root.
-3. **G2 Definition correctness:** toy BII, semantic-transition, zero-fixed-point,
-   LPD, and LCD tests pass.
-4. **G3 Cohort conservation:** stratum patient/entity totals equal the frozen R26
-   cohort, with no entity treated as an independent bootstrap cluster.
-5. **G4 R27 execution:** generate all declared JSON artifacts and report.
-6. **G5 Independent verification:** rerun verifier/tests, recheck input/output
-   hashes, and record the exploratory terminal verdict.
+1. **G0 Provenance:** verify R26/R27 hashes and locate reusable frozen features.
+2. **G1 Case-study registry:** freeze representative selection rules before
+   writing narrative conclusions.
+3. **G2 Failure synthesis:** classify prior failures as data, intervention,
+   representation, estimator, optimization, or provenance failures.
+4. **G3 R28 protocol freeze:** define systems, router inputs, folds, seeds,
+   primary metric, stop rules, and allowed mutation ladder.
+5. **G4 Minimal overfit/sanity:** prove the implementation can learn a toy and a
+   tiny train-only slice without leakage.
+6. **G5 Nested patient-OOF MVP:** run the first frozen TIER attempt.
+7. **G6 Reproduction:** fresh-process exact or tolerance-bound reproduction.
+8. **G7 Scientific verdict:** record GO/NO-GO before any next attempt.
+
+## Mutation Ladder
+
+Only move downward after the previous attempt is frozen and closed:
+
+1. **A0 Case oracle:** label-derived best-expert selector, analysis-only upper
+   bound; proves whether routing headroom exists.
+2. **A1 Linear TIER:** state/global/binding experts with a label-free linear
+   router and frozen representations.
+3. **A2 Nonlinear TIER:** capacity-matched two-layer router if A1 underfits but
+   A0 shows adequate headroom.
+4. **A3 Transition repair:** report-supervised training targets with image-only
+   inference only if both A1/A2 show the transition representation is the
+   bottleneck and a legal report source is available.
+
+No threshold, seed, fold, or held-out-set mutation is permitted inside an
+attempt.
 
 ## Phases
 
-### Phase 0 — Reset and archive
+### Phase 0 — Reset and provenance
 
-- [x] Create the R27 branch.
-- [x] Archive the former active planning bundle under
-  `history/2026-07-26-pre-r27-planning/`.
-- [x] Rebuild `task_plan.md`, `findings.md`, and `progress.md` for R27.
+- [x] Create R28 branch.
+- [x] Archive R27 planning bundle under
+  `history/2026-07-26-r27-closure/`.
+- [x] Verify frozen artifacts and reusable feature paths.
 - **Status:** complete
 
-### Phase 1 — Freeze the R27 protocol
+### Phase 1 — Case study and failure taxonomy
 
-- [x] Inspect frozen R26 schemas and current repository conventions.
-- [x] Write `docs/superpowers/specs/2026-07-26-r27-binding-identifiability-audit-v1.md`.
-- [x] Pin the protocol and all R26 input hashes in code/tests.
+- [x] Freeze case selection rules.
+- [x] Generate case-level tables/visual panels for success, shortcut,
+  derangement-robust, and binding-harm cases.
+- [x] Write the prior-failure taxonomy with evidence links.
+- [x] Quantify oracle routing headroom.
 - **Status:** complete
 
-### Phase 2 — Implement and test
+### Phase 2 — Freeze R28 MVP protocol
 
-- [x] Add `scripts/audit_r26_binding_identifiability.py`.
-- [x] Add `tests/test_r27_binding_identifiability.py`.
-- [x] Verify no training/import path can be invoked.
+- [x] Define state/global/binding expert representations.
+- [x] Define label-free router inputs and leakage audit.
+- [x] Freeze nested patient folds, metrics, seeds, and stop rules.
+- [x] Add protocol hash pins and tests.
 - **Status:** complete
 
-### Phase 3 — Execute R27
+### Phase 3 — Implement and sanity-test
 
-- [x] Run against the frozen R26 package into a fresh runtime root.
-- [x] Generate pair composition, semantic audit, stratified effects, support
-  audit, and artifact manifest.
-- [x] Write `reports/R27_BINDING_IDENTIFIABILITY_AUDIT.md`.
+- [x] Build the R28 runner.
+- [x] Pass toy, shape, fold, leakage, and tiny-overfit tests.
+- [x] Record peak memory/runtime and source hashes.
 - **Status:** complete
 
-### Phase 4 — Verify and close
+### Phase 4 — Execute mutation ladder
 
-- [x] Run focused and full regression tests plus lint/compile checks.
-- [x] Recompute all declared hashes independently.
-- [x] Record the R27 exploratory verdict and R28 lock.
-- [x] Commit the organized R27 package if verification is green.
+- [x] Run A0 oracle headroom.
+- [x] Run and close A1.
+- [x] If authorized by the frozen ladder, run and close A2.
+- [x] Close A3 as not authorized: no audited legal report-supervision source is
+  established for this cycle.
+- [x] Freeze and execute R28b as a separate failure-derived attempt; do not
+  relabel it as A3 or mutate the R28 v1 protocol.
 - **Status:** complete
 
-## Completion Criteria
+### Phase 5 — Reproduce and close
 
-- R26 frozen bytes remain unchanged.
-- All five required R27 output files exist and are hash-bound by the manifest.
-- Report clearly says `exploratory_only=true`.
-- Patient-cluster bootstrap uses patients as the resampling unit.
-- The result is classified as one of:
-  `A_MONOTONIC_SUPPORT`, `B_NO_HIGH_BII_GAIN`, or
-  `C_SPARSE_HIGH_BII_SUPPORT`, with explicit support limitations.
-- No R28/R29/TIER/VLM execution is performed.
+- [x] Fresh-process reproduction of the frozen R28 A1/A2 attempt.
+- [x] Fresh-process reproduction of the frozen R28b B1/B2 attempt.
+- [x] Write final case-study, experiment report, and artifact manifest.
+- [x] Run focused/full regression, lint, and compile checks.
+- [x] Commit and push the completed R28 branch.
+- **Status:** complete
 
-## R27 Terminal Result
+## Expected Deliverables
 
-- Verdict: `C_SPARSE_HIGH_BII_SUPPORT`
-- Secondary mechanism pattern: no monotonic binding-benefit trend.
-- High-BII B4b minus B4a: `-6.24 pp`, 95% CI
-  `[-19.10, +7.75] pp`; all three seed directions negative.
-- High-BII support: 8 patients / 27 entities, below all registered support
-  thresholds.
-- Formal flags: `exploratory_only=true`, `formal_claim_allowed=false`,
-  `r28_unlocked=false`.
-- Independent verification: `PASS_R27_INDEPENDENT_VERIFICATION` (31/31).
-- Full regression: 503 passed, 1 registered xfail.
+- `docs/superpowers/specs/2026-07-26-r28-case-study-registry-v1.md`
+- `docs/superpowers/specs/2026-07-26-r28-case-study-tier-mvp-v1.md`
+- `docs/superpowers/specs/2026-07-26-r28b-calibrated-choice-tier-v1.md`
+- `reports/R28_CASE_STUDY_AND_FAILURE_ANALYSIS.md`
+- `reports/R28_TIER_MVP_RESULT.md`
+- `reports/R28B_CALIBRATED_CHOICE_TIER_RESULT.md`
+- `reports/R28_FINAL_CASE_STUDY_AND_PROPOSAL_CLOSURE.md`
+- `scripts/run_r28_case_study.py`
+- `scripts/run_r28_tier_mvp.py`
+- `scripts/verify_r28_tier_mvp.py`
+- `scripts/run_r28b_calibrated_choice_tier.py`
+- `scripts/verify_r28b_calibrated_choice_tier.py`
+- `tests/test_r28_case_study.py`
+- `tests/test_r28_tier_mvp.py`
+- Runtime outputs under
+  `F:\VisualVIT_runtime\050_routeC\r28_case_study_tier\`.
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
-| Planning session catchup is unsupported for native Codex sessions | 1 | Used live Git status plus archived planning files as the recovery boundary |
-| Monotonicity check used `zip(..., strict=True)` on offset sequences | 1 | Removed strict mode because adjacent-pair sequences intentionally differ by one element |
-| A nested execution call returned before the original R27 process finished; a diagnostic second launch later found the already-created fresh root | 1 | Confirmed the first process completed all five artifacts and the report; treated the second launch's fail-closed overwrite refusal as expected protection |
-| Independent verifier triggered Ruff E402 after inserting the workspace import path | 1 | Added the same explicit file-level E402 exemption used by the formal runner |
+| Native Codex session catchup unsupported | 1 | Used clean Git state and archived R27 planning as the recovery boundary |
+| R28 case-study lint found unused `math` import | 1 | Removed the import before any case-study execution |
+| R28b protocol copied projection-date values as training seeds | 1 | Stopped before any R28b route/test result, corrected to inherited seeds 17/29/43, and refroze the protocol hash |
+| R28b helpers changed R28's manifest-bound shared source hash | 1 | Split R28b helpers into `tier_choice.py`, restored the exact R28 source hash, and reran both R28b processes |
+| Full-repository Ruff reports 25 legacy errors | 1 | Confirmed all are in untouched historical proxy/smoke scripts; changed-file Ruff and full compileall pass |
