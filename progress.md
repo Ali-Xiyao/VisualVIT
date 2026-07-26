@@ -80,3 +80,5 @@
   active CAPES proposal while preserving R26 `STOP_C1`.
 - Final repository verification: 545 passed, 1 expected xfail; changed-source
   Ruff, compileall, and `git diff --check` all pass.
+- Committed the full R29-R31 closure as `e114ffe` and pushed
+  `codex/r29-case-driven-transition-repair` to origin.

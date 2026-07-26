@@ -86,13 +86,13 @@ scientific gates.
 ### Phase 4 — Verification and handoff
 
 - [x] Run final full tests, lint, compile, and source-hash verification.
-- [ ] Commit and push R29 branch.
-- **Status:** in_progress (verification complete; Git handoff remaining)
+- [x] Commit and push the case-driven closure branch.
+- **Status:** complete
 
 ## Next Step
 
-Review the final diff, commit, and push the reproduced R31 fresh-silver
-development GO.
+No further silver tuning is authorized. The next scientific step is a newly
+authorized human-gold or external confirmation protocol.
 
 ## Errors Encountered
 
