@@ -298,3 +298,15 @@
 - Froze the next engineering attempt at the already-coded non-formal cap:
   A6 seed 17, 1,000/500 rows, 3 epochs, batch size 2, rank 32, and LR 1e-4.
   Formal mode and protected outcomes remain locked.
+- 2026-07-27 16:13 +08:00: after three consecutive low-memory confirmations,
+  launched the frozen A6 mechanism-scale diagnostic as PID 29628 on cuda:0.
+  The process is responsive; cuda:1 remains free. Output is isolated at
+  `r37b_smokes/a6_seed17_mechanism_scale1000x500x3_v1`.
+- 2026-07-27 16:25 +08:00: A6 mechanism scale completed with engineering
+  PASS. True-current, true-inverted, and true-CMCP macro-F1 differences were
+  +6.84, +14.91, and +6.97 pp, with nonzero continuous embedding/logit
+  responsiveness.
+- Froze this result as positive engineering evidence and stopped further
+  calibration tuning. Formal qualification remains locked until independent
+  transition human QA, followed by the frozen three-seed patient-bootstrap
+  gate.

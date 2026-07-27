@@ -135,10 +135,10 @@ smokes during iteration.
   without row-level resampling.
 - [x] Implement fail-closed seed 17/29/43 aggregation for current-only and CMCP
   controls, including exact row-order and formal-unlock checks.
-- [ ] Diagnose continuous representation/logit responsiveness for A6 at the
+- [x] Diagnose continuous representation/logit responsiveness for A6 at the
   pre-existing non-formal cap (1,000 train, 500 calibration, 3 epochs) while
   keeping seed 17, rank 32, LR 1e-4, batch size 2, and all losses unchanged.
-- **Status:** in_progress
+- **Status:** a6_engineering_signal_positive_formal_locked
 
 ### Phase 4A — Post-cache engineering chain
 
@@ -203,7 +203,7 @@ smokes during iteration.
 
 ## Next Step
 
-Run the frozen A6 mechanism-scale case study with continuous true/current,
-true/inverted, and true/CMCP embedding/logit diagnostics. It remains
-engineering-only. Formal internal qualification remains locked pending
-independent transition human QA.
+Freeze the positive A6 engineering case study without further calibration
+tuning. Obtain independent transition human QA, then run the already-frozen
+formal seed 17/29/43 bundle and 2,000-replicate patient bootstrap. Do not
+unlock protected dev/test/gold outcomes before those gates pass.

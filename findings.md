@@ -374,3 +374,16 @@ preserving the encoder's static medical semantics.
   argmax-change rate for true versus current-only, inverted, and CMCP. This
   distinguishes weak but real prior sensitivity from complete representation
   collapse.
+- The prebounded A6 mechanism-scale case completed on 1,000 train and 500
+  internal-calibration rows. Macro-F1 was 0.4408 true-pair, 0.3724
+  current-only, and 0.2917 inverted: +6.84 and +14.91 pp.
+- On 400 dynamic CMCP rows, true-pair and counterfactual-prior macro-F1 were
+  0.3425 and 0.2728 (+6.97 pp). True versus CMCP changed 30.0% of predictions;
+  true versus current-only changed 18.6%; true versus inverted changed 50.2%.
+- Continuous differences are nonzero rather than argmax noise:
+  true/current embedding L2 mean 0.1373 and logit L2 mean 0.5656;
+  true/CMCP 0.1863 and 0.7628; true/inverted 0.3214 and 1.3118.
+- This repairs the earlier undertrained A6 case-study failure and establishes
+  a positive engineering mechanism signal. It is still one seed, a bounded
+  non-formal run, and lacks patient-bootstrap confidence intervals; scientific
+  R37 remains pending rather than GO.
