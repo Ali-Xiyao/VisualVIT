@@ -513,3 +513,14 @@ preserving the encoder's static medical semantics.
   deleted. Two-seed outputs may be inspected descriptively but cannot satisfy
   the frozen all-three-seeds, A6-minus-A0, or patient-bootstrap scientific
   gates.
+- Both selected formal A6 results are structurally complete and firewall-clean.
+  Seed 17 true-pair/current-only macro F1 is 0.4092/0.2905
+  (+11.87 pp), while seed 29 is 0.4105/0.2690 (+14.15 pp).
+- On the 2,625-row CMCP subset, seed 17 true-pair/CMCP macro F1 is
+  0.2873/0.2115 (+7.58 pp), while seed 29 is 0.2895/0.2104 (+7.91 pp).
+  State-retention cosine passes descriptively in both seeds (0.9938/0.9936),
+  but inversion consistency is below the frozen 0.90 threshold in both
+  (0.8438/0.8735).
+- These two formal training artifacts are positive for correct-prior
+  responsiveness but cannot produce a scientific GO/STOP: seed 43, A0, the
+  three-seed patient bootstrap, and all protected reveals remain deferred.

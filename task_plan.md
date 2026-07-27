@@ -133,7 +133,7 @@ smokes during iteration.
 - [ ] Run internal patient-disjoint qualification and bootstrap gates.
 - [ ] Apply the frozen 2,000-replicate patient bootstrap and three-seed gate
   without row-level resampling.
-- [ ] Complete only the user-selected formal A6 seeds 17 and 29; keep seed 43,
+- [x] Complete only the user-selected formal A6 seeds 17 and 29; keep seed 43,
   all A0 stages, and aggregation deferred until further direction.
 - [x] Repair the pre-outcome pair-count versus finding-row namespace mismatch,
   refreeze formal counts at 46,349/5,242, and resume the unchanged bundle.
@@ -158,7 +158,7 @@ smokes during iteration.
   formal result is observed.
 - [x] Harden the formal A0 capacity-matched baseline and paired A6-minus-A0
   patient-bootstrap gate.
-- **Status:** two_seed_formal_running_user_paused_full_gate
+- **Status:** two_seed_formal_complete_user_paused_full_gate
 
 ### Phase 4A — Post-cache engineering chain
 
@@ -236,7 +236,7 @@ smokes during iteration.
 
 ## Next Step
 
-Monitor only formal A6 seeds 17 and 29 through complete valid result artifacts.
-Report their descriptive case-study metrics without calling a scientific
-GO/STOP. Do not start seed 43, A0, bootstrap, or protected evaluation until the
-user explicitly resumes the frozen full gate.
+Stop after the completed formal A6 seeds 17 and 29. Do not start seed 43, A0,
+bootstrap, aggregation, or protected evaluation until the user explicitly
+resumes the frozen full gate. The two-seed readout is descriptive only and is
+not a scientific GO/STOP.

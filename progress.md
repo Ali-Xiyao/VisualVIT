@@ -460,3 +460,16 @@
 - Updated the existing heartbeat in place. It now monitors only seeds 17/29,
   must not restart the full pipeline, and will label two complete results
   `PASS_R37_TWO_SEED_FORMAL_TRAINING_ONLY` rather than scientific GO.
+- 2026-07-28 02:35-02:57 +08:00: both user-selected A6 formal seeds completed
+  with valid `PASS_R37_PRTA_FORMAL_TRAINING` artifacts. The shared preflight
+  helper classifies both outputs as `complete`; checkpoints and result JSONs
+  are present, and every protected/sealed/gold/source-hash firewall remains
+  false.
+- Descriptive seed 17 metrics are true-pair/current-only +11.87 pp,
+  true-pair/CMCP +7.58 pp, inversion consistency 0.8438, and state retention
+  0.9938. Seed 29 reports +14.15 pp, +7.91 pp, 0.8735, and 0.9936,
+  respectively.
+- Runtime status was closed as
+  `PASS_R37_TWO_SEED_FORMAL_TRAINING_ONLY`. No seed 43, A0, bootstrap,
+  aggregation, or protected evaluation was started; therefore no scientific
+  GO/STOP is claimed.
