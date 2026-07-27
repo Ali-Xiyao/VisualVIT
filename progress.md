@@ -322,3 +322,13 @@
   PID 23416 on cuda:0 and PID 1952 on cuda:1. Both use the unchanged
   1,000/500/3-epoch, batch-2, rank-32, LR-1e-4 configuration; both stderr logs
   are empty at startup.
+- 2026-07-27 16:42-16:45 +08:00: seed 29 and seed 43 completed with
+  `PASS_R37_PRTA_ENGINEERING_SMOKE`; both stderr logs remained empty and both
+  GPUs were released.
+- Across seeds 17/29/43, true-current differences were +6.84/+8.97/+7.54 pp
+  and true-CMCP differences were +6.97/+8.85/+5.77 pp. This is positive
+  multiseed engineering evidence, not a formal scientific result.
+- Added `reports/R37_A6_ENGINEERING_MULTISEED_CASE_STUDY.md` with the frozen
+  settings, per-seed metrics, continuous prediction-change diagnostics,
+  earlier-failure comparison, runtime evidence, and protected-outcome
+  boundary.

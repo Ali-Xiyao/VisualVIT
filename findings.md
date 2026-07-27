@@ -400,3 +400,20 @@ preserving the encoder's static medical semantics.
   not part of the current work. The next permitted work is non-formal,
   outcome-firewalled engineering replication for the already-frozen seeds 29
   and 43 plus execution-chain hardening.
+- The frozen seed-29 and seed-43 A6 engineering replications both completed
+  with `PASS_R37_PRTA_ENGINEERING_SMOKE`; no protected or gold outcomes were
+  accessed and neither run permits a scientific claim.
+- True-pair versus current-only macro-F1 differences were +6.84, +8.97, and
+  +7.54 pp for seeds 17, 29, and 43 (mean +7.78 pp; minimum +6.84 pp).
+  True-pair versus inverted differences were +14.91, +15.15, and +16.37 pp.
+- On the dynamic CMCP subsets, true-pair versus counterfactual-prior
+  differences were +6.97, +8.85, and +5.77 pp (mean +7.20 pp; minimum
+  +5.77 pp). Prediction-change rates were nonzero for every control and seed.
+- The same frozen settings therefore replicate a positive engineering
+  mechanism signal across all three prespecified seeds. This is not yet a
+  scientific GO: the runs are non-formal, reuse a 500-row internal engineering
+  evaluation, and do not include patient-bootstrap confidence intervals.
+- The consolidated case study is
+  `reports/R37_A6_ENGINEERING_MULTISEED_CASE_STUDY.md`. The next protocol-safe
+  step is execution-chain hardening for the still-locked formal bundle, not
+  outcome-driven tuning or a protected reveal.

@@ -138,11 +138,11 @@ smokes during iteration.
 - [x] Diagnose continuous representation/logit responsiveness for A6 at the
   pre-existing non-formal cap (1,000 train, 500 calibration, 3 epochs) while
   keeping seed 17, rank 32, LR 1e-4, batch size 2, and all losses unchanged.
-- [ ] Run seed 29 and 43 engineering replications at the identical frozen A6
+- [x] Run seed 29 and 43 engineering replications at the identical frozen A6
   1,000/500/3-epoch configuration; do not tune from their outcomes.
 - [ ] Prepare the formal three-seed/bootstrap execution bundle without
   launching formal mode or protected evaluation.
-- **Status:** engineering_multiseed_running
+- **Status:** engineering_multiseed_positive_preflight
 
 ### Phase 4A — Post-cache engineering chain
 
@@ -209,7 +209,6 @@ smokes during iteration.
 
 ## Next Step
 
-Run A6 seed 29 and 43 engineering replications in parallel on the two idle
-GPUs with exactly the seed-17 configuration. Compare prior responsiveness
-without changing settings, then harden the formal three-seed/bootstrap
-execution bundle. Human QA is deferred to the final project stage.
+Harden the formal three-seed/patient-bootstrap execution bundle using the now
+replicated frozen A6 configuration, without launching formal mode or reading
+protected outcomes. Human QA remains deferred to the final project stage.
