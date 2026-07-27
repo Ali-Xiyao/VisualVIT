@@ -181,8 +181,8 @@ smokes during iteration.
 - [x] Add a fail-closed validator for reviewer completion, class balance, and
   the frozen 90% overall/85% per-class thresholds.
 - [x] Obtain and structurally validate the completed local review CSV.
-- [ ] Obtain the reviewer name/ID, role, date, and independent-review
-  attestation.
+- [ ] Obtain the reviewer name/ID, role, relevant experience, date, and
+  independent-review attestation.
 - [ ] Freeze exactly one candidate before any dev reveal.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
@@ -231,7 +231,7 @@ smokes during iteration.
 ## Next Step
 
 Obtain the independent reviewer name or institutional ID, professional role,
-review date, and explicit independent-review confirmation. Then run the
-hardened validator against both the frozen source and reviewed CSV. Do not
-unlock formal training unless it emits the frozen PASS and atomically updates
-the transition audit.
+relevant experience, review date, and explicit independent-review
+confirmation. Then run the hardened validator against both the frozen source
+and reviewed CSV. Do not unlock formal training unless it emits the frozen
+PASS and atomically updates the transition audit.

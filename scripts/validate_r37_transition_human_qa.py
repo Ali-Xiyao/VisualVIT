@@ -67,6 +67,7 @@ def validate_review(
     source_columns: Iterable[str],
     reviewer_name: str,
     reviewer_role: str,
+    reviewer_experience: str,
     review_date: str,
     independent_review_confirmed: bool,
 ) -> dict[str, Any]:
@@ -156,6 +157,7 @@ def validate_review(
     attestation = {
         "reviewer_name": reviewer_name.strip(),
         "reviewer_role": reviewer_role.strip(),
+        "reviewer_experience": reviewer_experience.strip(),
         "review_date": review_date.strip(),
         "independent_review_confirmed": independent_review_confirmed,
     }
@@ -163,6 +165,8 @@ def validate_review(
         errors.append("reviewer name or institutional ID is required")
     if not attestation["reviewer_role"]:
         errors.append("reviewer professional role is required")
+    if not attestation["reviewer_experience"]:
+        errors.append("reviewer relevant experience is required")
     try:
         date.fromisoformat(attestation["review_date"])
     except ValueError:
@@ -293,6 +297,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--transition-audit", type=Path, required=True)
     parser.add_argument("--reviewer-name", required=True)
     parser.add_argument("--reviewer-role", required=True)
+    parser.add_argument("--reviewer-experience", required=True)
     parser.add_argument("--review-date", required=True)
     parser.add_argument(
         "--independent-review-confirmed",
@@ -315,6 +320,7 @@ def main() -> int:
         source_columns=source_columns,
         reviewer_name=args.reviewer_name,
         reviewer_role=args.reviewer_role,
+        reviewer_experience=args.reviewer_experience,
         review_date=args.review_date,
         independent_review_confirmed=args.independent_review_confirmed,
     )

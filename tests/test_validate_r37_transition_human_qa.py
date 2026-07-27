@@ -34,6 +34,7 @@ def _validate(rows):
         source_columns=REQUIRED_COLUMNS,
         reviewer_name="reviewer-1",
         reviewer_role="radiologist",
+        reviewer_experience="5 years chest imaging",
         review_date="2026-07-27",
         independent_review_confirmed=True,
     )
@@ -88,11 +89,12 @@ def test_attestation_is_required():
         source_columns=REQUIRED_COLUMNS,
         reviewer_name="",
         reviewer_role="",
+        reviewer_experience="",
         review_date="not-a-date",
         independent_review_confirmed=False,
     )
     assert result["formal_training_unlocked"] is False
-    assert len(result["errors"]) == 4
+    assert len(result["errors"]) == 5
 
 
 def test_non_qa_source_drift_stops():
@@ -106,6 +108,7 @@ def test_non_qa_source_drift_stops():
         source_columns=REQUIRED_COLUMNS,
         reviewer_name="reviewer-1",
         reviewer_role="radiologist",
+        reviewer_experience="5 years chest imaging",
         review_date="2026-07-27",
         independent_review_confirmed=True,
     )

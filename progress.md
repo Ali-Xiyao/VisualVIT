@@ -403,6 +403,6 @@
 - The focused validator plus formal-preflight suite passes 12 tests; Ruff,
   compileall, and `git diff --check` pass.
 - Current state is `STOP_R37_TRANSITION_HUMAN_QA` only because the reviewer
-  name or institutional ID, professional role, ISO review date, and explicit
-  independent-review confirmation have not been supplied. No GPU job was
-  started.
+  name or institutional ID, professional role, relevant experience, ISO
+  review date, and explicit independent-review confirmation have not been
+  supplied. No GPU job was started.
