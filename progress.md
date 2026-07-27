@@ -246,3 +246,11 @@
   task periodically rechecks the two local status files, repairs protocol-safe
   STOPs, pushes tested changes, and reports changed scientific state without
   duplicating processes or touching protected outcomes.
+- 2026-07-27 15:02 +08:00: the sustained-idle gate passed after three
+  confirmations (`333/0 MiB` at the final poll). The existing launcher started
+  exactly two formal Block-8 workers, PID 36292 on cuda:0 and PID 24792 on
+  cuda:1. No duplicate worker, protected-outcome read, or source/per-shard hash
+  recomputation was observed.
+- 2026-07-27 15:07 +08:00: the post-cache watcher PID 17856 is alive and
+  reports `WAITING_FOR_BLOCK8_CACHE`; scientific status remains not evaluated
+  while the formal cache is running.

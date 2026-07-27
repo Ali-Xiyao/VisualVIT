@@ -318,3 +318,10 @@ preserving the encoder's static medical semantics.
   unique pairs. The v2 cache stores all three temporal controls once, so seed
   29/43 never re-run the image encoder and findings sharing a pair reuse the
   same canonical features.
+- At 15:00-15:02 the idle launcher observed three consecutive low-memory
+  confirmations and started exactly two formal Block-8 cache parts: PID 36292
+  on cuda:0 and PID 24792 on cuda:1. The launcher status is
+  `CACHE_PARTS_RUNNING`; both outcome and source-hash firewalls remain false.
+- The post-cache watcher remains alive as PID 17856 and is correctly waiting
+  for the Block-8 merge. This is an engineering-stage transition, not a
+  scientific result.

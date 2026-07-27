@@ -143,13 +143,14 @@ smokes during iteration.
   per-stage PASS validation, and fail-closed partial-output handling.
 - [x] Attach a thread heartbeat that resumes diagnosis/analysis when the local
   watcher changes state.
-- [ ] Wait for the merged Block-8 cache without competing with unrelated GPU
-  jobs.
+- [ ] Complete and merge the Block-8 cache without competing with unrelated
+  GPU jobs. Two formal parts started automatically after the sustained-idle
+  gate passed at 2026-07-27 15:02 +08:00.
 - [ ] Build and gate CMCP before any A5/A6 execution.
 - [ ] Run bounded A0, A3, and A6 engineering case studies.
 - [ ] Build and merge the one-time A1 three-control cache on both GPUs.
 - [ ] Run the cached A1 engineering probe without image re-encoding.
-- **Status:** watcher_ready_pending_cache
+- **Status:** block8_cache_parts_running
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -187,10 +188,14 @@ smokes during iteration.
 | First A1 cached-control unit test omitted its local `torch` import | 1 | Add the explicit test import; production cache/index code was unaffected |
 | A1 cache merger Ruff pass flagged imports after its intentional `src` path insertion | 1 | Add the same file-level `E402` declaration used by the other standalone repository scripts |
 | First post-cache watcher start stopped on the PowerShell launcher's UTF-8 BOM | 1 | No experiment stage had started; make the shared JSON reader accept `utf-8-sig`, add a BOM regression test, and restart |
+| Cache-start planning writeback twice used stale or mislocated context | 1 | Inspect each live file tail, then update the planning files with separate exact-context patches |
+| PowerShell interpreted unquoted `@{upstream}` while checking branch divergence | 1 | Quote the entire revision expression before rerunning the read-only Git check |
+| A PowerShell `foreach` block was piped directly in the cache snapshot command | 1 | Accumulate snapshot objects in an explicit array before formatting |
 
 ## Next Step
 
-Install a resumable post-cache watcher, then wait for the existing GPU jobs to
-release both devices. It must complete/merge Block-8, build CMCP, run bounded
-A0/A3/A6 case studies, build the one-time A1 control cache, and run cached A1
-without reading protected outcomes.
+Monitor the two existing Block-8 cache workers without starting duplicates.
+After both parts PASS and merge coverage is verified, let the existing
+post-cache watcher build CMCP, run bounded A0/A3/A6 case studies, build the
+one-time A1 control cache, and run cached A1 without reading protected
+outcomes.
