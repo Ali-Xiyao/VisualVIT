@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from copy import deepcopy
 import csv
 from datetime import date
 import json
@@ -35,6 +36,16 @@ REQUIRED_COLUMNS = frozenset(
         "human_notes",
     }
 )
+QA_COLUMNS = frozenset(
+    {
+        "human_direction_correct",
+        "human_error_category",
+        "human_notes",
+    }
+)
+PENDING_AUDIT_STATUS = "PASS_R37A_TRANSITION_SUPPORT_PENDING_HUMAN_QA"
+UNLOCKED_AUDIT_STATUS = "PASS_R37A_TRANSITION_QUALITY"
+RULESET_VERSION = "r37-report-transition-v4.1"
 
 
 def read_rows(path: Path) -> tuple[list[dict[str, str]], list[str]]:
@@ -52,6 +63,8 @@ def validate_review(
     rows: Iterable[dict[str, str]],
     columns: Iterable[str],
     *,
+    source_rows: Iterable[dict[str, str]],
+    source_columns: Iterable[str],
     reviewer_name: str,
     reviewer_role: str,
     review_date: str,
@@ -59,7 +72,35 @@ def validate_review(
 ) -> dict[str, Any]:
     rows = list(rows)
     columns = list(columns)
+    source_rows = list(source_rows)
+    source_columns = list(source_columns)
     errors: list[str] = []
+    source_integrity_errors: list[str] = []
+
+    if columns != source_columns:
+        source_integrity_errors.append(
+            "reviewed CSV columns or column order differ from the frozen source"
+        )
+    if len(rows) != len(source_rows):
+        source_integrity_errors.append(
+            "reviewed CSV row count differs from the frozen source"
+        )
+    non_qa_columns = [
+        column for column in source_columns if column not in QA_COLUMNS
+    ]
+    mismatched_non_qa_rows = 0
+    for source_row, reviewed_row in zip(source_rows, rows):
+        if any(
+            source_row.get(column, "") != reviewed_row.get(column, "")
+            for column in non_qa_columns
+        ):
+            mismatched_non_qa_rows += 1
+    if mismatched_non_qa_rows:
+        source_integrity_errors.append(
+            f"{mismatched_non_qa_rows} reviewed rows changed frozen non-QA fields"
+        )
+    errors.extend(source_integrity_errors)
+
     missing_columns = sorted(REQUIRED_COLUMNS.difference(columns))
     if missing_columns:
         errors.append(f"missing columns: {missing_columns}")
@@ -165,6 +206,13 @@ def validate_review(
             "all_rows_required": True,
         },
         "thresholds_pass": thresholds_pass,
+        "source_integrity": {
+            "checked": True,
+            "columns_and_order_unchanged": columns == source_columns,
+            "row_count_unchanged": len(rows) == len(source_rows),
+            "non_qa_fields_unchanged": mismatched_non_qa_rows == 0,
+            "mismatched_non_qa_rows": mismatched_non_qa_rows,
+        },
         "attestation": attestation,
         "errors": errors,
         "protected_outcomes_read": False,
@@ -175,12 +223,74 @@ def validate_review(
     }
 
 
+def validate_transition_audit(audit: dict[str, Any]) -> list[str]:
+    errors = []
+    if audit.get("schema") != "visualvit.r37.report-transitions.v1":
+        errors.append("transition audit schema is not the frozen R37 schema")
+    if audit.get("ruleset_version") != RULESET_VERSION:
+        errors.append("transition audit ruleset is not frozen v4.1")
+    if audit.get("status") not in {
+        PENDING_AUDIT_STATUS,
+        UNLOCKED_AUDIT_STATUS,
+    }:
+        errors.append("transition audit status is not eligible for QA unlock")
+    if audit.get("protected_outcomes_read") is not False:
+        errors.append("transition audit protected-outcome firewall is not clean")
+    unlock_value = audit.get("formal_training_unlocked")
+    if unlock_value not in {False, True}:
+        errors.append("transition audit formal unlock flag is invalid")
+    elif (
+        audit.get("status") == PENDING_AUDIT_STATUS
+        and unlock_value is not False
+    ):
+        errors.append("pending transition audit is unexpectedly unlocked")
+    elif (
+        audit.get("status") == UNLOCKED_AUDIT_STATUS
+        and unlock_value is not True
+    ):
+        errors.append("passed transition audit is unexpectedly locked")
+    return errors
+
+
+def apply_human_qa_unlock(
+    audit: dict[str, Any],
+    result: dict[str, Any],
+    *,
+    validation_path: Path,
+) -> dict[str, Any]:
+    if result.get("status") != "PASS_R37_TRANSITION_HUMAN_QA":
+        raise ValueError("cannot unlock transition audit from a failed review")
+    updated = deepcopy(audit)
+    updated["status"] = UNLOCKED_AUDIT_STATUS
+    updated["formal_training_unlocked"] = True
+    updated["remaining_gate"] = "formal R37 internal qualification"
+    updated["human_qa_validation"] = str(validation_path.resolve())
+    updated["human_qa_status"] = result["status"]
+    updated["human_qa_rows"] = result["rows"]
+    updated["human_qa_overall_accuracy"] = result["overall_accuracy"]
+    updated["human_qa_per_label_accuracy"] = result["per_label_accuracy"]
+    updated["human_qa_attestation"] = result["attestation"]
+    return updated
+
+
+def write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(f"{path.suffix}.tmp")
+    temporary.write_text(
+        json.dumps(payload, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Validate the frozen independent R37 transition QA sheet"
     )
+    parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--transition-audit", type=Path, required=True)
     parser.add_argument("--reviewer-name", required=True)
     parser.add_argument("--reviewer-role", required=True)
     parser.add_argument("--review-date", required=True)
@@ -193,20 +303,34 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    transition_audit = json.loads(
+        args.transition_audit.read_text(encoding="utf-8-sig")
+    )
+    source_rows, source_columns = read_rows(args.source)
     rows, columns = read_rows(args.input)
     result = validate_review(
         rows,
         columns,
+        source_rows=source_rows,
+        source_columns=source_columns,
         reviewer_name=args.reviewer_name,
         reviewer_role=args.reviewer_role,
         review_date=args.review_date,
         independent_review_confirmed=args.independent_review_confirmed,
     )
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(result, indent=2, sort_keys=True),
-        encoding="utf-8",
-    )
+    audit_errors = validate_transition_audit(transition_audit)
+    if audit_errors:
+        result["errors"].extend(audit_errors)
+        result["status"] = "STOP_R37_TRANSITION_HUMAN_QA"
+        result["formal_training_unlocked"] = False
+    write_json_atomic(args.output, result)
+    if result["formal_training_unlocked"]:
+        updated_audit = apply_human_qa_unlock(
+            transition_audit,
+            result,
+            validation_path=args.output,
+        )
+        write_json_atomic(args.transition_audit, updated_audit)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["formal_training_unlocked"] else 2
 

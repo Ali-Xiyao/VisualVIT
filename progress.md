@@ -390,3 +390,19 @@
 - Created the local review work copy
   `r37_transition_case_study_REVIEWED.csv` and placed the Chinese guide beside
   it in the controlled transition directory. The CSV remains outside Git.
+- 2026-07-27 18:01 +08:00: received the completed local review sheet and
+  checked it without reading protected outcomes or recomputing hashes. All
+  200 rows are complete, 195 are TRUE, and the frozen overall/per-class
+  thresholds pass.
+- Verified exact source integrity without hashing: the reviewed file retains
+  all 200 case IDs in order, the original column order, and unchanged non-QA
+  fields. The five FALSE rows use five valid taxonomy categories.
+- Hardened the reviewer validator to require the frozen source CSV, reject
+  column/order/row/non-QA drift, validate the transition-audit firewall, and
+  atomically apply the formal unlock only after a full PASS.
+- The focused validator plus formal-preflight suite passes 12 tests; Ruff,
+  compileall, and `git diff --check` pass.
+- Current state is `STOP_R37_TRANSITION_HUMAN_QA` only because the reviewer
+  name or institutional ID, professional role, ISO review date, and explicit
+  independent-review confirmation have not been supplied. No GPU job was
+  started.

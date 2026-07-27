@@ -1,7 +1,13 @@
+from pathlib import Path
+
 from scripts.validate_r37_transition_human_qa import (
     LABELS,
+    PENDING_AUDIT_STATUS,
     REQUIRED_COLUMNS,
+    UNLOCKED_AUDIT_STATUS,
+    apply_human_qa_unlock,
     validate_review,
+    validate_transition_audit,
 )
 
 
@@ -20,9 +26,12 @@ def _rows():
 
 
 def _validate(rows):
+    source_rows = _rows()
     return validate_review(
         rows,
         REQUIRED_COLUMNS,
+        source_rows=source_rows,
+        source_columns=REQUIRED_COLUMNS,
         reviewer_name="reviewer-1",
         reviewer_role="radiologist",
         review_date="2026-07-27",
@@ -75,6 +84,8 @@ def test_attestation_is_required():
     result = validate_review(
         _rows(),
         REQUIRED_COLUMNS,
+        source_rows=_rows(),
+        source_columns=REQUIRED_COLUMNS,
         reviewer_name="",
         reviewer_role="",
         review_date="not-a-date",
@@ -82,3 +93,62 @@ def test_attestation_is_required():
     )
     assert result["formal_training_unlocked"] is False
     assert len(result["errors"]) == 4
+
+
+def test_non_qa_source_drift_stops():
+    source_rows = _rows()
+    reviewed_rows = _rows()
+    reviewed_rows[0]["label"] = "Worse"
+    result = validate_review(
+        reviewed_rows,
+        REQUIRED_COLUMNS,
+        source_rows=source_rows,
+        source_columns=REQUIRED_COLUMNS,
+        reviewer_name="reviewer-1",
+        reviewer_role="radiologist",
+        review_date="2026-07-27",
+        independent_review_confirmed=True,
+    )
+    assert result["formal_training_unlocked"] is False
+    assert result["source_integrity"]["non_qa_fields_unchanged"] is False
+    assert any("non-QA fields" in error for error in result["errors"])
+
+
+def _transition_audit():
+    return {
+        "schema": "visualvit.r37.report-transitions.v1",
+        "ruleset_version": "r37-report-transition-v4.1",
+        "status": PENDING_AUDIT_STATUS,
+        "formal_training_unlocked": False,
+        "protected_outcomes_read": False,
+    }
+
+
+def test_transition_audit_unlock_is_explicit_and_preserves_firewall():
+    result = _validate(_rows())
+    audit = _transition_audit()
+    assert validate_transition_audit(audit) == []
+    unlocked = apply_human_qa_unlock(
+        audit,
+        result,
+        validation_path=Path("review.json"),
+    )
+    assert audit["formal_training_unlocked"] is False
+    assert unlocked["status"] == UNLOCKED_AUDIT_STATUS
+    assert unlocked["formal_training_unlocked"] is True
+    assert unlocked["protected_outcomes_read"] is False
+    assert unlocked["human_qa_overall_accuracy"] == 1.0
+
+
+def test_transition_audit_with_dirty_firewall_stops():
+    audit = _transition_audit()
+    audit["protected_outcomes_read"] = True
+    errors = validate_transition_audit(audit)
+    assert any("firewall" in error for error in errors)
+
+
+def test_transition_audit_rejects_status_unlock_inconsistency():
+    audit = _transition_audit()
+    audit["formal_training_unlocked"] = True
+    errors = validate_transition_audit(audit)
+    assert any("unexpectedly unlocked" in error for error in errors)

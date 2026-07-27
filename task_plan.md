@@ -175,17 +175,19 @@ smokes during iteration.
 
 ### Phase 5 — Conditional R37C/R38/R39
 
-- [ ] At the end of the project, package and obtain independent human QA over
+- [ ] At the end of the project, complete independent human QA over
   the frozen 200-row transition case sheet.
 - [x] Write a reviewer-facing Chinese guide and fixed error taxonomy.
 - [x] Add a fail-closed validator for reviewer completion, class balance, and
   the frozen 90% overall/85% per-class thresholds.
-- [ ] Obtain the completed local CSV plus reviewer attestation.
+- [x] Obtain and structurally validate the completed local review CSV.
+- [ ] Obtain the reviewer name/ID, role, date, and independent-review
+  attestation.
 - [ ] Freeze exactly one candidate before any dev reveal.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** human_qa_handoff_ready
+- **Status:** human_qa_content_pass_pending_attestation
 
 ## Errors Encountered
 
@@ -228,6 +230,8 @@ smokes during iteration.
 
 ## Next Step
 
-Wait for the independent reviewer to return the completed local
-`r37_transition_case_study_REVIEWED.csv` plus the attestation. Then run the
-validator; do not unlock formal training unless it emits the frozen PASS.
+Obtain the independent reviewer name or institutional ID, professional role,
+review date, and explicit independent-review confirmation. Then run the
+hardened validator against both the frozen source and reviewed CSV. Do not
+unlock formal training unless it emits the frozen PASS and atomically updates
+the transition audit.

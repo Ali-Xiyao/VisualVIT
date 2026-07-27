@@ -474,3 +474,14 @@ preserving the encoder's static medical semantics.
 - The validator was exercised against the blank sheet and correctly returned
   `STOP_R37_TRANSITION_HUMAN_QA`, `completed_rows=0`, exit code 2, and
   `formal_training_unlocked=false`.
+- The returned review sheet now contains all 200 judgments. It has 195 TRUE
+  and five FALSE rows, for 97.5% overall agreement. Per-class agreement is
+  Stable 97.5%, Improved 100%, Worse 97.5%, New 92.5%, and Resolved 100%;
+  all frozen numerical thresholds pass.
+- Row count, column order, case order, and every non-QA field match the frozen
+  source sheet exactly. All five FALSE rows have valid error categories.
+- The reviewer attestation was not returned as a separate local artifact and
+  is not encoded in the CSV. Formal training therefore remains locked despite
+  the passing content metrics.
+- The validator is now fail-closed on frozen-source drift and can atomically
+  update the transition audit only after both the sheet and attestation pass.
