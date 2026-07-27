@@ -228,3 +228,17 @@
   20.9/19.8 GB and R37 is still correctly waiting with zero idle polls.
 - The third-checkpoint complete repository regression passed 639 tests with
   one unchanged historical R14 expected-xfail in 370.81 seconds.
+- Froze the post-cache engineering order: Block-8 merge, CMCP gate, bounded
+  A0/A3/A6 case studies, one-time two-GPU A1 control cache, then cached A1
+  probing. Every GPU stage rechecks sustained idle state and every stage is
+  resumable from its own PASS artifact.
+- Implemented the post-cache watcher with atomic status updates, sustained
+  two-GPU idle checks, exact PASS-artifact resume rules, parallel A1 parts,
+  and fail-closed handling of partial or failed outputs.
+- The watcher-focused suite passed 5 tests and Ruff reported no issues.
+- The first watcher process safely stopped before any experiment because the
+  PowerShell launcher status contains a UTF-8 BOM. No cache/output was
+  partially created; the reader is being hardened with a BOM regression test.
+- The BOM regression test and Ruff pass after the repair. The watcher restarted
+  as PID 17856 and now reports `WAITING_FOR_BLOCK8_CACHE` while observing the
+  original launcher's `WAITING_FOR_GPU_IDLE` state.

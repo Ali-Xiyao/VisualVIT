@@ -137,6 +137,18 @@ smokes during iteration.
   controls, including exact row-order and formal-unlock checks.
 - **Status:** in_progress
 
+### Phase 4A — Post-cache engineering chain
+
+- [x] Install a resumable post-cache watcher with sustained-idle checks,
+  per-stage PASS validation, and fail-closed partial-output handling.
+- [ ] Wait for the merged Block-8 cache without competing with unrelated GPU
+  jobs.
+- [ ] Build and gate CMCP before any A5/A6 execution.
+- [ ] Run bounded A0, A3, and A6 engineering case studies.
+- [ ] Build and merge the one-time A1 three-control cache on both GPUs.
+- [ ] Run the cached A1 engineering probe without image re-encoding.
+- **Status:** watcher_ready_pending_cache
+
 ### Phase 5 — Conditional R37C/R38/R39
 
 - [ ] Freeze exactly one candidate before any dev reveal.
@@ -172,9 +184,11 @@ smokes during iteration.
 | First combined A0/qualification patch expected a nonexistent `test_prta.py` assertion context | 1 | Confirm the patch was atomic, inspect the live test tail, and split the implementation into smaller exact-context patches |
 | First A1 cached-control unit test omitted its local `torch` import | 1 | Add the explicit test import; production cache/index code was unaffected |
 | A1 cache merger Ruff pass flagged imports after its intentional `src` path insertion | 1 | Add the same file-level `E402` declaration used by the other standalone repository scripts |
+| First post-cache watcher start stopped on the PowerShell launcher's UTF-8 BOM | 1 | No experiment stage had started; make the shared JSON reader accept `utf-8-sig`, add a BOM regression test, and restart |
 
 ## Next Step
 
-Push the tested A1/PRTA engineering checkpoint. Then wait for the existing GPU
-jobs to release both devices, complete and merge the two-part Block-8 cache,
-and build/audit the CMCP index without reading protected outcomes.
+Install a resumable post-cache watcher, then wait for the existing GPU jobs to
+release both devices. It must complete/merge Block-8, build CMCP, run bounded
+A0/A3/A6 case studies, build the one-time A1 control cache, and run cached A1
+without reading protected outcomes.
