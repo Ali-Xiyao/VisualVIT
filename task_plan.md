@@ -142,7 +142,7 @@ smokes during iteration.
   1,000/500/3-epoch configuration; do not tune from their outcomes.
 - [ ] Prepare the formal three-seed/bootstrap execution bundle without
   launching formal mode or protected evaluation.
-- **Status:** engineering_multiseed_preflight
+- **Status:** engineering_multiseed_running
 
 ### Phase 4A — Post-cache engineering chain
 

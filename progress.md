@@ -317,3 +317,8 @@
   Stopped that packet work before implementation and redirected the current
   phase to frozen seed-29/43 engineering replication and formal-runner
   preflight.
+- 2026-07-27 16:30 +08:00: after three consecutive two-GPU idle
+  confirmations, launched the frozen seed-29 and seed-43 A6 replications as
+  PID 23416 on cuda:0 and PID 1952 on cuda:1. Both use the unchanged
+  1,000/500/3-epoch, batch-2, rank-32, LR-1e-4 configuration; both stderr logs
+  are empty at startup.
