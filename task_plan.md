@@ -1,157 +1,158 @@
-# Task Plan: TIER-CXR-VLM R33A Case-Study Rescue
+# Task Plan: PRTA-CXR R37 Prior-Responsive Temporal Adaptation
 
 ## Authority
 
-- Primary protocol: `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`.
-- Result registry: `TIER_CXR_VLM_Empty_Result_Tables_CN.md`.
-- Inherited scientific boundary: R31 is a reproduced fresh-silver development
-  GO; R26 human-gold `STOP_C1` remains immutable.
-- Branch: `codex/r32-tier-cxr-vlm`, created from `7c4c51e`.
-- Historical R26-R31 artifacts are frozen and may only be read for lineage.
+- User execution authority: the 2026-07-27 PRTA-CXR handoff attached to this
+  task.
+- Branch: `codex/r37-prior-responsive-temporal-adapter`, created from
+  `85f3951`.
+- Frozen predecessor result:
+  `reports/R33A_CASE_STUDY_RESCUE_RESULT.md`.
+- Historical R31 is a valid but non-transferable discovery result.
+- R33/R33A are frozen negative evidence:
+  `STOP_R33A_FROZEN_CACHE_PREMISE`.
 
 ## Objective
 
-Preserve the completed R32 GO and R33 STOP as immutable evidence, then diagnose
-R33 at case level and develop a mechanistically different R33A candidate. Use
-only the 1,574-patient train partition for case-study-driven iteration. Freeze
-one candidate before a single 300-patient dev confirmation. Unlock R34 only if
-the new registered gate passes. Never read the 483-patient sealed VLM test or
-gold outcomes during R33A.
+Build and qualify PRTA-CXR, a lightweight temporal visual adapter that learns
+directional progression semantics and responsiveness to the correct prior
+before any 64-token compression or frozen-VLM transfer.
 
-Passing is not guaranteed by repeated attempts: every attempt must correspond
-to a distinct, documented hypothesis, and the formal candidate is evaluated
-once after freeze.
+The new route must use an independent longitudinal pretraining cohort with
+zero patient overlap against the 300-patient dev split, 483-patient sealed
+test, and all quarantined gold/external patients. It must not reuse outcome
+labels from the 1,574-patient R33A train partition for further route,
+threshold, seed, projection, width, voting, or coverage tuning.
 
-## Lightweight provenance policy
+## Non-Negotiable Stop Rules
 
-Per user direction, do not repeatedly recompute large file or cache hashes.
-Record existing authoritative lineage once, compute a protocol/cohort/cache
-identifier only when an artifact is first frozen, and use existence, schema,
-row-count, split-disjointness, and smoke checks during ordinary iteration.
+- Do not run Attempt H/I/J routing or any new threshold/voting search.
+- Do not reveal 300 dev, 483 sealed-test, or gold outcomes until the registered
+  R37 model/loss/seed/baseline bundle is frozen.
+- Do not treat pair-identity discrimination as progression reasoning.
+- Do not feed R31 predictions, progression labels, or fitted logits into visual
+  tokens.
+- Do not unlock R38 token survival or R39 frozen-VLM transfer until R37 passes.
+- Stop at the first failed gate rather than scaling downstream.
 
-## Gate order
+## Lightweight Provenance Policy
 
-1. **R32 Authority and engineering freeze**
-   - Build the 2,383-patient zero-overlap five-class master cohort with
-     1,574 Train, 300 Dev/Calibration, and 483 Sealed VLM Test patients after
-     quarantining 26 registered gold patients from the 2,383-person master.
-   - Quarantine all gold/external patient IDs and establish an access log.
-   - Audit data/license/support/power without reading gold outcomes.
-   - Implement exact-64 robust/rich token bundles and OOF routing contracts.
-   - Build/reuse the BiomedCLIP patch cache.
-   - Pass Qwen3-VL-4B exact-64 injection smoke.
-   - Run unit tests; do not reveal formal test outcomes.
-2. **R33 Token Survival**
-   - Run patient-disjoint 5-fold OOF probe routing on Train+Dev only.
-   - Compare P3/P4/P5/P6/P7, seeds 17/29/43, bootstrap and shortcuts.
-   - GO only if all proposal gates pass; otherwise STOP VLM scale-up.
-3. **R34 Frozen-VLM Transfer**
-   - Unlock only after R33 GO.
-   - Freeze model/prompt/layout/loss/seeds, then reveal the 483 test once.
-4. **R35 Human-Gold / External**
-   - Unlock only with adequate registered support and quarantine intact.
-5. **R36 Grounding, generation, and paper tables**
-   - Unlock only according to the proposal decision tree.
+Do not repeatedly recompute hashes of unchanged assets. Reuse the authoritative
+R32 split/quarantine identifiers, register new R37 artifacts once at freeze,
+and use schema, counts, patient-disjointness, path existence, and targeted
+smokes during iteration.
+
+## Gate Order
+
+1. **R37A — Independent data and intermediate-token cache**
+   - Build an independent MIMIC-CXR longitudinal image-report pretraining pool.
+   - Exclude every R32 dev/test/gold/external patient before report or outcome
+     processing.
+   - Freeze patient/time/report lineage and an internal train/calibration split.
+   - Build current-matched counterfactual-prior (CMCP) candidates.
+   - Cache reproducible BiomedCLIP Block-8 patch tokens, not final-layer tokens.
+2. **R37B — Temporal adapter pretraining**
+   - Freeze ViT Blocks 1-8 and base parameters in Blocks 9-12.
+   - Train low-rank adapters plus query-conditioned cross-time attention.
+   - Evaluate A0-A6: frozen BiomedCLIP, frozen BioViL-T when available, naive
+     adapter, transition alignment, inversion, CMCP, and full PRTA-CXR.
+   - Use transition alignment, CMCP, temporal inversion, static-state
+     preservation, and optional grounding auxiliary losses.
+3. **R37 internal qualification**
+   - True pair must beat current-only by at least +2 pp with patient-bootstrap
+     CI lower bound above zero and all three seeds positive.
+   - True pair must beat CMCP prior by at least +2 pp with CI lower above zero.
+   - Temporal-inversion consistency and static-state retention must pass
+     thresholds frozen on internal calibration only.
+   - PRTA transition tokens must beat frozen BiomedCLIP difference tokens by at
+     least +2 pp under a capacity-matched probe.
+4. **R37C — One-shot 300-patient dev**
+   - Unlock only after all data/model/loss/seed/threshold/baseline choices are
+     frozen and internal gates pass.
+5. **R38 — Fixed 64-token survival**
+   - No sample-level routing.
+   - Require at least +2 pp over frozen tokens, CI lower above zero, and retain
+     at least 70% of the qualified correct-prior effect.
+6. **R39 — Frozen-VLM transfer**
+   - Freeze Qwen3-VL-4B, prompt, 64-token budget, projector budget, candidate
+     scoring, and no-pixel-bypass contract before the one-shot sealed test.
 
 ## Phases
 
-### Phase 0 — Reset and audit
+### Phase 0 — R37 authority reset
 
-- [x] Create R32 branch from `7c4c51e`.
-- [x] Archive the completed R31 planning bundle.
-- [x] Reconstruct the exact remaining R31 reserve and local model/data assets.
-- [x] Freeze the minimal R32 execution specification.
-- **Status:** complete
+- [x] Create the R37 branch from `85f3951`.
+- [x] Archive the completed R33A planning bundle.
+- [x] Freeze R33/R33A code and results as read-only lineage.
+- [x] Write the executable R37 protocol and artifact contracts.
+- **Status:** completed
 
-### Phase 1 — R32 implementation
+### Phase 1 — R37A source and feasibility audit
 
-- [x] Implement master split and gold quarantine.
-- [x] Implement exact-64 token bundle and OOF route contracts.
-- [x] Implement lightweight cache and exact-64 smoke paths.
-- [x] Add focused unit tests.
-- **Status:** complete
+- [x] Inventory local MIMIC-CXR images, reports, metadata, Chest ImaGenome
+  relations, model checkpoints, and available storage.
+- [x] Verify data-use boundaries and document any authentication dependency.
+- [x] Build the forbidden-patient registry without reading dev/test/gold
+  outcomes.
+- [x] Measure eligible longitudinal-pair support and class/source coverage.
+- [x] Confirm whether at least 30,000 independent training pairs are available.
+- **Status:** completed
 
-### Phase 2 — R32 execution
+### Phase 2 — R37A manifests and CMCP index
 
-- [x] Run cohort/quarantine/support audits.
-- [x] Build or reuse patch cache.
-- [x] Run exact-64 Qwen smoke and R32 test suite.
-- [x] Fill R32 result tables and issue GO/STOP.
-- **Status:** complete — `GO_R32_READY_R33`
+- [x] Implement patient-disjoint pretrain/internal-calibration manifests.
+- [x] Implement current-matched counterfactual-prior retrieval with no target
+  outcome leakage at inference.
+- [ ] Audit >=90% CMCP coverage for dynamic rows or stop and revise the design.
+- [x] Add focused unit tests and structural audits.
+- **Status:** in_progress
 
-### Phase 3 — R33 execution
+### Phase 3 — Block-8 cache and minimal adapter
 
-- [x] Run only if R32 GO.
-- [x] Fill R33 tables, shortcuts, uncertainty, and decision.
-- **Status:** complete — `STOP_R33_TOKEN_SURVIVAL`
+- [x] Implement Block-8 extraction with the shared frozen BiomedCLIP encoder.
+- [x] Build a small cache smoke before any full cache.
+- [x] Implement low-rank Blocks 9-12 adaptation and query-conditioned
+  cross-time attention.
+- [x] Implement state and transition token separation.
+- **Status:** in_progress
 
-### Phase 4 — Conditional R34-R36
+### Phase 4 — Losses and internal qualification
 
-- [x] Follow the first failed gate and stop downstream scaling when required.
-- **Status:** complete — R34-R36 remain locked after R33 STOP
+- [x] Implement transition semantic alignment.
+- [x] Implement CMCP margin loss.
+- [x] Implement temporal inversion and static-state preservation.
+- [ ] Implement A0-A6 capacity-matched baselines and ablations.
+- [ ] Run internal patient-disjoint qualification and bootstrap gates.
+- **Status:** pending
 
-### Phase 5 — R33A forensic case study
+### Phase 5 — Conditional R37C/R38/R39
 
-- [x] Build train-only correction/harm case registry from R33 OOF artifacts.
-- [x] Quantify failures by label, finding, fold, route confidence, and
-  robust-vs-rich disagreement.
-- [x] Audit representation construction, route target, and control semantics.
-- [x] Select non-overlapping rescue hypotheses and freeze each before use.
-- **Status:** complete
-
-### Phase 6 — R33A exploratory rescue
-
-- [x] Implement Attempt A direct-transition tokens with patient-disjoint inner
-  validation; retained as a documented failure.
-- [x] Implement Attempt B cross-fitted benefit routing; retained as a
-  documented failure.
-- [x] Implement Attempt C common-width nonlinear token reader; retained as a
-  documented failure.
-- [x] Implement Attempt D anatomy/context token bridge; retained as the
-  strongest selected-bundle failure.
-- [x] Reject raw token geometry, finding interactions, and confidence-threshold
-  tuning as benefit-router rescues.
-- [x] Implement Attempt E/E2 explicit prior/current coherence bridge and
-  projection-matched audit.
-- [x] Require Attempt E to improve the prior-shuffle control before considering
-  another routing mutation.
-- [x] Implement Attempt F fold-trained 64-dimensional bridge.
-- [x] Implement Attempt G cross-fitted benefit-conditioned learned bridge.
-- [x] Continue train-only case-study experiments and reject failed hypotheses.
-- [x] Close the frozen-cache premise after no candidate passes all gates.
-- **Status:** complete — `STOP_R33A_FROZEN_CACHE_PREMISE`
-
-### Phase 7 — One-shot dev confirmation
-
-- [x] Do not fit/evaluate dev because no train-only candidate survived.
-- [ ] Fit the frozen candidate on train only and evaluate the 300-patient dev
-  split once.
-- [ ] Require primary delta, uncertainty, seed, random-route, prior-shuffle,
-  query-only, and leakage gates.
-- [ ] Reproduce only after scientific GO.
-- **Status:** locked — no surviving R33A candidate
-
-### Phase 8 — Conditional R34-R36
-
-- [ ] Unlock R34 only after R33A confirmation GO.
-- [ ] Keep the 483-patient sealed test and gold outcomes unread until then.
-- **Status:** locked — R33A survival gate failed
+- [ ] Freeze exactly one candidate before any dev reveal.
+- [ ] Reveal the 300-patient dev once only after internal GO.
+- [ ] Unlock R38 only after R37C GO.
+- [ ] Unlock R39/test/gold only in the registered order.
+- **Status:** locked
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
-| Vectorized toy scoring differed from serial by floating-point batch-order roundoff | 1 | Test elementwise numerical equivalence at `atol=rtol=1e-6`; formulas and predictions are unchanged |
-| Literal 1,600/300/483 split left only 2,357 patients after mandatory gold quarantine | 1 | Registered protocol v1.1 before any model run: preserve 300 dev and 483 sealed test; use 1,574 train and keep the 26 gold patients quarantined |
-| First v1.1 audit reported the 26 deliberately quarantined master patients as active gold leakage | 1 | Separate `quarantined_master_patients=26` from `active_gold_patient_overlap=0`; cohort selection itself was correct |
-| Qwen smoke script could not import `visualvit` outside an editable install | 1 | Add the repository `src` directory to `sys.path`, matching the other standalone runners |
-| Real Qwen BF16 expanded-batch scores preserved argmax but differed from serial scores by 0.17 | 1 | Preserve the failed BF16 diagnostic; run the engineering equivalence reference in FP32 while retaining a separate BF16 exact-64/freeze/no-pixel audit |
-| FP32 real-Qwen batch-shape roundoff was 2.96e-5, above the toy-scale 1e-6 assertion | 1 | Protocol v1.2 freezes real-model FP32 equivalence at max abs diff <=1e-4 plus identical argmax; toy deterministic tests remain 1e-6 |
-| R33 feature preflight retained the proposal's pre-quarantine 1,900 train+dev count | 1 | Correct to the registered v1.1 split: 1,574 train + 300 dev = 1,874 patients; no feature output had been created |
-| First R33 GPU launch was rejected by PyTorch deterministic cuBLAS guard | 1 | Set `CUBLAS_WORKSPACE_CONFIG=:4096:8` before importing torch; failure occurred before any fitted probe or result output |
-| R33A Attempt A scoped lint found an unused `defaultdict` import | 1 | Removed the import before feature generation; tests already passed |
-| Attempt D treated a comma-separated multi-anatomy string as one intersected region and produced an empty mask | 1 | Split registered anatomy components, build each fixed mask independently, and use their union; failure occurred before feature output |
-| Attempt E v1 omitted three legacy runner audit booleans although its adapter and cache were frozen | 1 | Add the explicit audit fields and promote the already-built binary payload to a fresh v2 path without recomputing patches or adapter features |
-| Attempt E changed all projection seeds while expanding the relation input, confounding its P3 reference | 1 | Freeze E2 before rerun: preserve every Attempt D projection row and append only the 64 new coherence rows |
-| First E2 tensor-comparison command indexed payload keys instead of `payload["features"]` | 1 | Corrected the read-only comparison; no artifact was written or changed |
-| Attempt F scoped lint found an unused `Any` import | 1 | Removed the import before feature generation; all focused tests already passed |
+| Pure move-only planning-file patch was rejected as an empty hunk | 1 | Move each file with an explicit archived heading change, then create the new active bundle |
+| Combined archive patch used the wrong findings heading | 1 | Inspect exact headings, then archive with matching context |
+| First R37 inventory writeback patch expected a different `findings.md` evidence-hygiene body | 1 | Read the active planning files and reapply against exact current context |
+| Attempted to inspect a guessed `tests/test_build_r29_fresh_silver_cohort.py` path that does not exist | 1 | Used the actual builder and repository search results; no file was changed |
+| First full R37A audit reported `STOP_R37A_DATA_SUPPORT` even though every substantive structural check passed | 1 | The check map used negative facts (`protected_outcomes_read=false`) as PASS booleans; rename them to positive assertions and repair only the small audit JSON without rescanning manifests |
+| First Block-8 smoke writeback patch matched a mojibake rendering of the Phase 3 heading | 1 | Search the live file for the exact Unicode heading and reapply the writeback |
+| R37 transition extractor v1 passed count support but failed qualitative scope review | 1 | Freeze v1 as a failed case study; repair negation, section, clause, lateral-comparison, and partial-resolution rules in v2 before any training |
+| R37 transition extractor v2 retained ample support but New/Worse still admitted uncertainty and alternative scope | 1 | Keep v2 as the second failed case study; reject may/could/potential/versus and ambiguous alternatives, and split neighboring findings conservatively in v3 |
+| First v3 tests showed sentence-level negation/alternative context was lost after splitting on `or` | 1 | Apply negated-new and ambiguous-alternative rejection before clause splitting, then keep clause-local checks as a second layer |
+| v4 source adjudication found two residual false positives despite passing the 99%/97.5% quality gate | 1 | Freeze the v4 score, then apply only a v4.1 soft-wrap and sentence-level uncertainty bugfix; do not expand the semantic lexicon further |
+| DUA search included a nonexistent root `README.md` path | 1 | Use the active protocol documents; no data or repository artifact was changed |
+| Combined planning cleanup patch used the console's mojibake rendering of em-dash headings | 1 | Leave the correctly encoded headings unchanged and patch only exact task lines |
+| First staged diff check found Markdown trailing spaces and one extra EOF blank line | 1 | Remove the whitespace-only issues and rerun the cached diff check before commit |
+
+## Next Step
+
+Wait for the existing GPU jobs to release both devices, complete and merge the
+two-part Block-8 cache, then build and audit the CMCP index without reading
+protected outcomes.
