@@ -103,9 +103,9 @@ smokes during iteration.
 - [x] Implement patient-disjoint pretrain/internal-calibration manifests.
 - [x] Implement current-matched counterfactual-prior retrieval with no target
   outcome leakage at inference.
-- [ ] Audit >=90% CMCP coverage for dynamic rows or stop and revise the design.
+- [x] Audit >=90% CMCP coverage for dynamic rows or stop and revise the design.
 - [x] Add focused unit tests and structural audits.
-- **Status:** in_progress
+- **Status:** completed
 
 ### Phase 3 — Block-8 cache and minimal adapter
 
@@ -114,7 +114,7 @@ smokes during iteration.
 - [x] Implement low-rank Blocks 9-12 adaptation and query-conditioned
   cross-time attention.
 - [x] Implement state and transition token separation.
-- **Status:** in_progress
+- **Status:** completed
 
 ### Phase 4 — Losses and internal qualification
 
@@ -126,7 +126,7 @@ smokes during iteration.
   merged Block-8 cache.
 - [x] Resolve the availability-gated A1 BioViL-T source/checkpoint boundary and
   prove strict official-checkpoint loading before evaluation integration.
-- [ ] Cache and evaluate the frozen canonical A1 BioViL-T pair representation
+- [x] Cache and evaluate the frozen canonical A1 BioViL-T pair representation
   with the pre-frozen linear finding-conditioned probe.
 - [x] Store A1 true/current-only/inverted controls once for only the
   transition-supervised pairs; forbid per-seed image re-encoding.
@@ -140,9 +140,21 @@ smokes during iteration.
   keeping seed 17, rank 32, LR 1e-4, batch size 2, and all losses unchanged.
 - [x] Run seed 29 and 43 engineering replications at the identical frozen A6
   1,000/500/3-epoch configuration; do not tune from their outcomes.
-- [ ] Prepare the formal three-seed/bootstrap execution bundle without
+- [x] Prepare the formal three-seed/bootstrap execution bundle without
   launching formal mode or protected evaluation.
-- **Status:** engineering_multiseed_positive_preflight
+- [x] Freeze one machine-readable A6 formal-run specification covering seeds,
+  patient bootstrap, cache references, output layout, and stop conditions.
+- [x] Implement a fail-closed formal preflight command that validates the
+  specification and all non-outcome prerequisites without training.
+- [x] Add end-to-end tests for seed drift, row-order drift, patient-cluster
+  bootstrap validity, protected-outcome firewalls, and resumable output rules.
+- [x] Produce a readiness manifest and handoff command while leaving formal
+  training locked.
+- [x] Operationalize the frozen inversion and state-retention gates before any
+  formal result is observed.
+- [x] Harden the formal A0 capacity-matched baseline and paired A6-minus-A0
+  patient-bootstrap gate.
+- **Status:** formal_bundle_ready_pending_human_qa
 
 ### Phase 4A — Post-cache engineering chain
 
@@ -206,9 +218,12 @@ smokes during iteration.
 | Two isolated redirected exit-code diagnostics were rejected by command policy because they combined temporary-file cleanup with a child shell | 2 | Stop probing through nested temp cleanup; test manifest-backed recovery through repository-level helpers and fixtures |
 | A second manifest-inspection command repeated the PowerShell direct-`foreach` pipeline parse error | 2 | Reuse the already-recorded explicit-array pattern and keep subsequent commands single-purpose |
 | The first cached A1 CPU probe passed FP16 cache tensors directly to an FP32 linear probe and stopped on a dtype mismatch | 1 | Cast cached or direct canonical features to FP32 at the probe tensor boundary, add an FP16 regression test, and resume only the cached probe |
+| Focused preflight tests invoked through the standalone `pytest.exe` could not import the repository's namespace-style `scripts` modules | 1 | Use the repository's established `python -m pytest` invocation so the workspace root is on `sys.path`; Ruff and diff checks already passed |
+| The partial-output/spec-drift test fixture created a nested temporary transition directory without its parent | 1 | Add `parents=True` to fixture directory creation; production preflight logic was not involved |
+| The A6-versus-A0 aggregate test fixture inherited an A6 `calibration` object, so normalization ignored its A0 top-level fields and correctly produced a STOP | 1 | Remove the impossible inherited field from the synthetic A0 payload; production A0 artifacts already use only the top-level schema |
 
 ## Next Step
 
-Harden the formal three-seed/patient-bootstrap execution bundle using the now
-replicated frozen A6 configuration, without launching formal mode or reading
-protected outcomes. Human QA remains deferred to the final project stage.
+Commit and push the tested locked formal bundle. Do not launch formal mode or
+read protected outcomes. After handoff, R37 has no further permitted non-human
+experiment until the final-stage independent transition QA unlocks it.

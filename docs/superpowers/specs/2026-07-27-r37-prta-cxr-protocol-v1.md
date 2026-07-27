@@ -273,8 +273,14 @@ Internal GO requires:
    95% CI lower bound above zero, all three seeds positive;
 2. true pair minus CMCP-prior macro F1 at least +2.0 pp with CI lower above
    zero;
-3. frozen inversion-consistency thresholds pass;
-4. current-state performance is no more than 1.0 pp below frozen BiomedCLIP;
+3. temporal inversion consistency is measured as the fraction of reversed-pair
+   predictions equal to the fixed inverse mapping
+   `Stable->Stable`, `Improved<->Worse`, and `New<->Resolved`; every seed must
+   reach at least 0.90;
+4. current-state retention is the mean cosine similarity between the adapted
+   state embedding and the frozen current-image embedding used by the
+   preregistered state-preservation loss. Frozen BiomedCLIP defines 1.0, so
+   "no more than 1.0 pp below" requires at least 0.99 in every seed;
 5. a capacity-matched probe on PRTA transition tokens beats frozen BiomedCLIP
    difference tokens by at least +2.0 pp.
 

@@ -417,3 +417,46 @@ preserving the encoder's static medical semantics.
   `reports/R37_A6_ENGINEERING_MULTISEED_CASE_STUDY.md`. The next protocol-safe
   step is execution-chain hardening for the still-locked formal bundle, not
   outcome-driven tuning or a protected reveal.
+- Formal-bundle inventory exposed two fail-closed runner gaps. The existing
+  `run_r37_prta_smoke.py --formal` path retains engineering defaults of only
+  100 train/50 calibration rows, and its seed-dependent balanced calibration
+  sampling would violate the aggregator's exact cross-seed row-order contract.
+- The same runner currently emits the engineering-smoke schema/status even in
+  formal mode and leaves `scientific_claim_allowed` unset rather than false
+  pending aggregation. A formal handoff must use all frozen transition rows in
+  one seed-independent calibration order and emit a distinct training-only
+  status that cannot be mistaken for internal scientific GO.
+- The existing formal aggregator correctly freezes seeds 17/29/43, patient
+  bootstrap at 2,000 replicates with seed 37001, shared patient-cluster draws,
+  exact row-order checks, variant equality, and protected-outcome/human-QA
+  firewalls. The remaining work is to connect these contracts through one
+  machine-readable specification and readiness preflight.
+- The current frozen transition audit records 33,621 eligible pretraining
+  examples and 3,770 internal-calibration examples under ruleset v4.1. The
+  remaining gate is explicitly independent human review; the audit keeps
+  `formal_training_unlocked=false`.
+- The merged Block-8 cache is structurally ready at 144,423/144,423 images,
+  566 shards, `[197,768]` FP16 features, with source/per-shard hashing disabled
+  and protected outcomes unread. CMCP is 100% covered over 26,041 dynamic
+  examples (23,416 pretrain and 2,625 calibration).
+- The formal specification can therefore freeze full-row selection at
+  33,621/3,770 while retaining the replicated A6 training hyperparameters:
+  3 epochs, batch 2, rank 32, learning rate 1e-4, and seeds 17/29/43.
+- The real runtime preflight passes every specification, artifact, count,
+  bootstrap, cache, CMCP, output-state, and outcome-firewall check. It reports
+  `READY_R37_FORMAL_BUNDLE_PENDING_HUMAN_QA`, with all three formal seed
+  directories fresh and `formal_execution_allowed=false`.
+- The formal launch guard was exercised with the exact A6 command and current
+  runtime audit. It raised the expected human-QA `PermissionError`, exited
+  nonzero, created no output directory, and started no GPU work.
+- A second readiness audit found that the protocol named inversion and
+  state-retention gates but had not operationalized their thresholds, and the
+  A0 capacity-matched baseline still had engineering-only sampling/status.
+  Before any formal result, inversion is now fixed as inverse-label agreement
+  >=0.90 per seed, while state retention is mean adapted-versus-frozen current
+  cosine >=0.99 per seed. These definitions follow the already-frozen inverse
+  mapping and state-preservation loss rather than observed outcomes.
+- Formal A0 is being hardened to the same all-row, seed-independent
+  calibration order with its already-frozen linear-probe settings, enabling a
+  paired patient-cluster A6-minus-A0 gate instead of comparing mismatched
+  engineering samples.

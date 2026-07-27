@@ -332,3 +332,46 @@
   settings, per-seed metrics, continuous prediction-change diagnostics,
   earlier-failure comparison, runtime evidence, and protected-outcome
   boundary.
+- 2026-07-27 17:00 +08:00: began formal-bundle preflight hardening under the
+  frozen A6 configuration. Scope is specification, fail-closed validation,
+  fixtures/tests, readiness manifest, and handoff only; formal training and
+  protected 300-dev/483-test/gold evaluation remain locked.
+- Added the first machine-readable formal A6 bundle specification and a
+  read-only preflight command covering transition, Block-8, text-cache, CMCP,
+  seed-output, bootstrap, and outcome-firewall contracts.
+- Repaired the dormant formal runner path so it requires the exact frozen A6
+  configuration, all 33,621/3,770 rows in seed-independent order, and distinct
+  formal-training schema/status. Formal training outputs remain explicitly
+  non-scientific until aggregation.
+- Tightened the formal aggregator to accept only firewall-clean formal A6
+  training artifacts and reject engineering-smoke, sealed-test, gold,
+  source-hash, variant, seed, or human-unlock drift.
+- Added focused tests for full seed-independent formal row selection, exact
+  formal argument freezing, patient-bootstrap constants, row-order and
+  outcome-firewall drift, pending/unlocked readiness states, and partial-output
+  rejection. The first standalone `pytest.exe` invocation hit the known
+  namespace-import path boundary; Ruff and `git diff --check` passed.
+- The corrected focused suite passed 12/12. The real runtime preflight then
+  passed every check and wrote
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37_formal_bundle_preflight.json`
+  with `READY_R37_FORMAL_BUNDLE_PENDING_HUMAN_QA`; no hash or protected
+  outcome was read and no GPU process was started.
+- Operationalized the previously underspecified auxiliary gates before formal
+  outcomes: inverse-label consistency >=0.90 and adapted/frozen-current cosine
+  retention >=0.99 in every seed.
+- Hardened the A0 formal baseline to all 33,621/3,770 rows in the same
+  seed-independent calibration order and added paired A6-minus-A0
+  patient-cluster aggregation.
+- The expanded focused suite passed 30/30 and Ruff passed. Real A6 and A0
+  formal guard probes both exited nonzero on the pending human-QA audit,
+  created no output directories, and started no training.
+- Added `reports/R37_FORMAL_BUNDLE_PREFLIGHT.md` as the handoff surface for the
+  frozen specification, checks, runtime manifest, commands, and scientific
+  boundary.
+- Complete repository regression passed 656 tests with one unchanged
+  historical R14 expected-xfail in 202.63 seconds. Focused Ruff, compileall,
+  `git diff --check`, and a final real runtime preflight also passed.
+- Final runtime status remains
+  `READY_R37_FORMAL_BUNDLE_PENDING_HUMAN_QA`, with
+  `engineering_preflight_passed=true`,
+  `formal_execution_allowed=false`, and no protected outcome or hash access.

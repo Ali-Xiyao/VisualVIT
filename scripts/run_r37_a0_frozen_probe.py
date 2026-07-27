@@ -20,12 +20,16 @@ import torch.nn.functional as F
 from scripts.cache_r37_block8_tokens import build_frozen_encoder
 from scripts.run_r37_prta_smoke import (
     CACHE_ROOT,
+    FORMAL_CALIBRATION_EXAMPLES,
+    FORMAL_SEEDS,
+    FORMAL_TRAIN_EXAMPLES,
     OUTPUT_BASE,
     TEXT_CACHE,
     TRANSITION_ROOT,
     balanced_sample,
     batch_indices,
     flatten_partition,
+    formal_partition,
 )
 from visualvit.prta import FrozenBiomedCLIPDifference, PROGRESSION_LABELS
 from visualvit.qualification import (
@@ -33,6 +37,35 @@ from visualvit.qualification import (
     macro_f1,
 )
 from visualvit.r37_cache import Block8CacheIndex
+
+
+FORMAL_A0_OUTPUT_BASE = Path(
+    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
+    r"\r37b_formal\a0_bundle_v1"
+)
+FORMAL_A0_EPOCHS = 100
+FORMAL_A0_BATCH_SIZE = 16
+FORMAL_A0_LEARNING_RATE = 1e-2
+
+
+def validate_formal_args(args: argparse.Namespace) -> None:
+    expected = {
+        "epochs": FORMAL_A0_EPOCHS,
+        "batch_size": FORMAL_A0_BATCH_SIZE,
+        "learning_rate": FORMAL_A0_LEARNING_RATE,
+        "max_train_examples": 0,
+        "max_calibration_examples": 0,
+    }
+    observed = {name: getattr(args, name) for name in expected}
+    if observed != expected:
+        raise ValueError(
+            f"formal R37 A0 configuration drift: expected {expected}, "
+            f"got {observed}"
+        )
+    if args.seed not in FORMAL_SEEDS:
+        raise ValueError(
+            f"formal R37 A0 requires one of frozen seeds {FORMAL_SEEDS}"
+        )
 
 
 def parse_args() -> argparse.Namespace:
@@ -111,9 +144,15 @@ def make_tensors(
 
 def main() -> int:
     args = parse_args()
-    output_root = args.output_root or (
-        OUTPUT_BASE / f"a0_seed{args.seed}_engineering_v1"
-    )
+    if args.formal:
+        validate_formal_args(args)
+    output_root = args.output_root
+    if output_root is None:
+        output_root = (
+            FORMAL_A0_OUTPUT_BASE / f"seed_{args.seed}"
+            if args.formal
+            else OUTPUT_BASE / f"a0_seed{args.seed}_engineering_v1"
+        )
     if output_root.exists():
         raise FileExistsError(f"output root must be fresh: {output_root}")
     if args.batch_size <= 0 or args.epochs <= 0:
@@ -141,16 +180,26 @@ def main() -> int:
     device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
-    train_examples = balanced_sample(
-        flatten_partition(args.transition_root, "pretrain"),
-        maximum=args.max_train_examples,
-        seed=args.seed,
-    )
-    calibration_examples = balanced_sample(
-        flatten_partition(args.transition_root, "internal_calibration"),
-        maximum=args.max_calibration_examples,
-        seed=args.seed + 1,
-    )
+    if args.formal:
+        train_examples = formal_partition(
+            flatten_partition(args.transition_root, "pretrain"),
+            expected_count=FORMAL_TRAIN_EXAMPLES,
+        )
+        calibration_examples = formal_partition(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            expected_count=FORMAL_CALIBRATION_EXAMPLES,
+        )
+    else:
+        train_examples = balanced_sample(
+            flatten_partition(args.transition_root, "pretrain"),
+            maximum=args.max_train_examples,
+            seed=args.seed,
+        )
+        calibration_examples = balanced_sample(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            maximum=args.max_calibration_examples,
+            seed=args.seed + 1,
+        )
     text_cache = torch.load(
         args.text_cache, map_location="cpu", weights_only=True
     )
@@ -231,8 +280,17 @@ def main() -> int:
         metrics["true_pair_macro_f1"] - metrics["inverted_macro_f1"]
     )
     result = {
-        "schema": "visualvit.r37.a0-engineering-smoke.v1",
-        "status": "PASS_R37_A0_ENGINEERING_PIPELINE",
+        "schema": (
+            "visualvit.r37.a0-formal-probe.v1"
+            if args.formal
+            else "visualvit.r37.a0-engineering-smoke.v1"
+        ),
+        "status": (
+            "PASS_R37_A0_FORMAL_PROBE"
+            if args.formal
+            else "PASS_R37_A0_ENGINEERING_PIPELINE"
+        ),
+        "scientific_claim_allowed": False,
         "scientific_gate_status": (
             "PENDING_THREE_SEED_AGGREGATION"
             if args.formal
@@ -243,6 +301,14 @@ def main() -> int:
         "seed": args.seed,
         "train_examples": len(train_examples),
         "calibration_examples": len(calibration_examples),
+        "selection_contract": {
+            "train": "all_seed_independent_order"
+            if args.formal
+            else "balanced_engineering_sample",
+            "calibration": "all_seed_independent_order"
+            if args.formal
+            else "balanced_engineering_sample",
+        },
         "train_label_counts": dict(
             Counter(item["label"] for item in train_examples)
         ),
@@ -267,18 +333,22 @@ def main() -> int:
         },
         "history": history,
         "protected_outcomes_read": False,
+        "sealed_test_read": False,
+        "gold_outcomes_read": False,
         "source_hashes_recomputed": False,
         "formal_training_unlocked": bool(
             args.formal and audit["formal_training_unlocked"]
         ),
     }
     output_root.mkdir(parents=True, exist_ok=False)
-    (output_root / "r37_a0_smoke_result.json").write_text(
+    result_name = "result.json" if args.formal else "r37_a0_smoke_result.json"
+    (output_root / result_name).write_text(
         json.dumps(result, indent=2, sort_keys=True), encoding="utf-8"
     )
     torch.save(
         {"probe_state_dict": probe.state_dict()},
-        output_root / "r37_a0_probe.pt",
+        output_root
+        / ("checkpoint.pt" if args.formal else "r37_a0_probe.pt"),
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0

@@ -1,0 +1,76 @@
+{
+  "schema": "visualvit.r37.prta-formal-bundle-spec.v1",
+  "bundle_id": "r37-a6-formal-bundle-v1",
+  "variant": "A6",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "training": {
+    "selection": "all_seed_independent_order",
+    "train_examples": 33621,
+    "calibration_examples": 3770,
+    "epochs": 3,
+    "batch_size": 2,
+    "learning_rate": 0.0001,
+    "adapter_rank": 32
+  },
+  "qualification": {
+    "bootstrap_unit": "patient_cluster",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 37001,
+    "minimum_gain_pp": 2.0,
+    "ci95_lower_must_exceed": 0.0,
+    "all_seeds_must_be_positive": true,
+    "inversion_consistency_minimum": 0.9,
+    "state_retention_cosine_minimum": 0.99,
+    "a6_minus_a0_minimum_pp": 2.0,
+    "controls": [
+      "current_only",
+      "cmcp"
+    ]
+  },
+  "artifacts": {
+    "transition_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37a_transitions_v4_1",
+    "block8_cache_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_block8_token_cache",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "cmcp_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_counterfactual_prior_index.json",
+    "formal_output_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37b_formal\\a6_bundle_v1"
+  },
+  "expected": {
+    "transition_ruleset": "r37-report-transition-v4.1",
+    "transition_status_pending": "PASS_R37A_TRANSITION_SUPPORT_PENDING_HUMAN_QA",
+    "block8_status": "PASS_R37_BLOCK8_FORMAL_CACHE",
+    "block8_images": 144423,
+    "block8_shards": 566,
+    "cmcp_status": "PASS_R37A_CMCP_COVERAGE",
+    "cmcp_dynamic_examples": 26041,
+    "cmcp_coverage": 1.0
+  },
+  "firewall": {
+    "protected_outcomes_read": false,
+    "sealed_test_read": false,
+    "gold_outcomes_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false
+  },
+  "execution": {
+    "formal_flag_required": true,
+    "fresh_or_complete_seed_directories_only": true,
+    "scientific_claim_allowed_before_aggregation": false,
+    "human_qa_unlock_required": true
+  },
+  "baseline_a0": {
+    "selection": "all_seed_independent_order",
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "epochs": 100,
+    "batch_size": 16,
+    "learning_rate": 0.01,
+    "formal_output_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37b_formal\\a0_bundle_v1"
+  }
+}

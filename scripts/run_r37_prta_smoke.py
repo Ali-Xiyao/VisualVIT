@@ -20,6 +20,7 @@ import torch.nn.functional as F
 from scripts.cache_r37_block8_tokens import build_frozen_encoder
 from visualvit.cmcp import stable_hash, transition_examples
 from visualvit.prta import (
+    INVERSION_INDEX,
     PROGRESSION_LABELS,
     PRTATemporalAdapter,
     PRTATrainingHeads,
@@ -50,6 +51,18 @@ CMCP_INDEX = Path(
 OUTPUT_BASE = Path(
     r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37b_smokes"
 )
+FORMAL_OUTPUT_BASE = Path(
+    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
+    r"\r37b_formal\a6_bundle_v1"
+)
+FORMAL_VARIANT = "A6"
+FORMAL_SEEDS = (17, 29, 43)
+FORMAL_TRAIN_EXAMPLES = 33_621
+FORMAL_CALIBRATION_EXAMPLES = 3_770
+FORMAL_EPOCHS = 3
+FORMAL_BATCH_SIZE = 2
+FORMAL_LEARNING_RATE = 1e-4
+FORMAL_ADAPTER_RANK = 32
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -107,6 +120,46 @@ def balanced_sample(
             "r37-smoke-order-v1", seed, item["example_id"]
         ),
     )
+
+
+def formal_partition(
+    examples: Iterable[dict[str, Any]], *, expected_count: int
+) -> list[dict[str, Any]]:
+    selected = sorted(
+        examples,
+        key=lambda item: (
+            str(item["patient_id"]),
+            str(item["example_id"]),
+        ),
+    )
+    if len(selected) != expected_count:
+        raise ValueError(
+            "formal partition count drift: "
+            f"expected {expected_count}, got {len(selected)}"
+        )
+    return selected
+
+
+def validate_formal_args(args: argparse.Namespace) -> None:
+    expected = {
+        "variant": FORMAL_VARIANT,
+        "epochs": FORMAL_EPOCHS,
+        "batch_size": FORMAL_BATCH_SIZE,
+        "learning_rate": FORMAL_LEARNING_RATE,
+        "adapter_rank": FORMAL_ADAPTER_RANK,
+        "max_train_examples": 0,
+        "max_calibration_examples": 0,
+    }
+    observed = {name: getattr(args, name) for name in expected}
+    if observed != expected:
+        raise ValueError(
+            f"formal R37 A6 configuration drift: expected {expected}, "
+            f"got {observed}"
+        )
+    if args.seed not in FORMAL_SEEDS:
+        raise ValueError(
+            f"formal R37 requires one of frozen seeds {FORMAL_SEEDS}"
+        )
 
 
 def macro_f1(targets: list[int], predictions: list[int]) -> float:
@@ -173,7 +226,7 @@ def batch_indices(length: int, batch_size: int) -> Iterable[tuple[int, int]]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run an engineering-only PRTA end-to-end token smoke"
+        description="Run the R37 PRTA engineering or locked formal trainer"
     )
     parser.add_argument("--variant", choices=[f"A{i}" for i in range(2, 7)], default="A3")
     parser.add_argument("--transition-root", type=Path, default=TRANSITION_ROOT)
@@ -195,9 +248,16 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    output_root = args.output_root or (
-        OUTPUT_BASE / f"{args.variant.lower()}_seed{args.seed}_engineering_v1"
-    )
+    if args.formal:
+        validate_formal_args(args)
+    output_root = args.output_root
+    if output_root is None:
+        output_root = (
+            FORMAL_OUTPUT_BASE / f"seed_{args.seed}"
+            if args.formal
+            else OUTPUT_BASE
+            / f"{args.variant.lower()}_seed{args.seed}_engineering_v1"
+        )
     if output_root.exists():
         raise FileExistsError(f"output root must be fresh: {output_root}")
     if args.batch_size <= 0 or args.epochs <= 0:
@@ -239,16 +299,26 @@ def main() -> int:
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
 
-    train_examples = balanced_sample(
-        flatten_partition(args.transition_root, "pretrain"),
-        maximum=args.max_train_examples,
-        seed=args.seed,
-    )
-    calibration_examples = balanced_sample(
-        flatten_partition(args.transition_root, "internal_calibration"),
-        maximum=args.max_calibration_examples,
-        seed=args.seed + 1,
-    )
+    if args.formal:
+        train_examples = formal_partition(
+            flatten_partition(args.transition_root, "pretrain"),
+            expected_count=FORMAL_TRAIN_EXAMPLES,
+        )
+        calibration_examples = formal_partition(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            expected_count=FORMAL_CALIBRATION_EXAMPLES,
+        )
+    else:
+        train_examples = balanced_sample(
+            flatten_partition(args.transition_root, "pretrain"),
+            maximum=args.max_train_examples,
+            seed=args.seed,
+        )
+        calibration_examples = balanced_sample(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            maximum=args.max_calibration_examples,
+            seed=args.seed + 1,
+        )
     cache = Block8CacheIndex(args.cache_root, maximum_loaded_shards=4)
     text_cache = torch.load(
         args.text_cache, map_location="cpu", weights_only=True
@@ -412,6 +482,8 @@ def main() -> int:
         cmcp_control_embeddings = []
         cmcp_true_logits_parts = []
         cmcp_control_logits_parts = []
+        inversion_consistency_count = 0
+        state_retention_cosines = []
         with torch.inference_mode():
             for start, end in batch_indices(len(examples), args.batch_size):
                 batch = examples[start:end]
@@ -430,6 +502,25 @@ def main() -> int:
                     inverted_output.transition_embedding
                 )
                 batch_true_predictions = true_logits.argmax(dim=-1)
+                batch_inverted_predictions = inverted_logits.argmax(dim=-1)
+                mapped_true_predictions = INVERSION_INDEX.to(
+                    device=batch_true_predictions.device
+                )[batch_true_predictions]
+                inversion_consistency_count += int(
+                    (
+                        batch_inverted_predictions
+                        == mapped_true_predictions
+                    ).sum()
+                )
+                state_retention_cosines.extend(
+                    F.cosine_similarity(
+                        true_output.state_embedding,
+                        true_output.frozen_current_embedding,
+                        dim=-1,
+                    )
+                    .cpu()
+                    .tolist()
+                )
                 true_predictions.extend(
                     batch_true_predictions.cpu().tolist()
                 )
@@ -437,7 +528,7 @@ def main() -> int:
                     current_logits.argmax(dim=-1).cpu().tolist()
                 )
                 inverted_predictions.extend(
-                    inverted_logits.argmax(dim=-1).cpu().tolist()
+                    batch_inverted_predictions.cpu().tolist()
                 )
                 true_embeddings.append(
                     true_output.transition_embedding.cpu()
@@ -534,6 +625,16 @@ def main() -> int:
             "true_pair_macro_f1": true_f1,
             "current_only_macro_f1": current_f1,
             "true_minus_current_pp": (true_f1 - current_f1) * 100,
+            "qualification_diagnostics": {
+                "inversion_consistency_rate": (
+                    inversion_consistency_count / len(examples)
+                ),
+                "state_retention_cosine_mean": (
+                    sum(state_retention_cosines)
+                    / len(state_retention_cosines)
+                ),
+                "state_retention_rows": len(state_retention_cosines),
+            },
             "responsiveness": responsiveness,
             "cmcp": {
                 "patient_ids": cmcp_patient_ids,
@@ -552,15 +653,24 @@ def main() -> int:
         any(parameter.grad is not None for parameter in adapter.parameters())
         for adapter in model.tail.adapters
     )
+    pass_status = (
+        "PASS_R37_PRTA_FORMAL_TRAINING"
+        if args.formal
+        else "PASS_R37_PRTA_ENGINEERING_SMOKE"
+    )
     result = {
-        "schema": "visualvit.r37.prta-engineering-smoke.v1",
+        "schema": (
+            "visualvit.r37.prta-formal-training.v1"
+            if args.formal
+            else "visualvit.r37.prta-engineering-smoke.v1"
+        ),
         "status": (
-            "PASS_R37_PRTA_ENGINEERING_SMOKE"
+            pass_status
             if frozen_gradients_absent and adapter_gradients_present
             else "STOP_R37_PRTA_GRADIENT_AUDIT"
         ),
         "formal": args.formal,
-        "scientific_claim_allowed": False if not args.formal else None,
+        "scientific_claim_allowed": False,
         "formal_training_unlocked": bool(
             args.formal and transition_audit["formal_training_unlocked"]
         ),
@@ -568,6 +678,18 @@ def main() -> int:
         "variant_config": variant.__dict__,
         "seed": args.seed,
         "train_examples": len(train_examples),
+        "selection_contract": {
+            "train": "all_seed_independent_order"
+            if args.formal
+            else "balanced_engineering_sample",
+            "calibration": "all_seed_independent_order"
+            if args.formal
+            else "balanced_engineering_sample",
+            "max_train_examples_argument": args.max_train_examples,
+            "max_calibration_examples_argument": (
+                args.max_calibration_examples
+            ),
+        },
         "calibration": calibration,
         "history": history,
         "gradient_audit": {
@@ -577,6 +699,7 @@ def main() -> int:
         "protected_outcomes_read": False,
         "sealed_test_read": False,
         "gold_outcomes_read": False,
+        "source_hashes_recomputed": False,
     }
     output_root.mkdir(parents=True, exist_ok=False)
     (output_root / "result.json").write_text(
@@ -588,12 +711,13 @@ def main() -> int:
             "heads": heads.state_dict(),
             "variant": args.variant,
             "seed": args.seed,
+            "formal": args.formal,
         },
         output_root / "checkpoint.pt",
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     print(f"RESULT_DIR={output_root}")
-    return 0 if result["status"] == "PASS_R37_PRTA_ENGINEERING_SMOKE" else 2
+    return 0 if result["status"] == pass_status else 2
 
 
 if __name__ == "__main__":

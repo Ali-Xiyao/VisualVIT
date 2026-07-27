@@ -1,9 +1,14 @@
+from argparse import Namespace
+
+import pytest
 import torch
 
 from scripts.run_r37_prta_smoke import (
     balanced_sample,
+    formal_partition,
     macro_f1,
     responsiveness_diagnostics,
+    validate_formal_args,
 )
 
 
@@ -23,6 +28,44 @@ def test_balanced_smoke_sample_is_deterministic():
     for item in first:
         counts[item["label"]] = counts.get(item["label"], 0) + 1
     assert set(counts.values()) == {2}
+
+
+def test_formal_partition_has_seed_independent_complete_order():
+    examples = [
+        {"patient_id": "p2", "example_id": "e2"},
+        {"patient_id": "p1", "example_id": "e3"},
+        {"patient_id": "p1", "example_id": "e1"},
+    ]
+    expected = [
+        {"patient_id": "p1", "example_id": "e1"},
+        {"patient_id": "p1", "example_id": "e3"},
+        {"patient_id": "p2", "example_id": "e2"},
+    ]
+    assert formal_partition(examples, expected_count=3) == expected
+    assert formal_partition(reversed(examples), expected_count=3) == expected
+    with pytest.raises(ValueError, match="count drift"):
+        formal_partition(examples, expected_count=2)
+
+
+def test_formal_args_require_exact_frozen_bundle():
+    args = Namespace(
+        variant="A6",
+        seed=17,
+        epochs=3,
+        batch_size=2,
+        learning_rate=1e-4,
+        adapter_rank=32,
+        max_train_examples=0,
+        max_calibration_examples=0,
+    )
+    validate_formal_args(args)
+    args.seed = 44
+    with pytest.raises(ValueError, match="frozen seeds"):
+        validate_formal_args(args)
+    args.seed = 17
+    args.epochs = 4
+    with pytest.raises(ValueError, match="configuration drift"):
+        validate_formal_args(args)
 
 
 def test_macro_f1_is_one_for_perfect_five_class_predictions():
