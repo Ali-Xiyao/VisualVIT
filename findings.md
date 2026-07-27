@@ -503,3 +503,8 @@ preserving the encoder's static medical semantics.
   therefore to register both pair counts and finding-level example counts,
   freeze formal row counts at 46,349/5,242, and rerun the untouched model,
   seed, loss, threshold, and bootstrap bundle.
+- After that namespace-only repair, both formal A6 seeds passed the count
+  guard and remained live beyond model/cache initialization. This converts the
+  earlier STOP from a launch failure into a healthy formal run; it is still
+  not a scientific result until all three seeds and patient-bootstrap gates
+  complete.

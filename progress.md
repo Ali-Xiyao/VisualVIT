@@ -437,3 +437,15 @@
 - The refreshed real preflight again reports `READY_R37_FORMAL_BUNDLE`,
   `formal_execution_allowed=true`, all six output states `fresh`, and every
   outcome/hash firewall false.
+- 2026-07-27 19:04 +08:00: relaunched the corrected formal pipeline as PID
+  28840 after three sustained-idle polls. A6 seed 17 is PID 18604 on cuda:0
+  and seed 29 is PID 11172 on cuda:1; both passed the corrected count guard,
+  remain alive, and show increasing CPU time/GPU power.
+- The queue will run A6 seed 43 on cuda:0 after seed 17, then the matching A0
+  seeds, followed by automatic frozen current-only, CMCP, and A6-minus-A0
+  patient-bootstrap aggregation. Linear extrapolation from the 1,000-row
+  engineering runs gives an initial 18-22 hour wall-time estimate.
+- Created the 20-minute thread heartbeat `r37-formal-bundle-monitor`. It checks
+  the status/log/PID/GPU surfaces, forbids duplicate jobs and protected reads,
+  repairs only engineering STOPs, and reports the final internal scientific
+  GO/STOP.
