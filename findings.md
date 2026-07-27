@@ -460,3 +460,17 @@ preserving the encoder's static medical semantics.
   calibration order with its already-frozen linear-probe settings, enabling a
   paired patient-cluster A6-minus-A0 gate instead of comparing mismatched
   engineering samples.
+- The frozen human-QA sheet is present locally with exactly 200 rows and 40
+  rows in each of Stable, Improved, Worse, New, and Resolved. Its three review
+  columns are currently blank, so no independent judgment has yet been
+  supplied.
+- The sheet contains derived clinical report text and identifiers and must stay
+  under the existing local data-use boundary. The reviewer guide may be
+  committed, but the CSV itself must not be copied into Git, email, public
+  cloud storage, or an unapproved collaboration surface.
+- A local reviewer working copy and a copy of the Chinese guide now sit beside
+  the frozen source sheet. The working copy retains 200 rows and has zero
+  completed QA judgments; it is intentionally excluded from Git.
+- The validator was exercised against the blank sheet and correctly returned
+  `STOP_R37_TRANSITION_HUMAN_QA`, `completed_rows=0`, exit code 2, and
+  `formal_training_unlocked=false`.

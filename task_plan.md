@@ -177,11 +177,15 @@ smokes during iteration.
 
 - [ ] At the end of the project, package and obtain independent human QA over
   the frozen 200-row transition case sheet.
+- [x] Write a reviewer-facing Chinese guide and fixed error taxonomy.
+- [x] Add a fail-closed validator for reviewer completion, class balance, and
+  the frozen 90% overall/85% per-class thresholds.
+- [ ] Obtain the completed local CSV plus reviewer attestation.
 - [ ] Freeze exactly one candidate before any dev reveal.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** locked
+- **Status:** human_qa_handoff_ready
 
 ## Errors Encountered
 
@@ -224,6 +228,6 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the tested locked formal bundle. Do not launch formal mode or
-read protected outcomes. After handoff, R37 has no further permitted non-human
-experiment until the final-stage independent transition QA unlocks it.
+Wait for the independent reviewer to return the completed local
+`r37_transition_case_study_REVIEWED.csv` plus the attestation. Then run the
+validator; do not unlock formal training unless it emits the frozen PASS.

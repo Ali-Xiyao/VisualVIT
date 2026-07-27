@@ -375,3 +375,18 @@
   `READY_R37_FORMAL_BUNDLE_PENDING_HUMAN_QA`, with
   `engineering_preflight_passed=true`,
   `formal_execution_allowed=false`, and no protected outcome or hash access.
+- The user authorized preparing the independent human-QA handoff. Verified the
+  frozen local sheet has exactly 200 rows, 40 per class, and blank QA fields;
+  began a reviewer-facing Chinese guide plus fail-closed return validator.
+- Added `reports/R37_TRANSITION_HUMAN_QA_REVIEW_GUIDE_CN.md` with the review
+  question, five label definitions, fixed error taxonomy, CSV editing rules,
+  privacy boundary, reviewer attestation, and return checklist.
+- Added a fail-closed validator that requires 200 unique cases, 40 per class,
+  complete TRUE/FALSE judgments, valid error categories, reviewer attestation,
+  >=90% overall accuracy, and >=85% accuracy in every class before emitting an
+  unlockable PASS.
+- Validator tests passed 5/5, Ruff and `git diff --check` passed, and a real
+  blank-sheet check produced the required STOP without unlocking training.
+- Created the local review work copy
+  `r37_transition_case_study_REVIEWED.csv` and placed the Chinese guide beside
+  it in the controlled transition directory. The CSV remains outside Git.
