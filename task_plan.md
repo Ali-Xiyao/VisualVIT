@@ -121,9 +121,13 @@ smokes during iteration.
 - [x] Implement transition semantic alignment.
 - [x] Implement CMCP margin loss.
 - [x] Implement temporal inversion and static-state preservation.
-- [ ] Implement A0-A6 capacity-matched baselines and ablations.
+- [x] Implement A0-A6 capacity-matched baselines and ablations.
+- [x] Resolve the availability-gated A1 BioViL-T source/checkpoint boundary and
+  prove strict official-checkpoint loading before evaluation integration.
+- [ ] Cache and evaluate the frozen canonical A1 BioViL-T pair representation
+  with the pre-frozen linear finding-conditioned probe.
 - [ ] Run internal patient-disjoint qualification and bootstrap gates.
-- **Status:** pending
+- **Status:** in_progress
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -150,9 +154,16 @@ smokes during iteration.
 | DUA search included a nonexistent root `README.md` path | 1 | Use the active protocol documents; no data or repository artifact was changed |
 | Combined planning cleanup patch used the console's mojibake rendering of em-dash headings | 1 | Leave the correctly encoded headings unchanged and patch only exact task lines |
 | First staged diff check found Markdown trailing spaces and one extra EOF blank line | 1 | Remove the whitespace-only issues and rerun the cached diff check before commit |
+| First `hf models info` call requested unsupported expandable field `license` | 1 | Query `cardData` plus repository metadata instead; no file was downloaded |
+| Selective BioViL-T `hf download --dry-run` failed during parallel HEAD metadata lookup | 1 | Keep the official commit pin and retry the three required files individually instead of downloading the 1.10 GB repository snapshot |
+| Individual BioViL-T download also failed against the globally configured `hf-mirror.com` endpoint | 2 | Diagnose with `hf env`, then override `HF_ENDPOINT=https://huggingface.co` for only the download process; all three required files downloaded successfully |
+| Windows `rg` invocation passed Unix-style wildcard path arguments while checking optional dependency files | 1 | Treat it as a shell-glob issue, not a missing-model issue; query repository files via `rg --files` before targeted searches |
+| `pip index versions health-multimodal` found no PyPI distribution | 1 | Pin the archived official Microsoft `hi-ml` source instead of installing an unrelated or guessed package |
+| First real A1 pair smoke used HI-ML `ImageModel`, whose outer `forward` accepts only one image even when its encoder is multi-image | 1 | Use the official `MultiImageModel` wrapper; it has the same checkpoint parameters and the required `current_image`/`previous_image` forward contract |
+| Tiny A1 probe case study produced identical true-pair/current-only predictions and zero F1 on five calibration rows | 1 | Record it only as a pipeline/control smoke, not scientific evidence; require the full frozen cache and adequately powered patient-disjoint evaluation before judging A1 |
 
 ## Next Step
 
-Wait for the existing GPU jobs to release both devices, complete and merge the
-two-part Block-8 cache, then build and audit the CMCP index without reading
-protected outcomes.
+Push the tested A1/PRTA engineering checkpoint. Then wait for the existing GPU
+jobs to release both devices, complete and merge the two-part Block-8 cache,
+and build/audit the CMCP index without reading protected outcomes.

@@ -122,3 +122,76 @@
   612 passed and one historical xfail in 286.76 seconds.
 - `git diff --check` passed; only Windows LF-to-CRLF working-copy notices were
   emitted.
+- Committed the first R37 checkpoint as `83a4fda` and pushed
+  `codex/r37-prior-responsive-temporal-adapter` to `origin`.
+- Added the frozen A0-A7 ablation registry and trainable 512-to-768 text/visual
+  heads; eight PRTA tests pass.
+- Cached 12 finding and 60 transition BiomedCLIP text prototypes on CPU without
+  protected outcome access.
+- Added and tested the merged-cache random-access layer.
+- Implemented the unified A2-A6 end-to-end engineering runner with balanced
+  deterministic sampling, gradient audits, current-only control, checkpoint
+  output, and formal-mode human-QA firewall.
+- Verified the official public BioViL-T repository metadata through `hf`: the
+  selected revision is `692f09e9be1bfe5fdd5f3efdd0e1eca7d2c10b23`, and only
+  the README, config, and 110 MB image checkpoint are required for A1.
+- The first selective `hf download --dry-run` encountered a local
+  proxy/metadata HEAD error. No asset was downloaded; the retry is narrowed to
+  one explicit file at a time and will not fetch the full 1.10 GB repository.
+- Located the download failure in the global `HF_ENDPOINT=https://hf-mirror.com`
+  setting. Without changing that global setting, a process-local official Hub
+  endpoint downloaded the three selected files successfully.
+- The local BioViL-T bundle now contains the MIT model card, 803-byte config,
+  and 109,745,561-byte image checkpoint. No full text-model bundle or
+  unneeded repository asset was downloaded.
+- Loaded the image checkpoint on CPU with `weights_only=True`: it is a
+  372-entry state dictionary rooted at `encoder.*`, consistent with the
+  official ResNet-50 plus temporal-transformer implementation.
+- Confirmed the linked Microsoft `hi-ml` repository is archived/read-only and
+  pinned its final HEAD at `b67c1d27c6b17d8e8ff01f8c507f3cabdb307388`.
+  No `health-multimodal` PyPI distribution exists in this environment, so the
+  A1 loader will use this exact official source rather than an inferred clone.
+- Rechecked the cache launcher after the baseline asset work: it remains
+  healthy in `WAITING_FOR_GPU_IDLE`, with no R37 worker spawned.
+- Cloned only the official `hi-ml-multimodal` subtree at the pinned archived
+  commit into the runtime external-dependency area. It remains outside Git and
+  requires no installation into the active Python environment.
+- A CPU smoke constructed the official ResNet-50 multi-image encoder, loaded
+  every checkpoint key strictly with `weights_only=True`, and produced finite
+  `[1, 512, 14, 14]` patch plus `[1, 512]` pooled paired-image features.
+- Before any A1 outcome evaluation, froze the official 512-resize/448-crop
+  preprocessing, current/prior argument order, normalized canonical 128-D
+  projected global feature, and a five-class linear probe conditioned by a
+  fixed 12-finding one-hot vector.
+- Six focused A1 loader/cache unit tests pass. The first real pair smoke then
+  exposed that HI-ML's `ImageModel` outer wrapper is single-image even with a
+  multi-image encoder; the implementation was corrected to the official
+  parameter-compatible `MultiImageModel` before producing any A1 result.
+- The corrected two-pair real-image CPU cache smoke passed with strict
+  revisions, 128-D FP16 output, finite normalized features, repeated-inference
+  maximum absolute difference 0, and both outcome/hash firewalls false.
+- Measured CPU throughput is only 0.164 pair/s. This is sufficient for a tiny
+  end-to-end probe smoke but not a substitute for the queued GPU cache.
+- Completed the 10-train/5-calibration A1 engineering case study. The probe
+  optimized normally and only its 705 parameters received gradients, but
+  true-pair and current-only predictions were identical with zero macro F1;
+  inverted predictions differed and scored 0.333 on the five-row calibration.
+- Classified that result as `PASS_R37_A1_ENGINEERING_PIPELINE` with scientific
+  status `NOT_EVALUATED_TINY_SMOKE`. It neither supports BioViL-T nor unlocks
+  formal R37B.
+- The idle launcher observed GPU 0 release first and then one joint-idle poll,
+  but both devices returned to roughly 18.9/18.5 GB use before the required
+  three confirmations. It correctly remained in `WAITING_FOR_GPU_IDLE`; the
+  new owners must be identified before assuming they are R37 workers.
+- Identified the new owners as unrelated R1
+  `repair_discovery_controls_v1` workers (PIDs 18548 and 32756). They began at
+  13:04 on cuda:0/1; no R37 process was spawned or killed.
+- Added `reports/R37_A1_BIOVILT_ENGINEERING_CASE_STUDY.md` with the API failure,
+  repair, tiny negative control result, evidence limits, and the frozen next
+  attempt.
+- The second-checkpoint focused suite passed 21/21 tests.
+- The complete repository regression passed 627 tests with one unchanged
+  historical R14 expected-xfail in 292.82 seconds.
+- Created the second R37 engineering checkpoint containing only code, tests,
+  protocol/planning documents, and case-study documentation. Runtime data,
+  caches, official model assets, and protected artifacts remain outside Git.

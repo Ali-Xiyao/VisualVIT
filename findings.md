@@ -247,3 +247,59 @@ preserving the encoder's static medical semantics.
   required for R37. The repository does not certify the user's CITI/project
   DUA status or authorize redistribution of images, reports, caches, manifests,
   or derived embeddings; external release remains a user-side compliance gate.
+- The A0-A7 registry now freezes which variants use classification,
+  transition alignment, inversion, CMCP, state preservation, or external
+  availability gates. A1 BioViL-T has passed its checkpoint/source
+  availability gate; A7 ProTrans remains explicitly availability-gated.
+- The frozen local BiomedCLIP text tower successfully cached 12 finding-query
+  prototypes and 60 finding-by-five-class transition prototypes, all 512-D,
+  finite, and outcome-free.
+- The training cache index uses merged part inventories and shard counts to
+  locate DICOM tensors without scanning 40 GB of features. It loads shards on
+  demand through a bounded LRU.
+- The unified A2-A6 runner now implements classification, structured prototype
+  alignment, inversion, CMCP margin, and static-state preservation according
+  to the frozen variant registry. Non-formal runs are hard-capped at small
+  engineering-smoke scale; formal mode fails closed while human QA is false.
+- The official `microsoft/BiomedVLP-BioViL-T` Hub repository is public and was
+  inspected without authentication. Its current selected commit is
+  `692f09e9be1bfe5fdd5f3efdd0e1eca7d2c10b23`; the repository contains a
+  dedicated `biovil_t_image_model_proj_size_128.pt` image checkpoint, so A1
+  need not inherit or redistribute the full text-model bundle.
+- BioViL-T is an MIT research-only baseline whose model card explicitly
+  excludes deployed clinical/medical-device use. The image encoder is a
+  ResNet-50 feature extractor followed by a temporal transformer, and the
+  official checkpoint can be inspected safely as a plain 372-tensor state
+  dictionary.
+- The current Python environment does not contain `health_multimodal`; A1
+  therefore requires either the official HI-ML model definition or a
+  version-pinned equivalent loader before it can be marked available.
+- Microsoft archived `hi-ml` on 2025-11-21. Its final read-only HEAD is
+  `b67c1d27c6b17d8e8ff01f8c507f3cabdb307388`; pinning that source gives A1 a
+  reproducible implementation boundary even though the package is not
+  published through the currently configured PyPI index.
+- The pinned official source loads the selected checkpoint with zero missing
+  and zero unexpected keys. A same-image pair yields finite 512-channel
+  14x14 fused patches and a finite 512-D pooled embedding, so A1 is now
+  technically available rather than a paper-only placeholder.
+- The canonical A1 evaluation feature is the official normalized 128-D
+  projected global image embedding. Using the internal 512-D pooled tensor
+  would expose an implementation detail rather than the model's joint-space
+  output, so that alternative was rejected before any outcome evaluation.
+- HI-ML's `get_biovil_t_image_encoder` helper constructs the single-image
+  `ImageModel` outer class around a multi-image encoder. Direct pair inference
+  therefore requires the official `MultiImageModel` subclass; it introduces no
+  new parameters and strictly accepts the same checkpoint.
+- The corrected official pair path is exactly repeatable on the two-pair CPU
+  smoke and produces the frozen canonical 128-D feature. Its CPU rate is too
+  slow for 108,732 pairs, reinforcing the existing policy of waiting for free
+  GPUs instead of competing with the unrelated jobs.
+- A deliberately tiny A1 case study exposed no usable true-pair advantage:
+  true-pair and current-only predictions were exactly the same on all five
+  calibration rows. The inversion path changed predictions, so the temporal
+  branch is being exercised, but the sample is far too small for a scientific
+  conclusion. This is retained as a failed/underpowered method example rather
+  than reported as a positive baseline result.
+- The short joint-idle GPU window at 13:04 was consumed by a new unrelated R1
+  control wave, not by R37. The idle launcher correctly requires three
+  confirmations and therefore avoided racing those workers.

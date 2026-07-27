@@ -2,12 +2,14 @@ import torch
 from torch import nn
 
 from visualvit.prta import (
+    PRTATrainingHeads,
     PRTATemporalAdapter,
     cmcp_margin_loss,
     invert_progression_logits,
     state_preservation_loss,
     temporal_inversion_loss,
     transition_alignment_loss,
+    prta_variant_registry,
 )
 
 
@@ -33,6 +35,8 @@ def test_prta_shapes_and_frozen_base():
     assert output.state_embedding.shape == (2, 16)
     assert output.transition_embedding.shape == (2, 16)
     assert output.aligned_prior_tokens.shape == (2, 7, 16)
+    assert output.frozen_current_embedding.shape == (2, 16)
+    assert not output.frozen_current_embedding.requires_grad
     assert all(
         not parameter.requires_grad
         for parameter in model.tail.frozen_blocks.parameters()
@@ -89,3 +93,33 @@ def test_inversion_mapping_and_loss():
 def test_state_preservation_is_zero_for_identical_vectors():
     state = torch.randn(3, 8)
     assert state_preservation_loss(state, state).abs().item() < 1e-6
+
+
+def test_a0_a7_registry_freezes_ablation_semantics():
+    variants = prta_variant_registry()
+    assert list(variants) == [f"A{index}" for index in range(8)]
+    assert variants["A2"].classification
+    assert not variants["A2"].transition_alignment
+    assert variants["A3"].transition_alignment
+    assert variants["A4"].temporal_inversion and not variants["A4"].cmcp
+    assert variants["A5"].cmcp and not variants["A5"].temporal_inversion
+    assert all(
+        (
+            variants["A6"].transition_alignment,
+            variants["A6"].temporal_inversion,
+            variants["A6"].cmcp,
+            variants["A6"].state_preservation,
+        )
+    )
+    assert variants["A1"].availability_gated
+    assert variants["A7"].availability_gated
+
+
+def test_training_heads_bridge_biomedclip_text_to_visual_width():
+    heads = PRTATrainingHeads(visual_width=16, text_width=8)
+    text = torch.randn(3, 8)
+    assert heads.finding_query(text).shape == (3, 16)
+    projected = heads.transition_text(text)
+    assert projected.shape == (3, 16)
+    assert torch.allclose(projected.norm(dim=-1), torch.ones(3), atol=1e-6)
+    assert heads.progression_logits(projected).shape == (3, 5)

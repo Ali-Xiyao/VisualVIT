@@ -12,6 +12,35 @@ PROGRESSION_LABELS = ("Stable", "Improved", "Worse", "New", "Resolved")
 INVERSION_INDEX = torch.tensor((0, 2, 1, 4, 3), dtype=torch.long)
 
 
+@dataclass(frozen=True)
+class PRTAVariant:
+    identifier: str
+    trainable_adapter: bool
+    classification: bool
+    transition_alignment: bool
+    temporal_inversion: bool
+    cmcp: bool
+    state_preservation: bool
+    availability_gated: bool = False
+
+
+def prta_variant_registry() -> dict[str, PRTAVariant]:
+    return {
+        "A0": PRTAVariant("A0", False, False, False, False, False, False),
+        "A1": PRTAVariant(
+            "A1", False, False, False, False, False, False, True
+        ),
+        "A2": PRTAVariant("A2", True, True, False, False, False, False),
+        "A3": PRTAVariant("A3", True, True, True, False, False, False),
+        "A4": PRTAVariant("A4", True, True, True, True, False, False),
+        "A5": PRTAVariant("A5", True, True, True, False, True, False),
+        "A6": PRTAVariant("A6", True, True, True, True, True, True),
+        "A7": PRTAVariant(
+            "A7", False, False, False, False, False, False, True
+        ),
+    }
+
+
 class BottleneckAdapter(nn.Module):
     def __init__(
         self,
@@ -45,6 +74,7 @@ class FrozenTailWithAdapters(nn.Module):
         width: int,
         adapter_rank: int,
         dropout: float = 0.0,
+        final_norm: nn.Module | None = None,
     ) -> None:
         super().__init__()
         if len(frozen_blocks) != 4:
@@ -52,6 +82,8 @@ class FrozenTailWithAdapters(nn.Module):
         self.frozen_blocks = nn.ModuleList(frozen_blocks)
         for block in self.frozen_blocks:
             block.eval().requires_grad_(False)
+        self.final_norm = final_norm if final_norm is not None else nn.Identity()
+        self.final_norm.eval().requires_grad_(False)
         self.adapters = nn.ModuleList(
             BottleneckAdapter(width, adapter_rank, dropout=dropout)
             for _ in frozen_blocks
@@ -61,6 +93,7 @@ class FrozenTailWithAdapters(nn.Module):
         super().train(mode)
         for block in self.frozen_blocks:
             block.eval()
+        self.final_norm.eval()
         return self
 
     def forward(self, tokens: torch.Tensor) -> torch.Tensor:
@@ -69,7 +102,13 @@ class FrozenTailWithAdapters(nn.Module):
             # reach adapters inserted before later frozen blocks.
             frozen_output = block(tokens)
             tokens = adapter(frozen_output)
-        return tokens
+        return self.final_norm(tokens)
+
+    def forward_frozen(self, tokens: torch.Tensor) -> torch.Tensor:
+        with torch.no_grad():
+            for block in self.frozen_blocks:
+                tokens = block(tokens)
+            return self.final_norm(tokens)
 
 
 class QueryResampler(nn.Module):
@@ -111,6 +150,7 @@ class PRTAOutput:
     state_embedding: torch.Tensor
     transition_embedding: torch.Tensor
     aligned_prior_tokens: torch.Tensor
+    frozen_current_embedding: torch.Tensor
 
 
 class PRTATemporalAdapter(nn.Module):
@@ -124,6 +164,7 @@ class PRTATemporalAdapter(nn.Module):
         state_tokens: int = 20,
         transition_tokens: int = 20,
         dropout: float = 0.0,
+        frozen_final_norm: nn.Module | None = None,
     ) -> None:
         super().__init__()
         if width % heads:
@@ -133,6 +174,7 @@ class PRTATemporalAdapter(nn.Module):
             width=width,
             adapter_rank=adapter_rank,
             dropout=dropout,
+            final_norm=frozen_final_norm,
         )
         self.query_projection = nn.Sequential(
             nn.LayerNorm(width),
@@ -214,13 +256,50 @@ class PRTATemporalAdapter(nn.Module):
         transition_embedding = F.normalize(
             self.transition_norm(transition_tokens.mean(dim=1)), dim=-1
         )
+        frozen_current_embedding = F.normalize(
+            self.tail.forward_frozen(current_block8).mean(dim=1), dim=-1
+        )
         return PRTAOutput(
             state_tokens=state_tokens,
             transition_tokens=transition_tokens,
             state_embedding=state_embedding,
             transition_embedding=transition_embedding,
             aligned_prior_tokens=aligned_prior,
+            frozen_current_embedding=frozen_current_embedding,
         )
+
+
+class PRTATrainingHeads(nn.Module):
+    def __init__(
+        self,
+        *,
+        visual_width: int = 768,
+        text_width: int = 512,
+    ) -> None:
+        super().__init__()
+        self.finding_projection = nn.Sequential(
+            nn.LayerNorm(text_width),
+            nn.Linear(text_width, visual_width),
+        )
+        self.transition_text_projection = nn.Sequential(
+            nn.LayerNorm(text_width),
+            nn.Linear(text_width, visual_width),
+        )
+        self.progression_classifier = nn.Sequential(
+            nn.LayerNorm(visual_width),
+            nn.Linear(visual_width, len(PROGRESSION_LABELS)),
+        )
+
+    def finding_query(self, text_embedding: torch.Tensor) -> torch.Tensor:
+        return self.finding_projection(text_embedding)
+
+    def transition_text(self, text_embedding: torch.Tensor) -> torch.Tensor:
+        return F.normalize(self.transition_text_projection(text_embedding), dim=-1)
+
+    def progression_logits(
+        self, transition_embedding: torch.Tensor
+    ) -> torch.Tensor:
+        return self.progression_classifier(transition_embedding)
 
 
 def transition_alignment_loss(

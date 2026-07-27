@@ -220,6 +220,23 @@ The frozen comparison matrix is:
 A1/A7 unavailability must be reported as an availability boundary, not silently
 replaced by a weaker model.
 
+The now-available A1 implementation is frozen before outcome evaluation:
+
+- official `microsoft/BiomedVLP-BioViL-T` image weights at Hub revision
+  `692f09e9be1bfe5fdd5f3efdd0e1eca7d2c10b23`;
+- official archived Microsoft HI-ML source at
+  `b67c1d27c6b17d8e8ff01f8c507f3cabdb307388`;
+- official grayscale resize-512/center-crop-448 preprocessing;
+- current image passed as `current_image` and prior image as
+  `previous_image`;
+- the canonical normalized 128-D `projected_global_embedding`, not an
+  invented reconstruction of BioViL-T tokens;
+- a frozen-backbone linear five-class probe conditioned only by the same
+  12-finding one-hot query used to enumerate the R37 transition rows.
+
+The A1 feature cache is built once per pair and reused across findings and
+seeds. No protected outcome is used to choose the representation or probe.
+
 The full loss is:
 
 `L_transition + lambda_c L_CMCP + lambda_i L_inversion + lambda_s L_state`.
