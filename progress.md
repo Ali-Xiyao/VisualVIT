@@ -242,3 +242,7 @@
 - The BOM regression test and Ruff pass after the repair. The watcher restarted
   as PID 17856 and now reports `WAITING_FOR_BLOCK8_CACHE` while observing the
   original launcher's `WAITING_FOR_GPU_IDLE` state.
+- Created the thread heartbeat automation `r37-prta-post-cache-monitor` so this
+  task periodically rechecks the two local status files, repairs protocol-safe
+  STOPs, pushes tested changes, and reports changed scientific state without
+  duplicating processes or touching protected outcomes.

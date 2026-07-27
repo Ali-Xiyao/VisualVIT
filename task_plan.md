@@ -141,6 +141,8 @@ smokes during iteration.
 
 - [x] Install a resumable post-cache watcher with sustained-idle checks,
   per-stage PASS validation, and fail-closed partial-output handling.
+- [x] Attach a thread heartbeat that resumes diagnosis/analysis when the local
+  watcher changes state.
 - [ ] Wait for the merged Block-8 cache without competing with unrelated GPU
   jobs.
 - [ ] Build and gate CMCP before any A5/A6 execution.
