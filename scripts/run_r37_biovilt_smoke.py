@@ -23,6 +23,8 @@ from scripts.cache_r37_biovilt_pair_embeddings import (
     HI_ML_SOURCE,
 )
 from visualvit.biovilt import (
+    BIOVILT_CONTROL_MODES,
+    BioViLTControlCacheIndex,
     FindingConditionedLinearProbe,
     canonical_pair_embedding,
     load_biovilt_image,
@@ -42,6 +44,10 @@ TEXT_CACHE = Path(
 )
 OUTPUT_BASE = Path(
     r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37b_smokes"
+)
+FEATURE_CACHE = Path(
+    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
+    r"\r37_biovilt_pair_cache"
 )
 
 
@@ -170,6 +176,24 @@ def extract_controls(
     return result
 
 
+def extract_cached_controls(
+    cache: BioViLTControlCacheIndex,
+    pairs: list[dict[str, Any]],
+) -> dict[str, dict[str, torch.Tensor]]:
+    pair_ids = [str(item["pair_id"]) for item in pairs]
+    batched = {
+        mode: cache.get_many(pair_ids, mode=mode)
+        for mode in BIOVILT_CONTROL_MODES
+    }
+    return {
+        pair_id: {
+            mode: batched[mode][index]
+            for mode in BIOVILT_CONTROL_MODES
+        }
+        for index, pair_id in enumerate(pair_ids)
+    }
+
+
 def tensors(
     examples: list[dict[str, Any]],
     features: dict[str, dict[str, torch.Tensor]],
@@ -223,6 +247,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--text-cache", type=Path, default=TEXT_CACHE)
     parser.add_argument("--checkpoint", type=Path, default=CHECKPOINT)
     parser.add_argument("--hi-ml-source", type=Path, default=HI_ML_SOURCE)
+    parser.add_argument("--feature-cache", type=Path, default=FEATURE_CACHE)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--seed", type=int, default=17)
@@ -245,10 +270,6 @@ def main() -> int:
         raise FileExistsError(f"output root must be fresh: {output_root}")
     if args.batch_size <= 0 or args.epochs <= 0:
         raise ValueError("batch size and epochs must be positive")
-    if args.formal:
-        raise PermissionError(
-            "formal A1 remains locked pending independent transition human QA"
-        )
     if (
         args.max_train_examples > 1000
         or args.max_calibration_examples > 500
@@ -263,6 +284,10 @@ def main() -> int:
     )
     if audit["ruleset_version"] != "r37-report-transition-v4.1":
         raise ValueError("transition ruleset drift")
+    if args.formal and not audit["formal_training_unlocked"]:
+        raise PermissionError(
+            "formal A1 remains locked pending independent transition human QA"
+        )
     random.seed(args.seed)
     torch.manual_seed(args.seed)
     device = torch.device(args.device)
@@ -291,17 +316,33 @@ def main() -> int:
     }
     label_to_index = {label: index for index, label in enumerate(labels)}
 
-    model = load_frozen_biovilt(
-        args.checkpoint, args.hi_ml_source, device
+    selected_pairs = unique_pairs(train_examples, calibration_examples)
+    cache_manifest = (
+        args.feature_cache / "r37_biovilt_pair_cache_manifest.json"
     )
-    features = extract_controls(
-        model,
-        unique_pairs(train_examples, calibration_examples),
-        device=device,
-        batch_size=args.batch_size,
-        workers=args.workers,
-    )
-    del model
+    if cache_manifest.is_file():
+        features = extract_cached_controls(
+            BioViLTControlCacheIndex(args.feature_cache),
+            selected_pairs,
+        )
+        feature_source = "frozen_control_cache"
+    else:
+        if args.formal:
+            raise FileNotFoundError(
+                "formal A1 requires the merged one-time control cache"
+            )
+        model = load_frozen_biovilt(
+            args.checkpoint, args.hi_ml_source, device
+        )
+        features = extract_controls(
+            model,
+            selected_pairs,
+            device=device,
+            batch_size=args.batch_size,
+            workers=args.workers,
+        )
+        del model
+        feature_source = "direct_engineering_inference"
 
     train_x, train_finding, train_y = tensors(
         train_examples,
@@ -362,13 +403,18 @@ def main() -> int:
     result = {
         "schema": "visualvit.r37.a1-engineering-smoke.v1",
         "status": "PASS_R37_A1_ENGINEERING_PIPELINE",
-        "scientific_gate_status": "NOT_EVALUATED_TINY_SMOKE",
-        "formal": False,
+        "scientific_gate_status": (
+            "PENDING_THREE_SEED_AGGREGATION"
+            if args.formal
+            else "NOT_EVALUATED_TINY_SMOKE"
+        ),
+        "formal": args.formal,
         "variant": "A1",
         "seed": args.seed,
         "train_examples": len(train_examples),
         "calibration_examples": len(calibration_examples),
         "unique_pairs": len(features),
+        "feature_source": feature_source,
         "train_label_counts": dict(
             Counter(item["label"] for item in train_examples)
         ),
@@ -382,9 +428,14 @@ def main() -> int:
             label_to_index[str(item["label"])]
             for item in calibration_examples
         ],
+        "calibration_patient_ids": [
+            str(item["patient_id"]) for item in calibration_examples
+        ],
         "protected_outcomes_read": False,
         "source_hashes_recomputed": False,
-        "formal_training_unlocked": False,
+        "formal_training_unlocked": bool(
+            args.formal and audit["formal_training_unlocked"]
+        ),
         "history": history,
     }
     output_root.mkdir(parents=True)

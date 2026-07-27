@@ -2,6 +2,7 @@ import torch
 from torch import nn
 
 from visualvit.prta import (
+    FrozenBiomedCLIPDifference,
     PRTATrainingHeads,
     PRTATemporalAdapter,
     cmcp_margin_loss,
@@ -123,3 +124,19 @@ def test_training_heads_bridge_biomedclip_text_to_visual_width():
     assert projected.shape == (3, 16)
     assert torch.allclose(projected.norm(dim=-1), torch.ones(3), atol=1e-6)
     assert heads.progression_logits(projected).shape == (3, 5)
+
+
+def test_frozen_biomedclip_difference_uses_cls_and_zero_current_control():
+    model = FrozenBiomedCLIPDifference(
+        [nn.Identity() for _ in range(4)],
+        final_norm=nn.Identity(),
+    )
+    prior = torch.zeros(2, 3, 4)
+    current = torch.zeros_like(prior)
+    prior[:, 0, 0] = 1
+    current[:, 0, 1] = 2
+    difference = model(prior, current)
+    assert difference.shape == (2, 4)
+    assert torch.allclose(difference.norm(dim=-1), torch.ones(2))
+    assert torch.equal(model(current, current), torch.zeros(2, 4))
+    assert not any(parameter.requires_grad for parameter in model.parameters())

@@ -122,11 +122,19 @@ smokes during iteration.
 - [x] Implement CMCP margin loss.
 - [x] Implement temporal inversion and static-state preservation.
 - [x] Implement A0-A6 capacity-matched baselines and ablations.
+- [x] Make A0 frozen BiomedCLIP CLS-difference probing executable from the
+  merged Block-8 cache.
 - [x] Resolve the availability-gated A1 BioViL-T source/checkpoint boundary and
   prove strict official-checkpoint loading before evaluation integration.
 - [ ] Cache and evaluate the frozen canonical A1 BioViL-T pair representation
   with the pre-frozen linear finding-conditioned probe.
+- [x] Store A1 true/current-only/inverted controls once for only the
+  transition-supervised pairs; forbid per-seed image re-encoding.
 - [ ] Run internal patient-disjoint qualification and bootstrap gates.
+- [ ] Apply the frozen 2,000-replicate patient bootstrap and three-seed gate
+  without row-level resampling.
+- [x] Implement fail-closed seed 17/29/43 aggregation for current-only and CMCP
+  controls, including exact row-order and formal-unlock checks.
 - **Status:** in_progress
 
 ### Phase 5 — Conditional R37C/R38/R39
@@ -161,6 +169,9 @@ smokes during iteration.
 | `pip index versions health-multimodal` found no PyPI distribution | 1 | Pin the archived official Microsoft `hi-ml` source instead of installing an unrelated or guessed package |
 | First real A1 pair smoke used HI-ML `ImageModel`, whose outer `forward` accepts only one image even when its encoder is multi-image | 1 | Use the official `MultiImageModel` wrapper; it has the same checkpoint parameters and the required `current_image`/`previous_image` forward contract |
 | Tiny A1 probe case study produced identical true-pair/current-only predictions and zero F1 on five calibration rows | 1 | Record it only as a pipeline/control smoke, not scientific evidence; require the full frozen cache and adequately powered patient-disjoint evaluation before judging A1 |
+| First combined A0/qualification patch expected a nonexistent `test_prta.py` assertion context | 1 | Confirm the patch was atomic, inspect the live test tail, and split the implementation into smaller exact-context patches |
+| First A1 cached-control unit test omitted its local `torch` import | 1 | Add the explicit test import; production cache/index code was unaffected |
+| A1 cache merger Ruff pass flagged imports after its intentional `src` path insertion | 1 | Add the same file-level `E402` declaration used by the other standalone repository scripts |
 
 ## Next Step
 

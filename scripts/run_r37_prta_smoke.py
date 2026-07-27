@@ -73,6 +73,7 @@ def flatten_partition(
         result.append(
             {
                 **example,
+                "patient_id": str(pair["patient_id"]),
                 "prior_dicom_id": str(pair["prior_dicom_id"]),
                 "current_dicom_id": str(pair["current_dicom_id"]),
             }
@@ -359,6 +360,11 @@ def main() -> int:
         targets = []
         true_predictions = []
         current_only_predictions = []
+        inverted_predictions = []
+        cmcp_patient_ids = []
+        cmcp_targets = []
+        cmcp_true_predictions = []
+        cmcp_predictions = []
         with torch.inference_mode():
             for start, end in batch_indices(len(examples), args.batch_size):
                 batch = examples[start:end]
@@ -366,11 +372,13 @@ def main() -> int:
                 query = heads.finding_query(finding_text[finding_index])
                 true_output = model(prior, current, query)
                 current_output = model(current, current, query)
-                true_predictions.extend(
+                inverted_output = model(current, prior, query)
+                batch_true_predictions = (
                     heads.progression_logits(true_output.transition_embedding)
                     .argmax(dim=-1)
-                    .cpu()
-                    .tolist()
+                )
+                true_predictions.extend(
+                    batch_true_predictions.cpu().tolist()
                 )
                 current_only_predictions.extend(
                     heads.progression_logits(current_output.transition_embedding)
@@ -378,15 +386,71 @@ def main() -> int:
                     .cpu()
                     .tolist()
                 )
+                inverted_predictions.extend(
+                    heads.progression_logits(
+                        inverted_output.transition_embedding
+                    )
+                    .argmax(dim=-1)
+                    .cpu()
+                    .tolist()
+                )
+                if variant.cmcp:
+                    positions = [
+                        index
+                        for index, item in enumerate(batch)
+                        if item["label"] != "Stable"
+                        and item["example_id"] in cmcp_by_target
+                    ]
+                    if positions:
+                        counterfactual_prior = cache.get_many(
+                            cmcp_by_target[batch[index]["example_id"]][
+                                "counterfactual_prior_dicom_id"
+                            ]
+                            for index in positions
+                        ).to(device=device, dtype=torch.float32)
+                        cmcp_output = model(
+                            counterfactual_prior,
+                            current[positions],
+                            query[positions],
+                        )
+                        cmcp_predictions.extend(
+                            heads.progression_logits(
+                                cmcp_output.transition_embedding
+                            )
+                            .argmax(dim=-1)
+                            .cpu()
+                            .tolist()
+                        )
+                        cmcp_patient_ids.extend(
+                            str(batch[index]["patient_id"])
+                            for index in positions
+                        )
+                        cmcp_targets.extend(
+                            label_index[positions].cpu().tolist()
+                        )
+                        cmcp_true_predictions.extend(
+                            batch_true_predictions[positions].cpu().tolist()
+                        )
                 targets.extend(label_index.cpu().tolist())
         true_f1 = macro_f1(targets, true_predictions)
         current_f1 = macro_f1(targets, current_only_predictions)
         return {
             "examples": len(examples),
+            "patient_ids": [str(item["patient_id"]) for item in examples],
             "target_counts": dict(Counter(targets)),
+            "target_labels": targets,
+            "true_pair_predictions": true_predictions,
+            "current_only_predictions": current_only_predictions,
+            "inverted_predictions": inverted_predictions,
             "true_pair_macro_f1": true_f1,
             "current_only_macro_f1": current_f1,
             "true_minus_current_pp": (true_f1 - current_f1) * 100,
+            "cmcp": {
+                "patient_ids": cmcp_patient_ids,
+                "target_labels": cmcp_targets,
+                "true_pair_predictions": cmcp_true_predictions,
+                "control_predictions": cmcp_predictions,
+            },
         }
 
     calibration = evaluate(calibration_examples)
@@ -407,6 +471,9 @@ def main() -> int:
         ),
         "formal": args.formal,
         "scientific_claim_allowed": False if not args.formal else None,
+        "formal_training_unlocked": bool(
+            args.formal and transition_audit["formal_training_unlocked"]
+        ),
         "variant": args.variant,
         "variant_config": variant.__dict__,
         "seed": args.seed,

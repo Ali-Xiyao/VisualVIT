@@ -303,3 +303,18 @@ preserving the encoder's static medical semantics.
 - The short joint-idle GPU window at 13:04 was consumed by a new unrelated R1
   control wave, not by R37. The idle launcher correctly requires three
   confirmations and therefore avoided racing those workers.
+- A0 had been named in the matrix but not yet pinned to one tensor boundary.
+  It is now fixed as the normalized final-layer CLS delta produced from the
+  same Block-8 cache via untouched Blocks 9-12. This prevents post-result
+  switching among CLS, patch mean, or older rich-bundle features.
+- The qualification code now resamples patient clusters and carries every
+  finding row from each sampled patient. It cannot silently fall back to
+  row-level bootstrap, which would understate correlation across findings.
+- Three-seed qualification now has a single executable authority: seeds
+  17/29/43, 2,000 shared patient-cluster resamples, and the mean seed
+  true-minus-control macro-F1 distribution. The aggregator refuses mixed row
+  order or engineering-only results.
+- Restricting A1 caching to v4.1 transition-supervised rows leaves 37,391
+  unique pairs. The v2 cache stores all three temporal controls once, so seed
+  29/43 never re-run the image encoder and findings sharing a pair reuse the
+  same canonical features.

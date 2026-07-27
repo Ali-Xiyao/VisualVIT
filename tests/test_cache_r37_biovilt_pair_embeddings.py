@@ -41,3 +41,24 @@ def test_pair_inventory_rejects_duplicate_ids(tmp_path: Path):
         (tmp_path / name).write_text(row, encoding="utf-8")
     with pytest.raises(ValueError, match="duplicate pair_id"):
         pair_inventory(tmp_path)
+
+
+def test_pair_inventory_can_restrict_to_transition_supervision(tmp_path: Path):
+    qualified = (
+        '{"pair_id":"p1","prior_path":"a","current_path":"b",'
+        '"transition_supervision":[{"label":"New"}]}\n'
+    )
+    empty = (
+        '{"pair_id":"p2","prior_path":"c","current_path":"d",'
+        '"transition_supervision":[]}\n'
+    )
+    (tmp_path / "r37_pretrain_manifest.jsonl").write_text(
+        qualified + empty, encoding="utf-8"
+    )
+    (tmp_path / "r37_internal_calibration_manifest.jsonl").write_text(
+        "", encoding="utf-8"
+    )
+    inventory = pair_inventory(
+        tmp_path, require_transition_supervision=True
+    )
+    assert [item["pair_id"] for item in inventory] == ["p1"]

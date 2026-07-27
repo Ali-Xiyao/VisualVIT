@@ -41,6 +41,43 @@ def prta_variant_registry() -> dict[str, PRTAVariant]:
     }
 
 
+class FrozenBiomedCLIPDifference(nn.Module):
+    def __init__(
+        self,
+        frozen_blocks: Sequence[nn.Module],
+        *,
+        final_norm: nn.Module,
+    ) -> None:
+        super().__init__()
+        if len(frozen_blocks) != 4:
+            raise ValueError("A0 requires exactly BiomedCLIP Blocks 9-12")
+        self.frozen_blocks = nn.ModuleList(frozen_blocks)
+        self.final_norm = final_norm
+        self.eval().requires_grad_(False)
+
+    def train(self, mode: bool = True):
+        super().train(False)
+        return self
+
+    def encode(self, block8_tokens: torch.Tensor) -> torch.Tensor:
+        tokens = block8_tokens
+        for block in self.frozen_blocks:
+            tokens = block(tokens)
+        return self.final_norm(tokens)
+
+    @torch.no_grad()
+    def forward(
+        self,
+        prior_block8: torch.Tensor,
+        current_block8: torch.Tensor,
+    ) -> torch.Tensor:
+        if prior_block8.shape != current_block8.shape:
+            raise ValueError("A0 prior/current token shapes differ")
+        prior_cls = self.encode(prior_block8)[:, 0]
+        current_cls = self.encode(current_block8)[:, 0]
+        return F.normalize(current_cls - prior_cls, dim=-1)
+
+
 class BottleneckAdapter(nn.Module):
     def __init__(
         self,

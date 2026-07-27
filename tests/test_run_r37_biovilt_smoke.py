@@ -1,6 +1,12 @@
+import torch
+
 from visualvit.prta import PROGRESSION_LABELS
 
-from scripts.run_r37_biovilt_smoke import balanced_sample, unique_pairs
+from scripts.run_r37_biovilt_smoke import (
+    balanced_sample,
+    extract_cached_controls,
+    unique_pairs,
+)
 
 
 def _examples():
@@ -35,3 +41,17 @@ def test_unique_pairs_collapses_repeated_finding_rows():
     duplicate["example_id"] = "second-finding"
     result = unique_pairs(examples, [duplicate])
     assert len(result) == len(examples)
+
+
+def test_cached_controls_are_indexed_by_pair_id():
+    class Cache:
+        def get_many(self, pair_ids, *, mode):
+            offset = {"true_pair": 0, "current_only": 1, "inverted": 2}[mode]
+            return torch.tensor(
+                [[float(index + offset)] for index, _ in enumerate(pair_ids)]
+            )
+
+    pairs = [{"pair_id": "a"}, {"pair_id": "b"}]
+    result = extract_cached_controls(Cache(), pairs)
+    assert result["a"]["true_pair"].item() == 0
+    assert result["b"]["inverted"].item() == 3

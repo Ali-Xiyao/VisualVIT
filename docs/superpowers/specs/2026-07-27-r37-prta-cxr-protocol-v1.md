@@ -220,6 +220,14 @@ The frozen comparison matrix is:
 A1/A7 unavailability must be reported as an availability boundary, not silently
 replaced by a weaker model.
 
+The A0 frozen difference feature is also fixed before evaluation: pass cached
+Block-8 tokens through the unmodified frozen BiomedCLIP Blocks 9-12 and final
+norm, subtract prior CLS from current CLS, and L2-normalize the 768-D delta.
+The capacity-matched probe is a linear five-class classifier conditioned by the
+same fixed 12-finding one-hot vector used by A1. Current-only replaces the prior
+with the current image, and inversion swaps the pair order. No patch pooling,
+adapter, or prompt-derived feature may be substituted after results are seen.
+
 The now-available A1 implementation is frozen before outcome evaluation:
 
 - official `microsoft/BiomedVLP-BioViL-T` image weights at Hub revision
@@ -234,8 +242,10 @@ The now-available A1 implementation is frozen before outcome evaluation:
 - a frozen-backbone linear five-class probe conditioned only by the same
   12-finding one-hot query used to enumerate the R37 transition rows.
 
-The A1 feature cache is built once per pair and reused across findings and
-seeds. No protected outcome is used to choose the representation or probe.
+The A1 feature cache is built once per transition-supervised pair and reused
+across findings and seeds. It stores true-pair, current-only, and inverted
+canonical embeddings so none of the three controls is re-encoded per seed. No
+protected outcome is used to choose the representation or probe.
 
 The full loss is:
 
@@ -248,6 +258,14 @@ protocol version is frozen before any protected outcome is read.
 
 All thresholds, seeds, loss weights, probe capacity, and baseline code freeze
 on R37 internal calibration only.
+
+Patient-bootstrap intervals use 2,000 deterministic percentile replicates.
+Patients, not individual finding rows, are sampled with replacement; every row
+from a sampled patient is retained, including repeated copies when that patient
+is drawn more than once. Training seeds are 17, 29, and 43. The frozen
+bootstrap seed is 37001. The reported interval is the distribution of the mean
+true-minus-control macro-F1 difference across the three seeds under the same
+sampled patient clusters.
 
 Internal GO requires:
 

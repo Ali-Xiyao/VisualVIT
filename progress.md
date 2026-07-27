@@ -195,3 +195,36 @@
 - Created the second R37 engineering checkpoint containing only code, tests,
   protocol/planning documents, and case-study documentation. Runtime data,
   caches, official model assets, and protected artifacts remain outside Git.
+- Froze the remaining A0 representation before its first result: unmodified
+  Blocks 9-12 plus final norm, normalized current-minus-prior CLS, and the same
+  fixed finding-conditioned linear probe/control definitions as A1.
+- Froze internal confidence intervals as 2,000 deterministic patient-cluster
+  percentile bootstrap replicates with seed 37001; row-level bootstrap is not
+  permitted.
+- Implemented the A0 final-CLS difference encoder, frozen finding-conditioned
+  probe runner, generic qualification probe, patient-cluster bootstrap, and
+  three-seed survival gate.
+- The new A0/qualification suite passed 14 tests and Ruff reported no issues.
+  A0 execution remains pending the merged full Block-8 cache.
+- Added patient IDs and per-row true/current/inverted/CMCP predictions to the
+  evaluation artifacts and implemented the formal seed-17/29/43 aggregator.
+- The aggregator uses one shared patient-cluster draw per bootstrap replicate,
+  averages the three seed differences, and fails closed on seed, row-order,
+  variant, outcome-firewall, or human-QA-unlock drift.
+- The expanded focused suite passed 21 tests; Ruff again reported no issues.
+- Audited the A1 execution path against the user's no-recomputation request.
+  The engineering runner still re-encoded controls per seed, so the formal
+  contract is tightened to one transition-pair control cache reused by all
+  findings and seeds before any formal result.
+- Implemented A1 v2 true/current-only/inverted control shards, two-part
+  merge/coverage audit, bounded random access, and formal-run cache enforcement.
+- The transition-only inventory contains 37,391 unique qualified pairs rather
+  than all 108,732 structural pairs.
+- A two-pair real-image v2 CPU smoke passed all three 128-D controls, exact
+  repeated true-pair inference, outcome/hash firewalls, and random-access
+  retrieval. CPU throughput was only 0.057 pair/s for four forward passes, so
+  the full cache remains GPU-only.
+- Rechecked the live launcher at 13:28: both GPUs remain occupied at roughly
+  20.9/19.8 GB and R37 is still correctly waiting with zero idle polls.
+- The third-checkpoint complete repository regression passed 639 tests with
+  one unchanged historical R14 expected-xfail in 370.81 seconds.

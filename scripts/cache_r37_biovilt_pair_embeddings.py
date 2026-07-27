@@ -26,7 +26,8 @@ from visualvit.biovilt import (
 
 
 INPUT_ROOT = Path(
-    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37a_data_v1"
+    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
+    r"\r37a_transitions_v4_1"
 )
 OUTPUT_BASE = Path(
     r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
@@ -48,7 +49,9 @@ def read_jsonl(path: Path) -> Iterable[dict[str, Any]]:
                 yield json.loads(line)
 
 
-def pair_inventory(input_root: Path) -> list[dict[str, str]]:
+def pair_inventory(
+    input_root: Path, *, require_transition_supervision: bool = False
+) -> list[dict[str, str]]:
     rows = []
     seen: set[str] = set()
     for partition, name in (
@@ -59,6 +62,11 @@ def pair_inventory(input_root: Path) -> list[dict[str, str]]:
         ),
     ):
         for row in read_jsonl(input_root / name):
+            if (
+                require_transition_supervision
+                and not row.get("transition_supervision")
+            ):
+                continue
             pair_id = str(row["pair_id"])
             if pair_id in seen:
                 raise ValueError(f"duplicate pair_id: {pair_id}")
@@ -136,7 +144,9 @@ def main() -> int:
     if not args.full and args.smoke_pairs <= 0:
         raise ValueError("smoke pair count must be positive")
 
-    inventory = pair_inventory(args.input_root)
+    inventory = pair_inventory(
+        args.input_root, require_transition_supervision=True
+    )
     formal_count = len(inventory)
     if args.full:
         start, end = contiguous_part_bounds(
@@ -153,7 +163,9 @@ def main() -> int:
             raise ValueError("cache parts are supported only with --full")
         start, end = 0, min(args.smoke_pairs, formal_count)
         inventory = inventory[start:end]
-        default_output = OUTPUT_BASE / "r37_biovilt_pair_cache_smoke_v1"
+        default_output = (
+            OUTPUT_BASE / "r37_biovilt_pair_control_cache_smoke_v2"
+        )
     output_root = args.output_root or default_output
     if output_root.exists():
         raise FileExistsError(f"output root must be fresh: {output_root}")
@@ -186,7 +198,11 @@ def main() -> int:
     started = time.perf_counter()
     shard_ids: list[str] = []
     shard_partitions: list[str] = []
-    shard_embeddings: list[torch.Tensor] = []
+    shard_embeddings: dict[str, list[torch.Tensor]] = {
+        "true_pair": [],
+        "current_only": [],
+        "inverted": [],
+    }
     shards = []
     processed = 0
     reproducibility_max_abs = None
@@ -196,12 +212,15 @@ def main() -> int:
         if not shard_ids:
             return
         shard_name = f"shard_{len(shards):05d}.pt"
-        tensor = torch.cat(shard_embeddings).to(dtype=torch.float16)
+        tensors = {
+            mode: torch.cat(values).to(dtype=torch.float16)
+            for mode, values in shard_embeddings.items()
+        }
         torch.save(
             {
                 "pair_ids": tuple(shard_ids),
                 "partitions": tuple(shard_partitions),
-                "embeddings": tensor,
+                "embeddings": tensors,
             },
             output_root / shard_name,
         )
@@ -209,30 +228,45 @@ def main() -> int:
             {
                 "file": shard_name,
                 "count": len(shard_ids),
-                "shape": list(tensor.shape),
+                "shape": [len(shard_ids), BIOVILT_FEATURE_DIM],
+                "controls": sorted(tensors),
             }
         )
         shard_ids = []
         shard_partitions = []
-        shard_embeddings = []
+        shard_embeddings = {
+            "true_pair": [],
+            "current_only": [],
+            "inverted": [],
+        }
 
     for pair_ids, partitions, prior, current in loader:
         prior = prior.to(device, non_blocking=True)
         current = current.to(device, non_blocking=True)
-        embeddings = canonical_pair_embedding(
-            model, current_image=current, prior_image=prior
-        )
+        embeddings = {
+            "true_pair": canonical_pair_embedding(
+                model, current_image=current, prior_image=prior
+            ),
+            "current_only": canonical_pair_embedding(
+                model, current_image=current, prior_image=None
+            ),
+            "inverted": canonical_pair_embedding(
+                model, current_image=prior, prior_image=current
+            ),
+        }
+        true_embeddings = embeddings["true_pair"]
         if reproducibility_max_abs is None:
             repeated = canonical_pair_embedding(
                 model, current_image=current, prior_image=prior
             )
             reproducibility_max_abs = float(
-                (embeddings - repeated).abs().max().item()
+                (true_embeddings - repeated).abs().max().item()
             )
         for index, pair_id in enumerate(pair_ids):
             shard_ids.append(str(pair_id))
             shard_partitions.append(str(partitions[index]))
-            shard_embeddings.append(embeddings[index : index + 1].cpu())
+            for mode, values in embeddings.items():
+                shard_embeddings[mode].append(values[index : index + 1].cpu())
             processed += 1
             if len(shard_ids) >= args.shard_size:
                 flush()
@@ -240,8 +274,8 @@ def main() -> int:
 
     elapsed = time.perf_counter() - started
     manifest = {
-        "schema": "visualvit.r37.biovilt-pair-cache.v1",
-        "status": "PASS_R37_A1_CACHE",
+        "schema": "visualvit.r37.biovilt-pair-control-cache.v2",
+        "status": "PASS_R37_A1_CONTROL_CACHE",
         "formal": bool(args.full),
         "formal_inventory_count": formal_count,
         "part_index": args.part_index,
@@ -250,6 +284,7 @@ def main() -> int:
         "part_end": end,
         "pair_count": processed,
         "feature_dim": BIOVILT_FEATURE_DIM,
+        "controls": ["true_pair", "current_only", "inverted"],
         "dtype": "float16",
         "hub_revision": BIOVILT_HUB_REVISION,
         "hi_ml_revision": HI_ML_REVISION,

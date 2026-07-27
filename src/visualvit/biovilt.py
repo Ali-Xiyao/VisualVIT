@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+import json
 from pathlib import Path
 import sys
 from typing import Any
@@ -18,6 +19,7 @@ BIOVILT_FEATURE_DIM = 128
 BIOVILT_RESIZE = 512
 BIOVILT_CROP = 448
 R37_FINDING_COUNT = 12
+BIOVILT_CONTROL_MODES = ("true_pair", "current_only", "inverted")
 
 
 class ExpandGrayscaleChannels:
@@ -148,3 +150,86 @@ class FindingConditionedLinearProbe(nn.Module):
             finding_indices, num_classes=self.finding_count
         ).to(dtype=embeddings.dtype)
         return self.classifier(torch.cat((embeddings, one_hot), dim=-1))
+
+
+class BioViLTControlCacheIndex:
+    def __init__(
+        self, root: str | Path, *, maximum_loaded_shards: int = 4
+    ) -> None:
+        self.root = Path(root)
+        if maximum_loaded_shards <= 0:
+            raise ValueError("maximum loaded shards must be positive")
+        self.maximum_loaded_shards = maximum_loaded_shards
+        manifest_path = self.root / "r37_biovilt_pair_cache_manifest.json"
+        if not manifest_path.is_file():
+            raise FileNotFoundError(f"A1 cache manifest missing: {manifest_path}")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if manifest.get("status") not in {
+            "PASS_R37_A1_CONTROL_CACHE",
+            "PASS_R37_A1_CONTROL_CACHE_MERGED",
+        }:
+            raise ValueError("A1 cache gate has not passed")
+        controls = tuple(manifest.get("controls", ()))
+        if controls != BIOVILT_CONTROL_MODES:
+            raise ValueError(f"A1 control-mode drift: {controls}")
+        if "parts" in manifest:
+            part_roots = [
+                self.root / str(part["directory"])
+                for part in manifest["parts"]
+            ]
+        else:
+            part_roots = [self.root]
+
+        self.locations: dict[str, tuple[Path, int]] = {}
+        for part_root in part_roots:
+            part_manifest = json.loads(
+                (
+                    part_root / "r37_biovilt_pair_cache_manifest.json"
+                ).read_text(encoding="utf-8")
+            )
+            for shard in part_manifest["shards"]:
+                shard_path = part_root / str(shard["file"])
+                payload = torch.load(
+                    shard_path, map_location="cpu", weights_only=True
+                )
+                pair_ids = [str(value) for value in payload["pair_ids"]]
+                if len(pair_ids) != int(shard["count"]):
+                    raise ValueError(f"A1 shard count drift: {shard_path}")
+                for index, pair_id in enumerate(pair_ids):
+                    if pair_id in self.locations:
+                        raise ValueError(f"duplicate A1 pair ID: {pair_id}")
+                    self.locations[pair_id] = (shard_path, index)
+        if len(self.locations) != int(manifest["pair_count"]):
+            raise ValueError("A1 merged pair count drift")
+        self._loaded: dict[Path, dict[str, torch.Tensor]] = {}
+        self._order: list[Path] = []
+
+    def _load(self, path: Path) -> dict[str, torch.Tensor]:
+        if path in self._loaded:
+            self._order.remove(path)
+            self._order.append(path)
+            return self._loaded[path]
+        payload = torch.load(path, map_location="cpu", weights_only=True)
+        embeddings = payload["embeddings"]
+        if tuple(embeddings) != BIOVILT_CONTROL_MODES:
+            raise ValueError(f"A1 shard control drift: {path}")
+        self._loaded[path] = embeddings
+        self._order.append(path)
+        while len(self._order) > self.maximum_loaded_shards:
+            evicted = self._order.pop(0)
+            del self._loaded[evicted]
+        return embeddings
+
+    def get_many(
+        self, pair_ids: Any, *, mode: str
+    ) -> torch.Tensor:
+        if mode not in BIOVILT_CONTROL_MODES:
+            raise ValueError(f"unknown A1 control mode: {mode}")
+        values = []
+        for pair_id in pair_ids:
+            key = str(pair_id)
+            if key not in self.locations:
+                raise KeyError(f"A1 pair absent from cache: {key}")
+            path, index = self.locations[key]
+            values.append(self._load(path)[mode][index])
+        return torch.stack(values)
