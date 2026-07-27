@@ -138,7 +138,11 @@ smokes during iteration.
 - [x] Diagnose continuous representation/logit responsiveness for A6 at the
   pre-existing non-formal cap (1,000 train, 500 calibration, 3 epochs) while
   keeping seed 17, rank 32, LR 1e-4, batch size 2, and all losses unchanged.
-- **Status:** a6_engineering_signal_positive_formal_locked
+- [ ] Run seed 29 and 43 engineering replications at the identical frozen A6
+  1,000/500/3-epoch configuration; do not tune from their outcomes.
+- [ ] Prepare the formal three-seed/bootstrap execution bundle without
+  launching formal mode or protected evaluation.
+- **Status:** engineering_multiseed_preflight
 
 ### Phase 4A — Post-cache engineering chain
 
@@ -159,6 +163,8 @@ smokes during iteration.
 
 ### Phase 5 — Conditional R37C/R38/R39
 
+- [ ] At the end of the project, package and obtain independent human QA over
+  the frozen 200-row transition case sheet.
 - [ ] Freeze exactly one candidate before any dev reveal.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
@@ -203,7 +209,7 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze the positive A6 engineering case study without further calibration
-tuning. Obtain independent transition human QA, then run the already-frozen
-formal seed 17/29/43 bundle and 2,000-replicate patient bootstrap. Do not
-unlock protected dev/test/gold outcomes before those gates pass.
+Run A6 seed 29 and 43 engineering replications in parallel on the two idle
+GPUs with exactly the seed-17 configuration. Compare prior responsiveness
+without changing settings, then harden the formal three-seed/bootstrap
+execution bundle. Human QA is deferred to the final project stage.

@@ -387,3 +387,16 @@ preserving the encoder's static medical semantics.
   a positive engineering mechanism signal. It is still one seed, a bounded
   non-formal run, and lacks patient-bootstrap confidence intervals; scientific
   R37 remains pending rather than GO.
+- Human QA is a provenance gate, not another model experiment. The fixed
+  `r37_transition_case_study.csv` contains 200 rows (40 per class) and already
+  exposes `human_direction_correct`, `human_error_category`, and
+  `human_notes` fields.
+- A reviewer must judge whether the proposed finding direction follows from
+  the displayed report sentence. Every row must be marked; false rows require
+  an error category. Passing requires >=90% overall and >=85% within every
+  class. Codex's earlier 194/200 review cannot serve as the independent
+  certificate.
+- Per user direction, human QA is deferred to the final project stage and is
+  not part of the current work. The next permitted work is non-formal,
+  outcome-firewalled engineering replication for the already-frozen seeds 29
+  and 43 plus execution-chain hardening.

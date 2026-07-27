@@ -310,3 +310,10 @@
   calibration tuning. Formal qualification remains locked until independent
   transition human QA, followed by the frozen three-seed patient-bootstrap
   gate.
+- The user authorized continuing all remaining work. Began a reviewer-ready
+  human-QA handoff plus a fail-closed validator; only the independent judgments
+  themselves require a human reviewer.
+- The user then explicitly deferred human QA to the end of the project.
+  Stopped that packet work before implementation and redirected the current
+  phase to frozen seed-29/43 engineering replication and formal-runner
+  preflight.
