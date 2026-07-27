@@ -135,6 +135,9 @@ smokes during iteration.
   without row-level resampling.
 - [x] Implement fail-closed seed 17/29/43 aggregation for current-only and CMCP
   controls, including exact row-order and formal-unlock checks.
+- [ ] Diagnose continuous representation/logit responsiveness for A6 at the
+  pre-existing non-formal cap (1,000 train, 500 calibration, 3 epochs) while
+  keeping seed 17, rank 32, LR 1e-4, batch size 2, and all losses unchanged.
 - **Status:** in_progress
 
 ### Phase 4A — Post-cache engineering chain
@@ -200,7 +203,7 @@ smokes during iteration.
 
 ## Next Step
 
-Analyze why A3/A6 produced identical true-pair and current-only predictions
-despite A0/A1 showing bounded true-pair differences. Add representation/logit
-responsiveness diagnostics before any new training attempt. Formal internal
-qualification remains locked pending independent transition human QA.
+Run the frozen A6 mechanism-scale case study with continuous true/current,
+true/inverted, and true/CMCP embedding/logit diagnostics. It remains
+engineering-only. Formal internal qualification remains locked pending
+independent transition human QA.

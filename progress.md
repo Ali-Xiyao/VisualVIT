@@ -292,3 +292,9 @@
   true-current 0.00 pp with exactly identical predictions; A6 true-CMCP also
   0.00 pp on 40 dynamic rows. These are tiny engineering results and do not
   unlock scientific qualification.
+- Added continuous PRTA responsiveness diagnostics at evaluation time for
+  true/current-only, true/inverted, and true/CMCP comparisons. Twelve focused
+  tests, Ruff, and `git diff --check` passed.
+- Froze the next engineering attempt at the already-coded non-formal cap:
+  A6 seed 17, 1,000/500 rows, 3 epochs, batch size 2, rank 32, and LR 1e-4.
+  Formal mode and protected outcomes remain locked.

@@ -366,3 +366,11 @@ preserving the encoder's static medical semantics.
 - Therefore the post-cache engineering chain passes mechanically, but the
   trainable PRTA path has not yet demonstrated correct-prior responsiveness.
   Scientific R37 remains `NOT_EVALUATED`, not GO.
+- The next attempt is bounded by the runner's pre-existing engineering ceiling:
+  A6 seed 17, 1,000 train rows, 500 calibration rows, 3 epochs, rank 32,
+  learning rate 1e-4, and batch size 2. No threshold, architecture, loss,
+  seed, or protected-outcome choice changes.
+- Continuous diagnostics now measure embedding cosine/L2, logit L2, and
+  argmax-change rate for true versus current-only, inverted, and CMCP. This
+  distinguishes weak but real prior sensitivity from complete representation
+  collapse.

@@ -129,6 +129,43 @@ def macro_f1(targets: list[int], predictions: list[int]) -> float:
     return sum(scores) / len(scores)
 
 
+def responsiveness_diagnostics(
+    reference_embeddings: torch.Tensor,
+    control_embeddings: torch.Tensor,
+    reference_logits: torch.Tensor,
+    control_logits: torch.Tensor,
+) -> dict[str, float | int]:
+    if reference_embeddings.shape != control_embeddings.shape:
+        raise ValueError("responsiveness embedding shapes differ")
+    if reference_logits.shape != control_logits.shape:
+        raise ValueError("responsiveness logit shapes differ")
+    if reference_embeddings.shape[0] != reference_logits.shape[0]:
+        raise ValueError("responsiveness row counts differ")
+    if reference_embeddings.shape[0] == 0:
+        raise ValueError("responsiveness diagnostics require rows")
+    embedding_l2 = (reference_embeddings - control_embeddings).norm(dim=-1)
+    logit_l2 = (reference_logits - control_logits).norm(dim=-1)
+    prediction_changes = (
+        reference_logits.argmax(dim=-1) != control_logits.argmax(dim=-1)
+    )
+    return {
+        "rows": int(reference_embeddings.shape[0]),
+        "embedding_cosine_mean": float(
+            F.cosine_similarity(
+                reference_embeddings, control_embeddings, dim=-1
+            )
+            .mean()
+            .item()
+        ),
+        "embedding_l2_mean": float(embedding_l2.mean().item()),
+        "embedding_l2_max": float(embedding_l2.max().item()),
+        "logit_l2_mean": float(logit_l2.mean().item()),
+        "logit_l2_max": float(logit_l2.max().item()),
+        "prediction_change_count": int(prediction_changes.sum().item()),
+        "prediction_change_rate": float(prediction_changes.float().mean().item()),
+    }
+
+
 def batch_indices(length: int, batch_size: int) -> Iterable[tuple[int, int]]:
     for start in range(0, length, batch_size):
         yield start, min(start + batch_size, length)
@@ -365,6 +402,16 @@ def main() -> int:
         cmcp_targets = []
         cmcp_true_predictions = []
         cmcp_predictions = []
+        true_embeddings = []
+        current_embeddings = []
+        inverted_embeddings = []
+        true_logits_parts = []
+        current_logits_parts = []
+        inverted_logits_parts = []
+        cmcp_true_embeddings = []
+        cmcp_control_embeddings = []
+        cmcp_true_logits_parts = []
+        cmcp_control_logits_parts = []
         with torch.inference_mode():
             for start, end in batch_indices(len(examples), args.batch_size):
                 batch = examples[start:end]
@@ -373,27 +420,37 @@ def main() -> int:
                 true_output = model(prior, current, query)
                 current_output = model(current, current, query)
                 inverted_output = model(current, prior, query)
-                batch_true_predictions = (
-                    heads.progression_logits(true_output.transition_embedding)
-                    .argmax(dim=-1)
+                true_logits = heads.progression_logits(
+                    true_output.transition_embedding
                 )
+                current_logits = heads.progression_logits(
+                    current_output.transition_embedding
+                )
+                inverted_logits = heads.progression_logits(
+                    inverted_output.transition_embedding
+                )
+                batch_true_predictions = true_logits.argmax(dim=-1)
                 true_predictions.extend(
                     batch_true_predictions.cpu().tolist()
                 )
                 current_only_predictions.extend(
-                    heads.progression_logits(current_output.transition_embedding)
-                    .argmax(dim=-1)
-                    .cpu()
-                    .tolist()
+                    current_logits.argmax(dim=-1).cpu().tolist()
                 )
                 inverted_predictions.extend(
-                    heads.progression_logits(
-                        inverted_output.transition_embedding
-                    )
-                    .argmax(dim=-1)
-                    .cpu()
-                    .tolist()
+                    inverted_logits.argmax(dim=-1).cpu().tolist()
                 )
+                true_embeddings.append(
+                    true_output.transition_embedding.cpu()
+                )
+                current_embeddings.append(
+                    current_output.transition_embedding.cpu()
+                )
+                inverted_embeddings.append(
+                    inverted_output.transition_embedding.cpu()
+                )
+                true_logits_parts.append(true_logits.cpu())
+                current_logits_parts.append(current_logits.cpu())
+                inverted_logits_parts.append(inverted_logits.cpu())
                 if variant.cmcp:
                     positions = [
                         index
@@ -413,14 +470,22 @@ def main() -> int:
                             current[positions],
                             query[positions],
                         )
-                        cmcp_predictions.extend(
-                            heads.progression_logits(
-                                cmcp_output.transition_embedding
-                            )
-                            .argmax(dim=-1)
-                            .cpu()
-                            .tolist()
+                        cmcp_logits = heads.progression_logits(
+                            cmcp_output.transition_embedding
                         )
+                        cmcp_predictions.extend(
+                            cmcp_logits.argmax(dim=-1).cpu().tolist()
+                        )
+                        cmcp_true_embeddings.append(
+                            true_output.transition_embedding[positions].cpu()
+                        )
+                        cmcp_control_embeddings.append(
+                            cmcp_output.transition_embedding.cpu()
+                        )
+                        cmcp_true_logits_parts.append(
+                            true_logits[positions].cpu()
+                        )
+                        cmcp_control_logits_parts.append(cmcp_logits.cpu())
                         cmcp_patient_ids.extend(
                             str(batch[index]["patient_id"])
                             for index in positions
@@ -434,6 +499,30 @@ def main() -> int:
                 targets.extend(label_index.cpu().tolist())
         true_f1 = macro_f1(targets, true_predictions)
         current_f1 = macro_f1(targets, current_only_predictions)
+        responsiveness = {
+            "true_vs_current": responsiveness_diagnostics(
+                torch.cat(true_embeddings),
+                torch.cat(current_embeddings),
+                torch.cat(true_logits_parts),
+                torch.cat(current_logits_parts),
+            ),
+            "true_vs_inverted": responsiveness_diagnostics(
+                torch.cat(true_embeddings),
+                torch.cat(inverted_embeddings),
+                torch.cat(true_logits_parts),
+                torch.cat(inverted_logits_parts),
+            ),
+            "true_vs_cmcp": (
+                responsiveness_diagnostics(
+                    torch.cat(cmcp_true_embeddings),
+                    torch.cat(cmcp_control_embeddings),
+                    torch.cat(cmcp_true_logits_parts),
+                    torch.cat(cmcp_control_logits_parts),
+                )
+                if cmcp_true_embeddings
+                else None
+            ),
+        }
         return {
             "examples": len(examples),
             "patient_ids": [str(item["patient_id"]) for item in examples],
@@ -445,6 +534,7 @@ def main() -> int:
             "true_pair_macro_f1": true_f1,
             "current_only_macro_f1": current_f1,
             "true_minus_current_pp": (true_f1 - current_f1) * 100,
+            "responsiveness": responsiveness,
             "cmcp": {
                 "patient_ids": cmcp_patient_ids,
                 "target_labels": cmcp_targets,
