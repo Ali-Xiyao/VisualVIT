@@ -33,6 +33,13 @@ not a radiologist or independent-human adjudication, so
 | Pretrain | 33,621 |
 | Internal calibration | 3,770 |
 
+Finding-level transition examples used by the formal A6/A0 runners:
+
+| Partition | Finding-level examples |
+|---|---:|
+| Pretrain | 46,349 |
+| Internal calibration | 5,242 |
+
 Dynamic unique-patient support:
 
 | Class | Pretrain | Internal calibration |

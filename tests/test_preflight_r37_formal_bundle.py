@@ -40,6 +40,10 @@ def _spec(tmp_path: Path, *, human_unlocked: bool = False) -> dict:
                 "pretrain": 33621,
                 "internal_calibration": 3770,
             },
+            "transition_example_counts": {
+                "pretrain": 46349,
+                "internal_calibration": 5242,
+            },
             "protected_outcomes_read": False,
         },
     )
@@ -82,8 +86,10 @@ def _spec(tmp_path: Path, *, human_unlocked: bool = False) -> dict:
         "seeds": [17, 29, 43],
         "training": {
             "selection": "all_seed_independent_order",
-            "train_examples": 33621,
-            "calibration_examples": 3770,
+            "train_examples": 46349,
+            "calibration_examples": 5242,
+            "train_pairs": 33621,
+            "calibration_pairs": 3770,
             "epochs": 3,
             "batch_size": 2,
             "learning_rate": 0.0001,

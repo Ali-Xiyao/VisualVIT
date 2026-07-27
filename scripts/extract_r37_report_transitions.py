@@ -564,6 +564,12 @@ def main() -> int:
         )
         for partition, rows in outputs.items()
     }
+    transition_examples = {
+        partition: sum(
+            len(row["transition_supervision"]) for row in rows
+        )
+        for partition, rows in outputs.items()
+    }
     support_checks = {
         "all_five_classes_present": all(label_rows[label] > 0 for label in LABELS),
         "pretrain_dynamic_patient_support": all(
@@ -594,6 +600,7 @@ def main() -> int:
             partition: len(rows) for partition, rows in outputs.items()
         },
         "eligible_transition_pair_counts": eligible_pairs,
+        "transition_example_counts": transition_examples,
         "transition_row_counts": dict(label_rows),
         "transition_patient_counts": label_patients,
         "support_checks": support_checks,

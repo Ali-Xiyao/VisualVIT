@@ -3,16 +3,20 @@
 ## Verdict
 
 The frozen R37 A6 formal training and internal-qualification bundle is
-engineering-ready but intentionally locked:
+engineering-ready and human-QA-unlocked:
 
-`READY_R37_FORMAL_BUNDLE_PENDING_HUMAN_QA`
+`READY_R37_FORMAL_BUNDLE`
 
-The real runtime preflight passed every specification, artifact, count,
-bootstrap, cache, CMCP, output-state, and outcome-firewall check. Formal
-execution remains disallowed because the frozen transition audit still reports
-`formal_training_unlocked=false`. Exact A6 and A0 formal commands were both
-exercised against that gate; each exited nonzero before loading a model,
-created no output directory, and started no GPU work.
+The refreshed runtime preflight passes every specification, artifact, separate
+pair/example count, bootstrap, cache, CMCP, output-state, and outcome-firewall
+check. The transition audit reports `formal_training_unlocked=true` after the
+independent 195/200 review PASS, so formal execution is allowed.
+
+The first launch was safely stopped before model construction because an older
+specification called 33,621/3,770 eligible pairs “examples.” The corrected
+finding-level row counts are 46,349/5,242. No result was produced before this
+namespace-only repair; model, loss, seed, threshold, and bootstrap choices
+remain unchanged.
 
 This is a readiness result, not a scientific GO. No 300-dev, 483-test, sealed
 label, or gold outcome was read.
@@ -23,8 +27,8 @@ label, or gold outcome was read.
 |---|---|
 | Candidate | A6 full PRTA-CXR |
 | Training seeds | 17, 29, 43 |
-| Training rows | All 33,621 qualified pretraining examples |
-| Internal calibration rows | All 3,770 examples in one seed-independent order |
+| Training rows | All 46,349 finding-level examples from 33,621 qualified pairs |
+| Internal calibration rows | All 5,242 finding-level examples from 3,770 pairs, in one seed-independent order |
 | Epochs / batch | 3 / 2 |
 | Learning rate / adapter rank | 1e-4 / 32 |
 | Bootstrap | 2,000 patient-cluster draws, seed 37001 |
@@ -65,7 +69,7 @@ The A0 probe uses the same all-row calibration order and seeds, with its frozen
 - Runtime status:
   `engineering_preflight_passed=true`
 - Formal execution:
-  `formal_execution_allowed=false`
+  `formal_execution_allowed=true`
 - A6 output states: seed 17/29/43 all `fresh`
 - A0 output states: seed 17/29/43 all `fresh`
 - Protected outcomes read: false
@@ -75,7 +79,7 @@ The A0 probe uses the same all-row calibration order and seeds, with its frozen
 ## Scientific Boundary
 
 The earlier three-seed 1,000/500 engineering cases remain positive mechanism
-evidence only. They are not substituted into this formal bundle and cannot
-unlock R37C. Formal training may start only after the independent transition
-case-study gate changes the authoritative audit to an unlocked PASS. R37C,
-R38, the 300-dev reveal, the 483-test reveal, and gold remain locked.
+evidence only and are not substituted into this formal bundle. Human QA now
+permits formal internal training, but R37C, R38, the 300-dev reveal, the
+483-test reveal, and gold remain locked until the frozen internal
+patient-bootstrap gates produce a scientific GO.

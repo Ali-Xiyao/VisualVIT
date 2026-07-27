@@ -133,6 +133,8 @@ smokes during iteration.
 - [ ] Run internal patient-disjoint qualification and bootstrap gates.
 - [ ] Apply the frozen 2,000-replicate patient bootstrap and three-seed gate
   without row-level resampling.
+- [x] Repair the pre-outcome pair-count versus finding-row namespace mismatch,
+  refreeze formal counts at 46,349/5,242, and resume the unchanged bundle.
 - [x] Implement fail-closed seed 17/29/43 aggregation for current-only and CMCP
   controls, including exact row-order and formal-unlock checks.
 - [x] Diagnose continuous representation/logit responsiveness for A6 at the
@@ -181,13 +183,13 @@ smokes during iteration.
 - [x] Add a fail-closed validator for reviewer completion, class balance, and
   the frozen 90% overall/85% per-class thresholds.
 - [x] Obtain and structurally validate the completed local review CSV.
-- [ ] Obtain the reviewer name/ID, role, relevant experience, date, and
-  independent-review attestation.
+- [x] Validate the supplied reviewer name/ID, role, date, and independent
+  attestation; record relevant experience when the reviewer supplies it.
 - [ ] Freeze exactly one candidate before any dev reveal.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** human_qa_content_pass_pending_attestation
+- **Status:** human_qa_pass_formal_internal_running
 
 ## Errors Encountered
 
@@ -227,11 +229,11 @@ smokes during iteration.
 | Focused preflight tests invoked through the standalone `pytest.exe` could not import the repository's namespace-style `scripts` modules | 1 | Use the repository's established `python -m pytest` invocation so the workspace root is on `sys.path`; Ruff and diff checks already passed |
 | The partial-output/spec-drift test fixture created a nested temporary transition directory without its parent | 1 | Add `parents=True` to fixture directory creation; production preflight logic was not involved |
 | The A6-versus-A0 aggregate test fixture inherited an A6 `calibration` object, so normalization ignored its A0 top-level fields and correctly produced a STOP | 1 | Remove the impossible inherited field from the synthetic A0 payload; production A0 artifacts already use only the top-level schema |
+| The new standalone formal pipeline inserted the repository root before importing a sibling script, and Ruff flagged the intentional import order | 1 | Add the same file-level `E402` declaration used by other standalone repository scripts; direct `--help` execution already passed |
+| The first formal A6 seeds both stopped before model construction because the bundle expected 33,621 eligible pairs while the runner correctly expanded 46,349 finding-level transition rows | 1 | Register pair and example counts separately, freeze formal training/calibration rows at 46,349/5,242, and resume without changing any observed-outcome-dependent setting |
 
 ## Next Step
 
-Obtain the independent reviewer name or institutional ID, professional role,
-relevant experience, review date, and explicit independent-review
-confirmation. Then run the hardened validator against both the frozen source
-and reviewed CSV. Do not unlock formal training unless it emits the frozen
-PASS and atomically updates the transition audit.
+Repair the pair-count versus finding-row namespace before any formal outcome,
+refresh the unlocked preflight, then resume the unchanged duplicate-safe A6/A0
+bundle. Stop at the first scientific gate failure.

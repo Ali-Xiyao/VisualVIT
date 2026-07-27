@@ -96,8 +96,8 @@
   retained.
 - Reviewed the full deterministic 200-row v4 case sheet; two rows require
   original-report adjudication before the ruleset is frozen.
-- Completed v4.1 with 24 focused tests passing and 33,621/3,770 transition
-  pairs in pretrain/calibration.
+- Completed v4.1 with 24 focused tests passing and 33,621/3,770 eligible
+  transition pairs in pretrain/calibration.
 - Froze the v4.1 Codex case-study result at 194/200 (97.0%), with every class
   above 92.5%; documented residual errors instead of further tuning.
 - Kept formal human/radiologist QA explicitly pending before R37B is called a
@@ -340,9 +340,9 @@
   read-only preflight command covering transition, Block-8, text-cache, CMCP,
   seed-output, bootstrap, and outcome-firewall contracts.
 - Repaired the dormant formal runner path so it requires the exact frozen A6
-  configuration, all 33,621/3,770 rows in seed-independent order, and distinct
-  formal-training schema/status. Formal training outputs remain explicitly
-  non-scientific until aggregation.
+  configuration and all seed-independent finding rows. The later launch guard
+  exposed that the original bundle mislabeled 33,621/3,770 eligible pairs as
+  row counts; the corrected full-row counts are 46,349/5,242.
 - Tightened the formal aggregator to accept only firewall-clean formal A6
   training artifacts and reject engineering-smoke, sealed-test, gold,
   source-hash, variant, seed, or human-unlock drift.
@@ -359,9 +359,9 @@
 - Operationalized the previously underspecified auxiliary gates before formal
   outcomes: inverse-label consistency >=0.90 and adapted/frozen-current cosine
   retention >=0.99 in every seed.
-- Hardened the A0 formal baseline to all 33,621/3,770 rows in the same
-  seed-independent calibration order and added paired A6-minus-A0
-  patient-cluster aggregation.
+- Hardened the A0 formal baseline to the same complete seed-independent
+  finding-row order as A6 and added paired A6-minus-A0 patient-cluster
+  aggregation.
 - The expanded focused suite passed 30/30 and Ruff passed. Real A6 and A0
   formal guard probes both exited nonzero on the pending human-QA audit,
   created no output directories, and started no training.
@@ -406,3 +406,34 @@
   name or institutional ID, professional role, relevant experience, ISO
   review date, and explicit independent-review confirmation have not been
   supplied. No GPU job was started.
+- The user supplied reviewer ID `doctor 1`, role `professor` after obvious
+  spelling normalization, review date `2026-07-27` after ISO normalization,
+  and the exact independent-review confirmation. The reviewer explicitly
+  declined to provide experience; this will be recorded as `not provided`
+  rather than fabricated.
+- Relevant experience is retained as optional attestation metadata because it
+  was not a frozen numerical gate and the original validator contract required
+  identity, professional role, date, and independent confirmation.
+- Human QA emitted `PASS_R37_TRANSITION_HUMAN_QA`; the transition audit now
+  has `formal_training_unlocked=true`, and the refreshed preflight emitted
+  `READY_R37_FORMAL_BUNDLE` with all six A6/A0 seed outputs fresh.
+- Added a duplicate-safe two-GPU formal pipeline with per-device queues,
+  three-poll idle confirmation, fresh/complete output checks, status/log
+  artifacts, and automatic current-only/CMCP/A0 patient-bootstrap aggregation.
+  Sixteen focused QA/preflight/pipeline tests passed before launch.
+- 2026-07-27 18:59 +08:00: the pipeline launched A6 seeds 17 and 29 after
+  three idle polls, then both stopped in about seven seconds before model
+  construction with `formal partition count drift: expected 33621, got
+  46349`. GPUs were released, no output directory was created, and no
+  protected outcome or hash was read.
+- Outcome-free manifest inspection confirmed 46,349/5,242 unique
+  finding-level examples over 33,621/3,770 eligible pairs. The next repair is
+  count-namespace correction only; model and gate choices remain frozen.
+- Registered pair and finding-level counts as separate audit/spec fields,
+  updated both A6 and A0 formal constants to 46,349/5,242 finding rows, and
+  retained 33,621/3,770 as eligible-pair provenance. Twenty-three focused
+  runner, A0, preflight, pipeline, and QA tests pass; Ruff, compileall, and
+  `git diff --check` pass.
+- The refreshed real preflight again reports `READY_R37_FORMAL_BUNDLE`,
+  `formal_execution_allowed=true`, all six output states `fresh`, and every
+  outcome/hash firewall false.

@@ -66,6 +66,10 @@ def exact_spec_checks(spec: dict[str, Any]) -> dict[str, bool]:
             training.get("calibration_examples")
             == FORMAL_CALIBRATION_EXAMPLES
         ),
+        "train_pairs": training.get("train_pairs") == 33_621,
+        "calibration_pairs": (
+            training.get("calibration_pairs") == 3_770
+        ),
         "epochs": training.get("epochs") == FORMAL_EPOCHS,
         "batch_size": training.get("batch_size") == FORMAL_BATCH_SIZE,
         "learning_rate": (
@@ -212,14 +216,24 @@ def inspect_bundle(spec: dict[str, Any]) -> dict[str, Any]:
                 "PASS_R37A_TRANSITION_QUALITY",
             },
             "transition_counts": (
-                transition.get("eligible_transition_pair_counts", {}).get(
+                transition.get("transition_example_counts", {}).get(
                     "pretrain"
                 )
                 == spec["training"]["train_examples"]
                 and transition.get(
-                    "eligible_transition_pair_counts", {}
+                    "transition_example_counts", {}
                 ).get("internal_calibration")
                 == spec["training"]["calibration_examples"]
+            ),
+            "transition_pair_counts": (
+                transition.get("eligible_transition_pair_counts", {}).get(
+                    "pretrain"
+                )
+                == spec["training"]["train_pairs"]
+                and transition.get(
+                    "eligible_transition_pair_counts", {}
+                ).get("internal_calibration")
+                == spec["training"]["calibration_pairs"]
             ),
             "transition_protected_firewall": (
                 transition.get("protected_outcomes_read") is False

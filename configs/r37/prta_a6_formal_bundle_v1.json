@@ -9,8 +9,10 @@
   ],
   "training": {
     "selection": "all_seed_independent_order",
-    "train_examples": 33621,
-    "calibration_examples": 3770,
+    "train_examples": 46349,
+    "calibration_examples": 5242,
+    "train_pairs": 33621,
+    "calibration_pairs": 3770,
     "epochs": 3,
     "batch_size": 2,
     "learning_rate": 0.0001,

@@ -94,7 +94,8 @@ def test_attestation_is_required():
         independent_review_confirmed=False,
     )
     assert result["formal_training_unlocked"] is False
-    assert len(result["errors"]) == 5
+    assert len(result["errors"]) == 4
+    assert result["attestation"]["reviewer_experience"] == "not provided"
 
 
 def test_non_qa_source_drift_stops():

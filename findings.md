@@ -431,16 +431,17 @@ preserving the encoder's static medical semantics.
   exact row-order checks, variant equality, and protected-outcome/human-QA
   firewalls. The remaining work is to connect these contracts through one
   machine-readable specification and readiness preflight.
-- The current frozen transition audit records 33,621 eligible pretraining
-  examples and 3,770 internal-calibration examples under ruleset v4.1. The
-  remaining gate is explicitly independent human review; the audit keeps
-  `formal_training_unlocked=false`.
+- The transition audit records 33,621 eligible pretraining pairs and 3,770
+  internal-calibration pairs under ruleset v4.1. These expand to 46,349 and
+  5,242 finding-level examples respectively; pair and example counts must not
+  share one metric name.
 - The merged Block-8 cache is structurally ready at 144,423/144,423 images,
   566 shards, `[197,768]` FP16 features, with source/per-shard hashing disabled
   and protected outcomes unread. CMCP is 100% covered over 26,041 dynamic
   examples (23,416 pretrain and 2,625 calibration).
-- The formal specification can therefore freeze full-row selection at
-  33,621/3,770 while retaining the replicated A6 training hyperparameters:
+- The corrected formal specification freezes full finding-row selection at
+  46,349/5,242 over 33,621/3,770 eligible pairs while retaining the replicated
+  A6 training hyperparameters:
   3 epochs, batch 2, rank 32, learning rate 1e-4, and seeds 17/29/43.
 - The real runtime preflight passes every specification, artifact, count,
   bootstrap, cache, CMCP, output-state, and outcome-firewall check. It reports
@@ -485,3 +486,20 @@ preserving the encoder's static medical semantics.
   the passing content metrics.
 - The validator is now fail-closed on frozen-source drift and can atomically
   update the transition audit only after both the sheet and attestation pass.
+- The independent human-QA gate formally PASSed at 195/200 (97.5%), with all
+  five classes above the frozen 85% floor. The audit is unlocked without any
+  protected-outcome or hash access; reviewer experience is recorded exactly
+  as unavailable rather than inferred.
+- The first formal A6 launch attempt stopped before model construction on both
+  GPUs with the same count guard: the bundle expected 33,621 rows but
+  `flatten_partition` produced 46,349 finding-level examples. No output
+  directory or scientific result was produced.
+- This is a metric-namespace mismatch. The audit's 33,621/3,770 values count
+  eligible image pairs with at least one transition label, while the A6/A0
+  runners and patient-cluster bootstrap operate on every finding-level
+  transition row: 46,349 pretrain and 5,242 internal calibration examples.
+- The protocol text already requires all frozen transition rows and carrying
+  every finding row within sampled patients. The smallest admissible repair is
+  therefore to register both pair counts and finding-level example counts,
+  freeze formal row counts at 46,349/5,242, and rerun the untouched model,
+  seed, loss, threshold, and bootstrap bundle.
