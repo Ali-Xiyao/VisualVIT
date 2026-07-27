@@ -133,6 +133,8 @@ smokes during iteration.
 - [ ] Run internal patient-disjoint qualification and bootstrap gates.
 - [ ] Apply the frozen 2,000-replicate patient bootstrap and three-seed gate
   without row-level resampling.
+- [ ] Complete only the user-selected formal A6 seeds 17 and 29; keep seed 43,
+  all A0 stages, and aggregation deferred until further direction.
 - [x] Repair the pre-outcome pair-count versus finding-row namespace mismatch,
   refreeze formal counts at 46,349/5,242, and resume the unchanged bundle.
 - [x] Implement fail-closed seed 17/29/43 aggregation for current-only and CMCP
@@ -156,7 +158,7 @@ smokes during iteration.
   formal result is observed.
 - [x] Harden the formal A0 capacity-matched baseline and paired A6-minus-A0
   patient-bootstrap gate.
-- **Status:** formal_bundle_ready_pending_human_qa
+- **Status:** two_seed_formal_running_user_paused_full_gate
 
 ### Phase 4A — Post-cache engineering chain
 
@@ -234,6 +236,7 @@ smokes during iteration.
 
 ## Next Step
 
-Repair the pair-count versus finding-row namespace before any formal outcome,
-refresh the unlocked preflight, then resume the unchanged duplicate-safe A6/A0
-bundle. Stop at the first scientific gate failure.
+Monitor only formal A6 seeds 17 and 29 through complete valid result artifacts.
+Report their descriptive case-study metrics without calling a scientific
+GO/STOP. Do not start seed 43, A0, bootstrap, or protected evaluation until the
+user explicitly resumes the frozen full gate.

@@ -508,3 +508,8 @@ preserving the encoder's static medical semantics.
   earlier STOP from a launch failure into a healthy formal run; it is still
   not a scientific result until all three seeds and patient-bootstrap gates
   complete.
+- The user narrowed the immediate execution scope to A6 seeds 17 and 29 only.
+  Seed 43, all A0 probes, and automatic aggregation are deferred rather than
+  deleted. Two-seed outputs may be inspected descriptively but cannot satisfy
+  the frozen all-three-seeds, A6-minus-A0, or patient-bootstrap scientific
+  gates.

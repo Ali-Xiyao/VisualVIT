@@ -449,3 +449,14 @@
   the status/log/PID/GPU surfaces, forbids duplicate jobs and protected reads,
   repairs only engineering STOPs, and reports the final internal scientific
   GO/STOP.
+- 2026-07-27 20:25 +08:00: the user requested a two-seed-first scope. Stopped
+  only the queue parent PID 28840 after verifying its exact command; A6 seed
+  17 PID 18604 and seed 29 PID 11172 remained alive with increasing CPU time
+  and healthy GPU load.
+- Removed only the stale single-instance lock left by the stopped parent.
+  Updated runtime status to `RUNNING_R37_TWO_SEED_FORMAL_PHASE`, set seed 43
+  and every A0 task to `deferred_by_user`, and kept
+  `three_seed_gate_eligible=false`.
+- Updated the existing heartbeat in place. It now monitors only seeds 17/29,
+  must not restart the full pipeline, and will label two complete results
+  `PASS_R37_TWO_SEED_FORMAL_TRAINING_ONLY` rather than scientific GO.
