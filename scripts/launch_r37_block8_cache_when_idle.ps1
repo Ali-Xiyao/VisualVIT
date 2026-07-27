@@ -125,8 +125,12 @@ $part0.WaitForExit()
 $part1.WaitForExit()
 $part0Exit = $part0.ExitCode
 $part1Exit = $part1.ExitCode
-Write-MonitorLog "cache parts exited; part0=$part0Exit part1=$part1Exit"
-if ($part0Exit -ne 0 -or $part1Exit -ne 0) {
+$part0Failed = $null -ne $part0Exit -and [int]$part0Exit -ne 0
+$part1Failed = $null -ne $part1Exit -and [int]$part1Exit -ne 0
+$part0Display = if ($null -eq $part0Exit) { "unavailable" } else { $part0Exit }
+$part1Display = if ($null -eq $part1Exit) { "unavailable" } else { $part1Exit }
+Write-MonitorLog "cache parts exited; part0=$part0Display part1=$part1Display"
+if ($part0Failed -or $part1Failed) {
     Write-Status -Status "STOP_R37_BLOCK8_CACHE_PART_FAILURE" -Extra @{
         part0_exit_code = $part0Exit
         part1_exit_code = $part1Exit
@@ -157,5 +161,8 @@ Write-Status -Status "PASS_R37_BLOCK8_FORMAL_CACHE" -Extra @{
     merged_manifest = (Join-Path $cacheRoot "cache_manifest.json")
     part0_exit_code = $part0Exit
     part1_exit_code = $part1Exit
+    process_exit_codes_available = (
+        $null -ne $part0Exit -and $null -ne $part1Exit
+    )
 }
 exit 0

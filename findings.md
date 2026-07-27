@@ -325,3 +325,20 @@ preserving the encoder's static medical semantics.
 - The post-cache watcher remains alive as PID 17856 and is correctly waiting
   for the Block-8 merge. This is an engineering-stage transition, not a
   scientific result.
+- Both formal Block-8 parts completed at 15:41 with 283 shards each and
+  `PASS_R37_BLOCK8_FORMAL_CACHE`; their stderr logs are empty and their
+  reported sizes are 21,854,593,665 and 21,854,896,321 bytes.
+- The launcher nevertheless wrote `STOP_R37_BLOCK8_CACHE_PART_FAILURE`
+  because Windows PowerShell returned null `ExitCode` properties after both
+  child processes had already produced complete PASS manifests. This is a
+  launcher-control failure, not a cache or scientific failure. Recovery must
+  merge the existing PASS parts and must not recache images or hashes.
+- Strict merge recovery PASSed with 144,423/144,423 unique images, 566 shards,
+  43,709,489,986 bytes, exact repeated-batch equality in both parts, and all
+  outcome/hash firewalls false. No image encoding was repeated.
+- The launcher now rejects only known nonzero exit codes; a missing process
+  exit-code property falls through to the strict manifest merger, which still
+  fails closed on missing, incomplete, overlapping, or non-PASS parts.
+- The stopped post-cache watcher was restarted once as PID 25564 after the
+  merged manifest passed. It advanced directly to `RUNNING_CMCP`, proving the
+  recovery path does not restart Block-8 work.

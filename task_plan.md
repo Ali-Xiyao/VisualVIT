@@ -143,14 +143,14 @@ smokes during iteration.
   per-stage PASS validation, and fail-closed partial-output handling.
 - [x] Attach a thread heartbeat that resumes diagnosis/analysis when the local
   watcher changes state.
-- [ ] Complete and merge the Block-8 cache without competing with unrelated
-  GPU jobs. Two formal parts started automatically after the sustained-idle
-  gate passed at 2026-07-27 15:02 +08:00.
+- [x] Complete and merge the Block-8 cache without competing with unrelated
+  GPU jobs. The recovered strict merge covers all 144,423 images in 566
+  shards without recomputing hashes.
 - [ ] Build and gate CMCP before any A5/A6 execution.
 - [ ] Run bounded A0, A3, and A6 engineering case studies.
 - [ ] Build and merge the one-time A1 three-control cache on both GPUs.
 - [ ] Run the cached A1 engineering probe without image re-encoding.
-- **Status:** block8_cache_parts_running
+- **Status:** cmcp_running
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -191,11 +191,12 @@ smokes during iteration.
 | Cache-start planning writeback twice used stale or mislocated context | 1 | Inspect each live file tail, then update the planning files with separate exact-context patches |
 | PowerShell interpreted unquoted `@{upstream}` while checking branch divergence | 1 | Quote the entire revision expression before rerunning the read-only Git check |
 | A PowerShell `foreach` block was piped directly in the cache snapshot command | 1 | Accumulate snapshot objects in an explicit array before formatting |
+| Both Block-8 parts PASSed, but Windows PowerShell exposed null `ExitCode` values and the launcher misclassified them as failures | 1 | Require PASS part manifests, normalize only null exit codes backed by those manifests, test the launcher logic, merge the existing parts without recaching, and resume the watcher |
+| Two isolated redirected exit-code diagnostics were rejected by command policy because they combined temporary-file cleanup with a child shell | 2 | Stop probing through nested temp cleanup; test manifest-backed recovery through repository-level helpers and fixtures |
+| A second manifest-inspection command repeated the PowerShell direct-`foreach` pipeline parse error | 2 | Reuse the already-recorded explicit-array pattern and keep subsequent commands single-purpose |
 
 ## Next Step
 
-Monitor the two existing Block-8 cache workers without starting duplicates.
-After both parts PASS and merge coverage is verified, let the existing
-post-cache watcher build CMCP, run bounded A0/A3/A6 case studies, build the
-one-time A1 control cache, and run cached A1 without reading protected
-outcomes.
+Let the resumed post-cache watcher finish and gate CMCP, then run bounded
+A0/A3/A6 case studies, build the one-time A1 control cache, and run cached A1
+without reading protected outcomes.

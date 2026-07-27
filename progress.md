@@ -254,3 +254,21 @@
 - 2026-07-27 15:07 +08:00: the post-cache watcher PID 17856 is alive and
   reports `WAITING_FOR_BLOCK8_CACHE`; scientific status remains not evaluated
   while the formal cache is running.
+- 2026-07-27 15:41 +08:00: both Block-8 workers completed all 283 shards and
+  wrote `PASS_R37_BLOCK8_FORMAL_CACHE` with empty stderr logs. The launcher
+  received null process exit-code fields, falsely emitted
+  `STOP_R37_BLOCK8_CACHE_PART_FAILURE`, and therefore did not run the merge.
+- The post-cache watcher then stopped fail-closed on that launcher status.
+  No protected outcome was read and no hash was recomputed. Recovery is
+  limited to validating the existing PASS manifests, merging them, and
+  restarting only the stopped post-cache watcher.
+- 2026-07-27 15:46 +08:00: strict merge recovery PASSed over the existing two
+  part manifests: 144,423 images, 566 shards, no overlap, no protected outcome
+  read, and no source/per-shard hash computation. Block-8 was not rerun.
+- Patched the launcher to classify only known nonzero child exit codes as
+  process failures and retain the strict merger as the artifact authority.
+  PowerShell syntax parsing, 10 focused tests, Ruff, and `git diff --check`
+  passed.
+- 2026-07-27 15:47 +08:00: restarted only the stopped post-cache watcher as
+  PID 25564. It recognized the merged PASS manifest and advanced to
+  `RUNNING_CMCP`.
