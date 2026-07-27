@@ -272,3 +272,23 @@
 - 2026-07-27 15:47 +08:00: restarted only the stopped post-cache watcher as
   PID 25564. It recognized the merged PASS manifest and advanced to
   `RUNNING_CMCP`.
+- CMCP completed with `PASS_R37A_CMCP_COVERAGE` and 100% coverage over 26,041
+  dynamic examples. Bounded A0, A3, and A6 then completed with engineering
+  PASS artifacts and no scientific claim.
+- 2026-07-27 16:00-16:06 +08:00: the one-time A1 true/current/inverted cache
+  ran on both GPUs and merged with `PASS_R37_A1_CONTROL_CACHE_MERGED` over
+  37,391 unique pairs.
+- 2026-07-27 16:07 +08:00: the cached CPU A1 probe stopped before result
+  writeback with `mat1 and mat2 must have the same dtype, but got Half and
+  Float`. No image cache or hash will be recomputed; repair is limited to
+  casting probe inputs to FP32.
+- Promoted cached canonical features to FP32 only at the linear-probe tensor
+  boundary and added an FP16 regression test. Thirteen focused tests, Ruff,
+  and `git diff --check` passed.
+- Restarted only the stopped watcher. It skipped every existing PASS artifact,
+  reused the 37,391-pair cache, completed the A1 probe, and wrote
+  `PASS_R37_POST_CACHE_ENGINEERING_PIPELINE` at 16:08.
+- Case-study readout: A0 true-current +18.41 pp; A1 +6.56 pp; A3 and A6
+  true-current 0.00 pp with exactly identical predictions; A6 true-CMCP also
+  0.00 pp on 40 dynamic rows. These are tiny engineering results and do not
+  unlock scientific qualification.

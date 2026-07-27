@@ -146,11 +146,13 @@ smokes during iteration.
 - [x] Complete and merge the Block-8 cache without competing with unrelated
   GPU jobs. The recovered strict merge covers all 144,423 images in 566
   shards without recomputing hashes.
-- [ ] Build and gate CMCP before any A5/A6 execution.
-- [ ] Run bounded A0, A3, and A6 engineering case studies.
-- [ ] Build and merge the one-time A1 three-control cache on both GPUs.
-- [ ] Run the cached A1 engineering probe without image re-encoding.
-- **Status:** cmcp_running
+- [x] Build and gate CMCP before any A5/A6 execution. Coverage is 100% over
+  26,041 dynamic examples.
+- [x] Run bounded A0, A3, and A6 engineering case studies.
+- [x] Build and merge the one-time A1 three-control cache on both GPUs:
+  37,391 unique pairs.
+- [x] Run the cached A1 engineering probe without image re-encoding.
+- **Status:** completed_engineering_only
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -194,9 +196,11 @@ smokes during iteration.
 | Both Block-8 parts PASSed, but Windows PowerShell exposed null `ExitCode` values and the launcher misclassified them as failures | 1 | Require PASS part manifests, normalize only null exit codes backed by those manifests, test the launcher logic, merge the existing parts without recaching, and resume the watcher |
 | Two isolated redirected exit-code diagnostics were rejected by command policy because they combined temporary-file cleanup with a child shell | 2 | Stop probing through nested temp cleanup; test manifest-backed recovery through repository-level helpers and fixtures |
 | A second manifest-inspection command repeated the PowerShell direct-`foreach` pipeline parse error | 2 | Reuse the already-recorded explicit-array pattern and keep subsequent commands single-purpose |
+| The first cached A1 CPU probe passed FP16 cache tensors directly to an FP32 linear probe and stopped on a dtype mismatch | 1 | Cast cached or direct canonical features to FP32 at the probe tensor boundary, add an FP16 regression test, and resume only the cached probe |
 
 ## Next Step
 
-Let the resumed post-cache watcher finish and gate CMCP, then run bounded
-A0/A3/A6 case studies, build the one-time A1 control cache, and run cached A1
-without reading protected outcomes.
+Analyze why A3/A6 produced identical true-pair and current-only predictions
+despite A0/A1 showing bounded true-pair differences. Add representation/logit
+responsiveness diagnostics before any new training attempt. Formal internal
+qualification remains locked pending independent transition human QA.

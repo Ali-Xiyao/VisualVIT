@@ -342,3 +342,27 @@ preserving the encoder's static medical semantics.
 - The stopped post-cache watcher was restarted once as PID 25564 after the
   merged manifest passed. It advanced directly to `RUNNING_CMCP`, proving the
   recovery path does not restart Block-8 work.
+- CMCP passed at 100% coverage: 23,416/23,416 pretraining and 2,625/2,625
+  internal-calibration dynamic examples were matched without outcome access.
+- Bounded A0, A3, and A6 engineering stages all passed their pipeline and
+  gradient/firewall checks. These are engineering smokes, not scientific
+  results.
+- The two-GPU A1 cache completed and merged 37,391 unique pairs once. The
+  subsequent CPU cached probe stopped before producing a result because FP16
+  cache tensors were concatenated into an FP32 linear probe. This is a narrow
+  dtype-boundary bug; the cache remains valid and must be reused.
+- After FP32 promotion at the probe boundary, the cached A1 smoke passed from
+  the existing cache. On 100 train/50 internal-calibration rows, A1 true,
+  current-only, and inverted macro-F1 were 0.4646, 0.3990, and 0.3682,
+  respectively. The +6.56/+9.63 pp differences are bounded case-study signals,
+  not scientific evidence.
+- A0 on the same 100/50 engineering scope showed 0.3702 true, 0.1862
+  current-only, and 0.1165 inverted macro-F1 (+18.41/+25.37 pp). Again this is
+  a single-seed tiny smoke without bootstrap.
+- A3 produced exactly identical true/current predictions on all 50 rows and
+  -0.91 pp versus inverted. A6 also produced exactly identical true/current
+  predictions on all 50 rows and identical true/CMCP predictions on all 40
+  dynamic rows; it was only +2.09 pp versus inverted.
+- Therefore the post-cache engineering chain passes mechanically, but the
+  trainable PRTA path has not yet demonstrated correct-prior responsiveness.
+  Scientific R37 remains `NOT_EVALUATED`, not GO.

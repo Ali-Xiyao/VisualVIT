@@ -5,6 +5,7 @@ from visualvit.prta import PROGRESSION_LABELS
 from scripts.run_r37_biovilt_smoke import (
     balanced_sample,
     extract_cached_controls,
+    tensors,
     unique_pairs,
 )
 
@@ -55,3 +56,31 @@ def test_cached_controls_are_indexed_by_pair_id():
     result = extract_cached_controls(Cache(), pairs)
     assert result["a"]["true_pair"].item() == 0
     assert result["b"]["inverted"].item() == 3
+
+
+def test_probe_tensors_promote_fp16_cache_features_to_fp32():
+    examples = [
+        {
+            "pair_id": "pair-a",
+            "finding": "finding-a",
+            "label": PROGRESSION_LABELS[0],
+        }
+    ]
+    features = {
+        "pair-a": {
+            "true_pair": torch.ones(128, dtype=torch.float16),
+        }
+    }
+
+    embeddings, finding_indices, labels = tensors(
+        examples,
+        features,
+        mode="true_pair",
+        finding_to_index={"finding-a": 0},
+        label_to_index={PROGRESSION_LABELS[0]: 0},
+        device=torch.device("cpu"),
+    )
+
+    assert embeddings.dtype is torch.float32
+    assert finding_indices.dtype is torch.long
+    assert labels.dtype is torch.long

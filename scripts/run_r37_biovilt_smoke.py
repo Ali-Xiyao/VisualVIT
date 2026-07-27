@@ -205,7 +205,7 @@ def tensors(
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     embeddings = torch.stack(
         [features[str(item["pair_id"])][mode] for item in examples]
-    ).to(device)
+    ).to(device=device, dtype=torch.float32)
     finding_indices = torch.tensor(
         [finding_to_index[str(item["finding"])] for item in examples],
         dtype=torch.long,
