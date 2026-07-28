@@ -544,3 +544,13 @@
   validation; it contains no seed 43, A0, bootstrap, or protected stage.
 - PowerShell syntax parsing, 24 focused tests, Ruff, and `git diff --check`
   pass before formal launch.
+- After three consecutive idle checks, launched R37.1 Seed 17 on GPU 0 and
+  Seed 29 on GPU 1 through independent WMI-created PowerShell parents. Launcher
+  PIDs are 32500/7320 and Python child PIDs are 27728/22208.
+- Both status files report `RUNNING_R37_1_FORMAL_SEED`; both child processes
+  are alive, both GPUs loaded the models, both stderr logs are empty, and all
+  protected/hash firewalls remain false.
+- Created the 20-minute heartbeat automation `r37-1-two-seed-monitor`. It
+  monitors only these two seeds, repairs only engineering failures without
+  changing frozen settings, and may continue downstream only if both fresh
+  results pass every registered internal gate.

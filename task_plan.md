@@ -198,7 +198,7 @@ smokes during iteration.
 - [ ] Run R37.1 seeds 17 and 29 on the fresh validation roster. Continue to
   seed 43, A0, and patient bootstrap only if both pass the frozen inversion,
   state-retention, current-only, and CMCP gates.
-- **Status:** in_progress
+- **Status:** formal_seeds_17_29_running
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -266,7 +266,6 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze the current R37 inversion failure and build the descriptive case study.
-Then freeze the R37.1 repair and fresh patient roster before reading any new
-validation outcome. Do not start seed 43, A0, bootstrap, aggregation, or any
-protected evaluation under the failed R37 specification.
+Monitor the active R37.1 formal seeds 17 and 29 through complete fresh-holdout
+artifacts. Continue to seed 43, A0, and patient bootstrap only if both initial
+seeds pass every frozen internal gate. Do not read any protected outcome.
