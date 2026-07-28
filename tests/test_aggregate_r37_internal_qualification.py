@@ -3,10 +3,19 @@ import pytest
 from scripts.aggregate_r37_internal_qualification import aggregate
 
 
-def _payload(seed: int, *, formal: bool = True):
+def _payload(seed: int, *, formal: bool = True, r37_1: bool = False):
     return {
-        "schema": "visualvit.r37.prta-formal-training.v1",
-        "status": "PASS_R37_PRTA_FORMAL_TRAINING",
+        "schema": (
+            "visualvit.r37-1.prta-formal-training.v1"
+            if r37_1
+            else "visualvit.r37.prta-formal-training.v1"
+        ),
+        "status": (
+            "PASS_R37_1_PRTA_FORMAL_TRAINING"
+            if r37_1
+            else "PASS_R37_PRTA_FORMAL_TRAINING"
+        ),
+        "r37_1": r37_1,
         "variant": "A6",
         "seed": seed,
         "formal": formal,
@@ -35,13 +44,21 @@ def _payload(seed: int, *, formal: bool = True):
     }
 
 
-def _a0_payload(seed: int):
-    payload = _payload(seed)
+def _a0_payload(seed: int, *, r37_1: bool = False):
+    payload = _payload(seed, r37_1=r37_1)
     payload.pop("calibration")
     payload.update(
         {
-            "schema": "visualvit.r37.a0-formal-probe.v1",
-            "status": "PASS_R37_A0_FORMAL_PROBE",
+            "schema": (
+                "visualvit.r37-1.a0-formal-probe.v1"
+                if r37_1
+                else "visualvit.r37.a0-formal-probe.v1"
+            ),
+            "status": (
+                "PASS_R37_1_A0_FORMAL_PROBE"
+                if r37_1
+                else "PASS_R37_A0_FORMAL_PROBE"
+            ),
             "variant": "A0",
             "calibration_patient_ids": ["p1", "p1", "p2", "p2"],
             "target_labels": [0, 1, 0, 1],
@@ -135,4 +152,39 @@ def test_a6_vs_a0_uses_same_patient_bootstrap_and_row_order():
             control="a0",
             require_formal=True,
             baseline_payloads=baselines,
+        )
+
+
+def test_r37_1_uses_fresh_schemas_for_all_formal_gates():
+    payloads = [
+        _payload(seed, r37_1=True) for seed in (17, 29, 43)
+    ]
+    current = aggregate(
+        payloads,
+        control="current_only",
+        require_formal=True,
+        r37_1=True,
+    )
+    assert current["status"] == "PASS_R37_1_INTERNAL_CONTROL_GATE"
+    assert current["schema"] == "visualvit.r37-1.internal-qualification.v1"
+    assert current["r37_1"] is True
+
+    a0 = aggregate(
+        payloads,
+        control="a0",
+        require_formal=True,
+        baseline_payloads=[
+            _a0_payload(seed, r37_1=True) for seed in (17, 29, 43)
+        ],
+        r37_1=True,
+    )
+    assert a0["status"] == "PASS_R37_1_INTERNAL_A6_VS_A0_GATE"
+    assert a0["schema"] == "visualvit.r37-1.a6-vs-a0-qualification.v1"
+
+    with pytest.raises(PermissionError, match="formal"):
+        aggregate(
+            [_payload(seed) for seed in (17, 29, 43)],
+            control="current_only",
+            require_formal=True,
+            r37_1=True,
         )

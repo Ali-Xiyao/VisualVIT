@@ -8,9 +8,9 @@ SCRIPT = (
 )
 
 
-def test_launcher_freezes_two_seed_scope_and_firewalls():
+def test_launcher_freezes_three_seed_scope_and_firewalls():
     text = SCRIPT.read_text(encoding="utf-8")
-    assert "[ValidateSet(17, 29)]" in text
+    assert "[ValidateSet(17, 29, 43)]" in text
     assert '[ValidateSet("cuda:0", "cuda:1")]' in text
     assert '"--r37-1"' in text
     assert '"--max-train-examples", "0"' in text
@@ -22,7 +22,6 @@ def test_launcher_freezes_two_seed_scope_and_firewalls():
     assert "protected_outcomes_read = $false" in text
     assert "source_hashes_recomputed = $false" in text
     assert "PASS_R37_1_PRTA_FORMAL_TRAINING" in text
-    assert "seed_43" not in text
     assert "bootstrap" not in text.lower()
     assert "run_r37_a0" not in text
 

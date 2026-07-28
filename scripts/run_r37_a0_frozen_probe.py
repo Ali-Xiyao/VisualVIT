@@ -24,6 +24,10 @@ from scripts.run_r37_prta_smoke import (
     FORMAL_SEEDS,
     FORMAL_TRAIN_EXAMPLES,
     OUTPUT_BASE,
+    R37_1_CALIBRATION_EXAMPLES,
+    R37_1_SEEDS,
+    R37_1_STATUS,
+    R37_1_TRAIN_EXAMPLES,
     TEXT_CACHE,
     TRANSITION_ROOT,
     balanced_sample,
@@ -42,6 +46,10 @@ from visualvit.r37_cache import Block8CacheIndex
 FORMAL_A0_OUTPUT_BASE = Path(
     r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
     r"\r37b_formal\a0_bundle_v1"
+)
+R37_1_A0_OUTPUT_BASE = Path(
+    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
+    r"\r37_1_formal\a0_v1"
 )
 FORMAL_A0_EPOCHS = 100
 FORMAL_A0_BATCH_SIZE = 16
@@ -68,6 +76,27 @@ def validate_formal_args(args: argparse.Namespace) -> None:
         )
 
 
+def validate_r37_1_args(args: argparse.Namespace) -> None:
+    expected = {
+        "epochs": FORMAL_A0_EPOCHS,
+        "batch_size": FORMAL_A0_BATCH_SIZE,
+        "learning_rate": FORMAL_A0_LEARNING_RATE,
+        "max_train_examples": 0,
+        "max_calibration_examples": 0,
+        "formal": False,
+    }
+    observed = {name: getattr(args, name) for name in expected}
+    if observed != expected:
+        raise ValueError(
+            f"formal R37.1 A0 configuration drift: expected {expected}, "
+            f"got {observed}"
+        )
+    if args.seed not in R37_1_SEEDS:
+        raise ValueError(
+            f"formal R37.1 A0 requires one of frozen seeds {R37_1_SEEDS}"
+        )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run the engineering-only frozen BiomedCLIP A0 probe"
@@ -84,6 +113,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--learning-rate", type=float, default=1e-2)
     parser.add_argument("--formal", action="store_true")
+    parser.add_argument("--r37-1", action="store_true")
     return parser.parse_args()
 
 
@@ -144,15 +174,21 @@ def make_tensors(
 
 def main() -> int:
     args = parse_args()
+    if args.formal and args.r37_1:
+        raise ValueError("--formal and --r37-1 are mutually exclusive")
     if args.formal:
         validate_formal_args(args)
+    if args.r37_1:
+        validate_r37_1_args(args)
+    formal_mode = bool(args.formal or args.r37_1)
     output_root = args.output_root
     if output_root is None:
-        output_root = (
-            FORMAL_A0_OUTPUT_BASE / f"seed_{args.seed}"
-            if args.formal
-            else OUTPUT_BASE / f"a0_seed{args.seed}_engineering_v1"
-        )
+        if args.formal:
+            output_root = FORMAL_A0_OUTPUT_BASE / f"seed_{args.seed}"
+        elif args.r37_1:
+            output_root = R37_1_A0_OUTPUT_BASE / f"seed_{args.seed}"
+        else:
+            output_root = OUTPUT_BASE / f"a0_seed{args.seed}_engineering_v1"
     if output_root.exists():
         raise FileExistsError(f"output root must be fresh: {output_root}")
     if args.batch_size <= 0 or args.epochs <= 0:
@@ -174,6 +210,15 @@ def main() -> int:
         raise PermissionError(
             "formal A0 remains locked pending independent transition human QA"
         )
+    if args.r37_1:
+        if audit.get("status") != R37_1_STATUS:
+            raise PermissionError("R37.1 fresh holdout is not ready")
+        if audit.get("one_shot_validation") is not True:
+            raise PermissionError("R37.1 one-shot validation contract drift")
+        if audit.get("patient_disjoint") is not True:
+            raise PermissionError("R37.1 patient-disjointness drift")
+        if audit.get("old_calibration_excluded") is not True:
+            raise PermissionError("old R37 calibration exclusion drift")
 
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -188,6 +233,15 @@ def main() -> int:
         calibration_examples = formal_partition(
             flatten_partition(args.transition_root, "internal_calibration"),
             expected_count=FORMAL_CALIBRATION_EXAMPLES,
+        )
+    elif args.r37_1:
+        train_examples = formal_partition(
+            flatten_partition(args.transition_root, "pretrain"),
+            expected_count=R37_1_TRAIN_EXAMPLES,
+        )
+        calibration_examples = formal_partition(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            expected_count=R37_1_CALIBRATION_EXAMPLES,
         )
     else:
         train_examples = balanced_sample(
@@ -281,33 +335,58 @@ def main() -> int:
     )
     result = {
         "schema": (
-            "visualvit.r37.a0-formal-probe.v1"
-            if args.formal
-            else "visualvit.r37.a0-engineering-smoke.v1"
+            "visualvit.r37-1.a0-formal-probe.v1"
+            if args.r37_1
+            else (
+                "visualvit.r37.a0-formal-probe.v1"
+                if args.formal
+                else "visualvit.r37.a0-engineering-smoke.v1"
+            )
         ),
         "status": (
-            "PASS_R37_A0_FORMAL_PROBE"
-            if args.formal
-            else "PASS_R37_A0_ENGINEERING_PIPELINE"
+            "PASS_R37_1_A0_FORMAL_PROBE"
+            if args.r37_1
+            else (
+                "PASS_R37_A0_FORMAL_PROBE"
+                if args.formal
+                else "PASS_R37_A0_ENGINEERING_PIPELINE"
+            )
         ),
         "scientific_claim_allowed": False,
         "scientific_gate_status": (
-            "PENDING_THREE_SEED_AGGREGATION"
-            if args.formal
-            else "NOT_EVALUATED_ENGINEERING_SMOKE"
+            "PENDING_R37_1_THREE_SEED_AGGREGATION"
+            if args.r37_1
+            else (
+                "PENDING_THREE_SEED_AGGREGATION"
+                if args.formal
+                else "NOT_EVALUATED_ENGINEERING_SMOKE"
+            )
         ),
-        "formal": args.formal,
+        "formal": formal_mode,
+        "r37_1": args.r37_1,
         "variant": "A0",
         "seed": args.seed,
         "train_examples": len(train_examples),
         "calibration_examples": len(calibration_examples),
         "selection_contract": {
-            "train": "all_seed_independent_order"
-            if args.formal
-            else "balanced_engineering_sample",
-            "calibration": "all_seed_independent_order"
-            if args.formal
-            else "balanced_engineering_sample",
+            "train": (
+                "r37_1_fresh_patient_order"
+                if args.r37_1
+                else (
+                    "all_seed_independent_order"
+                    if args.formal
+                    else "balanced_engineering_sample"
+                )
+            ),
+            "calibration": (
+                "r37_1_fresh_patient_order"
+                if args.r37_1
+                else (
+                    "all_seed_independent_order"
+                    if args.formal
+                    else "balanced_engineering_sample"
+                )
+            ),
         },
         "train_label_counts": dict(
             Counter(item["label"] for item in train_examples)
@@ -337,18 +416,20 @@ def main() -> int:
         "gold_outcomes_read": False,
         "source_hashes_recomputed": False,
         "formal_training_unlocked": bool(
-            args.formal and audit["formal_training_unlocked"]
+            formal_mode and audit["formal_training_unlocked"]
         ),
     }
     output_root.mkdir(parents=True, exist_ok=False)
-    result_name = "result.json" if args.formal else "r37_a0_smoke_result.json"
+    result_name = (
+        "result.json" if formal_mode else "r37_a0_smoke_result.json"
+    )
     (output_root / result_name).write_text(
         json.dumps(result, indent=2, sort_keys=True), encoding="utf-8"
     )
     torch.save(
         {"probe_state_dict": probe.state_dict()},
         output_root
-        / ("checkpoint.pt" if args.formal else "r37_a0_probe.pt"),
+        / ("checkpoint.pt" if formal_mode else "r37_a0_probe.pt"),
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0

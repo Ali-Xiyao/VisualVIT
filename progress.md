@@ -569,3 +569,28 @@
   processes are responsive, and both stderr logs are empty.
 - Post-restart validation passed: PowerShell launcher syntax, 11 focused
   R37.1 launcher/roster/runner tests, and `git diff --check` are clean.
+- 2026-07-28 23:17-23:36 +08:00: both R37.1 fresh-holdout formal seeds
+  completed with `PASS_R37_1_FORMAL_SEED`, exit code 0, complete
+  checkpoint/result pairs, empty stderr, and all protected/hash firewalls
+  false.
+- Frozen two-seed descriptive gate check passed in both seeds. Seed 17:
+  inversion 1.0000, state retention 0.9934, true-current +30.42 pp,
+  true-CMCP +12.76 pp. Seed 29: 1.0000, 0.9929, +25.22 pp, +11.39 pp.
+- No final scientific GO is claimed from two seeds. The next authorized step
+  is seed 43 plus the capacity-matched A0 fresh-holdout baseline and frozen
+  patient-cluster bootstrap, still before any protected reveal.
+- Began R37.1 downstream hardening. Read-only code inspection showed the A6
+  runner already admits frozen seed 43, while A0 and aggregation still
+  hard-code old-R37 counts/schemas. Implementation is restricted to explicit
+  R37.1 roster/schema routing with unchanged frozen hyperparameters.
+- Added an explicit R37.1 A0 mode, R37.1 aggregation schema selection, Seed 43
+  launcher admission, and a duplicate-safe R37.1 A0 launcher. PowerShell
+  syntax, 20 focused tests, Ruff, compileall, and `git diff --check` passed.
+- The user then explicitly paused all downstream execution. No Seed 43, A0,
+  bootstrap, aggregation, or protected process was started.
+- Added `reports/R37_1_TWO_SEED_FRESH_HOLDOUT_RESULT.md` as the handoff
+  surface for the two-seed metrics, reboot recovery, firewall evidence,
+  scientific boundary, and paused next stage.
+- Final pause verification found zero active experiment Python processes, no
+  GPU compute processes, and all Seed 43/A0 output roots absent. The R37.1
+  audit remains `READY_R37_1_FRESH_HOLDOUT` with every firewall false.

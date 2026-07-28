@@ -195,13 +195,17 @@ smokes during iteration.
 - [x] Run a bounded engineering smoke using training-side diagnostics only.
   The captured foreground 100/50/1-epoch diagnostic passed; the earlier
   1,000/500 background attempt remains an engineering STOP with no result.
-- [ ] Run R37.1 seeds 17 and 29 on the fresh validation roster. Continue to
+- [x] Run R37.1 seeds 17 and 29 on the fresh validation roster. Continue to
   seed 43, A0, and patient bootstrap only if both pass the frozen inversion,
   state-retention, current-only, and CMCP gates.
 - [x] Recover both incomplete R37.1 seed launches after the 2026-07-28 host
   reboot by archiving only the stale zero-byte logs/status files and relaunching
   the same frozen commands; do not recompute hashes or reuse old calibration.
-- **Status:** formal_seeds_17_29_running
+- [ ] Run R37.1 seed 43, the capacity-matched A0 fresh-holdout baseline, and
+  the frozen patient-cluster bootstrap only under the same roster/firewalls.
+- [x] Write the two-seed fresh-holdout result report and freeze the claim
+  boundary before pausing all downstream execution at user request.
+- **Status:** two_seed_fresh_holdout_pass_user_paused
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -267,9 +271,11 @@ smokes during iteration.
 | The first 1,000/500 R37.1 training-side smoke exited after about 30 minutes without a result directory or stderr | 1 | Treat it as an engineering STOP, not a scientific result; inspect Windows/GPU events, then use a smaller foreground smoke with captured exit state before any retry |
 | The optional Security process-exit event query returned an invalid-parameter error | 1 | Do not depend on unavailable process auditing; use explicit foreground exit status and runner-owned stage markers for the next diagnostic |
 | The host reboot at 2026-07-28 14:24 +08 interrupted both incomplete R37.1 formal seeds before either output directory existed | 1 | Verify the old PIDs are absent and both GPUs have no compute jobs, archive the stale status/zero-byte logs, and relaunch only seeds 17/29 with the unchanged frozen commands |
+| The first completed-result inspection printed the full calibration prediction arrays and flooded the bounded console output | 1 | Switch to scalar-only recursive inspection plus explicit array counts; no protected result or file was accessed |
+| The downstream inspection guessed `scripts/aggregate_r37_formal_results.py`, which does not exist | 1 | Resolve the tracked aggregation entrypoint with `rg`; the actual file is `scripts/aggregate_r37_internal_qualification.py` |
 
 ## Next Step
 
-Monitor the active R37.1 formal seeds 17 and 29 through complete fresh-holdout
-artifacts. Continue to seed 43, A0, and patient bootstrap only if both initial
-seeds pass every frozen internal gate. Do not read any protected outcome.
+User-paused. Do not start Seed 43, A0, bootstrap, aggregation, or any protected
+reveal. Resume only after new user direction and fresh duplicate/output/GPU/
+firewall checks.

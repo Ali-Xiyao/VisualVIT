@@ -72,6 +72,7 @@ def validate_formal_results(
     variant: str,
     schema: str,
     status: str,
+    r37_1: bool = False,
 ) -> list[dict[str, Any]]:
     ordered = sorted(payloads, key=lambda item: int(item["seed"]))
     seeds = tuple(int(item["seed"]) for item in ordered)
@@ -88,6 +89,7 @@ def validate_formal_results(
         or item.get("sealed_test_read") is not False
         or item.get("gold_outcomes_read") is not False
         or item.get("source_hashes_recomputed") is not False
+        or bool(item.get("r37_1", False)) is not r37_1
         for item in ordered
     ):
         raise PermissionError(
@@ -133,20 +135,40 @@ def formal_diagnostic_gate(
 def aggregate_a6_vs_a0(
     a6_payloads: list[dict[str, Any]],
     a0_payloads: list[dict[str, Any]],
+    *,
+    r37_1: bool = False,
 ) -> dict[str, Any]:
     if len(a6_payloads) != 3 or len(a0_payloads) != 3:
         raise ValueError("R37 A6/A0 aggregation requires three results each")
     a6_ordered = validate_formal_results(
         a6_payloads,
         variant="A6",
-        schema="visualvit.r37.prta-formal-training.v1",
-        status="PASS_R37_PRTA_FORMAL_TRAINING",
+        schema=(
+            "visualvit.r37-1.prta-formal-training.v1"
+            if r37_1
+            else "visualvit.r37.prta-formal-training.v1"
+        ),
+        status=(
+            "PASS_R37_1_PRTA_FORMAL_TRAINING"
+            if r37_1
+            else "PASS_R37_PRTA_FORMAL_TRAINING"
+        ),
+        r37_1=r37_1,
     )
     a0_ordered = validate_formal_results(
         a0_payloads,
         variant="A0",
-        schema="visualvit.r37.a0-formal-probe.v1",
-        status="PASS_R37_A0_FORMAL_PROBE",
+        schema=(
+            "visualvit.r37-1.a0-formal-probe.v1"
+            if r37_1
+            else "visualvit.r37.a0-formal-probe.v1"
+        ),
+        status=(
+            "PASS_R37_1_A0_FORMAL_PROBE"
+            if r37_1
+            else "PASS_R37_A0_FORMAL_PROBE"
+        ),
+        r37_1=r37_1,
     )
     a6_rows = [
         normalized_predictions(item, control="current_only")
@@ -175,12 +197,25 @@ def aggregate_a6_vs_a0(
         pooled_ci_lower_pp=float(bootstrap["ci95_lower_pp"]),
     )
     return {
-        "schema": "visualvit.r37.a6-vs-a0-qualification.v1",
-        "status": (
-            "PASS_R37_INTERNAL_A6_VS_A0_GATE"
-            if gate["passed"]
-            else "STOP_R37_INTERNAL_A6_VS_A0_GATE"
+        "schema": (
+            "visualvit.r37-1.a6-vs-a0-qualification.v1"
+            if r37_1
+            else "visualvit.r37.a6-vs-a0-qualification.v1"
         ),
+        "status": (
+            (
+                "PASS_R37_1_INTERNAL_A6_VS_A0_GATE"
+                if r37_1
+                else "PASS_R37_INTERNAL_A6_VS_A0_GATE"
+            )
+            if gate["passed"]
+            else (
+                "STOP_R37_1_INTERNAL_A6_VS_A0_GATE"
+                if r37_1
+                else "STOP_R37_INTERNAL_A6_VS_A0_GATE"
+            )
+        ),
+        "r37_1": r37_1,
         "variant": "A6",
         "control": "A0",
         "formal": True,
@@ -201,13 +236,16 @@ def aggregate(
     control: str,
     require_formal: bool,
     baseline_payloads: list[dict[str, Any]] | None = None,
+    r37_1: bool = False,
 ) -> dict[str, Any]:
     if control == "a0":
         if not require_formal:
             raise ValueError("A6 versus A0 is a formal-only gate")
         if baseline_payloads is None:
             raise ValueError("A6 versus A0 requires baseline results")
-        return aggregate_a6_vs_a0(payloads, baseline_payloads)
+        return aggregate_a6_vs_a0(
+            payloads, baseline_payloads, r37_1=r37_1
+        )
     if len(payloads) != 3:
         raise ValueError("R37 aggregation requires exactly three results")
     ordered = sorted(payloads, key=lambda item: int(item["seed"]))
@@ -221,8 +259,17 @@ def aggregate(
         ordered = validate_formal_results(
             ordered,
             variant="A6",
-            schema="visualvit.r37.prta-formal-training.v1",
-            status="PASS_R37_PRTA_FORMAL_TRAINING",
+            schema=(
+                "visualvit.r37-1.prta-formal-training.v1"
+                if r37_1
+                else "visualvit.r37.prta-formal-training.v1"
+            ),
+            status=(
+                "PASS_R37_1_PRTA_FORMAL_TRAINING"
+                if r37_1
+                else "PASS_R37_PRTA_FORMAL_TRAINING"
+            ),
+            r37_1=r37_1,
         )
 
     normalized = [
@@ -255,12 +302,25 @@ def aggregate(
         diagnostic_gate is None or diagnostic_gate["passed"]
     )
     return {
-        "schema": "visualvit.r37.internal-qualification.v1",
-        "status": (
-            "PASS_R37_INTERNAL_CONTROL_GATE"
-            if passed
-            else "STOP_R37_INTERNAL_CONTROL_GATE"
+        "schema": (
+            "visualvit.r37-1.internal-qualification.v1"
+            if r37_1
+            else "visualvit.r37.internal-qualification.v1"
         ),
+        "status": (
+            (
+                "PASS_R37_1_INTERNAL_CONTROL_GATE"
+                if r37_1
+                else "PASS_R37_INTERNAL_CONTROL_GATE"
+            )
+            if passed
+            else (
+                "STOP_R37_1_INTERNAL_CONTROL_GATE"
+                if r37_1
+                else "STOP_R37_INTERNAL_CONTROL_GATE"
+            )
+        ),
+        "r37_1": r37_1,
         "variant": variants.pop(),
         "control": control,
         "formal": require_formal,
@@ -269,7 +329,10 @@ def aggregate(
         "gate": gate,
         "diagnostic_gate": diagnostic_gate,
         "protected_outcomes_read": False,
+        "sealed_test_read": False,
+        "gold_outcomes_read": False,
         "source_hashes_recomputed": False,
+        "scientific_claim_allowed": False,
     }
 
 
@@ -301,6 +364,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="diagnostic only; output remains non-formal",
     )
+    parser.add_argument(
+        "--r37-1",
+        action="store_true",
+        help="require R37.1 fresh-holdout schemas and statuses",
+    )
     return parser.parse_args()
 
 
@@ -317,6 +385,7 @@ def main() -> int:
             if args.baseline_result
             else None
         ),
+        r37_1=args.r37_1,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

@@ -3,7 +3,11 @@ from argparse import Namespace
 import pytest
 import torch
 
-from scripts.run_r37_a0_frozen_probe import make_tensors, validate_formal_args
+from scripts.run_r37_a0_frozen_probe import (
+    make_tensors,
+    validate_formal_args,
+    validate_r37_1_args,
+)
 
 
 def test_a0_make_tensors_preserves_example_order():
@@ -47,3 +51,23 @@ def test_a0_formal_args_require_exact_frozen_bundle():
     args.learning_rate = 0.02
     with pytest.raises(ValueError, match="configuration drift"):
         validate_formal_args(args)
+
+
+def test_r37_1_a0_args_require_exact_frozen_bundle():
+    args = Namespace(
+        seed=43,
+        epochs=100,
+        batch_size=16,
+        learning_rate=0.01,
+        max_train_examples=0,
+        max_calibration_examples=0,
+        formal=False,
+    )
+    validate_r37_1_args(args)
+    args.seed = 44
+    with pytest.raises(ValueError, match="frozen seeds"):
+        validate_r37_1_args(args)
+    args.seed = 43
+    args.formal = True
+    with pytest.raises(ValueError, match="configuration drift"):
+        validate_r37_1_args(args)

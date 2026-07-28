@@ -579,3 +579,26 @@ preserving the encoder's static medical semantics.
   `interruptions/20260728T142404_reboot_interrupt`, both GPUs were confirmed
   idle over three polls, and only seeds 17/29 were relaunched. No source or
   per-shard hash and no protected outcome was accessed.
+- Both one-shot R37.1 fresh-holdout seeds completed structurally with clean
+  launch/result firewalls. Seed 17 finished at 23:17 +08 and Seed 29 at 23:36
+  +08; both stderr logs are empty and both GPUs were released.
+- Seed 17 passes all four frozen initial gates: inversion 1.0000, state
+  retention 0.9934, true-current +30.42 pp, and true-CMCP +12.76 pp.
+  Seed 29 also passes: inversion 1.0000, state retention 0.9929,
+  true-current +25.22 pp, and true-CMCP +11.39 pp.
+- These are two-seed descriptive results, not final scientific GO. They
+  satisfy the pre-registered condition for continuing to seed 43, A0 on the
+  same fresh holdout, and the frozen patient-level bootstrap; protected
+  300-dev/483-test/gold evaluation remains locked.
+- The existing A0 formal probe and internal aggregator are explicitly pinned
+  to the old R37 transition root, 46,349/5,242 row counts, and old-R37 result
+  schemas. Reusing them unchanged would silently evaluate the wrong roster.
+- The smallest protocol-consistent downstream repair is a separate explicit
+  R37.1 mode: use the already frozen A0 hyperparameters and seeds, but require
+  the R37.1 transition audit, 39,491/6,858 rows, fresh output roots, distinct
+  R37.1 schemas/statuses, and aggregator schema selection. This changes no
+  model, seed, loss, threshold, or bootstrap constant.
+- The explicit R37.1 downstream code path passed focused validation, but the
+  user paused execution before Seed 43 or any A0 process was launched. The
+  current frozen interpretation is two-seed descriptive PASS, full internal
+  qualification not evaluated, and protected reveal still locked.
