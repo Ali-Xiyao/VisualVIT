@@ -9,6 +9,7 @@ from scripts.run_r37_prta_smoke import (
     macro_f1,
     responsiveness_diagnostics,
     validate_formal_args,
+    validate_r37_1_args,
 )
 
 
@@ -66,6 +67,28 @@ def test_formal_args_require_exact_frozen_bundle():
     args.epochs = 4
     with pytest.raises(ValueError, match="configuration drift"):
         validate_formal_args(args)
+
+
+def test_r37_1_args_require_exact_frozen_bundle():
+    args = Namespace(
+        variant="A6",
+        seed=17,
+        epochs=3,
+        batch_size=2,
+        learning_rate=1e-4,
+        adapter_rank=32,
+        max_train_examples=0,
+        max_calibration_examples=0,
+        formal=False,
+    )
+    validate_r37_1_args(args)
+    args.seed = 44
+    with pytest.raises(ValueError, match="frozen seeds"):
+        validate_r37_1_args(args)
+    args.seed = 17
+    args.learning_rate = 2e-4
+    with pytest.raises(ValueError, match="configuration drift"):
+        validate_r37_1_args(args)
 
 
 def test_macro_f1_is_one_for_perfect_five_class_predictions():

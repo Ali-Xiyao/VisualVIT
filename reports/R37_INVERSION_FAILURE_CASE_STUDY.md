@@ -112,8 +112,8 @@ Before reading any R37.1 validation outcome:
   hold out the first 1,815 patients (15%);
 - R37.1 training: all remaining old-pretraining patients;
 - R37.1 validation: all rows belonging to the 1,815 held-out patients;
-- old 1,347-patient R37 calibration cohort: excluded from both R37.1 training
-  and validation;
+- old R37 calibration cohort: all 2,788 manifest patients excluded from both
+  R37.1 training and validation; 1,347 of them had transition examples;
 - initial seeds: 17 and 29;
 - continuation: seed 43, A0, and patient bootstrap only if both initial seeds
   pass every frozen internal gate.

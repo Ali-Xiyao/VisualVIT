@@ -505,3 +505,18 @@
 - Implemented the parameter-free equivariant logit projection, a reproducible
   inversion failure analyzer, and a one-shot R37.1 patient-holdout builder.
   Sixteen focused tests pass; Ruff and `git diff --check` also pass.
+- After commit `3730f10` froze the repair and split rule, generated
+  `r37_1_transitions_v1` exactly once. It reports
+  `READY_R37_1_FRESH_HOLDOUT`, 10,287/1,815 disjoint train/validation
+  patients, 39,491/6,858 examples, all five labels present, and every
+  protected/hash firewall false.
+- The first combined runner integration patch was rejected before changing the
+  file because its import context did not match the live ordering. The repair
+  will be applied in smaller exact-context patches.
+- Integrated the frozen projection into separate R37.1 formal and
+  training-side engineering modes. The engineering mode evaluates only a
+  patient-disjoint sample from the R37.1 training partition and never opens
+  the 1,815-patient fresh validation manifest.
+- The expanded focused suite passes 22 tests; Ruff, compileall, and
+  `git diff --check` pass. Both GPUs are currently idle and no R37 process is
+  active.

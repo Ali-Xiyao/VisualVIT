@@ -25,6 +25,7 @@ from visualvit.prta import (
     PRTATemporalAdapter,
     PRTATrainingHeads,
     cmcp_margin_loss,
+    project_equivariant_inversion_logits,
     prta_variant_registry,
     state_preservation_loss,
     temporal_inversion_loss,
@@ -63,6 +64,14 @@ FORMAL_EPOCHS = 3
 FORMAL_BATCH_SIZE = 2
 FORMAL_LEARNING_RATE = 1e-4
 FORMAL_ADAPTER_RANK = 32
+R37_1_OUTPUT_BASE = Path(
+    r"H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
+    r"\r37_1_formal\a6e_v1"
+)
+R37_1_TRAIN_EXAMPLES = 39_491
+R37_1_CALIBRATION_EXAMPLES = 6_858
+R37_1_SEEDS = (17, 29, 43)
+R37_1_STATUS = "READY_R37_1_FRESH_HOLDOUT"
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -162,6 +171,29 @@ def validate_formal_args(args: argparse.Namespace) -> None:
         )
 
 
+def validate_r37_1_args(args: argparse.Namespace) -> None:
+    expected = {
+        "variant": "A6",
+        "epochs": FORMAL_EPOCHS,
+        "batch_size": FORMAL_BATCH_SIZE,
+        "learning_rate": FORMAL_LEARNING_RATE,
+        "adapter_rank": FORMAL_ADAPTER_RANK,
+        "max_train_examples": 0,
+        "max_calibration_examples": 0,
+        "formal": False,
+    }
+    observed = {name: getattr(args, name) for name in expected}
+    if observed != expected:
+        raise ValueError(
+            f"formal R37.1 configuration drift: expected {expected}, "
+            f"got {observed}"
+        )
+    if args.seed not in R37_1_SEEDS:
+        raise ValueError(
+            f"formal R37.1 requires one of frozen seeds {R37_1_SEEDS}"
+        )
+
+
 def macro_f1(targets: list[int], predictions: list[int]) -> float:
     scores = []
     for label in range(len(PROGRESSION_LABELS)):
@@ -243,21 +275,42 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--learning-rate", type=float, default=1e-4)
     parser.add_argument("--adapter-rank", type=int, default=32)
     parser.add_argument("--formal", action="store_true")
+    parser.add_argument("--r37-1", action="store_true")
+    parser.add_argument("--r37-1-engineering", action="store_true")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    modes = (args.formal, args.r37_1, args.r37_1_engineering)
+    if sum(bool(value) for value in modes) > 1:
+        raise ValueError(
+            "--formal, --r37-1, and --r37-1-engineering are "
+            "mutually exclusive"
+        )
+    equivariant_mode = bool(args.r37_1 or args.r37_1_engineering)
     if args.formal:
         validate_formal_args(args)
+    if args.r37_1:
+        validate_r37_1_args(args)
+    if args.r37_1_engineering and args.variant != "A6":
+        raise ValueError("R37.1 engineering requires frozen A6 losses")
     output_root = args.output_root
     if output_root is None:
-        output_root = (
-            FORMAL_OUTPUT_BASE / f"seed_{args.seed}"
-            if args.formal
-            else OUTPUT_BASE
-            / f"{args.variant.lower()}_seed{args.seed}_engineering_v1"
-        )
+        if args.formal:
+            output_root = FORMAL_OUTPUT_BASE / f"seed_{args.seed}"
+        elif args.r37_1:
+            output_root = R37_1_OUTPUT_BASE / f"seed_{args.seed}"
+        elif args.r37_1_engineering:
+            output_root = (
+                OUTPUT_BASE
+                / f"a6e_seed{args.seed}_training_side_engineering_v1"
+            )
+        else:
+            output_root = (
+                OUTPUT_BASE
+                / f"{args.variant.lower()}_seed{args.seed}_engineering_v1"
+            )
     if output_root.exists():
         raise FileExistsError(f"output root must be fresh: {output_root}")
     if args.batch_size <= 0 or args.epochs <= 0:
@@ -273,7 +326,16 @@ def main() -> int:
         raise PermissionError(
             "formal R37B remains locked pending independent human QA"
         )
-    if not args.formal and (
+    if equivariant_mode:
+        if transition_audit.get("status") != R37_1_STATUS:
+            raise PermissionError("R37.1 fresh holdout is not ready")
+        if transition_audit.get("one_shot_validation") is not True:
+            raise PermissionError("R37.1 one-shot validation contract drift")
+        if transition_audit.get("patient_disjoint") is not True:
+            raise PermissionError("R37.1 patient-disjointness drift")
+        if transition_audit.get("old_calibration_excluded") is not True:
+            raise PermissionError("old R37 calibration exclusion drift")
+    if not (args.formal or args.r37_1) and (
         args.max_train_examples > 1000
         or args.max_calibration_examples > 500
         or args.epochs > 3
@@ -307,6 +369,35 @@ def main() -> int:
         calibration_examples = formal_partition(
             flatten_partition(args.transition_root, "internal_calibration"),
             expected_count=FORMAL_CALIBRATION_EXAMPLES,
+        )
+    elif args.r37_1:
+        train_examples = formal_partition(
+            flatten_partition(args.transition_root, "pretrain"),
+            expected_count=R37_1_TRAIN_EXAMPLES,
+        )
+        calibration_examples = formal_partition(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            expected_count=R37_1_CALIBRATION_EXAMPLES,
+        )
+    elif args.r37_1_engineering:
+        training_pool = flatten_partition(args.transition_root, "pretrain")
+        train_examples = balanced_sample(
+            training_pool,
+            maximum=args.max_train_examples,
+            seed=args.seed,
+        )
+        selected_patients = {
+            str(item["patient_id"]) for item in train_examples
+        }
+        training_side_evaluation_pool = [
+            item
+            for item in training_pool
+            if str(item["patient_id"]) not in selected_patients
+        ]
+        calibration_examples = balanced_sample(
+            training_side_evaluation_pool,
+            maximum=args.max_calibration_examples,
+            seed=args.seed + 1,
         )
     else:
         train_examples = balanced_sample(
@@ -390,7 +481,19 @@ def main() -> int:
             )
             query = heads.finding_query(finding_text[finding_index])
             output = model(prior, current, query)
-            logits = heads.progression_logits(output.transition_embedding)
+            raw_logits = heads.progression_logits(
+                output.transition_embedding
+            )
+            if equivariant_mode:
+                reversed_output = model(current, prior, query)
+                raw_reversed_logits = heads.progression_logits(
+                    reversed_output.transition_embedding
+                )
+                logits, _ = project_equivariant_inversion_logits(
+                    raw_logits, raw_reversed_logits
+                )
+            else:
+                logits = raw_logits
             losses: dict[str, torch.Tensor] = {
                 "classification": F.cross_entropy(logits, label_index)
             }
@@ -406,13 +509,14 @@ def main() -> int:
                     prototype_logits, prototype_index
                 )
             if variant.temporal_inversion:
-                reversed_output = model(current, prior, query)
-                reversed_logits = heads.progression_logits(
-                    reversed_output.transition_embedding
-                )
-                losses["inversion"] = temporal_inversion_loss(
-                    logits, reversed_logits
-                )
+                if not equivariant_mode:
+                    reversed_output = model(current, prior, query)
+                    reversed_logits = heads.progression_logits(
+                        reversed_output.transition_embedding
+                    )
+                    losses["inversion"] = temporal_inversion_loss(
+                        logits, reversed_logits
+                    )
             if variant.state_preservation:
                 losses["state"] = state_preservation_loss(
                     output.state_embedding, output.frozen_current_embedding
@@ -492,20 +596,39 @@ def main() -> int:
                 true_output = model(prior, current, query)
                 current_output = model(current, current, query)
                 inverted_output = model(current, prior, query)
-                true_logits = heads.progression_logits(
+                raw_true_logits = heads.progression_logits(
                     true_output.transition_embedding
                 )
-                current_logits = heads.progression_logits(
+                raw_current_logits = heads.progression_logits(
                     current_output.transition_embedding
                 )
-                inverted_logits = heads.progression_logits(
+                raw_inverted_logits = heads.progression_logits(
                     inverted_output.transition_embedding
                 )
+                if equivariant_mode:
+                    true_logits, inverted_logits = (
+                        project_equivariant_inversion_logits(
+                            raw_true_logits, raw_inverted_logits
+                        )
+                    )
+                    current_logits, _ = (
+                        project_equivariant_inversion_logits(
+                            raw_current_logits, raw_current_logits
+                        )
+                    )
+                else:
+                    true_logits = raw_true_logits
+                    current_logits = raw_current_logits
+                    inverted_logits = raw_inverted_logits
                 batch_true_predictions = true_logits.argmax(dim=-1)
-                batch_inverted_predictions = inverted_logits.argmax(dim=-1)
                 mapped_true_predictions = INVERSION_INDEX.to(
                     device=batch_true_predictions.device
                 )[batch_true_predictions]
+                batch_inverted_predictions = (
+                    mapped_true_predictions
+                    if equivariant_mode
+                    else inverted_logits.argmax(dim=-1)
+                )
                 inversion_consistency_count += int(
                     (
                         batch_inverted_predictions
@@ -561,9 +684,28 @@ def main() -> int:
                             current[positions],
                             query[positions],
                         )
-                        cmcp_logits = heads.progression_logits(
+                        raw_cmcp_logits = heads.progression_logits(
                             cmcp_output.transition_embedding
                         )
+                        if equivariant_mode:
+                            cmcp_reversed_output = model(
+                                current[positions],
+                                counterfactual_prior,
+                                query[positions],
+                            )
+                            raw_cmcp_reversed_logits = (
+                                heads.progression_logits(
+                                    cmcp_reversed_output.transition_embedding
+                                )
+                            )
+                            cmcp_logits, _ = (
+                                project_equivariant_inversion_logits(
+                                    raw_cmcp_logits,
+                                    raw_cmcp_reversed_logits,
+                                )
+                            )
+                        else:
+                            cmcp_logits = raw_cmcp_logits
                         cmcp_predictions.extend(
                             cmcp_logits.argmax(dim=-1).cpu().tolist()
                         )
@@ -653,38 +795,80 @@ def main() -> int:
         any(parameter.grad is not None for parameter in adapter.parameters())
         for adapter in model.tail.adapters
     )
-    pass_status = (
-        "PASS_R37_PRTA_FORMAL_TRAINING"
-        if args.formal
-        else "PASS_R37_PRTA_ENGINEERING_SMOKE"
-    )
+    if args.r37_1:
+        pass_status = "PASS_R37_1_PRTA_FORMAL_TRAINING"
+    elif args.r37_1_engineering:
+        pass_status = "PASS_R37_1_PRTA_TRAINING_SIDE_ENGINEERING"
+    elif args.formal:
+        pass_status = "PASS_R37_PRTA_FORMAL_TRAINING"
+    else:
+        pass_status = "PASS_R37_PRTA_ENGINEERING_SMOKE"
     result = {
         "schema": (
-            "visualvit.r37.prta-formal-training.v1"
-            if args.formal
-            else "visualvit.r37.prta-engineering-smoke.v1"
+            "visualvit.r37-1.prta-formal-training.v1"
+            if args.r37_1
+            else (
+                "visualvit.r37-1.prta-training-side-engineering.v1"
+                if args.r37_1_engineering
+                else (
+                    "visualvit.r37.prta-formal-training.v1"
+                    if args.formal
+                    else "visualvit.r37.prta-engineering-smoke.v1"
+                )
+            )
         ),
         "status": (
             pass_status
             if frozen_gradients_absent and adapter_gradients_present
             else "STOP_R37_PRTA_GRADIENT_AUDIT"
         ),
-        "formal": args.formal,
+        "formal": bool(args.formal or args.r37_1),
+        "r37_1": args.r37_1,
+        "r37_1_engineering": args.r37_1_engineering,
         "scientific_claim_allowed": False,
         "formal_training_unlocked": bool(
-            args.formal and transition_audit["formal_training_unlocked"]
+            (args.formal or args.r37_1)
+            and transition_audit["formal_training_unlocked"]
         ),
         "variant": args.variant,
-        "variant_config": variant.__dict__,
+        "variant_config": {
+            **variant.__dict__,
+            "equivariant_inversion": equivariant_mode,
+            "inversion_objective": (
+                "z2_logit_projection"
+                if equivariant_mode
+                else "detached_forward_kl"
+            ),
+        },
         "seed": args.seed,
         "train_examples": len(train_examples),
         "selection_contract": {
-            "train": "all_seed_independent_order"
-            if args.formal
-            else "balanced_engineering_sample",
-            "calibration": "all_seed_independent_order"
-            if args.formal
-            else "balanced_engineering_sample",
+            "train": (
+                "r37_1_training_side_balanced_sample"
+                if args.r37_1_engineering
+                else (
+                    "r37_1_fresh_patient_order"
+                    if args.r37_1
+                    else (
+                        "all_seed_independent_order"
+                        if args.formal
+                        else "balanced_engineering_sample"
+                    )
+                )
+            ),
+            "calibration": (
+                "r37_1_training_side_patient_disjoint_sample"
+                if args.r37_1_engineering
+                else (
+                    "r37_1_fresh_patient_order"
+                    if args.r37_1
+                    else (
+                        "all_seed_independent_order"
+                        if args.formal
+                        else "balanced_engineering_sample"
+                    )
+                )
+            ),
             "max_train_examples_argument": args.max_train_examples,
             "max_calibration_examples_argument": (
                 args.max_calibration_examples
@@ -711,7 +895,9 @@ def main() -> int:
             "heads": heads.state_dict(),
             "variant": args.variant,
             "seed": args.seed,
-            "formal": args.formal,
+            "formal": bool(args.formal or args.r37_1),
+            "r37_1": args.r37_1,
+            "r37_1_engineering": args.r37_1_engineering,
         },
         output_root / "checkpoint.pt",
     )

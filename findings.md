@@ -554,3 +554,10 @@ preserving the encoder's static medical semantics.
   R37.1 freezes a label-agnostic 15% holdout: sorted patient IDs, one shuffle
   with RNG seed 37101, first 1,815 patients held out. The old 1,347-patient
   calibration cohort remains excluded.
+- The one-shot roster built successfully after the repair/split commit. It
+  contains 39,491 training examples from 10,287 patients and 6,858 fresh
+  validation examples from 1,815 patients. All five labels are present in the
+  fresh holdout, including 250 Resolved examples; the roster is not revised.
+- The source old-calibration manifest contains 2,788 total patients, of whom
+  1,347 have transition examples. All 2,788 are excluded from R37.1, which is
+  stricter than excluding only the transition-bearing subset.

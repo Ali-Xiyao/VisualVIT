@@ -187,7 +187,7 @@ smokes during iteration.
   rows for R37.1 model, loss, threshold, or checkpoint selection.
 - [x] Freeze one R37.1 architectural/loss repair before evaluating any fresh
   holdout outcome.
-- [ ] Create a new patient-disjoint R37.1 validation roster from patients that
+- [x] Create a new patient-disjoint R37.1 validation roster from patients that
   belonged only to the old R37 pretraining partition, and remove those
   patients from R37.1 training.
 - [ ] Add fail-closed checks for old-calibration exclusion, new train/validation
@@ -258,6 +258,7 @@ smokes during iteration.
 | The next inspection guessed the formal specification at the config root instead of its registered `configs/r37` location | 1 | Use `rg --files` to resolve `configs/r37/prta_a6_formal_bundle_v1.json` and stop guessing paths |
 | A read-only inspection guessed a separate `run_r37_prta_formal.py`, but formal mode is implemented inside `run_r37_prta_smoke.py` | 1 | Follow the command recorded by the formal pipeline and inspect the existing shared runner; no execution or output changed |
 | The first ad hoc inversion case-study command could not import the `visualvit` namespace | 1 | Set `PYTHONPATH` to the tracked `src` directory before rerunning the read-only analysis |
+| The first combined R37.1 runner patch expected a different import ordering and was rejected atomically | 1 | Inspect the exact runner import/result contexts and apply the integration in smaller patches |
 
 ## Next Step
 
