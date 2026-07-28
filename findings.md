@@ -524,3 +524,33 @@ preserving the encoder's static medical semantics.
 - These two formal training artifacts are positive for correct-prior
   responsiveness but cannot produce a scientific GO/STOP: seed 43, A0, the
   three-seed patient bootstrap, and all protected reveals remain deferred.
+- R37 inversion failure is not uniform. Seed 17/29 consistency is lowest for
+  New (0.7249/0.8166), Resolved (0.7287/0.7926), Improved
+  (0.7914/0.8253), and Worse (0.8086/0.8526), while Stable is
+  0.9052/0.9144.
+- The failure is finding-dependent: Consolidation, Lung Opacity, Pneumonia,
+  Edema, Atelectasis, and Pleural Effusion account for nearly all inconsistent
+  rows. Several other findings are exactly or nearly 1.0, which is not alone
+  evidence of directional reasoning because a Stable prediction is invariant
+  under the frozen label permutation.
+- Only 324 failed example IDs overlap across seeds, versus 1,158 in their
+  union (Jaccard 0.2798). This points to optimization/head equivariance
+  instability rather than one small deterministic cohort defect.
+- The current loss uses a detached soft target derived from the model's own
+  forward logits. It encourages but does not guarantee the required
+  Stable→Stable, Improved↔Worse, New↔Resolved group action.
+- The smallest R37.1 candidate is therefore a parameter-free Z2-equivariant
+  logit projection: combine forward raw logits with inverse-permuted reversed
+  raw logits, then define reversed logits as the exact inverse permutation.
+  This makes the inversion contract architectural rather than threshold-tuned;
+  its correct-prior and CMCP behavior must still be tested once on a fresh
+  patient holdout.
+- The frozen failure artifact now reports
+  `STOP_R37_INVERSION_CONSISTENCY`, and
+  `reports/R37_INVERSION_FAILURE_CASE_STUDY.md` records the evidence boundary,
+  per-label/finding localization, root-cause hypothesis, exact R37.1
+  projection, and one-shot fresh-roster contract.
+- The old pretraining partition contains 12,102 transition-eligible patients.
+  R37.1 freezes a label-agnostic 15% holdout: sorted patient IDs, one shuffle
+  with RNG seed 37101, first 1,815 patients held out. The old 1,347-patient
+  calibration cohort remains excluded.

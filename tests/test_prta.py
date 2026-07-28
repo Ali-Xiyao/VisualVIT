@@ -1,3 +1,4 @@
+import pytest
 import torch
 from torch import nn
 
@@ -7,6 +8,7 @@ from visualvit.prta import (
     PRTATemporalAdapter,
     cmcp_margin_loss,
     invert_progression_logits,
+    project_equivariant_inversion_logits,
     state_preservation_loss,
     temporal_inversion_loss,
     transition_alignment_loss,
@@ -89,6 +91,35 @@ def test_inversion_mapping_and_loss():
     assert temporal_inversion_loss(
         logits, invert_progression_logits(logits)
     ).item() < 1e-6
+
+
+def test_equivariant_logit_projection_enforces_exact_group_action():
+    forward_raw = torch.randn(7, 5, requires_grad=True)
+    reversed_raw = torch.randn(7, 5, requires_grad=True)
+    forward, reversed_ = project_equivariant_inversion_logits(
+        forward_raw, reversed_raw
+    )
+    swapped_forward, swapped_reversed = (
+        project_equivariant_inversion_logits(reversed_raw, forward_raw)
+    )
+
+    assert torch.equal(reversed_, invert_progression_logits(forward))
+    assert torch.allclose(
+        swapped_forward, invert_progression_logits(forward)
+    )
+    assert torch.allclose(
+        swapped_reversed, invert_progression_logits(reversed_)
+    )
+    (forward.sum() + reversed_.sum()).backward()
+    assert forward_raw.grad is not None
+    assert reversed_raw.grad is not None
+
+
+def test_equivariant_logit_projection_rejects_shape_drift():
+    with pytest.raises(ValueError, match="shapes differ"):
+        project_equivariant_inversion_logits(
+            torch.zeros(2, 5), torch.zeros(3, 5)
+        )
 
 
 def test_state_preservation_is_zero_for_identical_vectors():

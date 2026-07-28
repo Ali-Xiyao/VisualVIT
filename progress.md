@@ -473,3 +473,35 @@
   `PASS_R37_TWO_SEED_FORMAL_TRAINING_ONLY`. No seed 43, A0, bootstrap,
   aggregation, or protected evaluation was started; therefore no scientific
   GO/STOP is claimed.
+- 2026-07-28: the user selected the strict repair route. R37 will be frozen at
+  the inversion-consistency failure, the observed 5,242-row calibration set
+  will be used only for descriptive failure analysis, and R37.1 will require a
+  newly held-out patient roster plus a pre-outcome-frozen repair.
+- Two initial read-only inspection paths were incorrect. They were resolved
+  through the tracked formal specification; no manifest, result, GPU process,
+  hash, or protected artifact was changed or accessed.
+- Confirmed that R37 formal mode uses the shared PRTA runner rather than a
+  separate formal script. The inversion metric compares reversed predictions
+  against the fixed mapping Stable→Stable, Improved↔Worse, and New↔Resolved.
+- The first case-study read failed before opening result artifacts because the
+  repository `src` directory was not on `PYTHONPATH`; the retry will use the
+  tracked namespace path.
+- The corrected read-only case study aligned all 5,242 calibration examples
+  to their frozen manifest order. Seed 17 has 819 inversion-inconsistent rows
+  and seed 29 has 663; only 324 failed example IDs overlap.
+- Failures concentrate in dynamic labels and six pulmonary findings rather
+  than indicating a general data corruption. The next implementation target
+  is an exact label-group-equivariant logit projection, frozen before any
+  fresh R37.1 validation outcome is read.
+- Added and tested a reproducible firewall-aware failure analyzer. Its real
+  runtime artifact covers 5,242 rows and 1,347 patients, emits
+  `STOP_R37_INVERSION_CONSISTENCY`, and confirms that no protected outcome or
+  source/per-shard hash was accessed.
+- Added `reports/R37_INVERSION_FAILURE_CASE_STUDY.md` and froze the R37.1
+  Z2-equivariant logit projection plus the fresh 1,815-patient holdout rule.
+- Updated the runtime formal-bundle status from the descriptive two-seed PASS
+  marker to `STOP_R37_INVERSION_CONSISTENCY`. Seed 43, A0, aggregation,
+  bootstrap, and protected evaluation remain untouched.
+- Implemented the parameter-free equivariant logit projection, a reproducible
+  inversion failure analyzer, and a one-shot R37.1 patient-holdout builder.
+  Sixteen focused tests pass; Ruff and `git diff --check` also pass.

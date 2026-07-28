@@ -387,6 +387,19 @@ def invert_progression_logits(logits: torch.Tensor) -> torch.Tensor:
     )
 
 
+def project_equivariant_inversion_logits(
+    forward_logits: torch.Tensor,
+    reversed_logits: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    if forward_logits.shape != reversed_logits.shape:
+        raise ValueError("forward/reversed logit shapes differ")
+    projected_forward = 0.5 * (
+        forward_logits + invert_progression_logits(reversed_logits)
+    )
+    projected_reversed = invert_progression_logits(projected_forward)
+    return projected_forward, projected_reversed
+
+
 def temporal_inversion_loss(
     forward_logits: torch.Tensor, reversed_logits: torch.Tensor
 ) -> torch.Tensor:

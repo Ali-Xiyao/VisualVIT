@@ -177,6 +177,27 @@ smokes during iteration.
 - [x] Run the cached A1 engineering probe without image re-encoding.
 - **Status:** completed_engineering_only
 
+### Phase 4B — R37.1 inversion-consistency repair
+
+- [x] Freeze the two-seed R37 result as
+  `STOP_R37_INVERSION_CONSISTENCY` without running seed 43, A0, bootstrap, or
+  protected evaluation.
+- [x] Produce an outcome-descriptive inversion failure case study from the
+  already-observed 5,242-row R37 calibration artifacts; forbid using those
+  rows for R37.1 model, loss, threshold, or checkpoint selection.
+- [x] Freeze one R37.1 architectural/loss repair before evaluating any fresh
+  holdout outcome.
+- [ ] Create a new patient-disjoint R37.1 validation roster from patients that
+  belonged only to the old R37 pretraining partition, and remove those
+  patients from R37.1 training.
+- [ ] Add fail-closed checks for old-calibration exclusion, new train/validation
+  patient disjointness, protected-outcome firewalls, and one-shot evaluation.
+- [ ] Run a bounded engineering smoke using training-side diagnostics only.
+- [ ] Run R37.1 seeds 17 and 29 on the fresh validation roster. Continue to
+  seed 43, A0, and patient bootstrap only if both pass the frozen inversion,
+  state-retention, current-only, and CMCP gates.
+- **Status:** in_progress
+
 ### Phase 5 — Conditional R37C/R38/R39
 
 - [ ] At the end of the project, complete independent human QA over
@@ -233,10 +254,14 @@ smokes during iteration.
 | The A6-versus-A0 aggregate test fixture inherited an A6 `calibration` object, so normalization ignored its A0 top-level fields and correctly produced a STOP | 1 | Remove the impossible inherited field from the synthetic A0 payload; production A0 artifacts already use only the top-level schema |
 | The new standalone formal pipeline inserted the repository root before importing a sibling script, and Ruff flagged the intentional import order | 1 | Add the same file-level `E402` declaration used by other standalone repository scripts; direct `--help` execution already passed |
 | The first formal A6 seeds both stopped before model construction because the bundle expected 33,621 eligible pairs while the runner correctly expanded 46,349 finding-level transition rows | 1 | Register pair and example counts separately, freeze formal training/calibration rows at 46,349/5,242, and resume without changing any observed-outcome-dependent setting |
+| The first R37.1 case-study inspection guessed a runtime transition directory that does not exist | 1 | Resolve the transition root from the frozen formal specification before reading manifests; no data or runtime state changed |
+| The next inspection guessed the formal specification at the config root instead of its registered `configs/r37` location | 1 | Use `rg --files` to resolve `configs/r37/prta_a6_formal_bundle_v1.json` and stop guessing paths |
+| A read-only inspection guessed a separate `run_r37_prta_formal.py`, but formal mode is implemented inside `run_r37_prta_smoke.py` | 1 | Follow the command recorded by the formal pipeline and inspect the existing shared runner; no execution or output changed |
+| The first ad hoc inversion case-study command could not import the `visualvit` namespace | 1 | Set `PYTHONPATH` to the tracked `src` directory before rerunning the read-only analysis |
 
 ## Next Step
 
-Stop after the completed formal A6 seeds 17 and 29. Do not start seed 43, A0,
-bootstrap, aggregation, or protected evaluation until the user explicitly
-resumes the frozen full gate. The two-seed readout is descriptive only and is
-not a scientific GO/STOP.
+Freeze the current R37 inversion failure and build the descriptive case study.
+Then freeze the R37.1 repair and fresh patient roster before reading any new
+validation outcome. Do not start seed 43, A0, bootstrap, aggregation, or any
+protected evaluation under the failed R37 specification.
