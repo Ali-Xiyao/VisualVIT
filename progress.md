@@ -520,3 +520,27 @@
 - The expanded focused suite passes 22 tests; Ruff, compileall, and
   `git diff --check` pass. Both GPUs are currently idle and no R37 process is
   active.
+- Launched the frozen R37.1 training-side engineering smoke as PID 14896 on
+  GPU 1 after confirming both GPUs were idle. It uses Seed 17,
+  1,000/500 rows, three epochs, and the new training partition only; the fresh
+  1,815-patient validation outcomes remain unread.
+- The process passed initialization with increasing CPU time, about 819 MiB
+  GPU memory, non-idle power, and empty stderr.
+- PID 14896 later exited after roughly 30 minutes without a result directory;
+  both redirected logs remained empty. No Windows Application, System,
+  display-driver, or GPU-driver error was recorded. This is an engineering
+  STOP and has no scientific interpretation.
+- The next diagnostic is a smaller foreground 100/50/1-epoch training-side
+  smoke so the process exit status is captured directly. It still excludes
+  the fresh 1,815-patient validation set.
+- The foreground diagnostic completed with
+  `PASS_R37_1_PRTA_TRAINING_SIDE_ENGINEERING`, exact inversion consistency
+  1.0, true-current +15.04 pp, clean gradient/firewall checks, and a complete
+  result/checkpoint pair. Its state retention is 0.8992, so it is strictly a
+  code/mechanism smoke rather than a scientific result.
+- Added a duplicate-safe independent Windows launcher for formal R37.1 seeds
+  17 and 29. Each seed has a fixed GPU, fresh output/log boundary, atomic
+  status file, exact frozen arguments, firewall checks, and fail-closed result
+  validation; it contains no seed 43, A0, bootstrap, or protected stage.
+- PowerShell syntax parsing, 24 focused tests, Ruff, and `git diff --check`
+  pass before formal launch.

@@ -192,7 +192,9 @@ smokes during iteration.
   patients from R37.1 training.
 - [ ] Add fail-closed checks for old-calibration exclusion, new train/validation
   patient disjointness, protected-outcome firewalls, and one-shot evaluation.
-- [ ] Run a bounded engineering smoke using training-side diagnostics only.
+- [x] Run a bounded engineering smoke using training-side diagnostics only.
+  The captured foreground 100/50/1-epoch diagnostic passed; the earlier
+  1,000/500 background attempt remains an engineering STOP with no result.
 - [ ] Run R37.1 seeds 17 and 29 on the fresh validation roster. Continue to
   seed 43, A0, and patient bootstrap only if both pass the frozen inversion,
   state-retention, current-only, and CMCP gates.
@@ -259,6 +261,8 @@ smokes during iteration.
 | A read-only inspection guessed a separate `run_r37_prta_formal.py`, but formal mode is implemented inside `run_r37_prta_smoke.py` | 1 | Follow the command recorded by the formal pipeline and inspect the existing shared runner; no execution or output changed |
 | The first ad hoc inversion case-study command could not import the `visualvit` namespace | 1 | Set `PYTHONPATH` to the tracked `src` directory before rerunning the read-only analysis |
 | The first combined R37.1 runner patch expected a different import ordering and was rejected atomically | 1 | Inspect the exact runner import/result contexts and apply the integration in smaller patches |
+| The first 1,000/500 R37.1 training-side smoke exited after about 30 minutes without a result directory or stderr | 1 | Treat it as an engineering STOP, not a scientific result; inspect Windows/GPU events, then use a smaller foreground smoke with captured exit state before any retry |
+| The optional Security process-exit event query returned an invalid-parameter error | 1 | Do not depend on unavailable process auditing; use explicit foreground exit status and runner-owned stage markers for the next diagnostic |
 
 ## Next Step
 

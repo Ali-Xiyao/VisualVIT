@@ -561,3 +561,11 @@ preserving the encoder's static medical semantics.
 - The source old-calibration manifest contains 2,788 total patients, of whom
   1,347 have transition examples. All 2,788 are excluded from R37.1, which is
   stricter than excluding only the transition-bearing subset.
+- A captured foreground R37.1 training-side diagnostic passed on
+  100 train / 50 evaluation rows for one epoch. The architectural inversion
+  consistency is exactly 1.0 and true-current is +15.04 pp, confirming that
+  the projected decision rule is wired correctly.
+- The tiny diagnostic state-retention cosine is only 0.8992. This is expected
+  to remain an unresolved gate at tiny scale and must not be called positive
+  scientific evidence; the formal three-epoch fresh-holdout run must preserve
+  the >=0.99 state gate.
