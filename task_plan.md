@@ -198,6 +198,9 @@ smokes during iteration.
 - [ ] Run R37.1 seeds 17 and 29 on the fresh validation roster. Continue to
   seed 43, A0, and patient bootstrap only if both pass the frozen inversion,
   state-retention, current-only, and CMCP gates.
+- [x] Recover both incomplete R37.1 seed launches after the 2026-07-28 host
+  reboot by archiving only the stale zero-byte logs/status files and relaunching
+  the same frozen commands; do not recompute hashes or reuse old calibration.
 - **Status:** formal_seeds_17_29_running
 
 ### Phase 5 — Conditional R37C/R38/R39
@@ -263,6 +266,7 @@ smokes during iteration.
 | The first combined R37.1 runner patch expected a different import ordering and was rejected atomically | 1 | Inspect the exact runner import/result contexts and apply the integration in smaller patches |
 | The first 1,000/500 R37.1 training-side smoke exited after about 30 minutes without a result directory or stderr | 1 | Treat it as an engineering STOP, not a scientific result; inspect Windows/GPU events, then use a smaller foreground smoke with captured exit state before any retry |
 | The optional Security process-exit event query returned an invalid-parameter error | 1 | Do not depend on unavailable process auditing; use explicit foreground exit status and runner-owned stage markers for the next diagnostic |
+| The host reboot at 2026-07-28 14:24 +08 interrupted both incomplete R37.1 formal seeds before either output directory existed | 1 | Verify the old PIDs are absent and both GPUs have no compute jobs, archive the stale status/zero-byte logs, and relaunch only seeds 17/29 with the unchanged frozen commands |
 
 ## Next Step
 

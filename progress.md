@@ -554,3 +554,18 @@
   monitors only these two seeds, repairs only engineering failures without
   changing frozen settings, and may continue downstream only if both fresh
   results pass every registered internal gate.
+- 2026-07-28 14:24 +08:00: a user-initiated host reboot terminated both
+  incomplete R37.1 formal seeds. After restart, the old launcher/child PIDs
+  were absent, both result directories were still missing, stderr/stdout were
+  all empty, and both GPUs had zero compute processes.
+- Archived only the stale status and zero-byte logs under
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\interruptions\20260728T142404_reboot_interrupt`.
+  The frozen transition roster, caches, model/loss/seed/threshold settings,
+  and hash/protected-outcome firewalls were unchanged.
+- 2026-07-28 15:35 +08:00: after three idle GPU polls, relaunched only R37.1
+  seeds 17/29 through the existing duplicate-safe launcher. New launcher PIDs
+  are 12376/6512 and child Python PIDs are 19280/18092 on cuda:0/cuda:1.
+  Both fresh status files report `RUNNING_R37_1_FORMAL_SEED`, both child
+  processes are responsive, and both stderr logs are empty.
+- Post-restart validation passed: PowerShell launcher syntax, 11 focused
+  R37.1 launcher/roster/runner tests, and `git diff --check` are clean.

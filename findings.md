@@ -569,3 +569,13 @@ preserving the encoder's static medical semantics.
   to remain an unresolved gate at tiny scale and must not be called positive
   scientific evidence; the formal three-epoch fresh-holdout run must preserve
   the >=0.99 state gate.
+- The Windows host rebooted at 2026-07-28 14:24:04 +08 while both R37.1 seeds
+  were incomplete. The recorded launcher/child PIDs were absent afterward,
+  both output directories were still missing, and all four redirected logs
+  were zero bytes; this is an external engineering interruption, not a model
+  result.
+- Recovery preserved the exact frozen seed/device/model/loss arguments. The
+  stale status and zero-byte logs were moved to
+  `interruptions/20260728T142404_reboot_interrupt`, both GPUs were confirmed
+  idle over three polls, and only seeds 17/29 were relaunched. No source or
+  per-shard hash and no protected outcome was accessed.
