@@ -654,3 +654,8 @@
   `r37-1-full-tier-confirmatory-monitor`. It monitors the two active jobs,
   runs the frozen three-seed qualification only after both PASS, and continues
   through R37C, R38, and R39 only when every upstream registered gate is GO.
+- 2026-07-29 20:26 +08:00: A0 Seed 43 completed with exit code 0 and
+  `PASS_R37_1_A0_FORMAL_SEED`. Its 6,858-row/1,815-patient result and
+  checkpoint are complete, true-pair macro F1 is 0.3420, stderr is empty, and
+  all protected/hash firewalls remain false. A6 Seed 43 is still running; the
+  registered three-seed aggregation remains pending.

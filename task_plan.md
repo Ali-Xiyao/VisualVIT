@@ -239,7 +239,8 @@ smokes during iteration.
 - [ ] If and only if all three-seed gates pass, freeze exactly one R37.1
   candidate and prepare the one-shot R37C 300-dev reveal.
 - **Status:** in_progress — Seed 43 A6/A0 launched concurrently at
-  2026-07-29 17:11 +08:00; the gate-bound monitor is active.
+  2026-07-29 17:11 +08:00; A0 Seed 43 PASSed at 20:26 +08:00, A6 Seed 43
+  remains active, and the gate-bound monitor is active.
 
 ### Phase 5 — Conditional R37C/R38/R39
 

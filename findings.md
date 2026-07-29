@@ -651,3 +651,9 @@ preserving the encoder's static medical semantics.
   sequential gate boundary. It may aggregate the registered three seeds only
   after both Seed 43 artifacts validate, and may unlock R37C/R38/R39 only
   after each preceding scientific GO.
+- R37.1 A0 Seed 43 completed at 2026-07-29 20:26 +08:00 with launcher status
+  `PASS_R37_1_A0_FORMAL_SEED`, process exit code 0, and result status
+  `PASS_R37_1_A0_FORMAL_PROBE`. The result has 6,858 rows from 1,815 patients,
+  true-pair macro F1 0.3420, a complete checkpoint/result pair, empty stderr,
+  and every protected/hash firewall false. A6 Seed 43 remains in progress, so
+  no three-seed aggregation has run.
