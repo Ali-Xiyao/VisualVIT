@@ -602,3 +602,12 @@ preserving the encoder's static medical semantics.
   user paused execution before Seed 43 or any A0 process was launched. The
   current frozen interpretation is two-seed descriptive PASS, full internal
   qualification not evaluated, and protected reveal still locked.
+- The user subsequently authorized a reduced continuation: run A0 only for
+  Seeds 17 and 29 on the same R37.1 fresh holdout, followed by a distinct
+  two-seed patient-cluster bootstrap screen for A6 versus current-only, CMCP,
+  and A0. Seed 43 and the registered three-seed scientific gate remain
+  explicitly deferred.
+- The reduced screen must preserve the frozen 2,000 bootstrap replicates and
+  bootstrap seed 37001, require both observed seed effects to be at least
+  +2 percentage points with the patient-bootstrap 95% CI lower bound above
+  zero, and remain descriptive/internal regardless of its outcome.

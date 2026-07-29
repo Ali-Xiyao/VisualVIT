@@ -594,3 +594,7 @@
 - Final pause verification found zero active experiment Python processes, no
   GPU compute processes, and all Seed 43/A0 output roots absent. The R37.1
   audit remains `READY_R37_1_FRESH_HOLDOUT` with every firewall false.
+- 2026-07-29: the user authorized the reduced two-seed continuation. The
+  active scope is A0 Seeds 17/29 plus a separately labeled two-seed
+  patient-cluster bootstrap screen; Seed 43, the original three-seed
+  aggregation, and every protected reveal remain deferred.

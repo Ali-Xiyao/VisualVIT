@@ -201,11 +201,15 @@ smokes during iteration.
 - [x] Recover both incomplete R37.1 seed launches after the 2026-07-28 host
   reboot by archiving only the stale zero-byte logs/status files and relaunching
   the same frozen commands; do not recompute hashes or reuse old calibration.
-- [ ] Run R37.1 seed 43, the capacity-matched A0 fresh-holdout baseline, and
-  the frozen patient-cluster bootstrap only under the same roster/firewalls.
+- [ ] Run only the capacity-matched A0 fresh-holdout Seeds 17 and 29, then a
+  separately labeled two-seed patient-cluster bootstrap screen under the same
+  roster/firewalls. Seed 43 and the original three-seed gate remain deferred
+  by user.
 - [x] Write the two-seed fresh-holdout result report and freeze the claim
   boundary before pausing all downstream execution at user request.
-- **Status:** two_seed_fresh_holdout_pass_user_paused
+- [ ] Keep the reduced screen descriptive/internal only; do not call it the
+  registered three-seed scientific GO and do not unlock protected evaluation.
+- **Status:** two_seed_a0_and_internal_screen_authorized
 
 ### Phase 5 — Conditional R37C/R38/R39
 

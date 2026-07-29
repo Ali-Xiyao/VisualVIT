@@ -173,12 +173,19 @@ def patient_bootstrap_mean_seed_difference(
     class_count: int,
     replicates: int = PATIENT_BOOTSTRAP_REPLICATES,
     seed: int = PATIENT_BOOTSTRAP_SEED,
+    expected_seed_count: int = 3,
 ) -> dict[str, float | int | list[float]]:
-    if len(true_predictions_by_seed) != 3:
-        raise ValueError("R37 requires true predictions from exactly three seeds")
-    if len(control_predictions_by_seed) != 3:
+    if expected_seed_count < 2:
+        raise ValueError("multi-seed bootstrap requires at least two seeds")
+    if len(true_predictions_by_seed) != expected_seed_count:
         raise ValueError(
-            "R37 requires control predictions from exactly three seeds"
+            f"bootstrap requires true predictions from exactly "
+            f"{expected_seed_count} seeds"
+        )
+    if len(control_predictions_by_seed) != expected_seed_count:
+        raise ValueError(
+            f"bootstrap requires control predictions from exactly "
+            f"{expected_seed_count} seeds"
         )
     row_count = len(patient_ids)
     sequences = [
@@ -223,13 +230,15 @@ def patient_bootstrap_mean_seed_difference(
             sampled_patient = patients[rng.randrange(len(patients))]
             sampled_indices.extend(rows_by_patient[sampled_patient])
         differences = seed_differences(sampled_indices)
-        bootstrap_means.append(sum(differences) / 3)
+        bootstrap_means.append(sum(differences) / expected_seed_count)
     ordered = sorted(bootstrap_means)
     lower_index = int(0.025 * (replicates - 1))
     upper_index = int(0.975 * (replicates - 1))
     return {
         "observed_seed_differences_pp": observed_by_seed,
-        "observed_mean_difference_pp": sum(observed_by_seed) / 3,
+        "observed_mean_difference_pp": (
+            sum(observed_by_seed) / expected_seed_count
+        ),
         "ci95_lower_pp": ordered[lower_index],
         "ci95_upper_pp": ordered[upper_index],
         "patients": len(patients),
