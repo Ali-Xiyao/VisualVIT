@@ -684,3 +684,8 @@
 - Validation passed: 9 focused tests, compileall, Ruff, and PowerShell parse.
   Live preflight found both GPUs idle, no R37C process, and no existing R37C
   runtime/status root. Commit/push precedes the single protected launch.
+- Commit `f415d42` is pushed. At 2026-07-30 04:14 +08, launched the
+  duplicate-safe R37C chain; structural Block-8 caching is active on GPU 0
+  under launcher/cache PIDs 8896/10900 with empty stderr. The pipeline receipt
+  still records `protected_300_dev_read=false`; reveal and all seed evaluation
+  remain downstream of a valid cache PASS.

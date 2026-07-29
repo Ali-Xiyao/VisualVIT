@@ -694,3 +694,8 @@ preserving the encoder's static medical semantics.
 - Nine focused qualification/R37C tests, Python compilation, Ruff, and
   PowerShell parsing pass. Both GPUs are idle and no R37C runtime/status root
   exists, so a duplicate-safe first launch is ready after commit/push.
+- Commit `f415d42` pushed the validated R37C implementation before protected
+  execution. The first duplicate-safe launch began at 2026-07-30 04:14 +08;
+  launcher PID 8896 and cache PID 10900 are healthy on GPU 0, stderr is empty,
+  and the status remains `RUNNING_R37C` at structural cache with protected
+  300-dev outcomes, 483-test, and gold still unread.
