@@ -643,3 +643,11 @@ preserving the encoder's static medical semantics.
   conditional 300-dev, R38, R39, 483-test, and gold in the frozen order; it
   does not authorize bypassing a failed survival gate or tuning on protected
   outcomes.
+- At 2026-07-29 17:11 +08:00, frozen R37.1 A6 Seed 43 launched on GPU 0 and
+  matching A0 Seed 43 launched on GPU 1. Launcher/child PIDs are
+  11272/23232 and 14120/23436 respectively; both status files are RUNNING,
+  both output roots are fresh, and all protected/hash firewalls remain false.
+- The active heartbeat `r37-1-full-tier-confirmatory-monitor` owns the
+  sequential gate boundary. It may aggregate the registered three seeds only
+  after both Seed 43 artifacts validate, and may unlock R37C/R38/R39 only
+  after each preceding scientific GO.

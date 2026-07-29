@@ -646,3 +646,11 @@
   The immediate scope is only frozen R37.1 A6/A0 Seed 43 plus the original
   three-seed internal bootstrap. Protected reveal and R38/R39 remain
   conditionally locked until their upstream gate passes.
+- 2026-07-29 17:11 +08:00: after fresh-output and GPU-idle checks, launched
+  R37.1 A6 Seed 43 on cuda:0 (launcher/Python PIDs 11272/23232) and A0
+  Seed 43 on cuda:1 (14120/23436). Both launch manifests report RUNNING and
+  no protected outcome or unchanged hash was accessed.
+- Created the 20-minute heartbeat
+  `r37-1-full-tier-confirmatory-monitor`. It monitors the two active jobs,
+  runs the frozen three-seed qualification only after both PASS, and continues
+  through R37C, R38, and R39 only when every upstream registered gate is GO.

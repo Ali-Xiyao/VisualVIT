@@ -238,7 +238,8 @@ smokes during iteration.
   execution if any frozen gate fails.
 - [ ] If and only if all three-seed gates pass, freeze exactly one R37.1
   candidate and prepare the one-shot R37C 300-dev reveal.
-- **Status:** in_progress
+- **Status:** in_progress — Seed 43 A6/A0 launched concurrently at
+  2026-07-29 17:11 +08:00; the gate-bound monitor is active.
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -313,6 +314,6 @@ smokes during iteration.
 
 ## Next Step
 
-Launch only the frozen R37.1 A6/A0 Seed 43 jobs on the two GPUs, monitor them,
-and run the original three-seed qualification. Do not open 300-dev or start
-R38/R39 until that internal gate emits GO.
+Monitor the active frozen R37.1 Seed 43 A6/A0 jobs, validate both complete
+results, and run the original three-seed qualification exactly once. Do not
+open 300-dev or start R38/R39 until that internal gate emits GO.
