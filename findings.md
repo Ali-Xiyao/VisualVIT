@@ -619,3 +619,14 @@ preserving the encoder's static medical semantics.
   launched on GPU 0 as launcher/Python PIDs 12348/11292 and Seed 29 launched
   on GPU 1 as 5064/19816. Both status files are RUNNING, both stderr logs are
   empty, and both processes remain responsive with model memory loaded.
+- Both A0 seeds completed with exit code 0 and clean firewalls. Their true-pair
+  macro F1 values are 0.3419/0.3404 for Seeds 17/29 on the identical
+  1,815-patient, 6,858-row fresh holdout.
+- The two-seed screen emitted `PASS_R37_1_TWO_SEED_INTERNAL_SCREEN`. A6 minus
+  current-only is +30.42/+25.22 pp with pooled patient-bootstrap CI
+  [+25.96, +29.50] pp; A6 minus CMCP is +12.76/+11.39 pp with
+  [+10.61, +13.63] pp; A6 minus A0 is +12.62/+11.25 pp with
+  [+10.24, +13.66] pp.
+- Every diagnostic and reduced comparison gate passed. The result explicitly
+  records `three_seed_gate_evaluated=false`,
+  `scientific_claim_allowed=false`, and all protected/hash firewalls false.

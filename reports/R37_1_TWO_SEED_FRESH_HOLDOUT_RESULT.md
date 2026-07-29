@@ -2,7 +2,7 @@
 
 ## Direct conclusion
 
-R37.1 Seeds 17 and 29 both completed successfully on the frozen fresh
+R37.1 A6 Seeds 17 and 29 both completed successfully on the frozen fresh
 patient holdout and passed every pre-registered initial gate:
 
 - temporal-inversion consistency >= 0.90;
@@ -10,10 +10,13 @@ patient holdout and passed every pre-registered initial gate:
 - true pair minus current-only >= +2 percentage points;
 - true pair minus CMCP >= +2 percentage points.
 
-This is a **two-seed descriptive PASS only**. It is not the final R37.1
-scientific GO because Seed 43, the capacity-matched A0 baseline, and the
-2,000-replicate patient-cluster bootstrap were not run. The user paused all
-downstream execution after reviewing this two-seed result.
+The capacity-matched A0 Seeds 17 and 29 subsequently completed on the same
+fresh holdout. The frozen 2,000-replicate patient-cluster bootstrap screen
+passed A6 versus current-only, CMCP, and A0.
+
+This is `PASS_R37_1_TWO_SEED_INTERNAL_SCREEN`: a **two-seed descriptive
+internal PASS only**. It is not the registered final R37.1 scientific GO
+because Seed 43 and the original three-seed gate were deliberately not run.
 
 ## Frozen cohort and execution
 
@@ -21,20 +24,18 @@ downstream execution after reviewing this two-seed result.
 - Fresh validation roster: 1,815 patients, 6,858 finding-level examples.
 - Old R37 calibration patients: excluded before the R37.1 roster was frozen.
 - Seeds: 17 and 29.
-- Epochs: 3.
-- Batch size: 2.
-- Learning rate: 1e-4.
-- Adapter rank: 32.
-- Variant: A6 with the frozen parameter-free Z2-equivariant logit projection.
+- A6 epochs/batch/LR/rank: 3 / 2 / 1e-4 / 32.
+- A0 epochs/batch/LR: 100 / 16 / 0.01.
+- A6 variant: frozen parameter-free Z2-equivariant logit projection.
 - Validation was evaluated once on the frozen fresh roster.
 
-The first launch was interrupted by a Windows host reboot before either seed
-wrote an output directory. After restart, only the stale zero-byte logs and
-status files were archived, both GPUs were confirmed idle, and the unchanged
-seed commands were relaunched. No model, loss, threshold, roster, or seed
-choice changed.
+The first A6 launch was interrupted by a Windows host reboot before either
+seed wrote an output directory. After restart, only the stale zero-byte logs
+and status files were archived, both GPUs were confirmed idle, and the
+unchanged seed commands were relaunched. No model, loss, threshold, roster,
+or seed choice changed.
 
-## Descriptive results
+## A6 descriptive results
 
 | Metric | Frozen gate | Seed 17 | Seed 29 | Two-seed status |
 |---|---:|---:|---:|---|
@@ -50,9 +51,26 @@ choice changed.
 The CMCP comparison covers 3,422 fresh-holdout finding rows in each seed.
 Both seeds also passed the frozen-base/adapter-gradient engineering audit.
 
+## Capacity-matched A0 and two-seed bootstrap screen
+
+Both A0 probes cover the identical 1,815 patients and 6,858 finding rows.
+Seed 17 A0 true-pair macro F1 is 0.3419 and Seed 29 is 0.3404.
+
+| Comparison | Seed 17 | Seed 29 | Two-seed mean | Patient-bootstrap 95% CI | Screen |
+|---|---:|---:|---:|---:|---|
+| A6 minus current-only | +30.42 pp | +25.22 pp | +27.82 pp | [+25.96, +29.50] pp | PASS |
+| A6 minus CMCP | +12.76 pp | +11.39 pp | +12.08 pp | [+10.61, +13.63] pp | PASS |
+| A6 minus A0 | +12.62 pp | +11.25 pp | +11.93 pp | [+10.24, +13.66] pp | PASS |
+
+Each screen requires both observed seed effects to be at least +2 pp and the
+patient-bootstrap CI lower bound to be above zero. The bootstrap uses 2,000
+patient-cluster replicates with frozen seed 37001. The CMCP comparison covers
+1,296 patients and 3,422 rows; the other comparisons cover all 1,815 patients
+and 6,858 rows.
+
 ## Firewall and provenance boundary
 
-Both result and launcher artifacts record:
+All result and launcher artifacts record:
 
 - `protected_outcomes_read=false`;
 - `sealed_test_read=false`;
@@ -65,18 +83,17 @@ No unchanged source or per-shard hash was recomputed. No 300-patient dev,
 
 ## What is deliberately not claimed
 
-The current evidence does not establish the frozen three-seed survival gate,
-patient-bootstrap confidence intervals, or A6-versus-A0 superiority.
-Therefore:
+The current evidence establishes only the reduced two-seed internal screen.
+It does not establish the frozen three-seed survival gate. Therefore:
 
 - do not call this final scientific GO;
 - do not reveal protected outcomes;
 - do not unlock R37C, R38, or R39;
-- do not infer Seed 43 or bootstrap behavior from Seeds 17 and 29.
+- do not infer Seed 43 or the registered three-seed result from Seeds 17/29.
 
-## Paused next stage
+## Current stopping point
 
-The code path for explicit R37.1 A0 schemas/roster checks, Seed 43 admission,
-and R37.1 aggregation was prepared and passed focused tests, but no downstream
-GPU process was started. Resume only after new user direction, beginning with
-fresh-output, duplicate-process, GPU-idle, and firewall checks.
+The user selected two seeds as sufficient for this stage. Seed 43, the
+original three-seed aggregator, protected 300-dev/483-test/gold evaluation,
+R37C, R38, and R39 remain untouched. Resume any of them only after new user
+direction and a fresh authority check.

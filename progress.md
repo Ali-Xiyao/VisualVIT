@@ -610,3 +610,11 @@
   `r37-1-a0-two-seed-screen-monitor`. It monitors only these A0 jobs and will
   run the two-seed screen once after both valid PASS results; it forbids Seed
   43, the three-seed aggregator, hash recomputation, and protected reveals.
+- 2026-07-29 14:24-14:25 +08:00: A0 Seeds 17/29 both completed with
+  `PASS_R37_1_A0_FORMAL_SEED`, exit code 0, complete result/checkpoint pairs,
+  empty stderr, and clean firewalls. Both GPUs were released.
+- Ran the reduced screen exactly once. It emitted
+  `PASS_R37_1_TWO_SEED_INTERNAL_SCREEN`: current-only, CMCP, A0, inversion,
+  and state-retention gates all pass under the fixed two-seed descriptive
+  boundary. No Seed 43, three-seed aggregation, protected outcome, or hash
+  recomputation occurred.
