@@ -696,3 +696,6 @@
   that reuses the valid cache/reveal and starts only the fresh failed
   evaluations. Ten focused tests, Ruff, compileall, and PowerShell parse pass;
   commit/push precedes resume.
+- Commit `4e9b52f` is pushed. At 2026-07-30 04:18 +08, resumed only fresh
+  Seeds 17/29 on GPUs 0/1 (PIDs 9472/27816); cache and the single protected
+  reveal were reused, stderr is empty, and no sealed/gold boundary changed.

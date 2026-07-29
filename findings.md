@@ -712,3 +712,7 @@ preserving the encoder's static medical semantics.
   existing cache/reveal receipts, and absent fresh seed output roots. It never
   rereads the mixed source or repeats the one-shot label reveal. Ten focused
   tests, Ruff, compilation, and PowerShell parsing pass.
+- Commit `4e9b52f` pushed the repair. The guarded resume started at
+  2026-07-30 04:18 +08 with Seeds 17/29 on GPUs 0/1 under PIDs 9472/27816;
+  both GPUs are active, stderr is empty, outputs were fresh, and the pipeline
+  remains `RUNNING_R37C` without repeating cache or label reveal.
