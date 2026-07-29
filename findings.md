@@ -699,3 +699,16 @@ preserving the encoder's static medical semantics.
   launcher PID 8896 and cache PID 10900 are healthy on GPU 0, stderr is empty,
   and the status remains `RUNNING_R37C` at structural cache with protected
   300-dev outcomes, 483-test, and gold still unread.
+- The structural cache and one-shot reveal both PASSed, then Seeds 17/29
+  stopped before model construction because 11 of 2,453 rows used only case
+  variants of registered findings: `Pleural effusion`, `atelectasis`, `edema`,
+  and `lung opacity`. This is an engineering schema-normalization failure, not
+  a scientific result.
+- The minimal repair maps case-insensitively to the unchanged frozen registry,
+  logs the 11 normalization events, and still rejects every value not matching
+  a registry member by case alone. It changes no checkpoint, model, seed,
+  loss, threshold, label, bootstrap, or protected outcome.
+- A guarded evaluation-only resume now requires the prior engineering STOP,
+  existing cache/reveal receipts, and absent fresh seed output roots. It never
+  rereads the mixed source or repeats the one-shot label reveal. Ten focused
+  tests, Ruff, compilation, and PowerShell parsing pass.

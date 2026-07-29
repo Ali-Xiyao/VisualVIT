@@ -255,7 +255,7 @@ smokes during iteration.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** in_progress_r37c_structural_cache_running
+- **Status:** r37c_engineering_stop_repaired_pending_evaluation_resume
 
 ## Errors Encountered
 
@@ -311,6 +311,7 @@ smokes during iteration.
 | The first documentation diff check found Markdown hard-break trailing spaces in newly edited metadata lines | 1 | Remove only the newly introduced trailing spaces and retain the blockquote structure before final validation |
 | The authority-reference addendum repeated Markdown hard-break trailing spaces | 2 | Remove the four new hard-break markers and run a final staged diff check before commit |
 | The staged check exposed three remaining hard-break spaces in the new case-study header, but PowerShell continued to commit after native `git diff --check` returned nonzero | 3 | Remove the remaining spaces, run `git diff --check` as a standalone gate, then create and push a dedicated formatting-fix commit |
+| R37C Seeds 17/29 stopped before model loading because 11 structural rows used lowercase/case-variant finding names | 1 | Canonicalize finding names case-insensitively to the already frozen 12-class registry, reject all non-case variants, preserve the cache/reveal, and resume only fresh seed evaluations |
 
 ## Next Step
 

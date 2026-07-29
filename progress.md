@@ -689,3 +689,10 @@
   under launcher/cache PIDs 8896/10900 with empty stderr. The pipeline receipt
   still records `protected_300_dev_read=false`; reveal and all seed evaluation
   remain downstream of a valid cache PASS.
+- Structural caching and the one-shot 300-dev reveal completed. Both first
+  seed evaluators then stopped before model loading on 11 case-variant finding
+  strings; neither produced a result, so no scientific metric was evaluated.
+- Added strict case-only registry canonicalization and a guarded resume path
+  that reuses the valid cache/reveal and starts only the fresh failed
+  evaluations. Ten focused tests, Ruff, compileall, and PowerShell parse pass;
+  commit/push precedes resume.

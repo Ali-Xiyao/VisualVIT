@@ -19,6 +19,7 @@ from scripts.cache_r37_block8_tokens import build_frozen_encoder
 from scripts.r37c_common import (
     DEFAULT_CANDIDATE,
     FROZEN_SEEDS,
+    canonical_registry_value,
     checkpoint_for,
     load_candidate,
     merge_structure_and_labels,
@@ -86,8 +87,13 @@ def main() -> int:
         raise ValueError("R37C frozen finding/label registry drift")
     finding_to_index = {value: index for index, value in enumerate(findings)}
     label_to_index = {value: index for index, value in enumerate(labels)}
-    if any(str(item["finding"]) not in finding_to_index for item in examples):
-        raise ValueError("R37C row contains an unregistered finding")
+    finding_case_repairs = Counter()
+    for item in examples:
+        observed = str(item["finding"])
+        canonical = canonical_registry_value(observed, findings)
+        if observed != canonical:
+            finding_case_repairs[f"{observed}->{canonical}"] += 1
+        item["finding"] = canonical
 
     device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available():
@@ -272,6 +278,12 @@ def main() -> int:
         "per_shard_hashes_computed": False,
         "checkpoint_hashes_recomputed": False,
         "protocol_deviation": candidate["protocol_deviation"],
+        "engineering_normalization": {
+            "type": "case_insensitive_finding_canonicalization",
+            "rows_changed": sum(finding_case_repairs.values()),
+            "mapping_counts": dict(finding_case_repairs),
+            "model_or_gate_changed": False,
+        },
         "device": str(device),
         "peak_cuda_allocated_bytes": (
             torch.cuda.max_memory_allocated(device)

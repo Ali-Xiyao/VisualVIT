@@ -6,6 +6,7 @@ import pytest
 
 from scripts.aggregate_r37c_dev import aggregate_payload
 from scripts.r37c_common import (
+    canonical_registry_value,
     merge_structure_and_labels,
     structural_projection,
 )
@@ -91,6 +92,17 @@ def test_structure_label_merge_is_exact_and_fail_closed() -> None:
         merge_structure_and_labels(
             structure, [{"record_id": "r2", "progression": "Stable"}]
         )
+
+
+def test_registry_value_canonicalizes_case_only() -> None:
+    registry = ["Pleural Effusion", "Lung Opacity"]
+    assert (
+        canonical_registry_value("Pleural effusion", registry)
+        == "Pleural Effusion"
+    )
+    assert canonical_registry_value("lung opacity", registry) == "Lung Opacity"
+    with pytest.raises(ValueError, match="unregistered"):
+        canonical_registry_value("Fracture", registry)
 
 
 def test_r37c_aggregate_go_and_scientific_stop() -> None:

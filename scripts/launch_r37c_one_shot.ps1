@@ -1,6 +1,7 @@
 param(
     [string]$Python = "python",
-    [string]$Candidate = "configs\r37\r37_1_candidate_for_r37c_v1.json"
+    [string]$Candidate = "configs\r37\r37_1_candidate_for_r37c_v1.json",
+    [switch]$ResumeEvaluations
 )
 
 $ErrorActionPreference = "Stop"
@@ -9,6 +10,7 @@ $Runtime = "H:\VisualVIT_runtime\050_routeD\r37_prta_cxr"
 $StatusPath = Join-Path $Runtime "r37c_pipeline_status.json"
 $LogRoot = Join-Path $Runtime "r37c_pipeline_logs"
 $ProtectedRead = $false
+$LogSuffix = if ($ResumeEvaluations) { ".resume1" } else { "" }
 
 function Write-Status {
     param(
@@ -39,8 +41,8 @@ function Invoke-PythonStage {
         [string]$Name,
         [string[]]$Arguments
     )
-    $stdout = Join-Path $LogRoot "$Name.stdout.log"
-    $stderr = Join-Path $LogRoot "$Name.stderr.log"
+    $stdout = Join-Path $LogRoot "$Name$LogSuffix.stdout.log"
+    $stderr = Join-Path $LogRoot "$Name$LogSuffix.stderr.log"
     $process = Start-Process -FilePath $Python `
         -ArgumentList $Arguments `
         -WorkingDirectory $Repo `
@@ -54,25 +56,59 @@ function Invoke-PythonStage {
     }
 }
 
-if (Test-Path -LiteralPath $StatusPath) {
-    throw "R37C pipeline status already exists; refusing duplicate launch: $StatusPath"
+if ($ResumeEvaluations) {
+    if (-not (Test-Path -LiteralPath $StatusPath -PathType Leaf)) {
+        throw "R37C resume requires the engineering STOP receipt"
+    }
+    $previous = Get-Content -LiteralPath $StatusPath -Raw | ConvertFrom-Json
+    if (
+        $previous.status -ne "STOP_R37C_ENGINEERING" -or
+        $previous.stage -ne "failed"
+    ) {
+        throw "R37C resume is allowed only from STOP_R37C_ENGINEERING"
+    }
+    foreach ($required in @(
+        (Join-Path $Runtime "r37c_dev_block8_v1\cache_manifest.json"),
+        (Join-Path $Runtime "r37c_one_shot_dev_v1\reveal_receipt.json"),
+        (Join-Path $Runtime "r37c_one_shot_dev_v1\protected_dev_labels.json")
+    )) {
+        if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
+            throw "R37C resume prerequisite missing: $required"
+        }
+    }
+    foreach ($seed in @(17, 29, 43)) {
+        $output = Join-Path `
+            "H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37c_one_shot_dev_v1\evaluations" `
+            "seed_$seed"
+        if (Test-Path -LiteralPath $output) {
+            throw "R37C resume requires a fresh failed seed output: $output"
+        }
+    }
+    $ProtectedRead = $true
 }
-New-Item -ItemType Directory -Path $LogRoot -ErrorAction Stop | Out-Null
+else {
+    if (Test-Path -LiteralPath $StatusPath) {
+        throw "R37C pipeline status already exists; refusing duplicate launch: $StatusPath"
+    }
+    New-Item -ItemType Directory -Path $LogRoot -ErrorAction Stop | Out-Null
+}
 
 try {
-    Write-Status -Status "RUNNING_R37C" -Stage "cache"
-    Invoke-PythonStage -Name "cache" -Arguments @(
-        "scripts\prepare_r37c_dev_cache.py",
-        "--candidate", $Candidate,
-        "--device", "cuda:0"
-    )
+    if (-not $ResumeEvaluations) {
+        Write-Status -Status "RUNNING_R37C" -Stage "cache"
+        Invoke-PythonStage -Name "cache" -Arguments @(
+            "scripts\prepare_r37c_dev_cache.py",
+            "--candidate", $Candidate,
+            "--device", "cuda:0"
+        )
 
-    Write-Status -Status "RUNNING_R37C" -Stage "reveal"
-    Invoke-PythonStage -Name "reveal" -Arguments @(
-        "scripts\reveal_r37c_dev_labels.py",
-        "--candidate", $Candidate
-    )
-    $ProtectedRead = $true
+        Write-Status -Status "RUNNING_R37C" -Stage "reveal"
+        Invoke-PythonStage -Name "reveal" -Arguments @(
+            "scripts\reveal_r37c_dev_labels.py",
+            "--candidate", $Candidate
+        )
+        $ProtectedRead = $true
+    }
 
     Write-Status -Status "RUNNING_R37C" -Stage "seed_17_29"
     $jobs = @()
@@ -81,8 +117,8 @@ try {
         @{ Seed = 29; Device = "cuda:1" }
     )) {
         $name = "seed_$($entry.Seed)"
-        $stdout = Join-Path $LogRoot "$name.stdout.log"
-        $stderr = Join-Path $LogRoot "$name.stderr.log"
+        $stdout = Join-Path $LogRoot "$name$LogSuffix.stdout.log"
+        $stderr = Join-Path $LogRoot "$name$LogSuffix.stderr.log"
         $arguments = @(
             "scripts\run_r37c_seed_eval.py",
             "--candidate", $Candidate,
@@ -135,8 +171,8 @@ try {
     )
 
     Write-Status -Status "RUNNING_R37C" -Stage "aggregate"
-    $stdout = Join-Path $LogRoot "aggregate.stdout.log"
-    $stderr = Join-Path $LogRoot "aggregate.stderr.log"
+    $stdout = Join-Path $LogRoot "aggregate$LogSuffix.stdout.log"
+    $stderr = Join-Path $LogRoot "aggregate$LogSuffix.stderr.log"
     $process = Start-Process -FilePath $Python `
         -ArgumentList @(
             "scripts\aggregate_r37c_dev.py",

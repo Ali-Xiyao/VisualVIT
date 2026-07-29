@@ -190,3 +190,18 @@ def merge_structure_and_labels(
         }
         for item in structure
     ]
+
+
+def canonical_registry_value(value: object, registry: Iterable[str]) -> str:
+    by_casefold: dict[str, str] = {}
+    for item in registry:
+        canonical = str(item)
+        key = canonical.casefold()
+        previous = by_casefold.setdefault(key, canonical)
+        if previous != canonical:
+            raise ValueError("case-insensitive registry collision")
+    observed = str(value)
+    match = by_casefold.get(observed.casefold())
+    if match is None:
+        raise ValueError(f"unregistered value: {observed!r}")
+    return match
