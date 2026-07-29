@@ -1,8 +1,8 @@
 # R37.1 Proposal 与 Case Study 收敛总结
 
-> 日期：2026-07-29  
-> 分支：`codex/r37-prior-responsive-temporal-adapter`  
-> 当前机器状态：GPU 空闲，无 R37/R38/R39 实验进程  
+> 日期：2026-07-29
+> 分支：`codex/r37-prior-responsive-temporal-adapter`
+> 当前机器状态：GPU 空闲，无 R37/R38/R39 实验进程
 > 当前结论：`PASS_R37_1_TWO_SEED_INTERNAL_SCREEN`
 
 ## 1. 一句话结论

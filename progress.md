@@ -638,3 +638,7 @@
 - Final UTF-8 checks found no replacement characters in the three reader-facing
   Chinese documents, all authority links resolve locally, and the final
   unstaged diff check is clean.
+- Commit `ab6a139` pushed the documentation bundle, but its combined
+  PowerShell command continued after staged `git diff --check` reported three
+  hard-break spaces in the new case-study header. A dedicated formatting
+  follow-up removes them; scientific content and runtime state are unchanged.

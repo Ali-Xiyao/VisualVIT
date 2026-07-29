@@ -295,6 +295,7 @@ smokes during iteration.
 | The documentation inventory attempted to inspect a root `README.md`, but this branch has no root README | 1 | Use the two active TIER documents plus tracked R37/R37.1 reports as the handoff surface; do not invent a missing root index |
 | The first documentation diff check found Markdown hard-break trailing spaces in newly edited metadata lines | 1 | Remove only the newly introduced trailing spaces and retain the blockquote structure before final validation |
 | The authority-reference addendum repeated Markdown hard-break trailing spaces | 2 | Remove the four new hard-break markers and run a final staged diff check before commit |
+| The staged check exposed three remaining hard-break spaces in the new case-study header, but PowerShell continued to commit after native `git diff --check` returned nonzero | 3 | Remove the remaining spaces, run `git diff --check` as a standalone gate, then create and push a dedicated formatting-fix commit |
 
 ## Next Step
 
