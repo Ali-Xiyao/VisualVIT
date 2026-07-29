@@ -642,3 +642,7 @@
   PowerShell command continued after staged `git diff --check` reported three
   hard-break spaces in the new case-study header. A dedicated formatting
   follow-up removes them; scientific content and runtime state are unchanged.
+- The user subsequently authorized the full confirmatory chain and both GPUs.
+  The immediate scope is only frozen R37.1 A6/A0 Seed 43 plus the original
+  three-seed internal bootstrap. Protected reveal and R38/R39 remain
+  conditionally locked until their upstream gate passes.

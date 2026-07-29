@@ -638,3 +638,8 @@ preserving the encoder's static medical semantics.
   R32-R36 design while making the R37.1 addendum authoritative. It separates
   the supported two-seed fresh-holdout claims from the untested three-seed,
   300-dev, sealed-test, gold, 64-token, and frozen-VLM claims.
+- The user has now explicitly authorized completing the full TIER-CXR-VLM
+  chain with both GPUs. This includes Seed 43, the original three-seed gate,
+  conditional 300-dev, R38, R39, 483-test, and gold in the frozen order; it
+  does not authorize bypassing a failed survival gate or tuning on protected
+  outcomes.

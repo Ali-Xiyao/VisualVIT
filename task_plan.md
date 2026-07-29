@@ -226,6 +226,20 @@ smokes during iteration.
   and protected-outcome firewalls; commit and push the handoff.
 - **Status:** completed
 
+### Phase 4D — R37.1 three-seed confirmatory completion
+
+- [ ] Run the already frozen R37.1 A6 Seed 43 on GPU 0 and A0 Seed 43 on
+  GPU 1 with fresh outputs and unchanged roster/model/loss/threshold settings.
+- [ ] Validate all three A6/A0 results, inversion/state-retention gates, exact
+  row order, and every protected/hash firewall.
+- [ ] Run the original three-seed patient-cluster bootstrap for A6 versus
+  current-only, CMCP, and A0 using 2,000 replicates and seed 37001.
+- [ ] Emit the direct internal scientific GO/STOP and stop all downstream
+  execution if any frozen gate fails.
+- [ ] If and only if all three-seed gates pass, freeze exactly one R37.1
+  candidate and prepare the one-shot R37C 300-dev reveal.
+- **Status:** in_progress
+
 ### Phase 5 — Conditional R37C/R38/R39
 
 - [x] At the end of the project, complete independent human QA over
@@ -240,7 +254,7 @@ smokes during iteration.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** protected_stages_locked_by_user
+- **Status:** authorized_sequentially_pending_r37_1_three_seed_go
 
 ## Errors Encountered
 
@@ -299,7 +313,6 @@ smokes during iteration.
 
 ## Next Step
 
-Documentation consolidation is complete. Keep the project at the
-user-selected R37.1 two-seed descriptive internal PASS stopping point; do not
-start another GPU job or unlock 300-dev, 483-test, gold, R38, or R39 without
-new user authority.
+Launch only the frozen R37.1 A6/A0 Seed 43 jobs on the two GPUs, monitor them,
+and run the original three-seed qualification. Do not open 300-dev or start
+R38/R39 until that internal gate emits GO.
