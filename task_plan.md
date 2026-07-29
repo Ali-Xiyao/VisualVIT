@@ -262,10 +262,11 @@ smokes during iteration.
 - [x] Implement outcome-free sealed Block-8/token caches, shared A6+A0
   projector training, pre-reveal sealed prediction freezing, the one-shot
   483-label reveal, and final three-seed patient bootstrap.
-- [ ] Commit and push R39, launch the two-GPU chain, and stop directly on its
+- [x] Commit and push R39 and launch the duplicate-safe two-GPU chain.
+- [ ] Monitor the active chain and stop directly on its
   registered scientific GO/STOP.
 - [ ] Keep gold sealed pending the separately registered post-R39 boundary.
-- **Status:** GO_R38_FIXED64_SURVIVAL_R39_FROZEN_PRELAUNCH
+- **Status:** RUNNING_R39_OUTCOME_FREE_CACHE
 
 ## Errors Encountered
 

@@ -763,3 +763,10 @@ preserving the encoder's static medical semantics.
   protected 483 labels may be opened once. The final aggregation reads only
   the frozen predictions and aligned copied labels. Gold remains sealed even
   if R39 GO.
+- Commit `be10d9f` froze and pushed the complete R39 chain before execution.
+  At 2026-07-30 05:23 +08:00 the duplicate-safe launcher started as PID 29064.
+  The first outcome-free stage runs sealed Block-8 caching on GPU 0 as PID
+  28952 and dev fixed64 caching for Seed 17 on GPU 1 as PID 30532. Both
+  processes are alive, stderr is empty, both GPUs own only their registered
+  worker, and shard counts are increasing. The 483 labels and gold remain
+  unread.
