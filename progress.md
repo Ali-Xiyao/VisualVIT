@@ -598,3 +598,15 @@
   active scope is A0 Seeds 17/29 plus a separately labeled two-seed
   patient-cluster bootstrap screen; Seed 43, the original three-seed
   aggregation, and every protected reveal remain deferred.
+- Added the separate R37.1 two-seed screen, preserving the frozen 2,000
+  patient-cluster replicates and bootstrap Seed 37001 while requiring at least
+  +2 pp in each observed seed and CI lower bound above zero. Twenty-one
+  focused tests, Ruff, compileall, CLI help, and `git diff --check` passed;
+  commit `a0e8f74` is pushed.
+- 2026-07-29 11:47 +08:00: after three idle GPU polls, launched A0 Seed 17 on
+  GPU 0 (launcher/Python PIDs 12348/11292) and Seed 29 on GPU 1
+  (5064/19816). Both are RUNNING with empty stderr and clean firewalls.
+- Created the 20-minute heartbeat
+  `r37-1-a0-two-seed-screen-monitor`. It monitors only these A0 jobs and will
+  run the two-seed screen once after both valid PASS results; it forbids Seed
+  43, the three-seed aggregator, hash recomputation, and protected reveals.

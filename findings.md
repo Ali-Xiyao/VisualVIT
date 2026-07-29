@@ -611,3 +611,11 @@ preserving the encoder's static medical semantics.
   bootstrap seed 37001, require both observed seed effects to be at least
   +2 percentage points with the patient-bootstrap 95% CI lower bound above
   zero, and remain descriptive/internal regardless of its outcome.
+- A dedicated fail-closed two-seed screen now preserves those constants while
+  leaving the original three-seed aggregator unchanged by default. Its result
+  schema explicitly records that Seed 43 and the three-seed gate were not
+  evaluated and that no scientific claim is allowed.
+- After three consecutive idle GPU polls and fresh-output checks, A0 Seed 17
+  launched on GPU 0 as launcher/Python PIDs 12348/11292 and Seed 29 launched
+  on GPU 1 as 5064/19816. Both status files are RUNNING, both stderr logs are
+  empty, and both processes remain responsive with model memory loaded.
