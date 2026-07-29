@@ -680,3 +680,17 @@ preserving the encoder's static medical semantics.
   three-seed bundle, matched A0 checkpoints, checkpoint hashes, exact R37C
   cohort boundary, two primary comparisons, diagnostics, 2,000-replicate
   patient bootstrap, and fail-on-any-gate rule before any performance reveal.
+- The fail-closed R37C implementation is now complete. Structural projection
+  persists no progression/target/prediction fields; the cache uses the exact
+  frozen BiomedCLIP Block-8 boundary and no source, checkpoint, or shard hash
+  recomputation. A separate fresh-root reveal records the single authorized
+  300-dev label access before any seed evaluator can run.
+- Each R37C seed evaluator loads only the frozen A6/A0 checkpoint receipt,
+  validates path and byte size, reproduces the registered equivariant
+  true/current/inverted logic, and emits aligned per-row A6/current/A0
+  predictions. The aggregator requires Seeds 17/29/43, identical row order,
+  both registered patient-cluster comparisons, inversion >=0.90, state
+  retention >=0.99, and reports `R37C-PD1`.
+- Nine focused qualification/R37C tests, Python compilation, Ruff, and
+  PowerShell parsing pass. Both GPUs are idle and no R37C runtime/status root
+  exists, so a duplicate-safe first launch is ready after commit/push.

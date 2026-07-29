@@ -236,10 +236,10 @@ smokes during iteration.
   current-only, CMCP, and A0 using 2,000 replicates and seed 37001.
 - [x] Emit the direct internal scientific GO/STOP and stop all downstream
   execution if any frozen gate fails.
-- [ ] If and only if all three-seed gates pass, freeze exactly one R37.1
+- [x] If and only if all three-seed gates pass, freeze exactly one R37.1
   candidate and prepare the one-shot R37C 300-dev reveal.
-- **Status:** GO_R37_1_THREE_SEED_INTERNAL_QUALIFICATION — candidate freeze
-  and R37C fail-closed implementation are in progress; 300-dev remains unread.
+- **Status:** GO_R37_1_THREE_SEED_INTERNAL_QUALIFICATION — the candidate and
+  fail-closed R37C implementation are frozen and validated; launch is next.
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -251,11 +251,11 @@ smokes during iteration.
 - [x] Obtain and structurally validate the completed local review CSV.
 - [x] Validate the supplied reviewer name/ID, role, date, and independent
   attestation; record relevant experience when the reviewer supplies it.
-- [ ] Freeze exactly one candidate before any dev reveal.
+- [x] Freeze exactly one candidate before any dev reveal.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** in_progress_pending_candidate_freeze_before_r37c_reveal
+- **Status:** in_progress_r37c_runner_validated_pending_one_shot_launch
 
 ## Errors Encountered
 
@@ -314,7 +314,7 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze exactly one R37.1 A6 three-seed candidate bundle plus its capacity-
-matched A0 baseline and the fail-closed R37C evaluation protocol. Validate
-the one-shot 300-dev runner before reading any protected outcome; R38/R39
-remain locked until R37C emits GO.
+Commit and push the validated fail-closed R37C tooling, then launch its
+structural Block-8 cache, single protected label reveal, frozen Seed 17/29/43
+evaluation, and patient-cluster aggregation. Stop the chain on R37C STOP;
+R38/R39 remain locked until R37C emits GO.

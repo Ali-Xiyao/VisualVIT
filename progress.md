@@ -675,3 +675,12 @@
 - Added the immutable R37.1 A6 three-seed candidate/A0 baseline/R37C gate
   manifest with one-time checkpoint hashes. R37C performance remains
   unrevealed pending runner implementation, tests, commit, and preflight.
+- Implemented the fail-closed R37C chain: structural-only dev cache, separate
+  one-shot label reveal, exact frozen A6/A0 seed evaluation, registered
+  three-seed patient bootstrap, and a duplicate-safe two-GPU launcher.
+- The runner verifies checkpoint path/byte receipts without rehashing, never
+  hashes cache shards or unchanged sources, keeps 483-test/gold sealed, and
+  reports `R37C-PD1` in every protected result.
+- Validation passed: 9 focused tests, compileall, Ruff, and PowerShell parse.
+  Live preflight found both GPUs idle, no R37C process, and no existing R37C
+  runtime/status root. Commit/push precedes the single protected launch.
