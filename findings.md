@@ -749,7 +749,7 @@ preserving the encoder's static medical semantics.
   cache, model training, or label access.
 - The corrected frozen R39 primary is A6 true-pair versus the same-projector
   A0 frozen BiomedCLIP difference representation. The same frozen Qwen3-VL,
-  prompt, 64 physical positions, 7,948,800-parameter projector, seeds, and
+  prompt, 64 physical positions, 9,873,920-parameter projector, seeds, and
   training data are shared. Current-only, query-only, and deterministic
   within-finding cross-patient prior shuffle each have their own preregistered
   +2 pp/positive-CI/all-seed gate.
@@ -770,3 +770,10 @@ preserving the encoder's static medical semantics.
   processes are alive, stderr is empty, both GPUs own only their registered
   worker, and shard counts are increasing. The 483 labels and gold remain
   unread.
+- Projector Seed 17 stopped before training because the frozen parameter-count
+  receipt incorrectly reused R32 smoke's 7,948,800 count. That smoke used
+  input width 16, while the already frozen R39 architecture consumes 768-D
+  PRTA tokens and therefore has 9,873,920 parameters. No checkpoint or
+  projector output was created and no protected outcome was read. Correcting
+  this derived receipt changes neither architecture nor training/gate choices;
+  valid outcome-free caches remain reusable.

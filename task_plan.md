@@ -323,6 +323,7 @@ smokes during iteration.
 | The authority-reference addendum repeated Markdown hard-break trailing spaces | 2 | Remove the four new hard-break markers and run a final staged diff check before commit |
 | The staged check exposed three remaining hard-break spaces in the new case-study header, but PowerShell continued to commit after native `git diff --check` returned nonzero | 3 | Remove the remaining spaces, run `git diff --check` as a standalone gate, then create and push a dedicated formatting-fix commit |
 | R37C Seeds 17/29 stopped before model loading because 11 structural rows used lowercase/case-variant finding names | 1 | Canonicalize finding names case-insensitively to the already frozen 12-class registry, reject all non-case variants, preserve the cache/reveal, and resume only fresh seed evaluations |
+| R39 projector Seed 17 stopped before training because the parameter-count receipt came from the input-width-16 R32 smoke | 1 | Correct only the derived receipt to the unchanged input-width-768 projector's 9,873,920 parameters, add an exact regression test, preserve all outcome-free caches, and resume from fresh projector outputs |
 
 ## Next Step
 

@@ -721,7 +721,7 @@
   the 483 labels and gold remain sealed.
 - Implemented and froze the R39 transfer protocol around local
   Qwen3-VL-4B-Instruct: exact 64 placeholders, zero trainable VLM parameters,
-  one shared 7,948,800-parameter projector per seed, deterministic one-epoch
+  one shared 9,873,920-parameter projector per seed, deterministic one-epoch
   A6+0.25*A0 training on the already revealed 300-dev set, and no pixel path.
 - Corrected the pre-execution comparison boundary from A6-current-only alone
   to primary A6-versus-frozen-A0 plus current-only, query-only, and
@@ -739,3 +739,10 @@
   on GPU 1; stderr files are empty and both shard inventories are advancing.
   The pipeline status is `RUNNING_R39`, `sealed_483_test_labels_read=false`,
   and `gold_outcomes_read=false`.
+- The first Seed 17 projector process stopped before its first optimization
+  step on a parameter-count receipt mismatch. The 7,948,800 value belonged to
+  R32's input-width-16 smoke; the frozen input-width-768 R39 projector has
+  9,873,920 parameters. This is a derived-audit repair only: architecture,
+  initialization, data, loss, seeds, thresholds, controls, and bootstrap are
+  unchanged. All completed caches are outcome-free and remain valid; 483
+  labels and gold are still unread.

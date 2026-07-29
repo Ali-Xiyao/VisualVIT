@@ -67,7 +67,7 @@ def load_r39_config(path: Path = DEFAULT_R39_CONFIG) -> dict[str, Any]:
     if (
         config["model"]["all_frozen"] is not True
         or config["interface"]["token_budget"] != 64
-        or config["interface"]["projector_parameter_count"] != 7_948_800
+        or config["interface"]["projector_parameter_count"] != 9_873_920
         or config["interface"]["pixel_bypass"] is not False
         or config["interface"]["pixel_inputs_used"] is not False
         or config["sealed_test"]["reveal_count"] != 1

@@ -19,7 +19,7 @@
     "token_budget": 64,
     "input_width": 768,
     "projector": "TierTokenProjector",
-    "projector_parameter_count": 7948800,
+    "projector_parameter_count": 9873920,
     "sentinel_token": "<|fim_pad|>",
     "placeholder_token_id": 151662,
     "pixel_bypass": false,

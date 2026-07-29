@@ -9,6 +9,7 @@ from scripts.r39_common import (
     prior_shuffle_assignment,
     token_bundle,
 )
+from visualvit.tier_token_projector import TierTokenProjector
 
 
 def test_r39_label_order_maps_five_classes_exactly() -> None:
@@ -27,6 +28,13 @@ def test_r39_token_bundle_is_exact64_with_reserved_logical_nulls() -> None:
     assert bundle.valid_mask[:, :60].all()
     assert not bundle.valid_mask[:, 60:].any()
     assert bundle.tokens.shape == (2, 64, 768)
+
+
+def test_r39_projector_parameter_receipt_matches_768_to_2560() -> None:
+    projector = TierTokenProjector(768, 2560)
+    assert sum(parameter.numel() for parameter in projector.parameters()) == (
+        9_873_920
+    )
 
 
 def test_patient_class_weights_are_positive_and_mean_one() -> None:
