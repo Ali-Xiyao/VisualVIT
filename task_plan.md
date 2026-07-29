@@ -255,7 +255,7 @@ smokes during iteration.
 - [x] Reveal the 300-patient dev once only after internal GO.
 - [x] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** GO_R37C_ONE_SHOT_DEV_r38_frozen_pending_launch
+- **Status:** GO_R37C_ONE_SHOT_DEV_r38_seed_17_29_running
 
 ## Errors Encountered
 

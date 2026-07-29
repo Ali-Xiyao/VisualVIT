@@ -734,3 +734,7 @@ preserving the encoder's static medical semantics.
   physical positions attended, uses shared zero reserved tokens, and applies
   the already frozen PRTA transition norm/classifier. Thirteen focused tests,
   compilation, config/upstream validation, and PowerShell parsing pass.
+- Commit `5604092` froze and pushed R38 before its first run. At
+  2026-07-30 04:50 +08, Seeds 17/29 launched on GPUs 0/1 under PIDs
+  21176/31204; both processes are active, stderr is empty, and status is
+  `RUNNING_R38`. R39, 483-test, and gold remain locked.

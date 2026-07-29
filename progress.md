@@ -711,3 +711,7 @@
 - Validation passed: 13 focused tests, compileall, Ruff after removing one
   unused import, frozen-config/upstream GO validation, and PowerShell parse.
   Commit/push precedes the first R38 launch.
+- Commit `5604092` is pushed. At 2026-07-30 04:50 +08, launched R38 Seeds
+  17/29 on GPUs 0/1 (PIDs 21176/31204). Both are active with empty stderr and
+  clean hash/sealed/gold firewalls; Seed 43 and aggregation remain automatic
+  downstream stages only after both current seeds PASS.
