@@ -1,6 +1,7 @@
-# TIER-CXR-VLM 空结果表与实验登记模板
+# TIER-CXR-VLM / PRTA-CXR 结果表与实验登记
 
-> **用途：** 直接复制到 `reports/`，由正式脚本自动或人工填写。  
+> **用途：** R32–R37.1 结果权威表；未执行阶段保留为空，已完成阶段必须填入。
+> **当前更新：** 2026-07-29，R37.1 two-seed internal screen 已完成。
 > **规则：** sealed test / gold 未揭示前不得预填；所有百分比统一使用 pp；所有 CI 必须注明 bootstrap 单位与次数。
 
 ---
@@ -12,6 +13,10 @@
 | R32-COHORT-v1.1 | R32 | b0331ea0… | working tree from 7c4c51e | 6868d76d… | N/A | deterministic split | 否 | PASS | `F:\VisualVIT_runtime\050_routeC\r32_tier_cxr_vlm\cohort_v1` |
 | R32-CACHE-v1 | R32 | f9a75b0c… | working tree from 7c4c51e | 6868d76d… | 7d5f3864… | frozen BiomedCLIP | 否 | PASS | `F:\VisualVIT_runtime\050_routeC\r32_tier_cxr_vlm\patch_cache_train_dev_v1` |
 | R32-QWEN-v1.2 | R32 | f9a75b0c… | working tree from 7c4c51e | 6868d76d… | 7d5f3864… | Qwen3-VL-4B BF16/FP32 ref | 否 | PASS | `F:\VisualVIT_runtime\050_routeC\r32_tier_cxr_vlm\qwen3vl_4b_exact64_v1_2_verification.json` |
+| R37-A6-formal-17/29 | R37 | tracked frozen spec；未重算 unchanged hash | R37 branch | frozen R37 roster | frozen Block-8 cache | A6 Seeds 17/29 | 否 | `STOP_R37_INVERSION_CONSISTENCY` | `reports/R37_INVERSION_FAILURE_CASE_STUDY.md` |
+| R37.1-A6-17/29 | R37.1 | tracked frozen repair；未重算 unchanged hash | `18353da` lineage | 10,287/1,815 patient roster | 复用 frozen Block-8 cache | A6 Seeds 17/29 | 否 | PASS | `reports/R37_1_TWO_SEED_FRESH_HOLDOUT_RESULT.md` |
+| R37.1-A0-17/29 | R37.1 | frozen A0 protocol | `18353da` lineage | 同一 1,815-patient holdout | frozen BiomedCLIP CLS difference | A0 Seeds 17/29 | 否 | PASS | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37_1_formal\a0_v1` |
+| R37.1-two-seed-screen | R37.1 | bootstrap 2,000 / seed 37001 | `18353da` | 1,815 patients / 6,858 rows | N/A | Seeds 17/29 | 否 | `PASS_R37_1_TWO_SEED_INTERNAL_SCREEN` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37_1_formal\two_seed_screen_v1\result.json` |
 
 ---
 
@@ -377,6 +382,13 @@
 | R34 Frozen VLM | N/A | N/A | N/A | sealed test 保持未读 | N/A | **LOCKED** | 不执行 |
 | R35 Human-Gold | N/A | N/A | N/A | gold outcomes 保持未读 | N/A | **LOCKED** | 仍需独立专家标注 |
 | R36 Full Paper | N/A | N/A | N/A | N/A | N/A | **LOCKED** | 不执行 |
+| R37 A6 formal | +13.01 pp vs current（两 Seed均值） | 未聚合；在 inversion gate 先 STOP | 17/29 正向；Seed 43 未运行 | PASS：300-dev/483-test/gold/hash 未读 | 两 Seed结构完成 | **STOP_R37_INVERSION_CONSISTENCY** | 冻结旧 calibration，仅允许预先冻结的 R37.1 repair |
+| R37.1 A6 vs current-only | +27.82 pp | [+25.96, +29.50] pp | 17/29 均 ≥ +2 pp | PASS：protected/sealed/gold 未读 | two-seed patient bootstrap | **PASS_TWO_SEED_INTERNAL** | 仅内部描述性结论 |
+| R37.1 A6 vs CMCP | +12.08 pp | [+10.61, +13.63] pp | 17/29 均 ≥ +2 pp | PASS | two-seed patient bootstrap | **PASS_TWO_SEED_INTERNAL** | 不外推到三 Seed |
+| R37.1 A6 vs A0 | +11.93 pp | [+10.24, +13.66] pp | 17/29 均 ≥ +2 pp | PASS | two-seed patient bootstrap | **PASS_R37_1_TWO_SEED_INTERNAL_SCREEN** | 停止 GPU；整理 proposal/case study |
+| R37C 300-dev | N/A | N/A | 原三 Seed gate 未执行 | outcome 保持未读 | N/A | **LOCKED** | 不揭示 |
+| R38 64-token survival | N/A | N/A | N/A | 上游未完整资格化 | N/A | **LOCKED** | 不执行 |
+| R39 frozen-VLM transfer | N/A | N/A | N/A | 483-test 保持 sealed | N/A | **LOCKED** | 不执行 |
 
 ---
 
@@ -388,6 +400,10 @@
 | Rich temporal evidence 条件有效 | R31 / R33 | R31 fresh-silver 正向，但 R33 nested-OOF P6-P3 为 -0.669 pp | 不支持迁移 claim；仅保留 R31 范围 | Main motivation / Limitation |
 | Token routing 优于 uniform tokens | R34 | R33 生存门失败，R34 未启动 | 不支持 | 不进入 Main result |
 | 收益迁移到 frozen VLM | R34 | sealed test 未读，R34 locked | 不支持/未检验 | 不进入 Main result |
+| PRTA-CXR 对正确 prior 有响应 | R37/R37.1 true vs current/CMCP | R37.1 Seeds 17/29 均强正向，two-seed CI lower > 0 | 支持两 Seed fresh-holdout 内部描述性 claim | Main internal result |
+| Z2 projection 修复 inversion inconsistency | R37 vs R37.1 fresh holdout | R37 0.8438/0.8735；R37.1 1.0000/1.0000 | 支持机制级 case-study claim，不作因果泛化 | Method / Case study |
+| PRTA-CXR 优于 capacity-matched A0 | R37.1 A6 vs A0 | +12.62/+11.25 pp；95% CI [+10.24,+13.66] | 支持两 Seed内部描述性 claim | Main internal result |
+| R37.1 达到三 Seed confirmatory GO | Seed 17/29/43 + original bootstrap | Seed 43 未运行；`three_seed_gate_evaluated=false` | 不支持/未检验 | Limitation |
 | 专家 gold 泛化 | R35 | gold outcomes 未读；仅 16 位可用 | 不支持/未检验 | Limitation |
 | 外部来源泛化 | R35 |  |  | Main result |
 | Grounding 改善 | R36 |  |  | Secondary result |
@@ -406,3 +422,52 @@
 | 2026-07-26 | R33-OOF-v1-attempt1 | PyTorch deterministic cuBLAS guard 要求 workspace config | 否 | M0 运行环境修复 | working tree | 否 | 首个 probe 前停止；设置 `CUBLAS_WORKSPACE_CONFIG=:4096:8` 后重启 |
 | 2026-07-26 | R33-OOF-v1 | primary Δ -0.669 pp；CI 跨 0；1/3 seed 正向；prior-shuffle FAIL | 是（仅 train/dev nested OOF） | 不允许 outcome-conditioned rescue | working tree | 否 | **STOP_R33_TOKEN_SURVIVAL**；R34 sealed test 保持未读 |
 | 2026-07-26 | R33-P0-AUDIT | type 0 summary 同时含 query 与三个 image-derived global controls | 是（在结果解释审计中发现） | 报告语义更正；不改 primary | working tree | 否 | P0 降级为 query/control proxy；多个 P0-independent gate 已足够 STOP |
+| 2026-07-28 | R37-A6-17/29 | 正确 prior 收益为正，但 inversion consistency 0.8438/0.8735 低于 0.90 | 是（仅旧 R37 internal calibration） | 冻结失败；仅允许预先冻结的新 roster 与结构修复 | `3730f10` lineage | 是，R37.1 | `STOP_R37_INVERSION_CONSISTENCY` |
+| 2026-07-28 | R37.1-reboot | 主机重启中断未完成 Seed 17/29；无结果目录，日志为空 | 否 | M0 运行恢复 | unchanged command | 否 | 归档 stale status/log，仅重启相同 Seed |
+| 2026-07-29 | R37.1-two-seed-screen | A6/A0 Seeds 17/29 和三组 two-seed patient bootstrap 全部通过 | 是（仅 frozen fresh holdout） | 结果登记；不得调参或扩张 claim | `18353da` | 否 | `PASS_R37_1_TWO_SEED_INTERNAL_SCREEN` |
+
+---
+
+# AE. R37 → R37.1 方法修复表
+
+| 版本 | Inversion 机制 | 验证患者/Rows | Seed 17 | Seed 29 | State retention | Verdict |
+|---|---|---:|---:|---:|---:|---|
+| R37 | detached soft-target inversion KL | 1,347 / 5,242 old calibration | 0.8438 | 0.8735 | 0.9938 / 0.9936 | `STOP_R37_INVERSION_CONSISTENCY` |
+| R37.1 | parameter-free Z2-equivariant projection | 1,815 / 6,858 fresh holdout | 1.0000 | 1.0000 | 0.9934 / 0.9929 | `PASS_R37_1_TWO_SEED_INTERNAL_SCREEN` |
+
+R37.1 的 fresh holdout 在任何 outcome 被读取前一次性冻结；旧 R37
+calibration patients 不进入 R37.1 train 或 validation。
+
+---
+
+# AF. R37.1 A6 / A0 每 Seed 主表
+
+| Seed | A6 true F1 | Current-only F1 | A6−Current | A6 CMCP true F1 | CMCP control F1 | A6−CMCP | A0 true F1 | A6−A0 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 17 | 0.4680 | 0.1638 | +30.42 pp | 0.3534 | 0.2258 | +12.76 pp | 0.3419 | +12.62 pp |
+| 29 | 0.4529 | 0.2007 | +25.22 pp | 0.3443 | 0.2304 | +11.39 pp | 0.3404 | +11.25 pp |
+
+---
+
+# AG. R37.1 两 Seed Patient-Cluster Bootstrap
+
+| Comparison | Patients | Rows | Replicates / Seed | Seed effects | Mean Δ | 95% CI | Gate |
+|---|---:|---:|---|---|---:|---|---|
+| A6 vs current-only | 1,815 | 6,858 | 2,000 / 37001 | +30.42 / +25.22 pp | +27.82 pp | [+25.96, +29.50] pp | PASS |
+| A6 vs CMCP | 1,296 | 3,422 | 2,000 / 37001 | +12.76 / +11.39 pp | +12.08 pp | [+10.61, +13.63] pp | PASS |
+| A6 vs A0 | 1,815 | 6,858 | 2,000 / 37001 | +12.62 / +11.25 pp | +11.93 pp | [+10.24, +13.66] pp | PASS |
+
+Gate：两个观察 Seed 均至少 +2 pp，且 patient-bootstrap 95% CI lower > 0。
+
+---
+
+# AH. 当前受保护阶段锁定表
+
+| 阶段 | 当前状态 | 可以做什么 | 禁止做什么 | 解锁条件 |
+|---|---|---|---|---|
+| R37.1 当前内部结果 | 两 Seed描述性 PASS | proposal、case study、表格、代码复现 | 宣称三 Seed scientific GO | 补 Seed 43 A6/A0 + 原三 Seed bootstrap |
+| 300-dev | LOCKED / unread | 仅保留 roster 与接口 | 查看 outcome、选阈值、选 checkpoint | 完整内部 scientific GO + 冻结唯一候选 |
+| 483-test | SEALED / unread | 保持封存 | 任何探索或模型选择 | 预注册最终顺序到达 |
+| gold | QUARANTINED / unread | 保留独立确认用途 | 调参、选方法、逐病例观察 | 完整冻结后独立确认 |
+| R38 | LOCKED | 保留固定 64-token 设计 | 训练或比较 token survival | R37 完整资格化 |
+| R39 | LOCKED | 保留 frozen-VLM 接口 | VLM transfer 或 sealed test | R38 GO + VLM/prompt/projector 冻结 |

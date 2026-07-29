@@ -1,13 +1,88 @@
 # TIER-CXR-VLM：面向纵向胸片视觉语言模型的扰动一致性分层时间视觉 Token 路由
 
-> **文档性质：** 下一阶段正式 Proposal / 预注册草案 / 实验交接文档  
-> **日期：** 2026-07-26  
+> **文档性质：** 正式 Proposal / R37.1 当前交接文档 / 历史方案谱系
+> **原始日期：** 2026-07-26
+> **当前状态更新：** 2026-07-29
 > **项目：** VisualVIT  
-> **当前基线分支：** `codex/r29-case-driven-transition-repair`  
-> **当前冻结提交：** `7c4c51e`  
-> **建议新分支：** `codex/r32-tier-cxr-vlm`  
+> **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
+> **当前结果提交：** `18353da`
+> **当前方法版本：** **PRTA-CXR R37.1**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
+
+---
+
+# 当前执行状态：R37.1 两 Seed 内部 PASS
+
+> 本节是截至 2026-07-29 的当前权威状态；后续 R32–R36 内容保留为
+> TIER-CXR-VLM 的历史设计与失败谱系，不得覆盖本节结论。
+
+## 当前结论
+
+R37 原版虽然对正确 prior 有明显响应，但两个正式 Seed 的 inversion
+consistency 仅为 0.8438/0.8735，未达到冻结门槛 0.90，因此已经冻结为：
+
+```text
+STOP_R37_INVERSION_CONSISTENCY
+```
+
+R37.1 在任何 fresh-holdout outcome 被读取前，冻结了一个无可训练参数的
+Z2-equivariant logit projection：
+
+```text
+L_forward = 0.5 * (z_forward + P(z_reverse))
+L_reverse = P(L_forward)
+```
+
+其中 `P` 固定执行 Stable→Stable、Improved↔Worse、New↔Resolved。该修复
+只保证时间反转的结构一致性，不保证分类正确、正确 prior 收益、CMCP 收益
+或 state retention；这些仍由独立 fresh holdout 实测。
+
+## R37.1 冻结队列与结果
+
+- 训练：10,287 patients / 39,491 finding rows；
+- fresh holdout：1,815 patients / 6,858 finding rows；
+- old R37 calibration patients：在 roster 冻结时完全排除；
+- A6 Seeds：17、29；
+- capacity-matched A0 Seeds：17、29；
+- bootstrap：patient-cluster，2,000 replicates，seed 37001；
+- Seed 43：按用户决定暂不运行。
+
+| Gate / comparison | Seed 17 | Seed 29 | Two-seed mean | 95% CI | 结果 |
+|---|---:|---:|---:|---:|---|
+| Inversion consistency | 1.0000 | 1.0000 | 1.0000 | N/A | PASS |
+| State retention cosine | 0.9934 | 0.9929 | 0.9931 | N/A | PASS |
+| A6 − current-only | +30.42 pp | +25.22 pp | +27.82 pp | [+25.96, +29.50] pp | PASS |
+| A6 − CMCP | +12.76 pp | +11.39 pp | +12.08 pp | [+10.61, +13.63] pp | PASS |
+| A6 − A0 | +12.62 pp | +11.25 pp | +11.93 pp | [+10.24, +13.66] pp | PASS |
+
+当前机器结论为：
+
+```text
+PASS_R37_1_TWO_SEED_INTERNAL_SCREEN
+```
+
+它支持“PRTA-CXR 在这两个冻结 Seed 和独立 fresh holdout 上具有强、
+方向一致的正确-prior收益，并优于 capacity-matched A0”这一内部描述性
+结论。它不等价于原协议要求的三 Seed scientific GO。
+
+## 为什么暂不解锁 300-dev、483-test、gold、R38/R39
+
+这些不是当前训练缺失的数据，而是不同用途的受保护后续门：
+
+| 受保护阶段 | 用途 | 当前保持锁定的原因 |
+|---|---|---|
+| 300-dev | 冻结候选后的单次内部确认 | 原三 Seed内部 scientific gate 未执行 |
+| 483-test | 最终 sealed test | 防止测试集参与模型、阈值或叙事选择 |
+| gold | 专家/外部标签确认 | 防止独立确认集退化为调参集 |
+| R38 | 固定 64-token survival | 必须先有被完整资格化的 R37 表示 |
+| R39 | frozen-VLM transfer | 必须先通过 R38，且 VLM/prompt/projector 全冻结 |
+
+因此“暂不解锁”表示主动维持防泄漏边界，不表示 R37.1 工程失败。当前推荐
+动作是整理 proposal、结果表和 case study，并以两 Seed 描述性内部 PASS
+停止 GPU 实验。若未来需要 confirmatory scientific GO，唯一协议一致路径是
+补齐 Seed 43 的 A6/A0 和原三 Seed patient bootstrap，再重新判断是否允许
+一次性 300-dev reveal。
 
 ---
 
@@ -1740,6 +1815,18 @@ R36 完成
 
 10. GRCD  
     https://arxiv.org/abs/2607.02719
+
+11. R37 PRTA-CXR frozen protocol
+    `docs/superpowers/specs/2026-07-27-r37-prta-cxr-protocol-v1.md`
+
+12. R37 inversion failure case study
+    `reports/R37_INVERSION_FAILURE_CASE_STUDY.md`
+
+13. R37.1 two-seed fresh-holdout result
+    `reports/R37_1_TWO_SEED_FRESH_HOLDOUT_RESULT.md`
+
+14. R37.1 Chinese proposal/case-study closure
+    `reports/R37_1_PROPOSAL_AND_CASE_STUDY_CLOSURE_CN.md`
 
 ---
 

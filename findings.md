@@ -630,3 +630,11 @@ preserving the encoder's static medical semantics.
 - Every diagnostic and reduced comparison gate passed. The result explicitly
   records `three_seed_gate_evaluated=false`,
   `scientific_claim_allowed=false`, and all protected/hash firewalls false.
+- The original TIER proposal and empty-result template still ended at the old
+  R32-R36/R33-STOP narrative. Without a current addendum, a new reader could
+  mistake R37.1 for an unregistered side experiment or assume the protected
+  stages should run immediately.
+- The documentation consolidation therefore preserves the historical
+  R32-R36 design while making the R37.1 addendum authoritative. It separates
+  the supported two-seed fresh-holdout claims from the untested three-seed,
+  300-dev, sealed-test, gold, 64-token, and frozen-VLM claims.

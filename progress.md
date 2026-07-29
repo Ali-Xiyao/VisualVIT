@@ -618,3 +618,23 @@
   and state-retention gates all pass under the fixed two-seed descriptive
   boundary. No Seed 43, three-seed aggregation, protected outcome, or hash
   recomputation occurred.
+- Began Phase 4C documentation consolidation at user direction. Updated the
+  active Chinese proposal with the current R37.1 authority, method repair,
+  results, and protected-stage explanation.
+- Converted the former empty-result template into an R32-R37.1 result
+  authority, added R37/R37.1 registry, STOP/GO, claim, per-seed, bootstrap,
+  and protected-lock tables, and left genuinely unexecuted stages empty.
+- Added `reports/R37_1_PROPOSAL_AND_CASE_STUDY_CLOSURE_CN.md` with the R33,
+  R33A, R37 engineering, R37 formal inversion, R37.1 repair, fresh-holdout
+  results, supported claims, and recommended no-more-GPU stopping point.
+- Cross-document validation passed: all Markdown table groups have consistent
+  column counts, every linked authority file exists, the key R37.1 metrics
+  agree across proposal/table/case-study, 11 focused aggregation tests pass,
+  and `git diff --check` passes after removing only newly introduced
+  hard-break whitespace.
+- Final live checks still show both GPUs idle and the screen firewalls false
+  for protected, sealed-test, gold, unchanged hashes, and scientific claim;
+  `three_seed_gate_evaluated` remains false.
+- Final UTF-8 checks found no replacement characters in the three reader-facing
+  Chinese documents, all authority links resolve locally, and the final
+  unstaged diff check is clean.

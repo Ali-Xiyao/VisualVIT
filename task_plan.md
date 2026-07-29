@@ -211,9 +211,24 @@ smokes during iteration.
   registered three-seed scientific GO and do not unlock protected evaluation.
 - **Status:** pass_r37_1_two_seed_internal_screen_user_stop
 
+### Phase 4C — R37.1 proposal and case-study consolidation
+
+- [x] Explain and freeze the protected-evaluation boundary in reader-facing
+  language: 300-dev, 483-test, gold, R38, and R39 remain locked.
+- [x] Update the active Chinese proposal with the R37/R37.1 method evolution,
+  two-seed A6/A0/bootstrap results, supported claims, and explicit limits.
+- [x] Update the result-table authority with filled R37/R37.1 rows rather than
+  leaving the completed internal evidence in empty placeholders.
+- [x] Create one Chinese case-study closure that summarizes failed routes,
+  the equivariant repair, fresh-holdout evidence, and the recommended
+  no-more-GPU stopping point.
+- [x] Validate cross-document numbers, links, Markdown structure, Git state,
+  and protected-outcome firewalls; commit and push the handoff.
+- **Status:** completed
+
 ### Phase 5 — Conditional R37C/R38/R39
 
-- [ ] At the end of the project, complete independent human QA over
+- [x] At the end of the project, complete independent human QA over
   the frozen 200-row transition case sheet.
 - [x] Write a reviewer-facing Chinese guide and fixed error taxonomy.
 - [x] Add a fail-closed validator for reviewer completion, class balance, and
@@ -225,7 +240,7 @@ smokes during iteration.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** human_qa_pass_formal_internal_running
+- **Status:** protected_stages_locked_by_user
 
 ## Errors Encountered
 
@@ -277,9 +292,13 @@ smokes during iteration.
 | The host reboot at 2026-07-28 14:24 +08 interrupted both incomplete R37.1 formal seeds before either output directory existed | 1 | Verify the old PIDs are absent and both GPUs have no compute jobs, archive the stale status/zero-byte logs, and relaunch only seeds 17/29 with the unchanged frozen commands |
 | The first completed-result inspection printed the full calibration prediction arrays and flooded the bounded console output | 1 | Switch to scalar-only recursive inspection plus explicit array counts; no protected result or file was accessed |
 | The downstream inspection guessed `scripts/aggregate_r37_formal_results.py`, which does not exist | 1 | Resolve the tracked aggregation entrypoint with `rg`; the actual file is `scripts/aggregate_r37_internal_qualification.py` |
+| The documentation inventory attempted to inspect a root `README.md`, but this branch has no root README | 1 | Use the two active TIER documents plus tracked R37/R37.1 reports as the handoff surface; do not invent a missing root index |
+| The first documentation diff check found Markdown hard-break trailing spaces in newly edited metadata lines | 1 | Remove only the newly introduced trailing spaces and retain the blockquote structure before final validation |
+| The authority-reference addendum repeated Markdown hard-break trailing spaces | 2 | Remove the four new hard-break markers and run a final staged diff check before commit |
 
 ## Next Step
 
-User-paused. Do not start Seed 43, A0, bootstrap, aggregation, or any protected
-reveal. Resume only after new user direction and fresh duplicate/output/GPU/
-firewall checks.
+Documentation consolidation is complete. Keep the project at the
+user-selected R37.1 two-seed descriptive internal PASS stopping point; do not
+start another GPU job or unlock 300-dev, 483-test, gold, R38, or R39 without
+new user authority.
