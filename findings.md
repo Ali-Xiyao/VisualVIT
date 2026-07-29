@@ -657,3 +657,26 @@ preserving the encoder's static medical semantics.
   true-pair macro F1 0.3420, a complete checkpoint/result pair, empty stderr,
   and every protected/hash firewall false. A6 Seed 43 remains in progress, so
   no three-seed aggregation has run.
+- R37.1 A6 Seed 43 completed at 2026-07-30 03:50 +08:00 with exit code 0,
+  complete checkpoint/result artifacts, empty stderr, true-current +30.53 pp,
+  inversion consistency 1.0000, state retention 0.9933, and clean firewalls.
+- The registered three-seed qualification ran exactly once per comparison.
+  A6-current is +28.73 pp with 95% CI [+26.99,+30.33], A6-CMCP is +12.78 pp
+  with [+11.35,+14.24], and A6-A0 is +13.07 pp with [+11.38,+14.70].
+  Every Seed effect is positive, all inversion values are 1.0000, and all
+  state-retention values are at least 0.9929. The direct internal scientific
+  decision is `GO_R37_1_THREE_SEED_INTERNAL_QUALIFICATION`.
+- This GO unlocks candidate freezing only. The 300-dev outcomes remain unread
+  until exactly one A6 three-seed bundle, the matched A0 baseline, thresholds,
+  bootstrap, and fail-closed R37C runner are committed and validated.
+- During structural R32 asset inspection before the candidate manifest was
+  committed, the existing outcome-summary `cohort_audit.json` was printed and
+  exposed aggregate 300-dev label-support counts. No model prediction,
+  performance metric, or row-level label was read, and the A6 candidate,
+  Seeds, thresholds, losses, and bootstrap had already been fixed by the
+  registered internal GO. Record this as protocol deviation `R37C-PD1`;
+  prohibit any post-exposure candidate/gate change and report it with R37C.
+- `configs/r37/r37_1_candidate_for_r37c_v1.json` freezes the unique A6
+  three-seed bundle, matched A0 checkpoints, checkpoint hashes, exact R37C
+  cohort boundary, two primary comparisons, diagnostics, 2,000-replicate
+  patient bootstrap, and fail-on-any-gate rule before any performance reveal.

@@ -1,0 +1,133 @@
+{
+  "schema": "visualvit.r37-1.r37c-candidate-freeze.v1",
+  "status": "FROZEN_R37_1_A6_THREE_SEED_CANDIDATE_FOR_R37C",
+  "candidate_id": "r37-1-a6-three-seed-v1",
+  "frozen_variant": "A6",
+  "frozen_seeds": [
+    17,
+    29,
+    43
+  ],
+  "selection_rule": "unique_registered_variant_passing_all_r37_1_three_seed_internal_gates",
+  "internal_qualification": {
+    "current_only": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\three_seed_qualification_v1\\current_only.json",
+    "cmcp": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\three_seed_qualification_v1\\cmcp.json",
+    "a6_vs_a0": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\three_seed_qualification_v1\\a6_vs_a0.json",
+    "required_statuses": [
+      "PASS_R37_1_INTERNAL_CONTROL_GATE",
+      "PASS_R37_1_INTERNAL_CONTROL_GATE",
+      "PASS_R37_1_INTERNAL_A6_VS_A0_GATE"
+    ]
+  },
+  "a6_checkpoints": [
+    {
+      "seed": 17,
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\a6e_v1\\seed_17\\checkpoint.pt",
+      "sha256": "4df2ac9bcd8578a008e4f8d9e4ccd766d56403b4cfc180bcd5decd30c5501c9a",
+      "bytes": 179034484
+    },
+    {
+      "seed": 29,
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\a6e_v1\\seed_29\\checkpoint.pt",
+      "sha256": "0e305705f6c9859246b0ee4b654d185d3054ca28b52e5f094af2c3eee89265e2",
+      "bytes": 179034484
+    },
+    {
+      "seed": 43,
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\a6e_v1\\seed_43\\checkpoint.pt",
+      "sha256": "ca5bc34a0b6d62341aa198fe97d790d70bdd754b73902bae11e388d60de4a7d9",
+      "bytes": 179034484
+    }
+  ],
+  "a0_checkpoints": [
+    {
+      "seed": 17,
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\a0_v1\\seed_17\\checkpoint.pt",
+      "sha256": "d14e5be261496529ff8ea4cf13eed878f59baa2e3bbe987bb379966a162d2534",
+      "bytes": 17194
+    },
+    {
+      "seed": 29,
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\a0_v1\\seed_29\\checkpoint.pt",
+      "sha256": "7da7069c09b9022f966f82d5be7c6194be30e6dc67441d6963cdea3a0415afe5",
+      "bytes": 17194
+    },
+    {
+      "seed": 43,
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_formal\\a0_v1\\seed_43\\checkpoint.pt",
+      "sha256": "c818f0624951ccf44fa39dc60fe85d72a7c1fadac6382066c57c94425f4f359b",
+      "bytes": 17194
+    }
+  ],
+  "frozen_model": {
+    "adapter_rank": 32,
+    "a6_epochs": 3,
+    "a6_batch_size": 2,
+    "a6_learning_rate": 0.0001,
+    "a0_epochs": 100,
+    "a0_batch_size": 16,
+    "a0_learning_rate": 0.01,
+    "equivariant_inversion": "z2_logit_projection",
+    "finding_registry": [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Enlarged Cardiomediastinum",
+      "Fracture",
+      "Lung Lesion",
+      "Lung Opacity",
+      "Pleural Effusion",
+      "Pleural Other",
+      "Pneumonia",
+      "Pneumothorax"
+    ],
+    "label_registry": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ]
+  },
+  "r37c_one_shot": {
+    "source": "F:\\VisualVIT_runtime\\050_routeC\\r32_tier_cxr_vlm\\cohort_v1\\train_dev_cohort.json",
+    "partition": "dev",
+    "expected_patients": 300,
+    "expected_rows": 2453,
+    "structural_cache_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37c_dev_block8_v1",
+    "protected_reveal_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37c_one_shot_dev_v1",
+    "bootstrap_unit": "patient_cluster",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 37001,
+    "primary_comparisons": [
+      "a6_vs_current_only",
+      "a6_vs_a0"
+    ],
+    "cmcp_role": "not_evaluated_no_frozen_dev_counterfactual_roster",
+    "minimum_gain_pp": 2.0,
+    "ci95_lower_must_exceed": 0.0,
+    "all_three_seeds_must_be_positive": true,
+    "inversion_consistency_minimum": 0.9,
+    "state_retention_cosine_minimum": 0.99,
+    "stop_on_any_failed_gate": true,
+    "outcome_reveal_count": 1
+  },
+  "protocol_deviation": {
+    "id": "R37C-PD1",
+    "scope": "pre_commit_aggregate_dev_label_support_counts_only",
+    "model_predictions_read": false,
+    "performance_metrics_read": false,
+    "row_level_labels_read": false,
+    "candidate_or_gate_changed_after_exposure": false,
+    "required_reporting": true
+  },
+  "firewall": {
+    "sealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false,
+    "r38_unlocked": false,
+    "r39_unlocked": false
+  }
+}

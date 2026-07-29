@@ -228,19 +228,18 @@ smokes during iteration.
 
 ### Phase 4D — R37.1 three-seed confirmatory completion
 
-- [ ] Run the already frozen R37.1 A6 Seed 43 on GPU 0 and A0 Seed 43 on
+- [x] Run the already frozen R37.1 A6 Seed 43 on GPU 0 and A0 Seed 43 on
   GPU 1 with fresh outputs and unchanged roster/model/loss/threshold settings.
-- [ ] Validate all three A6/A0 results, inversion/state-retention gates, exact
+- [x] Validate all three A6/A0 results, inversion/state-retention gates, exact
   row order, and every protected/hash firewall.
-- [ ] Run the original three-seed patient-cluster bootstrap for A6 versus
+- [x] Run the original three-seed patient-cluster bootstrap for A6 versus
   current-only, CMCP, and A0 using 2,000 replicates and seed 37001.
-- [ ] Emit the direct internal scientific GO/STOP and stop all downstream
+- [x] Emit the direct internal scientific GO/STOP and stop all downstream
   execution if any frozen gate fails.
 - [ ] If and only if all three-seed gates pass, freeze exactly one R37.1
   candidate and prepare the one-shot R37C 300-dev reveal.
-- **Status:** in_progress — Seed 43 A6/A0 launched concurrently at
-  2026-07-29 17:11 +08:00; A0 Seed 43 PASSed at 20:26 +08:00, A6 Seed 43
-  remains active, and the gate-bound monitor is active.
+- **Status:** GO_R37_1_THREE_SEED_INTERNAL_QUALIFICATION — candidate freeze
+  and R37C fail-closed implementation are in progress; 300-dev remains unread.
 
 ### Phase 5 — Conditional R37C/R38/R39
 
@@ -256,7 +255,7 @@ smokes during iteration.
 - [ ] Reveal the 300-patient dev once only after internal GO.
 - [ ] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** authorized_sequentially_pending_r37_1_three_seed_go
+- **Status:** in_progress_pending_candidate_freeze_before_r37c_reveal
 
 ## Errors Encountered
 
@@ -315,6 +314,7 @@ smokes during iteration.
 
 ## Next Step
 
-Monitor the active frozen R37.1 Seed 43 A6/A0 jobs, validate both complete
-results, and run the original three-seed qualification exactly once. Do not
-open 300-dev or start R38/R39 until that internal gate emits GO.
+Freeze exactly one R37.1 A6 three-seed candidate bundle plus its capacity-
+matched A0 baseline and the fail-closed R37C evaluation protocol. Validate
+the one-shot 300-dev runner before reading any protected outcome; R38/R39
+remain locked until R37C emits GO.

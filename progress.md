@@ -659,3 +659,19 @@
   checkpoint are complete, true-pair macro F1 is 0.3420, stderr is empty, and
   all protected/hash firewalls remain false. A6 Seed 43 is still running; the
   registered three-seed aggregation remains pending.
+- 2026-07-30 03:50 +08:00: A6 Seed 43 completed with exit code 0, complete
+  artifacts, empty stderr, true-current +30.53 pp, inversion 1.0000, state
+  retention 0.9933, and clean protected/hash firewalls.
+- Ran the original three-seed patient bootstrap exactly once for each frozen
+  comparison after 7 focused aggregator tests passed. Current-only, CMCP, and
+  A0 all PASS with mean gains +28.73/+12.78/+13.07 pp and CI lower bounds
+  +26.99/+11.35/+11.38 pp. The internal scientific decision is GO.
+- Began the fail-closed candidate-freeze/R37C preparation. The 300-dev,
+  483-test, and gold outcomes remain unread; R38/R39 remain locked.
+- Logged protocol deviation `R37C-PD1`: an existing R32 audit exposed only
+  aggregate 300-dev label-support counts during structural inspection. No
+  predictions, performance metrics, or row-level labels were read and no
+  already-fixed model/gate choice may change afterward.
+- Added the immutable R37.1 A6 three-seed candidate/A0 baseline/R37C gate
+  manifest with one-time checkpoint hashes. R37C performance remains
+  unrevealed pending runner implementation, tests, commit, and preflight.
