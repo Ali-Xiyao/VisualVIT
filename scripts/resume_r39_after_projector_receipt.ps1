@@ -116,7 +116,9 @@ $previous = Get-Content -LiteralPath $StatusPath -Raw | ConvertFrom-Json
 if (
     $previous.status -ne "STOP_R39_ENGINEERING" -or
     $previous.stage -ne "failed" -or
-    $previous.error -notmatch "projector_seed_17 failed"
+    $previous.error -ne (
+        "projector_seed_17 ended without a complete artifact"
+    )
 ) {
     throw "R39 receipt repair is allowed only from the registered STOP"
 }
