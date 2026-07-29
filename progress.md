@@ -715,3 +715,21 @@
   17/29 on GPUs 0/1 (PIDs 21176/31204). Both are active with empty stderr and
   clean hash/sealed/gold firewalls; Seed 43 and aggregation remain automatic
   downstream stages only after both current seeds PASS.
+- R38 completed `GO_R38_FIXED64_SURVIVAL`: fixed64 A6 versus A0 is +3.42 pp
+  with CI [+0.89,+6.20], every seed is positive, correct-prior effect
+  retention is 1.0, and all exact-64/interface audits pass. R39 is unlocked;
+  the 483 labels and gold remain sealed.
+- Implemented and froze the R39 transfer protocol around local
+  Qwen3-VL-4B-Instruct: exact 64 placeholders, zero trainable VLM parameters,
+  one shared 7,948,800-parameter projector per seed, deterministic one-epoch
+  A6+0.25*A0 training on the already revealed 300-dev set, and no pixel path.
+- Corrected the pre-execution comparison boundary from A6-current-only alone
+  to primary A6-versus-frozen-A0 plus current-only, query-only, and
+  prior-shuffle controls, all at a preregistered +2 pp threshold with positive
+  patient-bootstrap CI and every seed positive.
+- Added outcome-free sealed Block-8 and four-variant fixed64 caching,
+  projector training, outcome-blind sealed prediction freezing, one-shot
+  sealed-label reveal, final aggregation, and a duplicate-safe two-GPU
+  pipeline. Seventeen focused tests pass; compileall, Ruff, diff checking,
+  frozen-config/upstream validation, and PowerShell parsing pass. No R39
+  runtime root exists yet and no sealed label or gold outcome was read.

@@ -738,3 +738,28 @@ preserving the encoder's static medical semantics.
   2026-07-30 04:50 +08, Seeds 17/29 launched on GPUs 0/1 under PIDs
   21176/31204; both processes are active, stderr is empty, and status is
   `RUNNING_R38`. R39, 483-test, and gold remain locked.
+- R38 completed with direct scientific status `GO_R38_FIXED64_SURVIVAL`.
+  Fixed64 A6 versus frozen A0 remains +3.42 pp with patient-bootstrap 95% CI
+  [+0.89,+6.20] and all three seeds positive. Correct-prior effect retention
+  is 1.0 for every seed; exact-64 layout, physical attention, reserved-token,
+  zero-routing, and transition-equivalence audits all pass.
+- The first uncommitted R39 draft compared A6 only with current-only. That
+  would establish longitudinal responsiveness but not frozen-VLM superiority
+  over the registered frozen A0 baseline, so it was blocked before any sealed
+  cache, model training, or label access.
+- The corrected frozen R39 primary is A6 true-pair versus the same-projector
+  A0 frozen BiomedCLIP difference representation. The same frozen Qwen3-VL,
+  prompt, 64 physical positions, 7,948,800-parameter projector, seeds, and
+  training data are shared. Current-only, query-only, and deterministic
+  within-finding cross-patient prior shuffle each have their own preregistered
+  +2 pp/positive-CI/all-seed gate.
+- R39 trains each retained projector for one deterministic epoch on the
+  already revealed 300-dev rows with effective batch 32, LR 1e-4, and shared
+  loss `A6 + 0.25*A0`. The VLM remains BF16/eager and entirely frozen. A0 is
+  the already registered normalized frozen current-minus-prior CLS feature
+  repeated across 60 active positions with four zero reserved positions;
+  neither labels nor probe logits enter any token cache.
+- All three sealed prediction sets are computed and frozen before the
+  protected 483 labels may be opened once. The final aggregation reads only
+  the frozen predictions and aligned copied labels. Gold remains sealed even
+  if R39 GO.

@@ -1,0 +1,101 @@
+{
+  "schema": "visualvit.r39.frozen-vlm-transfer-freeze.v1",
+  "status": "FROZEN_R39_TRANSFER_AFTER_R38_GO",
+  "candidate_id": "r37-1-a6-three-seed-v1",
+  "upstream_r38": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r38_fixed64_survival_v1\\qualification.json",
+  "required_upstream_status": "GO_R38_FIXED64_SURVIVAL",
+  "source_r37_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "config_sha256_reused_from_r32_receipt": "edac7703329133edfc53e46ac0081835144c99d7eebf28b71c732694d435224d",
+    "model_type": "qwen3_vl",
+    "hidden_size": 2560,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "all_frozen": true,
+    "local_files_only": true
+  },
+  "interface": {
+    "token_budget": 64,
+    "input_width": 768,
+    "projector": "TierTokenProjector",
+    "projector_parameter_count": 7948800,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "pixel_bypass": false,
+    "pixel_inputs_used": false,
+    "vectorized_candidate_scoring": true,
+    "candidate_score_normalization": "mean_token_log_likelihood",
+    "label_order": [
+      "stable",
+      "worse",
+      "improved",
+      "new",
+      "resolved"
+    ],
+    "prompt": "You are comparing a current chest radiograph with its prior study. Finding of interest: {finding}. The next 64 physical positions contain fixed visual tokens. Compared with the prior study, what is the progression of this finding? Answer with exactly one word: stable, worse, improved, new, or resolved. Visual tokens:"
+  },
+  "training": {
+    "source": "r37c_300_dev_already_revealed_after_candidate_freeze",
+    "patients": 300,
+    "rows": 2453,
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "epochs": 1,
+    "batch_size": 1,
+    "gradient_accumulation": 32,
+    "effective_batch_size": 32,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "loss": {
+      "a6_selected": 1.0,
+      "a0_frozen_difference": 0.25
+    },
+    "order": "sha256_r39_projector_order_v1_seed_record_id",
+    "class_patient_balanced_loss": true,
+    "early_stopping": false,
+    "seed_selection": false,
+    "retain_all_three_projectors": true
+  },
+  "sealed_test": {
+    "structural_manifest": "F:\\VisualVIT_runtime\\050_routeC\\r32_tier_cxr_vlm\\cohort_v1\\sealed_vlm_test_manifest.json",
+    "protected_labels": "F:\\VisualVIT_runtime\\050_routeC\\r32_tier_cxr_vlm\\cohort_v1\\sealed_vlm_test_labels.json",
+    "expected_patients": 483,
+    "expected_rows": 4821,
+    "block8_cache_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r39_sealed_block8_v1",
+    "label_reveal_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r39_sealed_reveal_v1",
+    "reveal_count": 1
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r39_frozen_vlm_transfer_v1",
+    "dev_token_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r39_frozen_vlm_transfer_v1\\tokens\\dev",
+    "sealed_token_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r39_frozen_vlm_transfer_v1\\tokens\\sealed",
+    "projectors": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r39_frozen_vlm_transfer_v1\\projectors"
+  },
+  "final_gate": {
+    "primary_comparison": "frozen_vlm_a6_true_pair_vs_a0_frozen_difference",
+    "minimum_gain_pp": 2.0,
+    "ci95_lower_must_exceed": 0.0,
+    "all_three_seeds_must_be_positive": true,
+    "required_controls": {
+      "a6_true_pair_vs_current_only_minimum_gain_pp": 2.0,
+      "a6_true_pair_vs_query_only_minimum_gain_pp": 2.0,
+      "a6_true_pair_vs_prior_shuffle_minimum_gain_pp": 2.0
+    },
+    "prior_shuffle_seed": 39011,
+    "bootstrap_unit": "patient_cluster",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 39001,
+    "stop_on_failure": true
+  },
+  "firewall": {
+    "sealed_483_test_labels_read": false,
+    "gold_outcomes_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false,
+    "model_hashes_recomputed": false
+  }
+}

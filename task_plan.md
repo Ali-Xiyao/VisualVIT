@@ -254,8 +254,18 @@ smokes during iteration.
 - [x] Freeze exactly one candidate before any dev reveal.
 - [x] Reveal the 300-patient dev once only after internal GO.
 - [x] Unlock R38 only after R37C GO.
-- [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** GO_R37C_ONE_SHOT_DEV_r38_seed_17_29_running
+- [x] Run and pass the frozen R38 fixed-64 survival gate.
+- [x] Freeze the R39 Qwen3-VL, prompt, exact-64 interface, shared projector
+  capacity, training schedule, A6-versus-A0 primary comparison, current-only,
+  query-only, prior-shuffle controls, seeds, and bootstrap before any sealed
+  outcome reveal.
+- [x] Implement outcome-free sealed Block-8/token caches, shared A6+A0
+  projector training, pre-reveal sealed prediction freezing, the one-shot
+  483-label reveal, and final three-seed patient bootstrap.
+- [ ] Commit and push R39, launch the two-GPU chain, and stop directly on its
+  registered scientific GO/STOP.
+- [ ] Keep gold sealed pending the separately registered post-R39 boundary.
+- **Status:** GO_R38_FIXED64_SURVIVAL_R39_FROZEN_PRELAUNCH
 
 ## Errors Encountered
 
@@ -315,7 +325,8 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the frozen R38 fixed-64 implementation, then run Seeds
-17/29/43 with no sample routing or trainable packer. Aggregate fixed64 A6
-versus frozen A0 and correct-prior effect retention; stop on R38 STOP, and
-unlock R39 only if R38 emits GO.
+Commit and push the frozen R39 implementation, verify both GPUs and all fresh
+runtime roots, then launch the duplicate-safe two-GPU pipeline. It must freeze
+all three projector checkpoints and all three sealed prediction sets before
+the single 483-label reveal, aggregate A6 against frozen A0 plus the three
+controls, and report direct scientific GO/STOP without touching gold.
