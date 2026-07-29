@@ -777,3 +777,8 @@ preserving the encoder's static medical semantics.
   projector output was created and no protected outcome was read. Correcting
   this derived receipt changes neither architecture nor training/gate choices;
   valid outcome-free caches remain reusable.
+- Commits `91f6560` and `f92822a` pushed the exact receipt repair, regression
+  test, and guarded cache-preserving resume. All six dev/sealed token indices
+  are valid PASS artifacts with labels absent. At 2026-07-30 05:51 +08:00 the
+  resume launcher started as PID 22396; projector Seeds 17/29 are now fresh
+  processes 19020/28556 on GPUs 0/1. The 483 labels and gold remain sealed.

@@ -746,3 +746,10 @@
   initialization, data, loss, seeds, thresholds, controls, and bootstrap are
   unchanged. All completed caches are outcome-free and remain valid; 483
   labels and gold are still unread.
+- The original launcher waited for the valid Seed 43 sealed cache to complete,
+  then emitted `STOP_R39_ENGINEERING` without starting another projector.
+  Commits `91f6560`/`f92822a` are pushed; 18 focused tests, Ruff, config-count
+  validation, and PowerShell parsing pass. The guarded resume validated all
+  six outcome-free token caches and fresh downstream roots, then launched
+  projector Seeds 17/29 on GPUs 0/1 as PIDs 19020/28556 under resume parent
+  22396. Protected 483 labels and gold remain unread.
