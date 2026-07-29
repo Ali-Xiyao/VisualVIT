@@ -716,3 +716,21 @@ preserving the encoder's static medical semantics.
   2026-07-30 04:18 +08 with Seeds 17/29 on GPUs 0/1 under PIDs 9472/27816;
   both GPUs are active, stderr is empty, outputs were fresh, and the pipeline
   remains `RUNNING_R37C` without repeating cache or label reveal.
+- R37C completed with direct scientific status `GO_R37C_ONE_SHOT_DEV`.
+  Fixed A6 versus current-only is +15.26 pp, patient-bootstrap 95% CI
+  [+12.71,+18.01], with seed effects +18.44/+12.31/+15.03 pp. Fixed A6
+  versus frozen A0 is +3.42 pp, CI [+0.89,+6.20], with seed effects
+  +3.18/+2.69/+4.38 pp.
+- Inversion consistency is 1.0000 for every seed and state-retention cosine
+  is 0.9932/0.9926/0.9930. All three result files and aggregation completed
+  with empty stderr. The 483-test and gold boundaries remain sealed, and
+  `R37C-PD1` remains reported without any candidate/gate change.
+- R38 is now frozen as a deterministic no-routing, zero-trainable-parameter
+  fixed-64 packing test using the registered 4/12/16/16/12/4 layout. Its
+  primary gate remains fixed64 A6 versus frozen A0 at +2 pp with CI lower
+  above zero and all seeds positive; it must also retain at least 70% of the
+  qualified correct-prior effect.
+- The mean-preserving packer carries no label or probe logits, keeps all 64
+  physical positions attended, uses shared zero reserved tokens, and applies
+  the already frozen PRTA transition norm/classifier. Thirteen focused tests,
+  compilation, config/upstream validation, and PowerShell parsing pass.

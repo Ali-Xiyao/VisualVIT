@@ -1,0 +1,86 @@
+{
+  "schema": "visualvit.r38.fixed64-survival-freeze.v1",
+  "status": "FROZEN_R38_FIXED64_SURVIVAL_AFTER_R37C_GO",
+  "candidate_id": "r37-1-a6-three-seed-v1",
+  "upstream_qualification": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37c_one_shot_dev_v1\\qualification.json",
+  "required_upstream_status": "GO_R37C_ONE_SHOT_DEV",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+  "output_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r38_fixed64_survival_v1",
+  "token_budget": 64,
+  "layout": [
+    {
+      "type": "query_control",
+      "start": 0,
+      "end_exclusive": 4,
+      "count": 4
+    },
+    {
+      "type": "state",
+      "start": 4,
+      "end_exclusive": 16,
+      "count": 12
+    },
+    {
+      "type": "global_transition",
+      "start": 16,
+      "end_exclusive": 32,
+      "count": 16
+    },
+    {
+      "type": "local_transition",
+      "start": 32,
+      "end_exclusive": 48,
+      "count": 16
+    },
+    {
+      "type": "relation_context",
+      "start": 48,
+      "end_exclusive": 60,
+      "count": 12
+    },
+    {
+      "type": "reserved",
+      "start": 60,
+      "end_exclusive": 64,
+      "count": 4
+    }
+  ],
+  "packing": {
+    "sample_level_routing": false,
+    "trainable_parameters": 0,
+    "method": "deterministic_contiguous_mean_preserving_group_reduction",
+    "query_control": "four copies of the frozen finding query",
+    "state": "20 PRTA state tokens reduced to 12",
+    "global_transition": "20 PRTA transition tokens reduced to 16",
+    "local_transition": "centered PRTA transition tokens reduced to 16",
+    "relation_context": "197 aligned-prior tokens reduced to 12",
+    "reserved": "shared zero neutral embedding",
+    "classification_readout": "frozen PRTA transition norm and classifier over the mean of positions 16:32",
+    "labels_or_probe_logits_in_tokens": false,
+    "physical_attention_positions": 64
+  },
+  "gate": {
+    "primary_comparison": "fixed64_a6_vs_frozen_a0",
+    "minimum_gain_pp": 2.0,
+    "ci95_lower_must_exceed": 0.0,
+    "all_three_seeds_must_be_positive": true,
+    "correct_prior_effect_retention_minimum": 0.7,
+    "bootstrap_unit": "patient_cluster",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 37001,
+    "stop_on_any_failed_gate": true
+  },
+  "firewall": {
+    "sealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false,
+    "checkpoint_hashes_recomputed": false,
+    "r39_unlocked": false
+  }
+}

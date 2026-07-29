@@ -252,10 +252,10 @@ smokes during iteration.
 - [x] Validate the supplied reviewer name/ID, role, date, and independent
   attestation; record relevant experience when the reviewer supplies it.
 - [x] Freeze exactly one candidate before any dev reveal.
-- [ ] Reveal the 300-patient dev once only after internal GO.
-- [ ] Unlock R38 only after R37C GO.
+- [x] Reveal the 300-patient dev once only after internal GO.
+- [x] Unlock R38 only after R37C GO.
 - [ ] Unlock R39/test/gold only in the registered order.
-- **Status:** r37c_seed_17_29_evaluations_running_after_repair
+- **Status:** GO_R37C_ONE_SHOT_DEV_r38_frozen_pending_launch
 
 ## Errors Encountered
 
@@ -315,7 +315,7 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the validated fail-closed R37C tooling, then launch its
-structural Block-8 cache, single protected label reveal, frozen Seed 17/29/43
-evaluation, and patient-cluster aggregation. Stop the chain on R37C STOP;
-R38/R39 remain locked until R37C emits GO.
+Commit and push the frozen R38 fixed-64 implementation, then run Seeds
+17/29/43 with no sample routing or trainable packer. Aggregate fixed64 A6
+versus frozen A0 and correct-prior effect retention; stop on R38 STOP, and
+unlock R39 only if R38 emits GO.

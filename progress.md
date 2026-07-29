@@ -699,3 +699,15 @@
 - Commit `4e9b52f` is pushed. At 2026-07-30 04:18 +08, resumed only fresh
   Seeds 17/29 on GPUs 0/1 (PIDs 9472/27816); cache and the single protected
   reveal were reused, stderr is empty, and no sealed/gold boundary changed.
+- R37C completed `GO_R37C_ONE_SHOT_DEV`: A6-current +15.26 pp with CI
+  [+12.71,+18.01], A6-A0 +3.42 pp with CI [+0.89,+6.20], all seed effects
+  positive, inversion 1.0, and state retention >=0.9926. R38 is conditionally
+  unlocked; R39/483-test/gold remain locked.
+- Added and froze the R38 no-routing fixed-64 packer, per-seed evaluator,
+  three-seed patient-bootstrap gate, token audits, and duplicate-safe
+  two-GPU launcher. The layout is 4/12/16/16/12/4, packing has zero trainable
+  parameters, and the gate requires +2 pp over frozen A0 plus >=70%
+  correct-prior effect retention.
+- Validation passed: 13 focused tests, compileall, Ruff after removing one
+  unused import, frozen-config/upstream GO validation, and PowerShell parse.
+  Commit/push precedes the first R38 launch.
