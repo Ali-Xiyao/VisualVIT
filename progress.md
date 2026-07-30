@@ -1247,3 +1247,9 @@
   behavior and all static checks passed.
 - Updated the assertion and completed pre-outcome validation: eight focused
   tests, Ruff, compileall, JSON parsing, and `git diff --check` pass.
+- Committed and pushed the pre-outcome R40B.4 authority as `371fc09`. Its
+  committed builder returned `PASS_PRTA_GEN_R40B4_SMOKE_COHORT` with 32 new
+  unique patients and zero overlap with all 128 observed Qwen-route patients.
+- The first runner invocation stopped before token loading because the cohort
+  already occupied the configured runtime root. No training/output occurred;
+  results will be isolated under a frozen `structured_head/` child directory.

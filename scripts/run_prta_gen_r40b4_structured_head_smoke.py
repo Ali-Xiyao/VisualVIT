@@ -58,7 +58,9 @@ def run_smoke(
         or cohort.get("gold_outcomes_read") is not False
     ):
         raise PermissionError("R40B.4 cohort receipt drift")
-    output_root = Path(config["runtime"]["root"])
+    output_root = (
+        Path(config["runtime"]["root"]) / config["runtime"]["result_subdir"]
+    )
     if output_root.exists():
         raise FileExistsError(f"R40B.4 output must be fresh: {output_root}")
     token_index = read_json(Path(config["source"]["token_index"]))

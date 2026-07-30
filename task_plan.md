@@ -495,6 +495,7 @@ smokes during iteration.
 | First one-line real-tokenizer R40B.2 mask preflight mangled JSON quoting in PowerShell | 1 | Unit tests and static checks passed; reconstruct the target with `json.dumps` inside Python and rerun only the read-only tokenizer preflight |
 | First R40B.3 cohort build rejected the valid R40B.2 exclusion receipt because the generic historical-status registry stopped at R40B.1 | 1 | No cohort was written; add the already-observed R40B.2 cohort status to the exclusion whitelist, test, and rerun unchanged selection |
 | R40B.4 focused test expected the pre-R40B.3 exclusion registry exactly | 1 | Production correctly added the newly observed R40B.3 receipt; extend the registry assertion and rerun before freezing the fifth cohort |
+| First R40B.4 runner treated its cohort-bearing runtime root as an existing result directory | 1 | No token load/training occurred; freeze a dedicated `structured_head/` result subdirectory and rerun the unchanged cohort/settings |
 
 ## Next Step
 

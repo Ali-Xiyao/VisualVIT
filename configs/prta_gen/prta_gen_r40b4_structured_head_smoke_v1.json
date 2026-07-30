@@ -102,7 +102,8 @@
     "stop": "STOP_PRTA_GEN_R40B4_STRUCTURED_HEAD_UNDERFIT"
   },
   "runtime": {
-    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b4_structured_head_smoke_v1"
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b4_structured_head_smoke_v1",
+    "result_subdir": "structured_head"
   },
   "firewall": {
     "pixel_inputs_used": false,
