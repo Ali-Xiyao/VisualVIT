@@ -1046,3 +1046,22 @@
   candidates in the frozen order and unlocks qualification only for the first
   GO, while a stopped first candidate requires the second aggregate rather
   than silently skipping it.
+- Committed and pushed the R40A.1 execution surface as `dff623b`.
+- GPU 0 was idle while GPU 1 remained occupied by an unrelated process. Built
+  only the first ordered candidate's feature cache on GPU 0:
+  `regional_moments_v1` passed with 33,677 rows, 132 shards, width 6,912, and
+  no labels/sentences or protected outcomes in the cache.
+- `regional_moments_v1` discovery Seed 17 completed on GPU 0. True-pair
+  macro-F1 is 0.2860 versus query-only 0.2582 and prior-shuffle 0.2047,
+  giving +2.78/+8.13 pp; current-only is 0.2326. These are Seed-level point
+  estimates only, so candidate selection remains locked.
+- `regional_moments_v1` Seed 29 completed with true-pair 0.2881, query-only
+  0.2218, and prior-shuffle 0.3399. The required effects are +6.64 and
+  -5.18 pp, so this candidate has a decisive registered Seed-level STOP.
+  Seed 43 will not run; an early-stop aggregate must close the candidate before
+  the ordered cosine candidate starts.
+- Added and tested a generic early-stop receipt path for any completed Seed
+  whose required point effect is already below the frozen +2 pp minimum. The
+  real moments candidate is now closed as
+  `STOP_PRTA_GEN_R40A1_DISCOVERY`, with Seeds 17/29 complete and Seed 43
+  explicitly skipped after the first failed gate.

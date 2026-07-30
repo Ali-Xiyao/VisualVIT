@@ -20,6 +20,104 @@ from scripts.cache_prta_gen_r40a_tokens import read_json
 from scripts.run_prta_gen_r40a1_probe import RESULT_STATUS
 
 
+def finalize_early_stop(
+    *,
+    config_path: Path,
+    roster_path: Path,
+    candidate_name: str,
+    scope: str,
+) -> dict[str, Any]:
+    config = read_json(config_path)
+    if config.get("status") != CONFIG_STATUS:
+        raise PermissionError("R40A.1 config is not frozen")
+    candidate_spec(config, candidate_name)
+    if scope != "discovery":
+        raise ValueError("early stop is registered only for discovery")
+    roster = read_json(roster_path)
+    if (
+        roster.get("status") != ROSTER_PASS
+        or roster.get("qualification_outcomes_read") is not False
+        or roster.get("revealed_483_test_read") is not False
+        or roster.get("gold_outcomes_read") is not False
+    ):
+        raise PermissionError("R40A.1 roster firewall drift")
+    result_root = roster_path.parent / "probes" / candidate_name / scope
+    completed = []
+    for seed in config["probe"]["seeds"]:
+        path = result_root / f"seed_{seed}" / "result.json"
+        if not path.exists():
+            break
+        result = read_json(path)
+        if (
+            result.get("status") != RESULT_STATUS
+            or result.get("candidate") != candidate_name
+            or result.get("scope") != scope
+            or int(result.get("seed", -1)) != int(seed)
+            or result.get("revealed_483_test_read") is not False
+            or result.get("gold_outcomes_read") is not False
+            or result.get("old_r40a_development_used_for_selection") is not False
+        ):
+            raise PermissionError("R40A.1 early-stop result drift")
+        completed.append(result)
+    if not completed:
+        raise ValueError("early stop requires at least one completed Seed")
+    gate = config["discovery_gate"]
+    minimum_pp = float(gate["all_three_seed_effects_at_least_pp"])
+    metric_by_control = {
+        "query_only": "true_minus_query_pp",
+        "prior_shuffle": "true_minus_shuffle_pp",
+    }
+    triggers = []
+    for result in completed:
+        for control in gate["required_controls"]:
+            effect = float(result["metrics"][metric_by_control[control]])
+            if effect < minimum_pp:
+                triggers.append(
+                    {
+                        "seed": int(result["seed"]),
+                        "control": control,
+                        "effect_pp": effect,
+                        "required_minimum_pp": minimum_pp,
+                    }
+                )
+    if not triggers:
+        raise ValueError("completed Seeds do not justify an early STOP")
+    output_path = result_root / "aggregate.json"
+    if output_path.exists():
+        raise FileExistsError(
+            f"R40A.1 aggregate output must be fresh: {output_path}"
+        )
+    completed_seeds = [int(result["seed"]) for result in completed]
+    aggregate = {
+        "schema": "visualvit.prta-gen.r40a1-candidate-aggregate.v1",
+        "status": "STOP_PRTA_GEN_R40A1_DISCOVERY",
+        "protocol_id": config["protocol_id"],
+        "candidate": candidate_name,
+        "scope": scope,
+        "completed_seeds": completed_seeds,
+        "skipped_seeds_after_first_failed_gate": [
+            int(seed)
+            for seed in config["probe"]["seeds"]
+            if int(seed) not in completed_seeds
+        ],
+        "early_stop_triggers": triggers,
+        "gate_passed": False,
+        "candidate_selected": False,
+        "qualification_unlocked": False,
+        "progression_generation_unlocked": False,
+        "protected_300_dev_read": False,
+        "revealed_483_test_read": False,
+        "gold_outcomes_read": False,
+        "old_r40a_development_used_for_selection": False,
+        "scientific_claim_allowed": False,
+    }
+    output_path.write_text(
+        json.dumps(aggregate, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return aggregate
+
+
 def aggregate_candidate(
     *,
     config_path: Path,
@@ -155,12 +253,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--scope", choices=("discovery", "qualification"), required=True
     )
+    parser.add_argument("--early-stop", action="store_true")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    result = aggregate_candidate(
+    function = finalize_early_stop if args.early_stop else aggregate_candidate
+    result = function(
         config_path=args.config,
         roster_path=args.roster,
         candidate_name=args.candidate,

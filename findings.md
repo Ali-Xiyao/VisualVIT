@@ -1161,3 +1161,9 @@ preserving the encoder's static medical semantics.
   qualification 1,500/5,772. All five progression classes exceed the frozen
   support threshold in every partition; the smallest is Resolved with
   830/210/205 rows.
+- The first ordered repair candidate did not survive discovery. Seed 17 was
+  positive versus query-only/prior-shuffle (+2.78/+8.13 pp), but Seed 29 was
+  +6.64 pp versus query-only and **-5.18 pp versus prior-shuffle**. Regional
+  mean/std/max therefore increases information capacity without producing
+  Seed-stable correct-prior specificity. Seed 43 is unnecessary under the
+  predeclared first-failed-gate rule.

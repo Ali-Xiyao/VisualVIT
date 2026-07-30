@@ -2,7 +2,10 @@ import json
 
 import pytest
 
-from scripts.aggregate_prta_gen_r40a1_candidate import aggregate_candidate
+from scripts.aggregate_prta_gen_r40a1_candidate import (
+    aggregate_candidate,
+    finalize_early_stop,
+)
 from scripts.build_prta_gen_r40a1_roster import CONFIG_STATUS, ROSTER_PASS
 from scripts.run_prta_gen_r40a1_probe import RESULT_STATUS
 from scripts.select_prta_gen_r40a1_candidate import select_candidate
@@ -122,3 +125,59 @@ def test_selector_requires_next_ordered_aggregate_after_stop(tmp_path):
     assert aggregate["status"] == "STOP_PRTA_GEN_R40A1_DISCOVERY"
     with pytest.raises(FileNotFoundError, match="cosine"):
         select_candidate(config_path=config, roster_path=roster)
+
+
+def test_early_stop_skips_remaining_seeds_after_point_gate_failure(tmp_path):
+    config, roster = write_fixture(tmp_path, passing=False)
+    seed_29_path = (
+        tmp_path
+        / "probes"
+        / "regional_moments_v1"
+        / "discovery"
+        / "seed_29"
+        / "result.json"
+    )
+    seed_43_path = (
+        tmp_path
+        / "probes"
+        / "regional_moments_v1"
+        / "discovery"
+        / "seed_43"
+        / "result.json"
+    )
+    seed_29_path.unlink()
+    seed_43_path.unlink()
+    seed_17 = json.loads(
+        (
+            tmp_path
+            / "probes"
+            / "regional_moments_v1"
+            / "discovery"
+            / "seed_17"
+            / "result.json"
+        ).read_text(encoding="utf-8")
+    )
+    seed_17["metrics"] = {
+        "true_minus_query_pp": 3.0,
+        "true_minus_shuffle_pp": -1.0,
+    }
+    write_json(
+        tmp_path
+        / "probes"
+        / "regional_moments_v1"
+        / "discovery"
+        / "seed_17"
+        / "result.json",
+        seed_17,
+    )
+
+    result = finalize_early_stop(
+        config_path=config,
+        roster_path=roster,
+        candidate_name="regional_moments_v1",
+        scope="discovery",
+    )
+
+    assert result["status"] == "STOP_PRTA_GEN_R40A1_DISCOVERY"
+    assert result["completed_seeds"] == [17]
+    assert result["skipped_seeds_after_first_failed_gate"] == [29, 43]
