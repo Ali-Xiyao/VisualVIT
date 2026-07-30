@@ -16,6 +16,7 @@ def test_exclusion_registry_includes_every_observed_cohort_stage():
         "PASS_PRTA_GEN_R40B_SMOKE_COHORT",
         "PASS_PRTA_GEN_R40B1_SMOKE_COHORT",
         "PASS_PRTA_GEN_R40B2_SMOKE_COHORT",
+        "PASS_PRTA_GEN_R40B3_SMOKE_COHORT",
     }
 
 

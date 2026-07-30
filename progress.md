@@ -1229,3 +1229,21 @@
 - Committed and pushed R40B.3 as `58ef113`. Its first cohort build stopped
   before writing because the generic exclusion whitelist omitted the valid
   R40B.2 cohort status; only that receipt registry will be repaired.
+- Added the missing historical status with a regression test, committed and
+  pushed `0974c4f`, then reran the unchanged builder. It returned
+  `PASS_PRTA_GEN_R40B3_SMOKE_COHORT` with 32 unique fit patients and zero
+  overlap with all 96 observed patients.
+- The single R40B.3 attempt passed all engineering contracts but reached only
+  77.78% progression-token and 23/32 direct-class output. It closed as
+  `STOP_PRTA_GEN_R40B3_DIRECT_CLASS_UNDERFIT`; all four generative cohorts
+  are now observed and immutable.
+- Began R40B.4 as an architecture-level convergence route: a bounded
+  semantic-layout progression head plus deterministic legal JSON on a fifth
+  cohort excluding all 128 observed patients. Qwen free generation stays
+  locked.
+- Added the R40B.4 config/protocol, 499,973-parameter head, standalone runner,
+  fifth-cohort exclusion, and tests. The first focused run found only that the
+  exact exclusion-registry assertion had not yet added R40B.3; production
+  behavior and all static checks passed.
+- Updated the assertion and completed pre-outcome validation: eight focused
+  tests, Ruff, compileall, JSON parsing, and `git diff --check` pass.

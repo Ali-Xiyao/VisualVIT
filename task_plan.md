@@ -403,6 +403,12 @@ smokes during iteration.
   progression decision at the first differing assistant token, plus a small
   uniform SFT auxiliary. Use unique registered first-token IDs and construct
   the legal JSON only from the selected class.
+- [x] Execute R40B.3 once and close it after direct causal-LM token
+  classification still reaches only 23/32 on the fresh cohort.
+- [ ] Freeze R40B.4 as an architecture-level convergence route on a fifth
+  disjoint cohort: a capacity-bounded progression decision head consumes the
+  qualification-supported semantic-layout exact64 features and emits the
+  legal two-field JSON deterministically. Keep Qwen free generation locked.
 - [ ] If engineering and scientific gates both pass, update the current
   proposal, result authority, case-study report, and planning bundle; otherwise
   preserve the last STOP and define a genuinely new route instead of tuning
@@ -488,10 +494,12 @@ smokes during iteration.
 | First R40B model run stopped before baseline evaluation because Transformers 5.5 returned rendered chat text from `apply_chat_template(..., tokenize=True)` | 1 | No training/result output occurred; normalize the rendered template through the same tokenizer, add a regression test, and rerun the identical frozen attempt |
 | First one-line real-tokenizer R40B.2 mask preflight mangled JSON quoting in PowerShell | 1 | Unit tests and static checks passed; reconstruct the target with `json.dumps` inside Python and rerun only the read-only tokenizer preflight |
 | First R40B.3 cohort build rejected the valid R40B.2 exclusion receipt because the generic historical-status registry stopped at R40B.1 | 1 | No cohort was written; add the already-observed R40B.2 cohort status to the exclusion whitelist, test, and rerun unchanged selection |
+| R40B.4 focused test expected the pre-R40B.3 exclusion registry exactly | 1 | Production correctly added the newly observed R40B.3 receipt; extend the registry assertion and rerun before freezing the fifth cohort |
 
 ## Next Step
 
-Freeze and validate R40B.3 direct five-way progression-token classification
-on a fourth 32-patient fit cohort excluding all 96 observed patients. Run one
-fresh attempt on GPU0 and require unchanged contracts, uniform SFT quality,
-and 32/32 direct structured progression.
+Freeze and validate the R40B.4 semantic-layout decision head on a fifth
+32-patient cohort excluding all 128 observed patients. Require fresh
+initialization, exact64/no-label-cache firewalls, a fixed parameter budget,
+loss reduction, 32/32 progression, and 32/32 two-field JSON; do not claim
+Qwen free generation passed.

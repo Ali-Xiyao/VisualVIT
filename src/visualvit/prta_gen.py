@@ -354,6 +354,34 @@ class LinearInformationProbe(nn.Module):
         return self.classifier(features)
 
 
+class ProgressionDecisionHead(nn.Module):
+    """Small structured readout for the qualified semantic-layout features."""
+
+    def __init__(
+        self,
+        input_width: int = 3840,
+        hidden_width: int = 128,
+        class_count: int = 5,
+    ) -> None:
+        super().__init__()
+        if input_width <= 0 or hidden_width <= 0 or class_count <= 1:
+            raise ValueError("invalid progression-head dimensions")
+        self.input_width = int(input_width)
+        self.network = nn.Sequential(
+            nn.LayerNorm(input_width),
+            nn.Linear(input_width, hidden_width),
+            nn.GELU(),
+            nn.Linear(hidden_width, class_count),
+        )
+
+    def forward(self, features: Tensor) -> Tensor:
+        if features.ndim != 2 or features.shape[1] != self.input_width:
+            raise ValueError(
+                f"progression features must have shape [B,{self.input_width}]"
+            )
+        return self.network(features)
+
+
 def field_support(
     targets: Iterable[ExplicitGenerativeTarget],
     field: str,

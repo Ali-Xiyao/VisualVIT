@@ -1,0 +1,120 @@
+{
+  "schema": "visualvit.prta-gen.r40b4-structured-head-smoke-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE",
+  "stage_tag": "R40B4",
+  "protocol_id": "prta-gen-r40b4-structured-head-smoke-v1",
+  "closed_predecessor": {
+    "result": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b3_direct_class_smoke_v1\\direct_class_24epoch_v1\\result.json",
+    "required_status": "STOP_PRTA_GEN_R40B3_DIRECT_CLASS_UNDERFIT",
+    "observed_cohorts_may_be_reused": false
+  },
+  "upstream": {
+    "qualification_aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\probes\\semantic_layout_means_v1\\qualification\\aggregate.json",
+    "required_status": "GO_PRTA_GEN_R40A2_QUALIFICATION",
+    "required_candidate": "semantic_layout_means_v1",
+    "progression_generation_unlocked": true,
+    "laterality_generation_unlocked": false,
+    "anatomy_generation_unlocked": false,
+    "degree_generation_unlocked": false,
+    "evidence_generation_unlocked": false
+  },
+  "source": {
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\roster.json",
+    "required_roster_status": "PASS_PRTA_GEN_R40A2_ROSTER_SUPPORT",
+    "partition": "fit",
+    "targets": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit\\training_targets.jsonl",
+    "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens\\training\\seed_17\\formal\\index.json",
+    "required_token_status": "PASS_PRTA_GEN_R40A_TOKEN_CACHE",
+    "token_variant": "true_tokens",
+    "exclude_cohorts": [
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b_overfit_smoke_v1\\cohort.json",
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b1_constrained_smoke_v1\\cohort.json",
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b2_progression_span_smoke_v1\\cohort.json",
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b3_direct_class_smoke_v1\\cohort.json"
+    ],
+    "rows": 32,
+    "maximum_rows": 32,
+    "one_row_per_patient": true,
+    "namespace": "prta-gen-r40b4-structured-head-smoke-v1",
+    "progression_class_counts": {
+      "Stable": 7,
+      "Improved": 7,
+      "Worse": 6,
+      "New": 6,
+      "Resolved": 6
+    }
+  },
+  "head": {
+    "class": "ProgressionDecisionHead",
+    "input_features": "exact64_semantic_mean_features",
+    "semantic_regions": [
+      [0, 4],
+      [4, 16],
+      [16, 32],
+      [32, 48],
+      [48, 60]
+    ],
+    "reserved_positions_ignored": [60, 64],
+    "input_width": 3840,
+    "hidden_width": 128,
+    "class_count": 5,
+    "parameter_count": 499973,
+    "feature_standardization": "cohort_training_mean_std_clamp_1e-6",
+    "fresh_initialization": true
+  },
+  "training": {
+    "seed": 17,
+    "epochs": 2000,
+    "batch_size": 32,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "gradient_clip_norm": 1.0,
+    "early_stopping": false,
+    "checkpoint_selection": false
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "all_other_fields_omitted": true,
+    "compact_json": true
+  },
+  "gate": {
+    "finite_loss": true,
+    "final_to_initial_loss_ratio_at_most": 0.05,
+    "training_progression_accuracy": 1.0,
+    "structured_schema_validity": 1.0,
+    "structured_finding_echo_accuracy": 1.0,
+    "structured_progression_accuracy": 1.0,
+    "scientific_claim_allowed": false
+  },
+  "result_statuses": {
+    "pass": "PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE",
+    "stop": "STOP_PRTA_GEN_R40B4_STRUCTURED_HEAD_UNDERFIT"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b4_structured_head_smoke_v1"
+  },
+  "firewall": {
+    "pixel_inputs_used": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "observed_r40b_cohorts_used_for_gate": false,
+    "qwen_free_generation_unlocked": false,
+    "laterality_generation_unlocked": false,
+    "anatomy_generation_unlocked": false,
+    "degree_generation_unlocked": false,
+    "evidence_generation_unlocked": false
+  }
+}

@@ -1340,3 +1340,25 @@ preserving the encoder's static medical semantics.
   prefix before the progression decision and returns the exact unique
   first-token registry `[623, 81110, 54, 3564, 65394]`. The direct five-way
   logit comparison is therefore well-defined before the fourth cohort exists.
+- The repaired committed builder froze R40B.3 with 32 unique patients, exact
+  7/7/6/6/6 class counts, and zero overlap with all 96 patients from the first
+  three cohorts. Protected data remain unread.
+- R40B.3 closed as `STOP_PRTA_GEN_R40B3_DIRECT_CLASS_UNDERFIT`. Overall
+  teacher token accuracy reached 97.83%, but progression-token accuracy was
+  77.78% and direct five-way output only 23/32. All engineering contracts
+  passed; the causal-LM semantic decision itself remained unstable.
+- Four independent 32-patient cohorts now show that projector plus
+  attention-LoRA can learn JSON form but does not reliably memorize the
+  progression mapping under preregistered small-sample budgets. Continuing to
+  change LM loss weights, learning rates, or decoding would be tuning the same
+  failed assumption.
+- The convergent architecture is to separate semantic decision from language
+  realization. R40A.2 already qualified a semantic-layout readout on sealed
+  patients. R40B.4 will put a small fresh progression head on the same five
+  semantic token groups and emit the two-field JSON deterministically. Qwen
+  free generation remains explicitly locked rather than being declared a
+  success by proxy.
+- R40B.4 freezes a 499,973-parameter LayerNorm-MLP head over the 3,840-wide
+  semantic-layout means. It uses only a fifth 32-row training cohort,
+  full-batch optimization, and deterministic two-field emission; its PASS
+  cannot be interpreted as a Qwen or free-text result.
