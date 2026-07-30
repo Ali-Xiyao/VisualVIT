@@ -360,6 +360,23 @@ def build_roster(config_path: Path, output_path: Path) -> dict[str, Any]:
     return result
 
 
+def receipt_summary(result: dict[str, Any]) -> dict[str, Any]:
+    """Return a CLI-safe receipt without patient-level roster rows."""
+    summary = {
+        key: value for key, value in result.items() if key != "partitions"
+    }
+    if "partitions" in result:
+        summary["partitions"] = {
+            partition: {
+                key: value
+                for key, value in payload.items()
+                if key != "rows"
+            }
+            for partition, payload in result["partitions"].items()
+        }
+    return summary
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Preflight or build the frozen R40C patient roster"
@@ -380,7 +397,7 @@ def main() -> int:
         if args.output is None:
             raise ValueError("R40C roster build requires --output")
         result = build_roster(args.config, args.output)
-    print(json.dumps(result, indent=2, sort_keys=True))
+    print(json.dumps(receipt_summary(result), indent=2, sort_keys=True))
     return 0
 
 

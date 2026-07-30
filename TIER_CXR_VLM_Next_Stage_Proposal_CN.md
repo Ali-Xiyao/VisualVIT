@@ -54,7 +54,7 @@ R40B.4 因而把已 qualification 的 semantic-layout 表示接入一个
 终态报告：
 `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
 
-## R40C 下一阶段：已冻结、未执行
+## R40C 下一阶段：roster 已冻结、Seed 未执行
 
 R40B.4 只证明 32-row overfit。下一阶段不继续调 Qwen，而是冻结
 `PRTA-Gen R40C Structured Generalization`，检验同一结构化头的
@@ -76,11 +76,15 @@ patient-disjoint internal development generalization：
 ```text
 PASS_PRTA_GEN_R40C_PREFLIGHT
 PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT
+PASS_PRTA_GEN_R40C_ROSTER_SUPPORT
 ```
 
 支持库存为排除后 4,127 patients / 14,687 rows，最稀缺 Resolved 仍有
-489 名患者。preflight 只在内存验证选择能力；`real_roster_written=false`、
-`gpu_training_started=false`，R40C runtime 根目录尚不存在。
+489 名患者。真实 roster 已按注册路径一次性写入：train 1,000、
+development 500，五类分别为 200/100，两个 partition 患者重叠为 0。
+receipt SHA-256 为
+`9C076B684BC258EFA60E568004F851CD9EE079EA4DDEA549BD0D2ABCFBF9B0CB`。
+`gpu_training_started=false`；尚无 Seed result、checkpoint 或 aggregate。
 
 R40C 即使未来 GO，也只允许称 internal development generalization；
 不会自动解锁 Qwen free generation、R41–R43、gold/external 或科学主张。

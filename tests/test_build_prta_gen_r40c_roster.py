@@ -6,6 +6,7 @@ import pytest
 from scripts.build_prta_gen_r40c_roster import (
     build_roster,
     preflight,
+    receipt_summary,
     select_partition_rows,
 )
 
@@ -224,6 +225,17 @@ def test_build_roster_is_balanced_patient_disjoint_and_excludes_history(
         assert result["partitions"][partition]["progression_class_counts"] == {
             label: 1 for label in sorted(CLASSES)
         }
+
+
+def test_receipt_summary_omits_patient_level_rows(tmp_path):
+    config = _authority_fixture(tmp_path)
+    result = build_roster(config, tmp_path / "roster.json")
+    summary = receipt_summary(result)
+    assert summary["status"] == "PASS_PRTA_GEN_R40C_ROSTER_SUPPORT"
+    assert "rows" not in summary["partitions"]["train"]
+    assert "rows" not in summary["partitions"]["development"]
+    assert summary["partitions"]["train"]["patient_count"] == 5
+    assert summary["partitions"]["development"]["patient_count"] == 5
 
 
 def test_preflight_fails_closed_on_protected_parent_roster(tmp_path):

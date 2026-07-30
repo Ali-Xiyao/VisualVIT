@@ -20,7 +20,7 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 | PRTA-Gen R40A.2 | `GO_PRTA_GEN_R40A2_QUALIFICATION` | 修复真实 4/12/16/16/12/4 layout 后，三 Seed 对 query/shuffle 的 point 与 bootstrap 门全部通过 |
 | PRTA-Gen R40B–B.3 | STOP | 四批互斥 cohort 上 Qwen readout 最好 29/32，未达 32/32 |
 | PRTA-Gen R40B.4 | `PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE` | 第五批全新 32-patient cohort 上 progression/schema/finding 均 32/32 |
-| PRTA-Gen R40C | `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT` | 1,000/500 roster、四臂、三 Seed 与 bootstrap gate 已冻结；真实 roster/GPU 均未启动 |
+| PRTA-Gen R40C | `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT` | 1,000/500 真实 roster 已冻结并审计；四臂、三 Seed 与 bootstrap gate 不变，GPU 未启动 |
 
 R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
 qualification 修复了明确的 token-layout mismatch。R40B.4 只跑通
@@ -28,9 +28,9 @@ progression-only structured emission 的工程 overfit smoke。Qwen 自由生成
 开放式报告、其他字段、R41 SFT、R42 G-CMCP/reversal 与 R43 gold/external
 仍未解锁。
 
-R40C 当前是 review-gated prelaunch：代码、协议、配置和 CPU preflight
-完成，但 `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\
-prta_gen_r40c_structured_generalization_v1` 尚未创建。
+R40C 当前是 roster-frozen、Seed-gated prelaunch：代码、协议、配置、CPU
+preflight 和一次性真实 roster receipt 均已完成。运行目录当前仅含
+`roster.json`；没有 Seed result、checkpoint、aggregate 或 GPU 进程。
 
 R39 还通过：
 
@@ -104,7 +104,7 @@ R39 已终止；R40A.2 qualification 与 R40B.4 engineering smoke 也已终止�
 - 仓库整理、复现审计和论文材料准备；
 - 使用现有聚合结果生成表格或图；
 - 对 R40B.4 做只读复现审计或独立冻结的后续开发实验；
-- 审阅已冻结 R40C authority；只有新的明确确认才能写真实 roster 或启动 GPU；
+- 审阅已冻结 R40C roster receipt；只有新的明确确认才能启动 Seed 17/GPU；
 - 独立注册的 gold/external descriptive confirmation。
 
 禁止：
@@ -118,7 +118,7 @@ R39 已终止；R40A.2 qualification 与 R40B.4 engineering smoke 也已终止�
 
 ## 仓库验证状态
 
-- PRTA-Gen R40C/R40B.4 focused tests：18 passed；
+- PRTA-Gen R40C/R40B.4 closure focused tests：26 passed；
 - Ruff (`src scripts tests`)：PASS；
 - Python compileall：PASS；
 - Markdown local links：PASS；

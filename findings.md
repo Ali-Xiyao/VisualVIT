@@ -1443,3 +1443,25 @@ preserving the encoder's static medical semantics.
   `gpu_training_started=false`; the R40C runtime root does not exist. Both
   GPUs remained idle, and protected 300-dev, revealed 483, gold, and external
   flags stayed false.
+
+## Phase 11 R40C frozen roster receipt
+
+- The one-time real roster write returned
+  `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT`. Its immutable receipt is 350,714 bytes
+  with SHA-256
+  `9C076B684BC258EFA60E568004F851CD9EE079EA4DDEA549BD0D2ABCFBF9B0CB`.
+- Recomputed scalar audit confirms 1,000 training patients/rows and 500
+  development patients/rows. Stable, Improved, Worse, New, and Resolved are
+  balanced at 200 each in training and 100 each in development.
+- Training and development patient overlap is zero. All 160 patients from the
+  five observed R40B–R40B.4 cohorts remain absent, and the one-row-per-patient
+  invariant holds.
+- Development outcomes, protected 300-dev, revealed 483, gold, and external
+  outcomes remain unread. Resplitting and scientific claims remain disabled.
+- The runtime root contains only `roster.json`; there are no Seed results,
+  checkpoints, aggregates, or R40C Python workers. Both GPUs remain at
+  0 MiB/0% utilization.
+- The committed builder returned the full roster payload to its local CLI.
+  This did not change selection or gate state, but it was unnecessary
+  identity-level output. The CLI handoff is now reduced to a tested scalar
+  receipt summary; the roster bytes and hash must remain unchanged.

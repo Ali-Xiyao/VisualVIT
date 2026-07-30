@@ -452,16 +452,17 @@ smokes during iteration.
 
 ### Phase 11 — R40C one-time real roster freeze
 
-- [ ] Revalidate the pushed R40C config/protocol, clean worktree, absent
+- [x] Revalidate the pushed R40C config/protocol, clean worktree, absent
   runtime root, real-receipt no-write preflight, and idle GPUs before writing.
-- [ ] Execute the committed roster builder exactly once at the registered
+- [x] Execute the committed roster builder exactly once at the registered
   runtime path. Do not start any Seed or GPU process.
-- [ ] Audit only receipt-level counts, class balance, patient disjointness,
+- [x] Audit only receipt-level counts, class balance, patient disjointness,
   exclusion count, firewalls, file hash, and runtime contents without printing
   patient identifiers.
 - [ ] Update the planning/status/preflight handoff to the frozen roster
   receipt, validate diffs, commit, and push.
-- **Status:** in_progress_roster_only
+- **Status:** `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT` — real roster frozen and
+  audited; Seed/GPU execution remains locked.
 
 ## Errors Encountered
 
@@ -548,8 +549,10 @@ smokes during iteration.
 | Final authority-marker audit expected a machine-field spelling in the reader-facing proposal | 1 | The proposal already states the same boundary in Chinese prose; audit that actual phrase while keeping the machine field in the terminal result report |
 | First R40C support inventory reused PowerShell's read-only `$PID` automatic variable inside a JSONL loop | 1 | The read-only command wrote no artifact and was stopped by exact command-line match; rename the local value to `$patientKey` and rerun only the aggregate inventory |
 | R40C finding-registry search passed a Windows-incompatible `configs/r37/*.json` path to `rg` | 1 | Use `rg` on the directory to resolve the exact config, then pin the 12-value registry from `r37_1_candidate_for_r37c_v1.json` |
+| First post-write audit assumed nested `audits`/`firewalls` keys and counted the training object as one row | 1 | Inspect field names and types only, then recompute every scalar against the actual flat receipt schema; the roster file was not changed |
+| The one-time roster builder CLI printed patient-level row payloads to the local terminal | 1 | Stop reproducing the payload, add a tested scalar-only `receipt_summary` for future CLI output, and verify the frozen roster hash is unchanged |
 
 ## Next Step
 
-Revalidate the committed R40C authority and absent runtime root, then write the
-one-time roster only. Stop before every Seed/GPU command.
+Wait for separate explicit authorization before starting Seed 17. Do not
+rewrite/re-split the roster or start any Seed/GPU command meanwhile.

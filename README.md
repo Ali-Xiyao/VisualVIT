@@ -31,8 +31,8 @@ free/constrained causal-LM readout 路线仍为 STOP，因此这不是 Qwen 自�
 
 下一阶段 R40C 的 pre-outcome authority 已准备完成：冻结 1,000 名 train /
 500 名 development、三 Seed、四个容量匹配控制臂与 patient-bootstrap
-门。CPU preflight 已通过，但真实 roster 尚未写入、GPU 训练尚未启动；
-R40C 仍处于 review-gated prelaunch 状态。
+门。真实 roster 已一次性写入并通过 receipt 审计；Seed result、checkpoint、
+aggregate 与 GPU 训练均未启动，下一门是单独授权 Seed 17。
 
 ## 从这里开始
 

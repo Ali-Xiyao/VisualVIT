@@ -1344,3 +1344,23 @@
 - Opened Phase 11 with an explicit roster-only boundary. The committed
   pre-outcome authority remains unchanged; all protected outcomes and every
   GPU command stay locked until the roster receipt is reviewed.
+- Revalidated the clean pushed authority, exact config/protocol hashes,
+  absent runtime root, real-receipt no-write preflight, zero R40C workers,
+  and both GPUs at 0 MiB/0% before writing.
+- Executed the committed roster builder exactly once at the registered path.
+  It returned `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT`; no Seed, training, or
+  aggregate command was launched.
+- Scalar-only post-write audit confirms 1,000/500 unique patients, 200/100 per
+  class, zero train/development patient overlap, all 160 observed patients
+  excluded, one row per patient, and every protected/gold/external/revealed
+  outcome flag false.
+- The runtime root contains only the 350,714-byte `roster.json`, SHA-256
+  `9C076B684BC258EFA60E568004F851CD9EE079EA4DDEA549BD0D2ABCFBF9B0CB`.
+  There are no R40C Seed workers, results, checkpoints, or aggregates; both
+  GPUs remain idle.
+- The one-time builder printed full rows to its local terminal. Added a
+  tested scalar-only receipt formatter for future CLI use and did not
+  reproduce any row identifiers in the planning/status handoff.
+- Closure verification passes: 26 R40C/R40B.4 focused tests, repository-wide
+  Ruff, compileall, config JSON parsing, modified-document local links, and
+  `git diff --check`.
