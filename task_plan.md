@@ -348,6 +348,38 @@ smokes during iteration.
   surfaces without resuming the separately paused old R40 queue.
 - **Status:** `STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY`
 
+### Phase 9 — Case-driven PRTA-Gen repair on a new authority
+
+- [x] Build a descriptive R40A failure case study from already-observed
+  development predictions only; summarize error clusters, control collisions,
+  class/patient concentration, and token-level information loss without
+  relabeling, threshold search, or changing the closed R40A result.
+- [x] Summarize every prior failed route relevant to the current proposal and
+  map each failure to one testable repair hypothesis rather than retrying the
+  same method.
+- [ ] Reserve deterministic discovery and one-shot qualification patient
+  partitions before inspecting their route-specific outcomes. Keep them
+  disjoint, remove qualification patients from candidate fitting, and retain
+  all 300-dev/483/gold/external firewalls.
+- [x] Freeze a small ordered candidate family that tests whether the R40A
+  failure came from lossy three-mean pooling rather than from the exact-64
+  token sequence itself. Compare capacity-bounded token-statistic and
+  query-conditioned token readouts against the same current/query/shuffle
+  controls.
+- [ ] Run candidates only on the discovery boundary, stop each failed
+  candidate at its first registered gate, and select at most one route using
+  the predeclared rule.
+- [ ] Freeze the selected route before the one-shot qualification boundary;
+  require all three Seeds and patient-cluster confidence intervals rather than
+  a favorable point estimate.
+- [ ] Only after a new information GO, run the 32–64-row R40B generative
+  overfit smoke and its exact-64/no-pixel/assistant-only/LoRA firewalls.
+- [ ] If engineering and scientific gates both pass, update the current
+  proposal, result authority, case-study report, and planning bundle; otherwise
+  preserve the last STOP and define a genuinely new route instead of tuning
+  the failed one.
+- **Status:** in_progress
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -419,11 +451,11 @@ smokes during iteration.
 | First formal PRTA-Gen development cache read about 105 GB for only 256 rows because hashed counterfactual priors thrashed the four-shard LRU | 1 | Stop only the verified worker, preserve the partial shard, and compact required DICOM features with one source-shard read before fresh relaunch |
 | First compact-cache patch passed generator expressions as a non-final function argument without parentheses | 1 | Parenthesize each generator, rerun collection/tests/Ruff, and do not relaunch before syntax validation passes |
 | First direct PRTA-Gen aggregate CLI lacked the standalone repository import bootstrap | 1 | Add the standard scoped workspace/src bootstrap, rerun tests/Ruff/CLI, then retry without changing bootstrap settings |
+| First Phase-9 case-study test expected the fourth synthetic row to be both-wrong even though its true-pair prediction matched the target | 1 | Correct only the fixture prediction so all four registered correctness categories occur once; keep production categorization unchanged |
 
 ## Next Step
 
-Do not launch R40B LoRA, R41 SFT, R42 G-CMCP/reversal, evidence retrieval, or
-R43 gold/external work. Preserve R39 as GO and R40A as a separate STOP. Any
-future continuation requires a newly frozen representation/supervision route;
-do not tune the current token compiler, controls, Seeds, or thresholds against
-these development results.
+Validate and commit the R40A.1 frozen config, protocol, deterministic feature
+functions, case-study analyzer, and tests. Only after that commit may the
+patient roster/support audit run; no discovery outcome may be read before the
+roster passes.

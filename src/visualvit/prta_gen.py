@@ -253,6 +253,53 @@ def exact64_summary_features(
     )
 
 
+def exact64_regional_moment_features(tokens: Tensor) -> Tensor:
+    """Retain first/second/extreme statistics within each active token tier."""
+
+    if tokens.ndim != 3 or tokens.shape[1] != 64:
+        raise ValueError("exact64 tokens must have shape [B,64,D]")
+    features = []
+    for start, end in ((0, 20), (20, 40), (40, 60)):
+        region = tokens[:, start:end]
+        features.extend(
+            (
+                region.mean(dim=1),
+                region.std(dim=1, unbiased=False),
+                region.amax(dim=1),
+            )
+        )
+    return torch.cat(features, dim=-1)
+
+
+def exact64_regional_cosine_features(
+    tokens: Tensor, *, components: int = 4
+) -> Tensor:
+    """Project each active 20-token tier onto fixed orthonormal position modes."""
+
+    if tokens.ndim != 3 or tokens.shape[1] != 64:
+        raise ValueError("exact64 tokens must have shape [B,64,D]")
+    if not 1 <= components <= 20:
+        raise ValueError("cosine components must be between 1 and 20")
+    length = 20
+    positions = (
+        torch.arange(length, device=tokens.device, dtype=tokens.dtype) + 0.5
+    )
+    frequencies = torch.arange(
+        components, device=tokens.device, dtype=tokens.dtype
+    ).unsqueeze(1)
+    weights = torch.cos(torch.pi * frequencies * positions / length)
+    weights[0] *= length**-0.5
+    if components > 1:
+        weights[1:] *= (2.0 / length) ** 0.5
+    projected = []
+    for start, end in ((0, 20), (20, 40), (40, 60)):
+        region = tokens[:, start:end]
+        projected.append(
+            torch.einsum("kl,bld->bkd", weights, region).flatten(1)
+        )
+    return torch.cat(projected, dim=-1)
+
+
 class LinearInformationProbe(nn.Module):
     """Capacity-bounded probe for one preregistered R40A target field."""
 

@@ -12,6 +12,42 @@
 
 ---
 
+# 2026-07-30 PRTA-Gen 案例驱动修复附录
+
+R39 之后的第一版 PRTA-Gen R40A 信息审计已经关闭为：
+
+```text
+STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY
+```
+
+它不撤销下方 R39 Frozen-VLM Transfer GO。失败来自新生成问题的更严格
+门槛：三均值 progression readout 在 Seed 17 相对 prior-shuffle 的效应为
++1.06 pp，但 patient-cluster 95% CI 为 [-0.93,+3.26] pp。
+
+案例研究显示，旧 readout 对 Stable/New 的净 prior sensitivity 为正，
+对 Improved/Worse/Resolved 为负；true-sensitive 病例的 token 区域 RMS
+通常更高。这支持“区间内分布/位置被三均值丢失”的有限修复假设。
+
+当前已经冻结 R40A.1：
+
+1. 从原 R40A training 患者一次性划分 5,787 fit、1,500 discovery、
+   1,500 one-shot qualification；
+2. 依次测试 regional mean/std/max 和固定四分量 DCT-II position basis；
+3. 第一个通过 discovery 三 Seed、query-only/prior-shuffle、patient
+   bootstrap 门的候选被唯一选中；
+4. qualification 不允许重新选候选；
+5. 只有 qualification GO 才解锁 progression-only 的 R40B 32-row
+   generative overfit smoke；
+6. laterality、anatomy、degree、evidence、R41/R42/R43 仍锁定。
+
+权威文件：
+
+- `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
+- `docs/PRTA_GEN_R40A1_CASE_DRIVEN_REPAIR_PROTOCOL_CN.md`
+- `configs/prta_gen/prta_gen_r40a1_case_repair_v1.json`
+
+---
+
 # 当前执行状态：R39 Frozen-VLM Transfer 科学 GO
 
 > 2026-07-30 终局权威更新：下方原“两 Seed内部 PASS”内容作为历史快照

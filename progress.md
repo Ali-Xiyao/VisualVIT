@@ -989,3 +989,41 @@
   742 passed, 1 expected xfailed, and the one preexisting R6 frozen-manifest
   failure already reproduced at clean commit `24f57c3`; the closed R6
   registry was not rewritten.
+
+## 2026-07-30 Phase 9 case-driven PRTA-Gen repair start
+
+- The user authorized a case-study-driven repair and asked to continue through
+  the current proposal rather than stopping at the first R40A route.
+- Re-entered the explicit `planning-with-files` workflow, restored the clean
+  pushed Phase-8 state, and added a separate Phase 9. The closed R40A STOP and
+  R39 GO remain immutable.
+- The repair will first use already-observed R40A predictions descriptively,
+  then freeze distinct discovery/qualification patient boundaries and a small
+  ordered readout family before observing new route-specific outcomes.
+- R40B remains locked until a new three-Seed patient-bootstrap information gate
+  passes. The terminal request to continue does not authorize 483/gold reuse,
+  outcome-guided thresholding, or interruption of unrelated GPU work.
+- Added a fail-closed R40A case-study analyzer and focused tests. It validates
+  the three closed progression Seeds, target/token row alignment, exact-64
+  cache firewalls, per-finding/progression/quality error clusters, token-region
+  true-vs-shuffle RMS, cross-Seed collision patterns, and anonymized example
+  selection without patient IDs or report sentences.
+- The real analyzer passed and wrote
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40_readiness_v1\case_study_r40a_v1\case_study.json`
+  for 5,814 rows/1,500 patients with 40 anonymized examples. It kept the
+  closed R40A verdict unchanged and all protected/hash firewalls false.
+- Added the reader-facing R40A failure case study and a separate R40A.1
+  protocol/config. The repair freezes 5,787 fit, 1,500 discovery, and 1,500
+  one-shot qualification patients before new outcomes, with the first passing
+  candidate rule and no resplit.
+- Implemented the two diagnosis-aligned deterministic feature families:
+  6,912-wide regional mean/std/max and 9,216-wide four-component orthonormal
+  cosine position features. Both ignore only the four already-zero reserve
+  positions while consuming the unchanged exact-64 tensor.
+- Added the fail-closed R40A.1 roster builder and tests. It binds the closed
+  R40A STOP and descriptive case-study receipt, validates the existing
+  label-free training token-cache receipt, assigns patients only by the frozen
+  SHA-256 namespace, and reports support without resplitting.
+- Added the dated case-driven repair addendum to the active proposal and
+  indexed the new case-study report. The older proposal body and R39 result
+  remain historical/current authority rather than being overwritten.

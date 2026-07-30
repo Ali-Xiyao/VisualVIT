@@ -3,6 +3,8 @@ import torch
 
 from visualvit.prta_gen import (
     LinearInformationProbe,
+    exact64_regional_cosine_features,
+    exact64_regional_moment_features,
     exact64_summary_features,
     extract_explicit_generative_target,
     field_support,
@@ -110,6 +112,35 @@ def test_exact64_summary_uses_only_registered_three_token_groups():
     assert torch.equal(features[0], torch.tensor([1.0] * 3 + [2.0] * 3 + [3.0] * 3))
     probe = LinearInformationProbe(features.shape[-1], 5)
     assert probe(features).shape == (2, 5)
+
+
+def test_case_repair_features_keep_moments_and_position_without_reserve():
+    tokens = torch.zeros(2, 64, 3)
+    tokens[:, 0:20] = torch.arange(20).view(1, 20, 1)
+    tokens[:, 20:40] = 2
+    tokens[:, 40:60] = 3
+    tokens[:, 60:64] = 1000
+
+    moments = exact64_regional_moment_features(tokens)
+    cosine = exact64_regional_cosine_features(tokens, components=4)
+    tokens[:, 60:64] = -1000
+
+    assert moments.shape == (2, 27)
+    assert cosine.shape == (2, 36)
+    assert torch.equal(moments, exact64_regional_moment_features(tokens))
+    assert torch.equal(
+        cosine, exact64_regional_cosine_features(tokens, components=4)
+    )
+    assert torch.count_nonzero(cosine[:, 3:12]) > 0
+
+
+def test_case_repair_cosine_feature_contract_is_fail_closed():
+    with pytest.raises(ValueError, match="shape"):
+        exact64_regional_moment_features(torch.zeros(1, 63, 4))
+    with pytest.raises(ValueError, match="between"):
+        exact64_regional_cosine_features(
+            torch.zeros(1, 64, 4), components=21
+        )
 
 
 def test_field_support_and_g_cmcp_loss_are_deterministic():

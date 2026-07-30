@@ -1075,3 +1075,84 @@ preserving the encoder's static medical semantics.
   retrieval, LoRA SFT, G-CMCP/reversal, 483 reuse, or gold/external reveal is
   authorized. The implemented generative adapter remains an audited
   engineering surface only.
+
+## Phase 9 case-driven repair framing
+
+- The old R40A field probe compressed each 64-token sequence into only three
+  means: state, transition, and relation. Its STOP proves that this registered
+  readout did not robustly distinguish the true prior from prior shuffle; it
+  does not yet prove that every individual token in the exact-64 sequence lacks
+  recoverable information.
+- A valid repair must therefore test the compression hypothesis directly. It
+  cannot merely add epochs, choose Seed 29/43, remove the Seed-17 comparison,
+  weaken the CI gate, or call the already implemented Qwen adapter a success.
+- The case study may inspect old-development predictions and token behavior,
+  but those rows become descriptive-only. Any new route decision must be made
+  on a separately frozen discovery boundary and confirmed once on a distinct
+  qualification boundary.
+- The success target has two layers: a scientific information gate for the
+  exact-64 sequence under registered controls, followed by a small R40B
+  engineering overfit that verifies causal-LM plumbing. Passing only the
+  overfit smoke cannot rescue a failed information gate.
+- The current proposal still contains its older robust/rich routing narrative
+  alongside the terminal R39 update. The operative PRTA-Gen protocol is more
+  precise: progression/laterality/anatomy/degree/evidence must unlock before
+  generative LoRA, and only observed fields may enter the output schema.
+  Phase 9 must add a top-level case-study repair addendum rather than silently
+  rewriting the historical proposal body.
+- The failed R40A implementation reduced each token region to one mean,
+  yielding 2,304 features. The cache itself retains all 64×768 values for
+  true/current/shuffled branches, so token-level variance, maxima, matched
+  differences, and query-conditioned weighting remain auditable without
+  changing the frozen token sequence.
+- Each formal shard stores aligned `true_tokens`, `current_tokens`, and
+  `shuffled_tokens` with shape `[rows,64,768]`, plus hashed example/patient IDs
+  and finding names. Labels and report sentences remain outside the token
+  cache. This is sufficient for a descriptive token-collision case study
+  without re-encoding images or touching protected cohorts.
+- The complete old-development prediction surface exists for progression
+  (three Seeds), laterality (three), anatomy (three), and degree (Seed 17
+  only, correctly stopped before Seeds 29/43). The case study must not fill the
+  missing degree Seeds because they are part of the closed stop sequence.
+- Existing R37 failure-analysis code establishes the repository pattern:
+  validate schema/status/firewalls and exact row alignment first, emit only
+  descriptive aggregates and hashed failure overlap, and mark observed rows
+  unavailable for repair selection. The new PRTA-Gen case study will follow
+  that pattern and add anonymized true-vs-shuffle collision categories.
+- The real 5,814-row/1,500-patient case study completed. Seed 17 contains 917
+  true-sensitive, 623 shuffle-favored, 2,298 both-correct, and 1,976
+  both-wrong rows. Only 148 rows are true-sensitive in all three Seeds, while
+  939 are both-wrong in all three; this is broad class/readout instability,
+  not one small fixed bad-case list.
+- Seed-17 prior sensitivity is strongly label-dependent. Net
+  `(true-sensitive - shuffle-favored)/rows` is +14.68% for Stable and +6.20%
+  for New, but -3.52% for Improved, -9.27% for Worse, and -4.85% for
+  Resolved. Pneumothorax is the clearest finding-level negative cluster at
+  -21.99%.
+- True-sensitive rows have much larger true-vs-shuffle token RMS than
+  shuffle-favored rows: Seed-17 transition 4.78 versus 4.00 and state 2.76
+  versus 2.31. Persistent collision examples can have extremely small
+  transition RMS (0.21–0.96), whereas persistent true-sensitive New examples
+  reach 13.5–14.3. This supports testing content-aware token evidence strength,
+  not another global mean or class-voting rule.
+- All four reserved token positions have exactly zero true-vs-shuffle RMS.
+  The practical evidence sequence is 60 active tokens; Phase 9 must keep the
+  exact-64 interface but should not pretend the four padding/reserve positions
+  contain recoverable temporal signal.
+- Historical case-study lineage reinforces the same lesson: R33/R33A failed
+  after repeated routing/projection/bridge searches on one observed cache,
+  while R37.1 succeeded only after translating a diagnosed symmetry failure
+  into one parameter-free Z2-equivariant repair and validating it on a fresh
+  holdout. Phase 9 should emulate the latter pattern.
+- The active proposal begins with the terminal R39 GO but its main body is a
+  historical robust/rich routing design. The Phase-9 repair will keep that
+  history intact and add a dated top-level addendum: the immediate goal is a
+  progression-only generative route, not unsupported grounded multi-field
+  report generation.
+- The smallest diagnosis-aligned candidate family is deterministic and
+  capacity-bounded: (1) per-region mean/std/max features and (2) four
+  orthonormal cosine position components per active 20-token region. Both use
+  the unchanged first 60 active positions of the exact-64 sequence, leave the
+  four zero reserve positions untouched, and keep a single linear classifier.
+  This tests within-region distribution/layout loss without introducing a
+  second backbone or a high-capacity rescue model.
