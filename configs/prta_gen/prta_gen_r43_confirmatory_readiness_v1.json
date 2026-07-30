@@ -1,0 +1,56 @@
+{
+  "schema": "visualvit.prta-gen.r43-confirmatory-readiness-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R43_CONFIRMATORY_READINESS",
+  "stage_tag": "R43",
+  "protocol_id": "prta-gen-r43-confirmatory-readiness-v1",
+  "closed_predecessor": {
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r42a_grounding_reversal_v1\\aggregate.json",
+    "required_status": "GO_PRTA_GEN_R42A_GROUNDING_REVERSAL_SURVIVAL",
+    "required_gate_passed": true,
+    "required_r43_readiness_unlocked": true
+  },
+  "gold": {
+    "annotations": "data\\official\\chextemporal_81fd9cdd\\gold_progression_pairs.parquet",
+    "required_columns": [
+      "dataset",
+      "patient_id",
+      "img_path_prev",
+      "img_path_curr"
+    ],
+    "historical_chexpert_cohort": "artifacts\\real_progression\\chextemporal_chexpert_pilot_v1\\cohort.json",
+    "historical_mimic_cohort": "artifacts\\real_qualification\\chextemporal_mimic_matcher_v3\\process_a\\cohort.json",
+    "chexpert_root": "H:\\Xiyao_Wang\\000_Public Dataset\\CheXpert-v1.0-small",
+    "mimic_root": "H:\\Xiyao_Wang\\000_Public Dataset\\mimic-cxr\\mimic-cxr\\mimic-cxr-images\\files",
+    "rexgradient_root": "H:\\Xiyao_Wang\\000_Public Dataset\\ReXGradient",
+    "minimum_confirmatory_patients_for_plus_2pp_worst_case": 4906,
+    "available_patients_must_remain_untouched_until_execution": true
+  },
+  "external": {
+    "root": "data\\external",
+    "minimum_image_complete_patients": 100,
+    "independent_expert_labels_required": true
+  },
+  "gate": {
+    "gold_confirmatory_plus_2pp_power_ready": true,
+    "external_image_complete_patient_minimum_met": true,
+    "independent_expert_labels_available": true,
+    "all_predecessor_settings_frozen": true,
+    "if_any_fail": "STOP_BEFORE_GOLD_OUTCOMES_OR_PREDICTIONS"
+  },
+  "result_statuses": {
+    "ready": "PASS_PRTA_GEN_R43_CONFIRMATORY_READINESS",
+    "stop": "STOP_PRTA_GEN_R43_CONFIRMATORY_READINESS"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r43_confirmatory_readiness_v1",
+    "result": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r43_confirmatory_readiness_v1\\readiness.json"
+  },
+  "firewall": {
+    "outcomes_read": false,
+    "metrics_read": false,
+    "predictions_generated": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "scientific_claim_allowed": false
+  }
+}

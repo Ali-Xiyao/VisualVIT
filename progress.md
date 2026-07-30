@@ -1427,3 +1427,59 @@
   `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION`, three completed Seed receipts,
   unchanged roster/aggregate hashes, all protected flags false, no matching
   process, both GPUs idle, clean Git state, and upstream divergence 0/0.
+
+## 2026-07-30 Phase 13 downstream automatic authorization
+
+- User authorized continued work through R41 and later stages, requested
+  automatic downstream execution until the terminal outcome, and explicitly
+  confirmed both GPUs may be used directly.
+- Opened a new gate-bound phase. “Run all” means advance automatically through
+  frozen survival gates; it does not authorize bypassing a failed gate,
+  outcome-driven tuning, invented external support, or protected-data/DUA
+  violations.
+- Initial inventory finds no ready R41–R43 runner/config. Recovered the
+  original roadmap and existing GenerativeVLMAdapter/LoRA engineering
+  surfaces; downstream work must be newly frozen and tested before launch.
+- Local external support is incomplete: the official repo tree contains
+  CheXTemporal annotations but no external image tree. The historical gold
+  availability audit exists only under the older F: runtime and must be
+  refreshed without reading outcomes.
+- Confirmed the complete local Qwen snapshot and required Torch/Transformers/
+  PEFT runtime. Formal exact-64 caches cover all 33,677/5,814 R40 rows, and
+  2,627 R40A.2-fit patients remain outside the R40C roster.
+- The historical gold audit remains descriptive-only: 16 untouched
+  image-complete patients, about 35 pp conservative MDE, and no available
+  ReXGradient images.
+- Re-audited the untouched R40A.2-fit remainder after excluding all five R40B
+  smoke cohorts and the complete R40C roster. The remaining 2,627 patients
+  supply 5,919 rows; per-class unique-patient support is
+  1,904/647/797/419/106 for Stable/Improved/Worse/New/Resolved.
+- Confirmed both GPUs are currently fully idle (0 MiB, 0% and no compute
+  process). No downstream model process has been launched because the R41
+  roster, gates, and fail-closed runner are not frozen yet.
+- Added the frozen R41A config and identity-safe roster builder. The real
+  no-write preflight passes with 375/125 balanced patient-disjoint rows, all
+  1,660 previously observed patients excluded, and a six-patient Resolved
+  reserve. JSON parsing, focused Ruff, compileall, and diff checks pass.
+- Implemented the R41A Qwen runner, invalid-output-aware aggregate/bootstrap,
+  and automatic two-GPU G0/G1 launcher. The runner preflight passes against the
+  real local tokenizer/model contract; seven new focused tests, Ruff,
+  compileall, and `git diff --check` pass.
+- Confirmed R42 cannot consume a pre-existing reverse cache because none
+  exists. The frozen PRTA cache path can nonetheless produce a valid reverse
+  cache by swapping current/prior Block-8 features, so R42A preparation
+  continues before any R41A outcome is observed.
+- Added the frozen R42A reverse-cache builder, G-CMCP/reversal runner,
+  invalid-output-aware aggregate, and two-GPU launcher. Static runner
+  preflight passes with the involutive five-class mapping and 12 fixed updates;
+  the reverse-cache data preflight is intentionally deferred until the
+  committed R41A roster exists.
+- Added a fresh read-only R43 confirmation-readiness audit and frozen gate.
+  It reproduces 16 untouched image-complete gold patients, zero executable
+  external patients, a 35.02 pp conservative MDE, and no independent labels;
+  it reads no outcome, metric, or prediction.
+- Added the automatic R41A -> R42A -> R43 master chain and expanded focused
+  tests to 14 passing cases. All new R41-R43 scripts pass Ruff, compileall, and
+  `git diff --check`.
+- Full pytest completed with 805 passed, one expected xfail, and the known
+  preexisting R6 frozen-manifest failure; repository-wide Ruff passes.

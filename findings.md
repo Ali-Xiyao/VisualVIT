@@ -1496,3 +1496,109 @@ preserving the encoder's static medical semantics.
   `34E2D09C7E2734B34AD028D6E3CDDFE6F08BD84F50D38541B8BD643F14EC0027`.
   All Seed/aggregate stderr logs are empty, no matching process remains, and
   both GPUs returned to 0 MiB/0%.
+
+## Phase 13 downstream inventory
+
+- No tracked R41, R42, R43, or R40D runner/config currently exists. The
+  repository contains the implemented `GenerativeVLMAdapter`, attention-LoRA
+  installer, R40B Qwen engineering runners, and early roadmap/lock fields,
+  so downstream execution requires a new frozen authority rather than a
+  direct command.
+- The original PRTA-Gen roadmap defines R41 as structured generative Qwen SFT,
+  R42 as G-CMCP plus time-reversal evidence-grounded generation, and R43 as
+  untouched gold/external one-shot confirmation. It explicitly keeps the
+  exact-64 PRTA interface fixed and requires projector plus attention LoRA
+  before any optional MLP-LoRA mutation.
+- The original roadmap recommends 20,000–50,000 high-quality pair×finding SFT
+  rows, with real comparative sentences preferred and field availability
+  gated by literal source support. R40C itself only established progression
+  information for the structured head; laterality, anatomy, degree, and
+  evidence remain unqualified.
+- Local official CheXTemporal files contain annotations only
+  (`gold_progression_pairs.parquet`, `gold_bboxes.parquet`, datasheet/license);
+  there is no `data/external` tree. The last known runtime availability audit
+  is under the older F: R32 root and must be refreshed read-only before any
+  R43 design.
+- The existing R40 readiness config registered Qwen3-VL-4B, attention LoRA
+  rank 16/alpha 32/dropout 0.05, projector LR 1e-4, LoRA LR 2e-5, three
+  epochs, effective batch 32, Seeds 17/29/43, G-CMCP weight 0.25/margin 0.2,
+  and reversal weight 0.25, but all R41/R42/gold unlock flags remain false.
+- Both GPUs are explicitly user-authorized, but GPU availability does not
+  override missing code, insufficient field supervision, external image
+  availability, DUA constraints, or the first-failed-gate rule.
+- The local Qwen3-VL-4B-Instruct snapshot is complete at 8.28 GiB. Runtime
+  dependencies are available (`torch 2.5.1+cu121`, Transformers 5.5.3,
+  PEFT 0.18.1) on two 24 GiB RTX 3090 GPUs.
+- The formal R40 token caches cover 33,677 training rows in 132 shards and
+  5,814 development rows in 23 shards, with true/current/shuffled variants,
+  no labels or sentences embedded, and protected/gold flags false.
+- R40C used 1,500 of 4,127 eligible R40A.2 fit patients after historical
+  exclusions, leaving 2,627 not selected into its train or development
+  roster. These are a possible internal R41 development pool, not independent
+  scientific confirmation.
+- The original R41 gate cannot be copied literally: only progression has a
+  passed patient-disjoint generalization result. Laterality Midline, anatomy
+  Middle-lung/Pleural, and all fine evidence claims remain unsupported or
+  unqualified. A defensible first R41 must therefore be progression-only and
+  keep location/degree/evidence fields omitted.
+- Historical gold readiness is unchanged at 16 untouched image-complete
+  patients (9 MIMIC, 7 CheXpert); conservative overall MDE is about 35 pp.
+  ReXGradient has 70 untouched annotated patients but zero resolved images.
+  R43 can only be descriptive unless new independent images/labels arrive.
+- A fresh scalar-only audit of the 2,627 patients left outside R40C finds
+  5,919 eligible pair-by-finding rows. Unique-patient progression support is
+  Stable 1,904, Improved 647, Worse 797, New 419, and Resolved 106. Resolved
+  is therefore the binding class for a new patient-disjoint R41 split.
+- A balanced 100/50-per-class train/development design is impossible after
+  R40C because it would require 150 Resolved patients. The largest conservative
+  fixed split that preserves a rare-class reserve is 50 training plus 25
+  development patients per class; the remaining unselected patients may
+  contribute additional training rows only after their partition is frozen.
+- The live GPU audit now shows both RTX 3090 cards at 0 MiB and 0% utilization,
+  with no compute application listed. Both devices are technically available
+  for the user-authorized downstream sequence.
+- The frozen R41A roster rule now passes a no-write preflight: 375 training
+  and 125 development patients, exactly 75/25 per progression class, with six
+  eligible Resolved patients still unused. It excludes all 160 historical
+  Qwen-smoke patients plus all 1,500 R40C patients before hashing rows.
+- R41A is explicitly a bounded internal progression-only survival study.
+  Its registered G0 arm trains only the exact-64 projector; G1 trains the same
+  projector plus attention-only LoRA. Both use three epochs, effective batch
+  32, no checkpoint selection, and free greedy two-field JSON decoding.
+- The formal token cache has only true-pair, current-only, and shuffled-prior
+  variants; it contains no reversed-time tokens. However, the frozen cache
+  builder already reconstructs exact-64 tokens from prior/current Block-8
+  features, so a legitimate R42A reverse cache can be built by calling the
+  unchanged PRTA model with current and prior swapped. No heuristic token
+  permutation is needed.
+- The repository already contains the registered sequence-level
+  `generative_prior_preference_loss` and the five-class involutive reversal
+  mapping. This makes progression-only G-CMCP plus reversal technically
+  implementable if and only if R41A passes; evidence-grounded sentence
+  generation remains outside the qualified fields.
+- R41A now has a fail-closed two-GPU sequence launcher and aggregate gate.
+  It runs G0/G1 concurrently per Seed, never retries, accepts only a registered
+  aggregate GO/STOP, and exposes scalar receipts rather than row identities.
+  Seven focused unit tests pass.
+- R42A is now frozen before any R41A outcome. It initializes from the matching
+  R41A G1 Seed checkpoint and compares one-epoch `G-CMCP` against
+  `G-CMCP + time reversal`, with weights/margin 0.25/0.25/0.2 and no checkpoint
+  selection. Reverse exact-64 tokens are rebuilt by swapping input order in the
+  unchanged PRTA model.
+- The R42A primary gate requires every Seed to retain macro-F1/class support,
+  at least 95% schema/finding consistency, correct-prior preference above
+  chance, positive query/shuffle effects with bootstrap lower bounds above
+  zero, at least 90% mapped reversal accuracy, and at least +1 pp over the
+  frozen R41A G1 baseline.
+- A fresh outcome-free R43 readiness audit still finds only 16 untouched
+  image-complete official-gold patients (7 CheXpert, 9 MIMIC), no resolved
+  ReXGradient parents, no external tree, and no independent expert labels.
+  Worst-case +2 pp confirmation requires 4,906 patients; the current
+  conservative MDE remains about 35.02 pp. Therefore R43 is pre-registered to
+  stop before any gold outcome or prediction if reached.
+- The master R41A -> R42A -> R43 chain is fail-closed and automatic. It stops
+  at the first aggregate/readiness STOP, never retries, and reaches R43 only
+  after both upstream survival gates pass. Fourteen focused tests now pass.
+- Repository-wide validation reports 805 passed, one expected xfail, and the
+  same preexisting R6 frozen-manifest failure already reproduced on clean
+  commit `24f57c3`; the new R41–R43 package introduces no additional failure.

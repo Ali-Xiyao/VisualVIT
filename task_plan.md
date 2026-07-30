@@ -483,6 +483,27 @@ smokes during iteration.
 - **Status:** `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` — terminal aggregate
   and documentation closeout complete and pushed.
 
+### Phase 13 — R40D/R41–R43 downstream authority and automatic execution
+
+- [x] Inventory existing R41–R43 code/configs, untouched cohort support,
+  image/model readiness, storage, and legal/protected boundaries without
+  reading any new outcome.
+- [x] Freeze one explicit downstream gate order before GPU work: R41A Qwen
+  progression-only SFT, R42A registered G-CMCP/reversal survival, then R43
+  confirmatory readiness before any gold/external outcome or prediction.
+- [x] Implement fail-closed configs, runners, aggregators, tests, and an
+  automatic two-GPU launcher. Do not select Seed/checkpoint/threshold from
+  R40C or later observed outcomes.
+- [ ] Commit and push the complete pre-outcome authority, run no-write and GPU
+  preflights, then automatically execute only while every preceding survival
+  gate passes.
+- [ ] Stop at the first registered scientific or feasibility failure; do not
+  reinterpret “run all” as permission to bypass a failed gate, invent missing
+  external images, violate a DUA, or tune around observed outcomes.
+- [ ] Audit the terminal artifacts/processes/GPUs, update the proposal,
+  results, reports, and planning bundle, validate, commit, and push.
+- **Status:** in_progress_preoutcome_validation_and_commit
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -570,8 +591,14 @@ smokes during iteration.
 | R40C finding-registry search passed a Windows-incompatible `configs/r37/*.json` path to `rg` | 1 | Use `rg` on the directory to resolve the exact config, then pin the 12-value registry from `r37_1_candidate_for_r37c_v1.json` |
 | First post-write audit assumed nested `audits`/`firewalls` keys and counted the training object as one row | 1 | Inspect field names and types only, then recompute every scalar against the actual flat receipt schema; the roster file was not changed |
 | The one-time roster builder CLI printed patient-level row payloads to the local terminal | 1 | Stop reproducing the payload, add a tested scalar-only `receipt_summary` for future CLI output, and verify the frozen roster hash is unchanged |
+| A Phase-13 read-only gold audit command printed the full quarantine manifest, including patient identifiers, instead of scalar fields | 1 | Do not reproduce the output; all subsequent gold checks must select only counts, booleans, hashes, and source-level readiness fields |
+| Two Phase-13 PowerShell scalar-audit drafts piped `foreach` directly and reused the read-only `$PID` automatic variable | 2 | Keep the commands read-only, accumulate rows in an explicit array, rename the local value to `$patientKey`, and rerun without identity-level output |
+| R42A reverse-cache data preflight could not find the not-yet-written R41A roster | 1 | Preserve the pre-outcome ordering: validate static R42A code now, commit the full authority, write the one-time R41A roster, then rerun the data preflight before launch |
+| A wrapper around the expected R43 preflight exit code 2 still surfaced a nonzero PowerShell result | 1 | Treat the JSON STOP receipt as the evidence; use explicit captured native exit handling in the master chain, which accepts only registered 0/2 terminal codes |
 
 ## Next Step
 
-R40C is terminal. Do not launch or tune further work without a new,
-independently frozen confirmation protocol and explicit authorization.
+Commit and push the complete pre-outcome R41A–R43 authority, write and hash the
+one-time R41A roster, pass the remaining data/master preflights, then launch
+the authorized automatic two-GPU chain and monitor it to the first registered
+terminal gate.

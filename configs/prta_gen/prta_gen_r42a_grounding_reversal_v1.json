@@ -1,0 +1,183 @@
+{
+  "schema": "visualvit.prta-gen.r42a-grounding-reversal-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R42A_GROUNDING_REVERSAL",
+  "stage_tag": "R42A",
+  "protocol_id": "prta-gen-r42a-grounding-reversal-v1",
+  "study_tier": "bounded_internal_progression_only_grounding_reversal_survival",
+  "closed_predecessor": {
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r41a_progression_sft_v1\\aggregate.json",
+    "required_status": "GO_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL",
+    "required_gate_passed": true,
+    "required_r42_unlocked": true
+  },
+  "source": {
+    "r41_config": "configs\\prta_gen\\prta_gen_r41a_progression_sft_v1.json",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r41a_progression_sft_v1\\roster.json",
+    "required_roster_status": "PASS_PRTA_GEN_R41A_ROSTER_SUPPORT",
+    "targets": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit\\training_targets.jsonl",
+    "forward_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens\\training\\seed_17\\formal\\index.json",
+    "required_forward_token_status": "PASS_PRTA_GEN_R40A_TOKEN_CACHE",
+    "r40a_cache_config": "configs\\prta_gen\\prta_gen_r40a_probe_v1.json",
+    "reverse_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r42a_grounding_reversal_v1\\reverse_tokens\\index.json",
+    "required_reverse_token_status": "PASS_PRTA_GEN_R42A_REVERSE_TOKEN_CACHE",
+    "reverse_definition": "unchanged frozen PRTA model called as model(current_block8, prior_block8, finding_query)",
+    "heuristic_token_permutation_allowed": false
+  },
+  "reverse_cache": {
+    "batch_size": 8,
+    "shard_size": 256,
+    "expected_rows": 500,
+    "expected_patients": 500,
+    "token_shape": [
+      64,
+      768
+    ],
+    "token_dtype": "torch.float16",
+    "labels_in_cache": false,
+    "sentences_in_cache": false
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "local_files_only": true,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "active_tokens": 60,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "pixel_image_video_inputs_used": false,
+    "initialization": "matching R41A G1 Seed checkpoint"
+  },
+  "adapter": {
+    "class": "GenerativeVLMAdapter",
+    "projector": "TierTokenProjector",
+    "lora": {
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "rank": 16,
+      "alpha": 32,
+      "dropout": 0.05
+    },
+    "trainable_modules": [
+      "TierTokenProjector",
+      "Qwen language attention LoRA"
+    ],
+    "all_other_modules_frozen": true
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "reversal_mapping": {
+      "Stable": "Stable",
+      "Improved": "Worse",
+      "Worse": "Improved",
+      "New": "Resolved",
+      "Resolved": "New"
+    },
+    "all_other_fields_omitted": true,
+    "compact_json": true,
+    "append_eos": true,
+    "max_target_tokens": 64,
+    "assistant_only_loss": true
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_prefix": "Compare the current chest radiograph with its prior study for the finding {finding}. The next 64 physical positions contain fixed visual tokens. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field. Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "training": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "arms": [
+      "g_cmcp",
+      "g_cmcp_plus_reversal"
+    ],
+    "baseline_arm": "r41a_g1_attention_lora",
+    "epochs": 1,
+    "batch_size": 1,
+    "gradient_accumulation": 32,
+    "projector_learning_rate": 0.0001,
+    "lora_learning_rate": 0.00002,
+    "optimizer": "AdamW",
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "expected_optimizer_updates": 12,
+    "sft_weight": 1.0,
+    "g_cmcp_weight": 0.25,
+    "g_cmcp_margin": 0.2,
+    "time_reversal_weight": 0.25,
+    "early_stopping": false,
+    "checkpoint_selection": false
+  },
+  "evaluation": {
+    "decoding": "free_greedy",
+    "forward_arms": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "prior_shuffle"
+    ],
+    "reversal_arm": "time_reversed",
+    "required_primary_controls": [
+      "query_only",
+      "prior_shuffle"
+    ],
+    "primary_training_arm": "g_cmcp_plus_reversal",
+    "correct_prior_preference_metric": "target_sequence_score_true_greater_than_shuffled",
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 42001
+  },
+  "gate": {
+    "all_seed_primary_true_macro_f1_at_least": 0.3,
+    "all_seed_primary_all_class_recall_at_least": 0.12,
+    "all_seed_primary_schema_validity_at_least": 0.95,
+    "all_seed_primary_finding_echo_accuracy_at_least": 0.95,
+    "all_seed_correct_prior_preference_strictly_above": 0.5,
+    "all_seed_required_control_effects_at_least_pp": 2.0,
+    "all_seed_required_control_ci95_lower_above_pp": 0.0,
+    "all_seed_reversal_mapped_accuracy_at_least": 0.9,
+    "all_seed_primary_minus_r41a_effect_at_least_pp": 1.0,
+    "scientific_claim_allowed": false
+  },
+  "result_statuses": {
+    "reverse_cache_pass": "PASS_PRTA_GEN_R42A_REVERSE_TOKEN_CACHE",
+    "arm_complete": "PASS_PRTA_GEN_R42A_ARM_EVALUATION",
+    "engineering_stop": "STOP_PRTA_GEN_R42A_ENGINEERING_CONTRACT",
+    "aggregate_go": "GO_PRTA_GEN_R42A_GROUNDING_REVERSAL_SURVIVAL",
+    "aggregate_stop": "STOP_PRTA_GEN_R42A_GROUNDING_REVERSAL_SURVIVAL"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r42a_grounding_reversal_v1",
+    "reverse_tokens": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r42a_grounding_reversal_v1\\reverse_tokens"
+  },
+  "firewall": {
+    "progression_only": true,
+    "evidence_grounded_sentence_generation_claimed": false,
+    "independent_scientific_confirmation": false,
+    "pixel_inputs_used": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "r43_unlocked_before_r42a_go": false
+  }
+}
