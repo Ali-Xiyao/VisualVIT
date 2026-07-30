@@ -963,3 +963,29 @@
   compact materialization that reads each required source shard once, clones
   only referenced Block-8 rows, and serves true/current/shuffle batches from
   the compact in-memory map.
+- Committed and pushed the bounded-I/O cache repair as `ff37c26`. A fresh
+  development rerun passed with 5,814 rows/1,500 patients/23 shards; training
+  passed with 33,677 rows/8,787 patients/132 shards. Both have exact
+  `[64,768]` tokens and clean protected/hash/old-R40 firewalls.
+- Ran progression, laterality, anatomy, and degree probes only in the frozen
+  order. Laterality Seed 43, anatomy Seed 43, and degree Seed 17 exposed
+  negative control contrasts, so no field was opportunistically rescued.
+- Added and tested the patient-cluster aggregation entrypoint with the frozen
+  2,000 bootstrap replicates and Seed 40001.
+- The progression aggregate reached
+  `STOP_PRTA_GEN_R40A_FIELD_INFORMATION`: Seed 17 true-pair minus
+  prior-shuffle was +1.061 pp with 95% CI [-0.925, +3.263] pp. Seeds 29/43
+  were strongly positive, but the registered rule requires every Seed CI
+  lower bound to exceed zero.
+- Closed Phase 8 as `STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY`. Did not load
+  Qwen for an R40B overfit, did not launch LoRA/SFT/G-CMCP/reversal/evidence
+  retrieval, and did not read 300-dev, the historical 483 outcomes, gold, or
+  external outcomes.
+- Added `reports/PRTA_GEN_R40A_INFORMATION_SUFFICIENCY_RESULT_CN.md` and
+  synchronized the root README, project status, report index, and persistent
+  planning bundle to the terminal gate.
+- Final validation: 28 PRTA-Gen focused tests passed, repository-wide Ruff and
+  compileall passed, and `git diff --check` passed. Full pytest ended at
+  742 passed, 1 expected xfailed, and the one preexisting R6 frozen-manifest
+  failure already reproduced at clean commit `24f57c3`; the closed R6
+  registry was not rewritten.

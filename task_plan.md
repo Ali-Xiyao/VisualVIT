@@ -339,10 +339,14 @@ smokes during iteration.
   agreement, sequence scoring, and projector/LoRA-only gradients.
 - [x] Build and validate only an outcome-free R40A/R40B engineering package;
   freeze and commit the protocol before any GPU launch.
-- [ ] Run the smallest authorized information-audit and 32–64-row overfit
-  smoke only if structural/data/license gates pass and GPUs are available;
-  stop before R41 formal SFT unless a separate frozen gate unlocks it.
-- **Status:** in_progress
+- [x] Run the smallest authorized information audit: target support, 64-row
+  token-cache smoke, full training/development exact-64 caches, three-Seed
+  control probes, and 2,000-replicate patient-cluster bootstrap.
+- [x] Stop before the R40B 32–64-row Qwen overfit smoke because progression
+  failed the frozen all-Seed information gate; keep R41/R42/R43 locked.
+- [x] Write the terminal report and synchronize the repository authority
+  surfaces without resuming the separately paused old R40 queue.
+- **Status:** `STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY`
 
 ## Errors Encountered
 
@@ -414,10 +418,12 @@ smokes during iteration.
 | Successful PRTA-Gen smoke created the shared `seed_17` parent that the first full-cache path treated as its own output root | 1 | Preserve the smoke and make `formal/` and `smoke_64/` fresh sibling outputs under the frozen Seed directory |
 | First formal PRTA-Gen development cache read about 105 GB for only 256 rows because hashed counterfactual priors thrashed the four-shard LRU | 1 | Stop only the verified worker, preserve the partial shard, and compact required DICOM features with one source-shard read before fresh relaunch |
 | First compact-cache patch passed generator expressions as a non-final function argument without parentheses | 1 | Parenthesize each generator, rerun collection/tests/Ruff, and do not relaunch before syntax validation passes |
+| First direct PRTA-Gen aggregate CLI lacked the standalone repository import bootstrap | 1 | Add the standard scoped workspace/src bootstrap, rerun tests/Ruff/CLI, then retry without changing bootstrap settings |
 
 ## Next Step
 
-Keep the single full development exact-64 cache worker running on GPU 0 until
-its formal receipt is written; do not duplicate or inspect probe outcomes.
-After the cache completes, validate every shard/row firewall before starting
-the training cache or any linear probe.
+Do not launch R40B LoRA, R41 SFT, R42 G-CMCP/reversal, evidence retrieval, or
+R43 gold/external work. Preserve R39 as GO and R40A as a separate STOP. Any
+future continuation requires a newly frozen representation/supervision route;
+do not tune the current token compiler, controls, Seeds, or thresholds against
+these development results.

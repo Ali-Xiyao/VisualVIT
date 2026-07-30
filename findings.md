@@ -1053,3 +1053,25 @@ preserving the encoder's static medical semantics.
 - Formal field decisions remain deferred until all three registered probe
   Seeds and the patient-cluster bootstrap exist. A single probe run cannot
   unlock generation.
+- The repaired compact cache completed without changing token semantics:
+  development contains 5,814 rows in 23 shards and training contains 33,677
+  rows in 132 shards. Both receipts report exact `[64,768]` tensors, no
+  labels/sentences, and false protected/hash/old-R40 firewalls.
+- Progression point estimates were positive against current-only, query-only,
+  and prior-shuffle for all three probe Seeds. However, the frozen
+  2,000-replicate patient-cluster bootstrap failed the decisive Seed 17
+  prior-shuffle comparison: +1.061 pp with 95% CI
+  [-0.925, +3.263] pp. The required lower bound is strictly above zero.
+- Therefore the formal progression aggregate is
+  `STOP_PRTA_GEN_R40A_FIELD_INFORMATION`, and the overall readiness decision
+  is `STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY`. This is a new generative
+  information result, not a reversal of the completed R39 classifier GO.
+- Stop-before-bootstrap diagnostics also found field instability:
+  laterality Seed 43 was negative against current-only/prior-shuffle, anatomy
+  Seed 43 was negative against current-only, and degree Seed 17 was negative
+  against query-only. They cannot supply a field-level escape from the failed
+  upstream progression gate.
+- No rescue, threshold change, Seed selection, Qwen overfit, evidence
+  retrieval, LoRA SFT, G-CMCP/reversal, 483 reuse, or gold/external reveal is
+  authorized. The implemented generative adapter remains an audited
+  engineering surface only.

@@ -16,20 +16,29 @@ R37.1 three-seed internal GO
 silver cohort、Qwen3-VL-4B、PRTA-CXR A6、Seeds 17/29/43 及注册 controls。
 Gold outcomes 仍未读取，当前结果不等于临床部署或外部泛化证明。
 
+后续 PRTA-Gen R40A 信息充分性审计已经完成，终局为
+`STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY`。这不改写 R39 的 GO；
+它表示 exact-64 token 尚未通过开放式、证据可溯源生成所需的冻结信息门槛，
+因此 R40B LoRA 和后续生成训练没有启动。
+
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
-2. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-3. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-4. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-5. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+2. [PRTA-Gen R40A 信息充分性终局报告](reports/PRTA_GEN_R40A_INFORMATION_SUFFICIENCY_RESULT_CN.md)
+3. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+4. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+5. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+6. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 
 - `configs/r37/`：R37.1 候选与 R37C 冻结配置；
 - `configs/r38/`：exact-64 survival 配置；
 - `configs/r39/`：frozen-VLM transfer 配置；
+- `configs/prta_gen/`：PRTA-Gen R40A/R40B readiness 与 probe 冻结配置；
 - `src/visualvit/prta.py`：PRTA-CXR adapter、loss 与等变投影；
+- `src/visualvit/prta_gen.py`、`qwen_adapter.py`：生成目标/probe 与
+  exact-64 generative adapter 工程面；
 - `src/visualvit/r38_fixed64.py`：固定 64-token 打包；
 - `scripts/`：cache、train、predict、reveal 与 aggregate 入口；
 - `tests/`：单元测试和 fail-closed 协议测试；
@@ -46,7 +55,7 @@ git diff --check
 ```
 
 Current-method focused tests pass. The complete historical suite currently
-reports `700 passed, 1 expected xfailed, 1 failed`; the single failure is a
+reports `742 passed, 1 expected xfailed, 1 failed`; the single failure is a
 preexisting R6 frozen-manifest hash drift reproduced unchanged at clean commit
 `24f57c3`. It is intentionally not “fixed” by rewriting the closed R6
 registry. See `docs/PROJECT_STATUS_CN.md`.

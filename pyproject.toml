@@ -11,6 +11,7 @@ dependencies = [
     "torch>=2.5",
     "torchvision>=0.20",
     "timm>=1.0.24",
+    "numpy>=2.0",
     "pandas>=2.3",
     "Pillow>=12",
     "transformers>=5.5",
