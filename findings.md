@@ -1620,3 +1620,7 @@ preserving the encoder's static medical semantics.
   R42A check. Data, roster/hash, Seeds, losses, hyperparameters, gates, and
   output schema remain unchanged. A regression test now pins the real
   Qwen-audit field names; 22 focused tests pass.
+- Failed pre-training artifacts were preserved under a timestamped runtime
+  `history/` directory; the active R41 root now contains only the immutable
+  roster. Repeated real preflights confirm the same roster hash and frozen
+  R41A/R42A/R43 authority before relaunch.

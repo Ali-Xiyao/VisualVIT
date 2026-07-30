@@ -599,7 +599,8 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the outcome-free audit-key repair, archive the failed
-pre-training launch receipts, rerun unchanged preflights, then relaunch the
-authorized automatic two-GPU chain and monitor it to the first registered
-terminal gate.
+Launch the unchanged authorized automatic two-GPU chain from repaired commit
+`95a0fac`, then monitor it continuously to the first registered terminal gate.
+Do not retry or tune around a scientific STOP; repair and relaunch only if a
+new failure is strictly engineering-only and occurs before a scientific
+outcome.

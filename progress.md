@@ -1498,3 +1498,11 @@
   the fix in R42A, added a regression test, and passed 22 focused tests plus
   Ruff, compileall, and diff checks. The failed runtime logs are retained for
   archival before a fresh engineering relaunch.
+- Committed and pushed the outcome-free repair as `95a0fac`. Moved all failed
+  launch logs/status artifacts, without deletion, to
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\history\20260730T233927_r41a_engineering_stop_trainable_audit_key`;
+  the frozen `roster.json` remained active and unchanged.
+- Repeated the real R41 runner, R41 two-GPU sequence, R42 reverse-cache data,
+  and full R41-R43 master-chain preflights. All four returned their registered
+  PASS status with the frozen roster SHA-256, 500 R42 rows/1,000 available
+  DICOM features, and no outcome reads or GPU work.
