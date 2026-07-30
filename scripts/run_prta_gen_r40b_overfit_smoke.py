@@ -20,7 +20,7 @@ from torch import Tensor
 
 from scripts.build_prta_gen_r40b_smoke_cohort import (
     COHORT_STATUS,
-    CONFIG_STATUS,
+    CONFIG_STATUSES,
     read_json,
     write_json,
 )
@@ -36,6 +36,21 @@ UNDERFIT_STATUSES = {
     "bounded_overfit_12epoch_v1": "STOP_R40B_BOUNDED_12EPOCH_UNDERFIT",
     "bounded_overfit_24epoch_v1": "STOP_R40B_BOUNDED_24EPOCH_UNDERFIT",
 }
+
+
+def result_status(
+    config: dict[str, Any], kind: str, attempt_name: str
+) -> str:
+    registered = config.get("result_statuses")
+    if registered is not None:
+        if kind == "underfit":
+            return str(registered["underfit_by_attempt"][attempt_name])
+        return str(registered[kind])
+    if kind == "pass":
+        return PASS_STATUS
+    if kind == "contract_stop":
+        return CONTRACT_STOP
+    return UNDERFIT_STATUSES[attempt_name]
 
 
 def stable_epoch_key(seed: int, epoch: int, example_id: str) -> str:
@@ -345,6 +360,103 @@ def generated_metrics(
     )
 
 
+def constrained_generated_metrics(
+    *,
+    adapter: GenerativeVLMAdapter,
+    projector: TierTokenProjector,
+    tokenizer: Any,
+    config: dict[str, Any],
+    rows: list[dict[str, Any]],
+    tokens: dict[str, Tensor],
+    device: torch.device,
+) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    adapter.eval()
+    projector.eval()
+    progressions = [
+        str(value) for value in config["target"]["progression_values"]
+    ]
+    outputs: list[dict[str, Any]] = []
+    progression_correct = 0
+    with torch.no_grad():
+        for row in rows:
+            prompt = build_prompt_ids(
+                tokenizer, config, finding=row["finding"]
+            ).to(device)
+            source = tokens[row["example_id"]].unsqueeze(0).to(
+                device=device, dtype=torch.float32
+            )
+            projected = projector(token_bundle(source))
+            candidate_scores: dict[str, float] = {}
+            candidate_texts: dict[str, str] = {}
+            for progression in progressions:
+                text = json.dumps(
+                    {
+                        "finding": row["finding"],
+                        "progression": progression,
+                    },
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+                ids = tokenizer(
+                    text, add_special_tokens=False
+                )["input_ids"]
+                if bool(config["target"]["append_eos"]):
+                    ids = [*ids, int(tokenizer.eos_token_id)]
+                target = torch.tensor([ids], dtype=torch.long, device=device)
+                score, audit = adapter.score_sequence(
+                    prompt,
+                    projected,
+                    target,
+                    return_audit=True,
+                )
+                if (
+                    int(audit["placeholder_count"][0].item()) != 64
+                    or audit["pixel_inputs_used"] is not False
+                    or audit["normalization"] != "mean_token_log_likelihood"
+                ):
+                    raise PermissionError(
+                        "R40B.1 constrained scoring audit failed"
+                    )
+                candidate_scores[progression] = float(score[0].cpu())
+                candidate_texts[progression] = text
+            selected = max(
+                progressions,
+                key=lambda progression: (
+                    candidate_scores[progression],
+                    -progressions.index(progression),
+                ),
+            )
+            correct = selected == row["progression"]
+            progression_correct += correct
+            outputs.append(
+                {
+                    "example_id": row["example_id"],
+                    "expected": {
+                        "finding": row["finding"],
+                        "progression": row["progression"],
+                    },
+                    "generated_text": candidate_texts[selected],
+                    "selected_progression": selected,
+                    "candidate_scores": candidate_scores,
+                    "schema_valid": True,
+                    "finding_correct": True,
+                    "progression_correct": correct,
+                    "visual_injection_calls": 1,
+                    "pixel_inputs_used": False,
+                    "decoding": "exact_schema_sequence_scoring",
+                }
+            )
+    count = len(rows)
+    return (
+        {
+            "schema_validity": 1.0,
+            "finding_echo_accuracy": 1.0,
+            "progression_accuracy": progression_correct / count,
+        },
+        outputs,
+    )
+
+
 def contract_passed(
     *,
     trainable_audit: dict[str, Any],
@@ -398,7 +510,7 @@ def run_smoke(
     device_name: str,
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40B config is not frozen")
     runtime_root = Path(config["runtime"]["root"])
     attempt = validate_attempt_authority(
@@ -410,8 +522,13 @@ def run_smoke(
     if output_root.exists():
         raise FileExistsError(f"R40B attempt output must be fresh: {output_root}")
     cohort = read_json(cohort_path)
+    expected_cohort_status = (
+        COHORT_STATUS
+        if str(config.get("stage_tag", "R40B")) == "R40B"
+        else f"PASS_PRTA_GEN_{config['stage_tag']}_SMOKE_COHORT"
+    )
     if (
-        cohort.get("status") != COHORT_STATUS
+        cohort.get("status") != expected_cohort_status
         or cohort.get("protocol_id") != config["protocol_id"]
         or cohort.get("row_count") != int(config["source"]["rows"])
         or cohort.get("one_row_per_patient") is not True
@@ -627,15 +744,29 @@ def run_smoke(
             first_prompt,
             projector(token_bundle(first_source)),
         )
-    generated, outputs = generated_metrics(
-        adapter=adapter,
-        projector=projector,
-        tokenizer=tokenizer,
-        config=config,
-        rows=rows,
-        tokens=tokens,
-        device=device,
-    )
+    decoding_mode = str(config.get("decoding", {}).get("mode", "free_greedy"))
+    if decoding_mode == "free_greedy":
+        generated, outputs = generated_metrics(
+            adapter=adapter,
+            projector=projector,
+            tokenizer=tokenizer,
+            config=config,
+            rows=rows,
+            tokens=tokens,
+            device=device,
+        )
+    elif decoding_mode == "exact_schema_sequence_scoring":
+        generated, outputs = constrained_generated_metrics(
+            adapter=adapter,
+            projector=projector,
+            tokenizer=tokenizer,
+            config=config,
+            rows=rows,
+            tokens=tokens,
+            device=device,
+        )
+    else:
+        raise ValueError("unregistered R40B decoding mode")
     engineering_contract = contract_passed(
         trainable_audit=trainable_audit,
         cache_audit=cache_audit,
@@ -649,11 +780,11 @@ def run_smoke(
         engineering_contract_passed=engineering_contract,
     )
     if passed:
-        status = PASS_STATUS
+        status = result_status(config, "pass", attempt_name)
     elif not engineering_contract:
-        status = CONTRACT_STOP
+        status = result_status(config, "contract_stop", attempt_name)
     else:
-        status = UNDERFIT_STATUSES[attempt_name]
+        status = result_status(config, "underfit", attempt_name)
     output_root.mkdir(parents=True, exist_ok=False)
     checkpoint_path = output_root / "trainable_checkpoint.pt"
     torch.save(
@@ -681,6 +812,7 @@ def run_smoke(
         "final_teacher_forced": final,
         "final_to_initial_loss_ratio": final["mean_loss"] / initial["mean_loss"],
         "generated": generated,
+        "decoding_mode": decoding_mode,
         "generated_outputs": outputs,
         "history": history,
         "engineering_contract_passed": engineering_contract,
@@ -734,7 +866,13 @@ def main() -> int:
         device_name=args.device,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0 if result["status"] == PASS_STATUS else 2
+    config = read_json(args.config)
+    return (
+        0
+        if result["status"]
+        == result_status(config, "pass", args.attempt)
+        else 2
+    )
 
 
 if __name__ == "__main__":

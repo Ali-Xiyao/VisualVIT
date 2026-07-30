@@ -39,6 +39,28 @@ def test_select_rows_is_deterministic_balanced_and_patient_unique():
     assert sum(row["progression"] == "New" for row in selected) == 2
 
 
+def test_select_rows_excludes_observed_parent_patients():
+    rows = [
+        {
+            "example_id": f"e{index}",
+            "patient_id": f"p{index}",
+            "finding": "Edema",
+            "progression": "Stable",
+        }
+        for index in range(4)
+    ]
+    selected = select_rows(
+        rows,
+        fit_patient_ids={row["patient_id"] for row in rows},
+        namespace="fresh",
+        class_counts={"Stable": 2},
+        excluded_patient_ids={"p0", "p1"},
+    )
+    assert not {"p0", "p1"}.intersection(
+        {row["patient_id"] for row in selected}
+    )
+
+
 def test_compact_target_has_exact_two_key_schema():
     text = compact_target({"finding": "Edema", "progression": "Improved"})
     assert text == '{"finding":"Edema","progression":"Improved"}'

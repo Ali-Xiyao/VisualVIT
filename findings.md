@@ -1257,3 +1257,47 @@ preserving the encoder's static medical semantics.
   that registered field produces a 171-position prompt with exactly 64
   placeholder IDs. This is an API-shape compatibility fix, not a prompt or
   training change.
+- The original registered 3-epoch R40B attempt is an engineering-contract
+  PASS but a formal underfit STOP. Mean teacher-forced loss fell from 1.3338
+  to 0.5545 (ratio 0.416), cache/exact-64/mask/no-pixel/trainable boundaries
+  passed, and generated schema/finding copy were both 100%. However
+  teacher-forced token accuracy was only 87.83% and greedy progression
+  accuracy was 5/32 (15.625%), so it is
+  `STOP_R40B_REGISTERED_3EPOCH_UNDERFIT`, not a runnable generator.
+- This failure is informative rather than another interface failure: Qwen
+  learned the exact JSON envelope and finding copy but did not bind the
+  progression value to the visual tokens in three optimizer updates. That is
+  exactly the preregistered condition that unlocks the 12-epoch/accumulation-8
+  bounded overfit attempt on the same cohort.
+- The second, fresh 12-epoch attempt nearly but not fully overfits. Contract,
+  cache, JSON schema, and finding copy remain 100%; loss falls 1.3338 to
+  0.0456 (ratio 0.0342) and teacher-forced token accuracy reaches 98.70%.
+  Greedy progression rises from 5/32 to 27/32 (84.375%), but the frozen gate
+  requires 32/32. It is therefore
+  `STOP_R40B_BOUNDED_12EPOCH_UNDERFIT` and authorizes only the final
+  preregistered 24-epoch attempt.
+- The remaining error is no longer schema learning: all 32 rows generate a
+  valid exact-key JSON object and copy finding correctly. The final attempt
+  specifically tests whether more optimizer updates on the unchanged
+  visual-to-progression binding close the last five memorization errors.
+- The final 24-epoch free-greedy attempt still fails the exact overfit gate.
+  Loss reaches 0.0185 (ratio 0.0139), teacher-forced token accuracy 99.35%,
+  and schema/finding stay 32/32, but progression is 29/32. The three residual
+  errors are Edema Worse->New, Lung Opacity Worse->Improved, and Lung Opacity
+  Resolved->New. The status is
+  `STOP_R40B_BOUNDED_24EPOCH_UNDERFIT`; the greedy ladder is exhausted.
+- This terminal pattern separates token information and JSON form from local
+  autoregressive choice. R40A.2 already proved prior-specific progression
+  information on a sealed cohort, and R40B teacher forcing is nearly exact;
+  the failures arise when one early progression token commits the rest of the
+  free sequence. A genuinely new engineering route is constrained structured
+  decoding: score exactly five complete legal JSON sequences with the
+  already-required length-normalized `score_sequence` method and emit the
+  highest-scoring one.
+- R40B.1 must use a new deterministic 32-patient fit cohort excluding all
+  observed R40B patients. The old cohort may support the diagnosis but cannot
+  be reused to claim the constrained route passed.
+- The R40B.1 authority freezes one fresh 24-epoch attempt and exactly five
+  complete legal JSON candidates per row. Scores use mean token
+  log-likelihood with registered-order tie breaking; free-greedy output is
+  descriptive history only and is not part of the new gate.

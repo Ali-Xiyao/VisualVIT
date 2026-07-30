@@ -384,6 +384,13 @@ smokes during iteration.
   a favorable point estimate.
 - [ ] Only after a new information GO, run the 32–64-row R40B generative
   overfit smoke and its exact-64/no-pixel/assistant-only/LoRA firewalls.
+- [x] Execute and close that R40B free-greedy task: the preregistered
+  3/12/24-epoch ladder preserved every engineering contract but stopped below
+  the required 32/32 progression generation.
+- [ ] Freeze a distinct R40B.1 constrained structured-decoding case study on
+  a new 32-patient fit cohort that excludes every observed R40B patient.
+  Score exactly the five legal two-key JSON sequences with the existing
+  `score_sequence` API; do not tune the exhausted free-greedy cohort.
 - [ ] If engineering and scientific gates both pass, update the current
   proposal, result authority, case-study report, and planning bundle; otherwise
   preserve the last STOP and define a genuinely new route instead of tuning
@@ -470,8 +477,8 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze and validate the R40B 32-row generative engineering-smoke runner against
-the new qualification GO, then run it on GPU0 with projector plus
-attention-only LoRA. Require exact-64, assistant-only loss, no pixel path,
-registered trainable parameters, loss reduction/overfit, and 100% structured
-schema validity before declaring the current proposal runnable.
+Freeze and validate R40B.1 constrained two-field JSON sequence scoring on a
+new 32-patient fit cohort that excludes the exhausted R40B cohort. Run one
+predeclared fresh attempt on GPU0; require exact-64, assistant-only loss,
+no-pixel/trainable/cache firewalls, loss/token gates, and 32/32 constrained
+progression before declaring the current proposal runnable.

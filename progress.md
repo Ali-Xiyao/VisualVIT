@@ -1166,3 +1166,28 @@
   added a regression test, and verified the real local tokenizer returns a
   171-position prompt containing exactly 64 placeholders. Eleven focused
   tests, Ruff, and `git diff --check` pass.
+- Reran the fresh original `registered_3epoch_v1`. All engineering contracts
+  passed and loss fell 1.3338 -> 0.5545, but teacher-forced token accuracy was
+  87.83% and greedy progression accuracy only 15.625% despite 100% valid JSON
+  and finding echo. It closed as
+  `STOP_R40B_REGISTERED_3EPOCH_UNDERFIT`, which authorizes only the
+  preregistered 12-epoch attempt.
+- The fresh 12-epoch attempt also preserved every engineering contract and
+  improved final loss to 0.0456, token accuracy to 98.70%, and greedy
+  progression to 27/32 while keeping schema/finding at 32/32. Because the
+  registered overfit gate requires progression 32/32, it closed as
+  `STOP_R40B_BOUNDED_12EPOCH_UNDERFIT`, authorizing the final frozen
+  24-epoch attempt.
+- The final fresh 24-epoch attempt reached loss 0.0185, teacher-forced token
+  accuracy 99.35%, valid JSON 32/32, finding echo 32/32, and progression
+  29/32. All contracts passed, but it closed as
+  `STOP_R40B_BOUNDED_24EPOCH_UNDERFIT`; the preregistered free-greedy ladder
+  is exhausted and cannot be tuned further on those patients.
+- Began a distinct R40B.1 authority around exact-schema sequence scoring on a
+  new 32-patient fit cohort that excludes the observed R40B cohort. This
+  changes the diagnosed decoding mechanism, not the upstream tokens or
+  scientific gate.
+- Added the R40B.1 config/protocol, fresh-cohort exclusion support, generic
+  stage/result receipts, and exact-schema five-candidate sequence scoring to
+  the existing fail-closed runner. Sixteen focused tests, Ruff, compileall,
+  JSON parsing, and `git diff --check` pass before the new cohort is built.

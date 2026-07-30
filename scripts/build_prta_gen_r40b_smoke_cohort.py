@@ -15,6 +15,10 @@ sys.path.insert(0, str(WORKSPACE / "src"))
 
 
 CONFIG_STATUS = "FROZEN_PRTA_GEN_R40B_OVERFIT_SMOKE"
+CONFIG_STATUSES = {
+    CONFIG_STATUS,
+    "FROZEN_PRTA_GEN_R40B1_CONSTRAINED_SMOKE",
+}
 COHORT_STATUS = "PASS_PRTA_GEN_R40B_SMOKE_COHORT"
 
 
@@ -77,7 +81,9 @@ def select_rows(
     fit_patient_ids: set[str],
     namespace: str,
     class_counts: dict[str, int],
+    excluded_patient_ids: set[str] | None = None,
 ) -> list[dict[str, Any]]:
+    excluded = excluded_patient_ids or set()
     selected: list[dict[str, Any]] = []
     used_patients: set[str] = set()
     for progression, count in class_counts.items():
@@ -87,6 +93,7 @@ def select_rows(
                 for row in rows
                 if str(row["progression"]) == progression
                 and str(row["patient_id"]) in fit_patient_ids
+                and str(row["patient_id"]) not in excluded
             ),
             key=lambda row: stable_key(namespace, str(row["example_id"])),
         )
@@ -115,8 +122,13 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
     if output_path.exists():
         raise FileExistsError(f"R40B cohort output must be fresh: {output_path}")
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40B config is not frozen")
+    closed_spec = config.get("closed_predecessor")
+    if closed_spec is not None:
+        closed = read_json(Path(closed_spec["result"]))
+        if closed.get("status") != closed_spec["required_status"]:
+            raise PermissionError("R40B.1 predecessor is not formally closed")
     upstream_spec = config["upstream"]
     upstream = read_json(Path(upstream_spec["qualification_aggregate"]))
     if (
@@ -161,6 +173,15 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
         str(key): int(value)
         for key, value in source["progression_class_counts"].items()
     }
+    excluded_patients: set[str] = set()
+    exclude_cohort_path = source.get("exclude_cohort")
+    if exclude_cohort_path is not None:
+        excluded_cohort = read_json(Path(exclude_cohort_path))
+        if excluded_cohort.get("status") != COHORT_STATUS:
+            raise PermissionError("R40B.1 excluded cohort receipt drift")
+        excluded_patients = {
+            str(row["patient_id"]) for row in excluded_cohort["rows"]
+        }
     if sum(class_counts.values()) != int(source["rows"]):
         raise ValueError("R40B class counts do not sum to frozen row count")
     target_rows = read_targets(Path(source["targets"]))
@@ -169,6 +190,7 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
         fit_patient_ids=fit_patients,
         namespace=str(source["namespace"]),
         class_counts=class_counts,
+        excluded_patient_ids=excluded_patients,
     )
     rows = [
         {
@@ -182,7 +204,11 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
     ]
     result = {
         "schema": "visualvit.prta-gen.r40b-smoke-cohort.v1",
-        "status": COHORT_STATUS,
+        "status": (
+            COHORT_STATUS
+            if str(config.get("stage_tag", "R40B")) == "R40B"
+            else f"PASS_PRTA_GEN_{config['stage_tag']}_SMOKE_COHORT"
+        ),
         "protocol_id": config["protocol_id"],
         "partition": partition,
         "namespace": source["namespace"],
@@ -191,6 +217,12 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
         "patient_count": len({row["patient_id"] for row in rows}),
         "one_row_per_patient": len({row["patient_id"] for row in rows})
         == len(rows),
+        "excluded_parent_patient_count": len(excluded_patients),
+        "excluded_parent_patients_absent": not bool(
+            excluded_patients.intersection(
+                {str(row["patient_id"]) for row in rows}
+            )
+        ),
         "progression_class_counts": {
             progression: sum(
                 row["progression"] == progression for row in rows

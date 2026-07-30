@@ -6,6 +6,7 @@ from scripts.run_prta_gen_r40b_overfit_smoke import (
     build_prompt_ids,
     gate_passed,
     parse_generated_object,
+    result_status,
     validate_attempt_authority,
 )
 
@@ -130,3 +131,21 @@ def test_prompt_accepts_transformers_batch_encoding_shape():
     )
     assert prompt.shape == (1, 66)
     assert int(prompt.eq(31).sum()) == 64
+
+
+def test_result_status_uses_new_stage_registry():
+    config = {
+        "result_statuses": {
+            "pass": "PASS_NEW",
+            "contract_stop": "STOP_CONTRACT",
+            "underfit_by_attempt": {"attempt": "STOP_UNDERFIT"},
+        }
+    }
+    assert result_status(config, "pass", "attempt") == "PASS_NEW"
+    assert (
+        result_status(config, "contract_stop", "attempt")
+        == "STOP_CONTRACT"
+    )
+    assert (
+        result_status(config, "underfit", "attempt") == "STOP_UNDERFIT"
+    )
