@@ -1483,3 +1483,10 @@
   `git diff --check`.
 - Full pytest completed with 805 passed, one expected xfail, and the known
   preexisting R6 frozen-manifest failure; repository-wide Ruff passes.
+- Committed and pushed the complete pre-outcome authority as `c796630`.
+  Only after that push, wrote the real R41A roster once. Its scalar receipt is
+  `PASS_PRTA_GEN_R41A_ROSTER_SUPPORT`, 118,039 bytes, SHA-256
+  `2BA53C95BDDC78CBE1E585CF5954708892B6106578DA812226D87F94FD4F77C0`.
+- Real R41A runner/sequence, R42A reverse-cache data, and full master-chain
+  preflights all pass. The reverse-cache preflight resolves all 1,000 required
+  DICOM features for 500 rows with zero missing. Both GPUs remain idle.

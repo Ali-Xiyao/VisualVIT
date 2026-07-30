@@ -2,7 +2,7 @@
 
 日期：2026-07-30
 
-状态：`PRE_OUTCOME_PACKAGE_READY_PENDING_COMMIT_AND_ROSTER_WRITE`
+状态：`PASS_PRTA_GEN_R41_R43_CHAIN_PREFLIGHT`
 
 ## 已完成
 
@@ -35,23 +35,35 @@
 | optimizer updates per arm | 36 |
 | GPUs | 2 × RTX 3090 |
 
-正式 roster 仍未写入，因为冻结权威必须先 commit/push。提交后只允许一次 roster
-write；随后固定 hash，并运行 R42 reverse-cache data preflight 与 master-chain
-preflight。
+冻结权威已先以 commit `c796630` 推送。随后正式 roster 只写入一次，并返回
+`PASS_PRTA_GEN_R41A_ROSTER_SUPPORT`：
+
+- bytes：118,039；
+- SHA-256：
+  `2BA53C95BDDC78CBE1E585CF5954708892B6106578DA812226D87F94FD4F77C0`；
+- train/development overlap：0；
+- 所有 1,660 名已观察患者缺席；
+- protected/gold/external/revealed outcome flags：false。
 
 ## R42A/R43 边界
 
-R42A reverse cache 尚未生成，且没有 GPU 训练启动。它将在 R41A GO 后由 master
-chain 自动生成；如果 R41A STOP，不会浪费计算或越过门槛。
+R42A reverse cache 尚未生成，且没有 GPU 训练启动。真实 data preflight 已返回
+`PASS_PRTA_GEN_R42A_REVERSE_CACHE_PREFLIGHT`：500 patients/rows、1,000 个
+required DICOM Block-8 features、missing=0、heuristic permutation=false。它将在
+R41A GO 后由 master chain 自动生成；如果 R41A STOP，不会浪费计算或越过门槛。
 
 R43 preflight 只读取 dataset/patient/image-path 元数据来检查文件可用性，没有读取
 progression outcome、metric 或 prediction。当前确认性支持不足，因此如果 R41A
 和 R42A 都 GO，R43 会在 outcome 读取前 STOP。
 
-## 启动前剩余动作
+## 启动状态
 
-1. 提交并推送本 pre-outcome authority；
-2. 一次性写入 R41A roster 并记录 SHA-256；
-3. 运行 R41A sequence、R42A static/data、R43 与 master-chain preflight；
-4. 确认两张 GPU 空闲、runtime 输出全新；
-5. 启动 master chain，持续监控到第一处注册终态。
+- R41A runner：`PASS_PRTA_GEN_R41A_RUNNER_PREFLIGHT`；
+- R41A sequence：`PASS_PRTA_GEN_R41A_SEQUENCE_PREFLIGHT`；
+- R42A reverse cache：
+  `PASS_PRTA_GEN_R42A_REVERSE_CACHE_PREFLIGHT`；
+- master chain：`PASS_PRTA_GEN_R41_R43_CHAIN_PREFLIGHT`；
+- 两张 GPU：0 MiB / 0%；
+- 所有 Seed/aggregate/reverse/master runtime 输出：fresh。
+
+剩余动作只有提交本 receipt，然后启动 master chain 并持续监控到第一处注册终态。

@@ -494,7 +494,7 @@ smokes during iteration.
 - [x] Implement fail-closed configs, runners, aggregators, tests, and an
   automatic two-GPU launcher. Do not select Seed/checkpoint/threshold from
   R40C or later observed outcomes.
-- [ ] Commit and push the complete pre-outcome authority, run no-write and GPU
+- [x] Commit and push the complete pre-outcome authority, run no-write and GPU
   preflights, then automatically execute only while every preceding survival
   gate passes.
 - [ ] Stop at the first registered scientific or feasibility failure; do not
@@ -502,7 +502,7 @@ smokes during iteration.
   external images, violate a DUA, or tune around observed outcomes.
 - [ ] Audit the terminal artifacts/processes/GPUs, update the proposal,
   results, reports, and planning bundle, validate, commit, and push.
-- **Status:** in_progress_preoutcome_validation_and_commit
+- **Status:** ready_authorized_master_chain_launch
 
 ## Errors Encountered
 

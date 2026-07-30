@@ -1602,3 +1602,12 @@ preserving the encoder's static medical semantics.
 - Repository-wide validation reports 805 passed, one expected xfail, and the
   same preexisting R6 frozen-manifest failure already reproduced on clean
   commit `24f57c3`; the new R41–R43 package introduces no additional failure.
+- The complete pre-outcome authority was committed and pushed as `c796630`
+  before any roster write or GPU launch. The one-time real R41A roster then
+  returned `PASS_PRTA_GEN_R41A_ROSTER_SUPPORT`; it is 118,039 bytes with
+  SHA-256
+  `2BA53C95BDDC78CBE1E585CF5954708892B6106578DA812226D87F94FD4F77C0`.
+- Real post-write preflights pass for the R41A runner, two-GPU R41A sequence,
+  R42A reverse cache (500 rows, 1,000 required Block-8 DICOM features,
+  zero missing), and the complete master chain. No GPU work has started and
+  all execution output directories remain fresh.
