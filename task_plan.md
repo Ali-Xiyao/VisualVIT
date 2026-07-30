@@ -466,6 +466,7 @@ smokes during iteration.
 | First R40A.2 selector invocation omitted its required explicit output path | 1 | No selection receipt was written; rerun the unchanged selector with the registered `selection.json` path |
 | First qualification aggregate invocation passed a selector-only `--selection` argument | 1 | Argument parsing stopped before aggregation; rerun the aggregate CLI with its registered config/roster/candidate/scope interface |
 | First R40B token-shard inspection guessed the R39-era `record_ids` key | 1 | Use the registered PRTA-Gen `example_ids` key; the read-only inspection changed no artifact |
+| First R40B model run stopped before baseline evaluation because Transformers 5.5 returned rendered chat text from `apply_chat_template(..., tokenize=True)` | 1 | No training/result output occurred; normalize the rendered template through the same tokenizer, add a regression test, and rerun the identical frozen attempt |
 
 ## Next Step
 

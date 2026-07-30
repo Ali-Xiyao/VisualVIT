@@ -3,6 +3,7 @@ import json
 import pytest
 
 from scripts.run_prta_gen_r40b_overfit_smoke import (
+    build_prompt_ids,
     gate_passed,
     parse_generated_object,
     validate_attempt_authority,
@@ -102,3 +103,30 @@ def test_gate_requires_contract_loss_accuracy_and_generation():
         },
         engineering_contract_passed=True,
     )
+
+
+class _BatchEncodingTokenizer:
+    def apply_chat_template(self, *args, **kwargs):
+        del args, kwargs
+        return {"input_ids": [1, *([31] * 64), 2]}
+
+
+def test_prompt_accepts_transformers_batch_encoding_shape():
+    prompt = build_prompt_ids(
+        _BatchEncodingTokenizer(),
+        {
+            "model": {
+                "sentinel_token": "<placeholder>",
+                "token_budget": 64,
+                "placeholder_token_id": 31,
+            },
+            "prompt": {
+                "system": "system",
+                "user_prefix": "{finding}",
+                "add_generation_prompt": True,
+            },
+        },
+        finding="Edema",
+    )
+    assert prompt.shape == (1, 66)
+    assert int(prompt.eq(31).sum()) == 64

@@ -1248,3 +1248,12 @@ preserving the encoder's static medical semantics.
   row per patient, and fixes progression counts at 7/7/6/6/6. It explicitly
   refuses the R39 projector because that checkpoint was trained on the
   separately revealed 300-dev boundary.
+- The committed cohort builder returned `PASS_PRTA_GEN_R40B_SMOKE_COHORT`
+  with 32 unique fit patients and the exact registered 7 Stable, 7 Improved,
+  6 Worse, 6 New, and 6 Resolved rows. Targets contain only finding and
+  progression; 300-dev, revealed 483, gold, and external remain unread.
+- Transformers 5.5 returns a `BatchEncoding` from the real Qwen chat-template
+  call. Treating it as a list iterated the string key `input_ids`; extracting
+  that registered field produces a 171-position prompt with exactly 64
+  placeholder IDs. This is an API-shape compatibility fix, not a prompt or
+  training change.

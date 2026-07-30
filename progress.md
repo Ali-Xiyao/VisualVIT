@@ -1152,3 +1152,17 @@
 - R40B pre-outcome validation passes 13 focused tests (including the existing
   generative-adapter suite), Ruff, compileall, JSON parsing, and
   `git diff --check`.
+- Committed and pushed the full pre-outcome R40B authority as `6164b6f`.
+  The committed cohort builder then froze 32 unique fit patients with the
+  registered 7/7/6/6/6 class counts and returned
+  `PASS_PRTA_GEN_R40B_SMOKE_COHORT`; all protected-data firewalls remain
+  false.
+- The first `registered_3epoch_v1` launch loaded Qwen successfully but stopped
+  before its initial baseline forward: Transformers 5.5 returned rendered
+  chat text instead of integer IDs from the requested template call. No
+  optimizer step or result directory exists; only prompt tokenization
+  compatibility will be repaired before rerunning the same attempt.
+- Repaired only the Transformers 5.5 `BatchEncoding["input_ids"]` extraction,
+  added a regression test, and verified the real local tokenizer returns a
+  171-position prompt containing exactly 64 placeholders. Eleven focused
+  tests, Ruff, and `git diff --check` pass.

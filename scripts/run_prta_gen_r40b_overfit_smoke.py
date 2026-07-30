@@ -138,11 +138,21 @@ def build_prompt_ids(
             ),
         },
     ]
-    ids = tokenizer.apply_chat_template(
+    encoded = tokenizer.apply_chat_template(
         messages,
         tokenize=True,
         add_generation_prompt=bool(config["prompt"]["add_generation_prompt"]),
     )
+    if isinstance(encoded, dict) or hasattr(encoded, "keys"):
+        ids = encoded["input_ids"]
+    else:
+        ids = encoded
+    if (
+        not isinstance(ids, (list, tuple))
+        or not ids
+        or not all(isinstance(value, int) for value in ids)
+    ):
+        raise TypeError("R40B chat template did not return integer input IDs")
     prompt = torch.tensor([ids], dtype=torch.long)
     placeholder_id = int(config["model"]["placeholder_token_id"])
     expected = int(config["model"]["token_budget"])
