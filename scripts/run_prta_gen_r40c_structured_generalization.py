@@ -515,6 +515,45 @@ def preflight(config_path: Path) -> dict[str, Any]:
     }
 
 
+def seed_receipt_summary(result: dict[str, Any]) -> dict[str, Any]:
+    """Return a CLI-safe Seed receipt without row-level identities/predictions."""
+    keys = (
+        "schema",
+        "status",
+        "protocol_id",
+        "seed",
+        "training_rows",
+        "training_patients",
+        "development_rows",
+        "development_patients",
+        "metrics",
+        "training_audits",
+        "parameter_count",
+        "checkpoint",
+        "checkpoint_bytes",
+        "exact64_tokens_used",
+        "semantic_layout",
+        "normalization_fit_on_training_only",
+        "pixel_inputs_used",
+        "qwen_free_generation_unlocked",
+        "r41_qwen_sft_unlocked",
+        "scientific_claim_allowed",
+        "protected_300_dev_read",
+        "revealed_483_test_read",
+        "gold_outcomes_read",
+        "external_outcomes_read",
+        "peak_cuda_allocated_bytes",
+    )
+    summary = {key: result[key] for key in keys if key in result}
+    if "structured" in result:
+        summary["structured"] = {
+            key: value
+            for key, value in result["structured"].items()
+            if key != "outputs"
+        }
+    return summary
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Preflight or run one frozen R40C Seed"
@@ -542,7 +581,7 @@ def main() -> int:
             seed=args.seed,
             device_name=args.device,
         )
-    print(json.dumps(result, indent=2, sort_keys=True))
+    print(json.dumps(seed_receipt_summary(result), indent=2, sort_keys=True))
     return 0
 
 

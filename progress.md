@@ -1368,3 +1368,29 @@
   docs, and planning evidence as `b4837eb`. Phase 11 is closed at
   `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT`; the next gate is separate authorization
   for Seed 17, not an automatic GPU launch.
+
+## 2026-07-30 Phase 12 R40C automatic execution authorization
+
+- User explicitly authorized Seed launch and automatic continuation. Opened a
+  new execution phase covering the frozen sequential Seed 17 → 29 → 43 chain
+  and aggregate after per-Seed receipt validation.
+- Authorization does not permit roster changes, tuning, threshold/Seed
+  selection, retries around a scientific STOP, or protected/gold/external
+  reads. Either registered aggregate GO or STOP is terminal.
+- Added a tracked automatic sequence runner. It launches one Seed at a time on
+  the registered device, validates the complete Seed receipt before advancing,
+  runs aggregate only after all three receipts pass, accepts aggregate exit 2
+  as a registered scientific STOP, and fails closed without retries on
+  engineering errors.
+- Reduced the individual Seed CLI handoff to a scalar receipt that excludes
+  patient/example IDs, targets, predictions, counterfactual arrays, and
+  structured row outputs.
+- Validation passes 16 focused tests, targeted Ruff, compileall, and
+  `git diff --check`.
+- Real launch preflight returned both
+  `PASS_PRTA_GEN_R40C_SEQUENCE_PREFLIGHT` and
+  `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT`. The roster hash remains
+  `9C076B684BC258EFA60E568004F851CD9EE079EA4DDEA549BD0D2ABCFBF9B0CB`;
+  all three Seed directories, aggregate, and sequence status are absent.
+  H: has 529.31 GiB free, no compute process exists, and both GPUs are at
+  0 MiB/0%.

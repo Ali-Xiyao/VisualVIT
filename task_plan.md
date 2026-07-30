@@ -464,6 +464,24 @@ smokes during iteration.
 - **Status:** `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT` — real roster frozen and
   audited, closure pushed; Seed/GPU execution remains locked.
 
+### Phase 12 — R40C authorized automatic Seed chain
+
+- [x] Revalidate the pushed config/protocol, immutable roster hash, fresh Seed
+  output paths, runner preflight, source receipts, clean Git state, storage,
+  exact process absence, and idle GPUs.
+- [x] Install a fail-closed sequential runtime launcher for Seeds 17, 29, and
+  43. Each next Seed may start only after the preceding `result.json` passes
+  its frozen receipt audit.
+- [ ] Start Seed 17 on GPU 0 and monitor the automatic chain without changing
+  roster, hyperparameters, thresholds, controls, checkpoints, or protected
+  data boundaries.
+- [ ] After all three Seed receipts pass, run the frozen aggregate exactly
+  once. Treat either registered GO or registered STOP as the terminal
+  scientific outcome; do not tune or retry around a failed gate.
+- [ ] Audit final artifacts/processes/GPUs, update all authority and planning
+  surfaces, validate, commit, and push the terminal evidence package.
+- **Status:** in_progress_authorized_execution
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -554,5 +572,5 @@ smokes during iteration.
 
 ## Next Step
 
-Wait for separate explicit authorization before starting Seed 17. Do not
-rewrite/re-split the roster or start any Seed/GPU command meanwhile.
+Complete the Phase 12 launch preflight, then start the fail-closed automatic
+Seed 17 → 29 → 43 → aggregate chain.

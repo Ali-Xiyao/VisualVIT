@@ -4,6 +4,7 @@ from scripts.run_prta_gen_r40c_structured_generalization import (
     load_token_variants,
     padded_query_features,
     per_class_recall,
+    seed_receipt_summary,
     train_head_arm,
 )
 
@@ -88,3 +89,30 @@ def test_train_head_arm_fits_normalization_on_training_only():
     assert len(predictions) == 10
     assert audit["updates"] == 8
     assert audit["normalization_fit_on_training_only"] is True
+
+
+def test_seed_receipt_summary_omits_identity_and_prediction_arrays():
+    summary = seed_receipt_summary(
+        {
+            "status": "PASS_PRTA_GEN_R40C_SEED_EVALUATION",
+            "seed": 17,
+            "development_patient_ids": ["patient-1"],
+            "development_example_ids": ["example-1"],
+            "targets": [0],
+            "predictions": {"true_pair": [0]},
+            "true_head_counterfactual_predictions": {"current_only": [0]},
+            "structured": {
+                "schema_validity": 1.0,
+                "finding_echo_accuracy": 1.0,
+                "outputs": [{"example_id": "example-1"}],
+            },
+        }
+    )
+    assert summary["status"] == "PASS_PRTA_GEN_R40C_SEED_EVALUATION"
+    assert summary["seed"] == 17
+    assert "development_patient_ids" not in summary
+    assert "development_example_ids" not in summary
+    assert "targets" not in summary
+    assert "predictions" not in summary
+    assert "true_head_counterfactual_predictions" not in summary
+    assert "outputs" not in summary["structured"]
