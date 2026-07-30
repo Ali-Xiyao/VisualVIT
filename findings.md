@@ -1182,3 +1182,69 @@ preserving the encoder's static medical semantics.
   add a nonlinear rescue model. Its discovery2 must be newly drawn from
   R40A.1 fit patients; observed R40A.1 discovery rows are excluded, while the
   original qualification list remains sealed.
+- The committed R40A.2 roster audit passed without resplitting. It excluded
+  exactly 1,500 observed R40A.1 discovery patients/5,869 rows, assigned a
+  fresh discovery2 of 1,500 patients/5,882 rows from the old fit boundary,
+  retained fit2 at 4,287 patients/16,154 rows, and preserved the sealed
+  qualification boundary at 1,500 patients/5,772 rows. The smallest
+  discovery2 class is Resolved with 215 rows, so every registered support
+  threshold passes before any R40A.2 outcome is read.
+- The first R40A.2 candidate cache passed on GPU0 with 33,677 aligned rows,
+  132 shards, and width 3,840. `semantic_layout_means_v1` keeps separate
+  means for query/state/global-transition/local-transition/relation groups
+  and retains the outcome-free exact-64 cache boundary.
+- Fresh discovery2 Seed 17 strongly supports the semantic-layout diagnosis:
+  true-pair macro-F1 is 0.3967 versus query-only 0.2062 and prior-shuffle
+  0.3529, for +19.05/+4.38 pp. Current-only is 0.2705. This passes both
+  registered Seed-level point gates but is not yet a three-Seed GO.
+- Seed 29 independently passes by a wide margin: true-pair macro-F1 0.3562
+  versus query-only 0.2234 and prior-shuffle 0.1569, for +13.28/+19.94 pp;
+  current-only is 0.2750. The candidate has now passed both registered point
+  gates in two Seeds, authorizing the final discovery Seed 43.
+- Seed 43 completes the point-gate sweep: true-pair macro-F1 0.3840 versus
+  query-only 0.2522 and prior-shuffle 0.3130, for +13.18/+7.10 pp;
+  current-only is 0.2527. All three Seeds pass both +2 pp requirements, but
+  selection still depends on the frozen 2,000-replicate patient bootstrap.
+- The preregistered discovery2 aggregate is
+  `GO_PRTA_GEN_R40A2_DISCOVERY`. Every Seed's 95% patient-cluster lower bound
+  remains above +2 pp versus both required controls. The narrowest bound is
+  Seed 17 versus prior-shuffle at +2.404 pp; the other prior-shuffle lower
+  bounds are +18.329 and +5.765 pp. Query-only lower bounds are +16.975,
+  +11.562, and +11.721 pp. This is sufficient to select the first candidate,
+  but progression generation remains locked until qualification.
+- The ordered selector chose `semantic_layout_means_v1` and read only its
+  discovery aggregate. `qualification_unlocked=true`, while qualification
+  outcomes, protected 300-dev, revealed 483, gold, and old R40A development
+  remain outside selection. The higher-capacity semantic-moments candidate is
+  now skipped by design.
+- One-shot qualification Seed 17 passes both point gates, but the
+  prior-specific margin is narrow: true-pair macro-F1 0.3876 versus
+  query-only 0.2083 and prior-shuffle 0.3659, for +17.93/+2.17 pp;
+  current-only is 0.2919. The eventual bootstrap lower bound, not this point
+  estimate alone, will determine the route.
+- Qualification Seed 29 is robustly positive: true-pair macro-F1 0.3512
+  versus query-only 0.2248 and prior-shuffle 0.1657, for +12.64/+18.55 pp;
+  current-only is 0.2673. This reproduces the discovery direction on the
+  previously sealed patients and authorizes the final Seed 43.
+- Qualification Seed 43 also passes: true-pair macro-F1 0.3900 versus
+  query-only 0.2515 and prior-shuffle 0.3077, for +13.85/+8.23 pp;
+  current-only is 0.2587. All three one-shot qualification Seeds pass point
+  gates, leaving only the patient-bootstrap lower-bound criterion.
+- The frozen qualification rule is correctly implemented as two simultaneous
+  conditions: every Seed's point effect is at least +2 pp, and every
+  patient-bootstrap 95% CI lower bound is above zero. It does not require the
+  CI lower bound itself to exceed +2 pp. Under that registered rule,
+  qualification is `GO_PRTA_GEN_R40A2_QUALIFICATION`: Seed 17 versus
+  prior-shuffle has point +2.169 pp and lower bound +0.298 pp, while all other
+  required lower bounds are wider. Progression generation is now unlocked;
+  all other fields remain locked.
+- R40B now has a pre-outcome bounded engineering ladder rather than an
+  open-ended tuning loop. It starts with the originally registered 32-row,
+  3-epoch settings; only a pure underfit STOP may unlock preregistered
+  12-epoch and then 24-epoch attempts. Every attempt starts from fresh Qwen
+  base/projector state and uses the identical fixed cohort, exact-64 prompt,
+  attention-only LoRA targets, two-field JSON schema, and pass gate.
+- The frozen 32-row cohort rule draws only from R40A.2 fit patients, uses one
+  row per patient, and fixes progression counts at 7/7/6/6/6. It explicitly
+  refuses the R39 projector because that checkpoint was trained on the
+  separately revealed 300-dev boundary.

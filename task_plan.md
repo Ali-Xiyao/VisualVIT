@@ -366,7 +366,7 @@ smokes during iteration.
   token sequence itself. Compare capacity-bounded token-statistic and
   query-conditioned token readouts against the same current/query/shuffle
   controls.
-- [ ] Run candidates only on the discovery boundary, stop each failed
+- [x] Run candidates only on the discovery boundary, stop each failed
   candidate at its first registered gate, and select at most one route using
   the predeclared rule.
 - [x] Close R40A.1 after both predeclared candidates fail their first
@@ -376,7 +376,10 @@ smokes during iteration.
   use the registered `4/12/16/16/12/4` query/state/global/local/relation/reserve
   boundaries, exclude the observed R40A.1 discovery patients, and reserve a
   fresh discovery2 split from the old fit partition.
-- [ ] Freeze the selected route before the one-shot qualification boundary;
+- [x] Run the committed R40A.2 roster/support audit and confirm that the new
+  fit2/discovery2 partitions exclude all 1,500 observed R40A.1 discovery
+  patients while preserving the original sealed qualification boundary.
+- [x] Freeze the selected route before the one-shot qualification boundary;
   require all three Seeds and patient-cluster confidence intervals rather than
   a favorable point estimate.
 - [ ] Only after a new information GO, run the 32–64-row R40B generative
@@ -460,9 +463,14 @@ smokes during iteration.
 | First direct PRTA-Gen aggregate CLI lacked the standalone repository import bootstrap | 1 | Add the standard scoped workspace/src bootstrap, rerun tests/Ruff/CLI, then retry without changing bootstrap settings |
 | First Phase-9 case-study test expected the fourth synthetic row to be both-wrong even though its true-pair prediction matched the target | 1 | Correct only the fixture prediction so all four registered correctness categories occur once; keep production categorization unchanged |
 | First combined R40A.2 planning writeback expected a longer moments-candidate finding sentence than the live file contained | 1 | Inspect the exact planning-file tails and reapply the writeback against current text; no runtime or result changed |
+| First R40A.2 selector invocation omitted its required explicit output path | 1 | No selection receipt was written; rerun the unchanged selector with the registered `selection.json` path |
+| First qualification aggregate invocation passed a selector-only `--selection` argument | 1 | Argument parsing stopped before aggregation; rerun the aggregate CLI with its registered config/roster/candidate/scope interface |
+| First R40B token-shard inspection guessed the R39-era `record_ids` key | 1 | Use the registered PRTA-Gen `example_ids` key; the read-only inspection changed no artifact |
 
 ## Next Step
 
-Commit and push the R40A.2 authority, then run its deterministic roster/support
-audit. Only after a PASS may semantic-layout means be cached and evaluated on
-discovery2.
+Freeze and validate the R40B 32-row generative engineering-smoke runner against
+the new qualification GO, then run it on GPU0 with projector plus
+attention-only LoRA. Require exact-64, assistant-only loss, no pixel path,
+registered trainable parameters, loss reduction/overfit, and 100% structured
+schema validity before declaring the current proposal runnable.

@@ -1087,3 +1087,68 @@
 - R40A.2 focused validation currently passes 19 tests plus Ruff.
 - Final pre-freeze validation passes 22 focused tests, Ruff, compileall, JSON
   parsing, and `git diff --check`.
+- Committed and pushed the pre-outcome semantic-layout authority as `36224b2`.
+  The committed roster builder then returned
+  `PASS_PRTA_GEN_R40A2_ROSTER_SUPPORT`: excluded R40A.1 discovery is
+  1,500 patients/5,869 rows; fresh discovery2 is 1,500/5,882; fit2 is
+  4,287/16,154; and the unchanged sealed qualification boundary is
+  1,500/5,772. All five class-support gates pass without resplitting or
+  reading route-specific outcomes.
+- Built `semantic_layout_means_v1` on GPU0. The outcome-free cache passed with
+  33,677 rows, 132 shards, and input width 3,840; GPU1's unrelated process
+  was not touched.
+- `semantic_layout_means_v1` fresh discovery2 Seed 17 completed at true-pair
+  macro-F1 0.3967 versus query-only 0.2062, prior-shuffle 0.3529, and
+  current-only 0.2705. The required effects are +19.05/+4.38 pp, so both
+  point gates pass and Seed 29 is authorized.
+- Seed 29 also passed: true-pair macro-F1 0.3562, query-only 0.2234,
+  prior-shuffle 0.1569, current-only 0.2750, with required effects
+  +13.28/+19.94 pp. Seed 43 is now authorized under the frozen sequence.
+- Seed 43 passed at true-pair macro-F1 0.3840 versus query-only 0.2522,
+  prior-shuffle 0.3130, and current-only 0.2527; required effects are
+  +13.18/+7.10 pp. All three discovery2 Seeds pass their point gates, so the
+  preregistered patient-cluster aggregate is authorized.
+- The 2,000-replicate patient-cluster aggregate returned
+  `GO_PRTA_GEN_R40A2_DISCOVERY`. All six required Seed/control confidence
+  intervals have lower bounds above +2 pp; the narrowest is Seed 17 versus
+  prior-shuffle at +2.404 pp. Candidate selection is authorized, while
+  qualification and progression generation are still locked.
+- The first selector CLI invocation stopped at argument parsing because the
+  explicit `--output` path was omitted. It wrote no receipt and read no new
+  outcome; the unchanged committed selector will be rerun with the registered
+  R40A.2 `selection.json` path.
+- The corrected selector wrote
+  `SELECTED_PRTA_GEN_R40A2_CANDIDATE` for
+  `semantic_layout_means_v1`, unlocked only qualification, and left
+  progression generation/scientific claims locked. No second discovery
+  candidate was run.
+- Qualification Seed 17 completed at true-pair macro-F1 0.3876 versus
+  query-only 0.2083, prior-shuffle 0.3659, and current-only 0.2919. It passes
+  the point gates at +17.93/+2.17 pp; the prior-shuffle margin is close enough
+  that the final patient bootstrap remains decisive.
+- Qualification Seed 29 passed at true-pair macro-F1 0.3512 versus query-only
+  0.2248, prior-shuffle 0.1657, and current-only 0.2673. Required effects are
+  +12.64/+18.55 pp, so the unchanged final qualification Seed 43 is
+  authorized.
+- Qualification Seed 43 passed at true-pair macro-F1 0.3900 versus query-only
+  0.2515, prior-shuffle 0.3077, and current-only 0.2587; required effects are
+  +13.85/+8.23 pp. The three-Seed qualification aggregate is now authorized.
+- The first qualification aggregate command stopped at argument parsing
+  because it was given the probe-only selection receipt argument. No
+  aggregate was written; rerun the unchanged aggregator using only its
+  registered config/roster/candidate/scope inputs.
+- The corrected 2,000-replicate qualification aggregate returned
+  `GO_PRTA_GEN_R40A2_QUALIFICATION` and
+  `progression_generation_unlocked=true`. Audit confirmed the frozen rule is
+  point effect >= +2 pp plus bootstrap lower bound > 0, so Seed 17's
+  prior-shuffle point +2.169 pp/lower bound +0.298 pp legitimately passes.
+  Laterality/anatomy/degree/evidence and scientific claims remain locked.
+- Added the frozen R40B config/protocol, deterministic 32-row cohort builder,
+  progression-only generative runner, and focused tests. The runner enforces
+  fresh initialization, exact-64 placeholders, assistant-suffix-only labels,
+  no pixel/image/video input, attention-only Qwen LoRA plus projector
+  trainability, cached/uncached first-step equivalence, strict two-key JSON,
+  and ordered underfit-only retries.
+- R40B pre-outcome validation passes 13 focused tests (including the existing
+  generative-adapter suite), Ruff, compileall, JSON parsing, and
+  `git diff --check`.
