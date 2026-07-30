@@ -596,11 +596,12 @@ smokes during iteration.
 | R42A reverse-cache data preflight could not find the not-yet-written R41A roster | 1 | Preserve the pre-outcome ordering: validate static R42A code now, commit the full authority, write the one-time R41A roster, then rerun the data preflight before launch |
 | A wrapper around the expected R43 preflight exit code 2 still surfaced a nonzero PowerShell result | 1 | Treat the JSON STOP receipt as the evidence; use explicit captured native exit handling in the master chain, which accepts only registered 0/2 terminal codes |
 | First R41A launch stopped during Seed-17 model setup because the runner expected `trainable_parameters` instead of the adapter's real `trainable_parameter_count` key | 1 | No training/result occurred; normalize the real audit keys into the registered scalar receipt, mirror the check in R42A, add a regression test, archive failed logs, and relaunch unchanged |
+| Second R41A launch stopped after training but before checkpoint/result creation because the cache-equivalence audit ran twice with G1 LoRA dropout still active | 1 | Make the shared cache-semantic audit temporarily enter deterministic evaluation mode and restore the caller's prior mode; do not change training, decoding, data, or gates |
+| First cache-audit verification command guessed a nonexistent `tests/test_prta_gen_r40b.py` filename | 1 | Resolve the actual tracked test path with `rg --files` and rerun the intended focused suite; no production execution was involved |
 
 ## Next Step
 
-Launch the unchanged authorized automatic two-GPU chain from repaired commit
-`95a0fac`, then monitor it continuously to the first registered terminal gate.
-Do not retry or tune around a scientific STOP; repair and relaunch only if a
-new failure is strictly engineering-only and occurs before a scientific
-outcome.
+Commit and push the deterministic cache-audit repair, archive the second
+engineering-stop receipts, repeat unchanged preflights, and relaunch the
+automatic chain. Continue through R42A/R43 only if each frozen upstream
+scientific survival gate passes.

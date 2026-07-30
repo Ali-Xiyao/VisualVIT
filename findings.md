@@ -1624,3 +1624,8 @@ preserving the encoder's static medical semantics.
   `history/` directory; the active R41 root now contains only the immutable
   roster. Repeated real preflights confirm the same roster hash and frozen
   R41A/R42A/R43 authority before relaunch.
+- The second engineering stop exposed a deterministic-audit bug, not a model
+  outcome: G1 LoRA dropout (`0.05`) was still in training mode when uncached
+  and cached first-step logits were computed sequentially. Cache equivalence
+  must be checked with stochastic layers disabled; the audit now temporarily
+  uses evaluation mode and restores the original mode in `finally`.

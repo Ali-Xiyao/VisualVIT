@@ -1506,3 +1506,16 @@
   and full R41-R43 master-chain preflights. All four returned their registered
   PASS status with the frozen roster SHA-256, 500 R42 rows/1,000 available
   DICOM features, and no outcome reads or GPU work.
+- Relaunched the unchanged master chain at 2026-07-30 23:40:57 +08:00 from
+  clean commit `517f4e1` (master PID 27736). R41A Seed-17 G0/G1 are active on
+  GPU0/GPU1; live utilization reached 10,039/9,905 MiB and 42%/27%.
+  Both R41 and master status receipts remain RUNNING with zero completed arms.
+- The second launch trained Seed-17 for about ten minutes, then stopped before
+  any checkpoint, prediction, or result was written. G1's cache-equivalence
+  check compared two forward passes while the trained LoRA dropout remained
+  active; the paired launcher terminated G0 and both GPUs returned to idle.
+- Updated the shared cache-semantic audit to enter `eval()` only for the two
+  compared passes and restore the previous training mode afterward. This
+  changes no model weight, optimizer, data, decoding, or gate. A stochastic
+  dropout regression test now covers the exact failure; 30 focused tests,
+  Ruff, compileall, and `git diff --check` pass.

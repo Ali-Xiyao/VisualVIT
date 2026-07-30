@@ -804,8 +804,13 @@ class GenerativeVLMAdapter(FrozenVLMAdapter):
         uncached = dict(model_inputs)
         cached = dict(model_inputs)
         cached["use_cache"] = True
-        uncached_logits = self._extract_logits(self.model(**uncached))
-        cached_logits = self._extract_logits(self.model(**cached))
+        was_training = self.model.training
+        self.model.eval()
+        try:
+            uncached_logits = self._extract_logits(self.model(**uncached))
+            cached_logits = self._extract_logits(self.model(**cached))
+        finally:
+            self.model.train(was_training)
         last_uncached = uncached_logits[:, -1].float()
         last_cached = cached_logits[:, -1].float()
         maximum_absolute_difference = float(

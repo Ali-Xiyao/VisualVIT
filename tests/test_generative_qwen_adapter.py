@@ -12,11 +12,12 @@ PLACEHOLDER = 31
 
 
 class ToyGenerativeLM(nn.Module):
-    def __init__(self, hidden_size=8, vocab_size=40):
+    def __init__(self, hidden_size=8, vocab_size=40, dropout=0.0):
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, hidden_size)
         self.base = nn.Linear(hidden_size, hidden_size, bias=False)
         self.lora_adapter = nn.Linear(hidden_size, hidden_size, bias=False)
+        self.dropout = nn.Dropout(dropout)
         self.lm_head = nn.Linear(hidden_size, vocab_size, bias=False)
         self.base.requires_grad_(False)
         self.embedding.requires_grad_(False)
@@ -37,7 +38,9 @@ class ToyGenerativeLM(nn.Module):
         logits_to_keep=0,
     ):
         assert position_ids.shape == (3, *attention_mask.shape)
-        hidden = self.base(inputs_embeds) + self.lora_adapter(inputs_embeds)
+        hidden = self.dropout(
+            self.base(inputs_embeds) + self.lora_adapter(inputs_embeds)
+        )
         hidden = torch.tanh(torch.cumsum(hidden, dim=1))
         hidden = hidden * attention_mask.unsqueeze(-1)
         return SimpleNamespace(logits=self.lm_head(hidden))
@@ -170,6 +173,19 @@ def test_cached_and_uncached_first_step_logits_match():
 
     assert audit["passed"]
     assert audit["maximum_absolute_difference"] == 0.0
+
+
+def test_cache_equivalence_disables_dropout_and_restores_training_mode():
+    model = ToyGenerativeLM(dropout=0.75)
+    model.train()
+    adapter = GenerativeVLMAdapter(model, PLACEHOLDER)
+    prompt = torch.tensor([[3] + [PLACEHOLDER] * 64 + [4]], dtype=torch.long)
+
+    audit = adapter.audit_first_step_cache_equivalence(prompt, projected())
+
+    assert audit["passed"]
+    assert audit["maximum_absolute_difference"] == 0.0
+    assert model.training
 
 
 def test_unregistered_trainable_base_parameter_fails_closed():
