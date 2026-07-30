@@ -1027,3 +1027,22 @@
 - Added the dated case-driven repair addendum to the active proposal and
   indexed the new case-study report. The older proposal body and R39 result
   remain historical/current authority rather than being overwritten.
+- Committed and pushed the complete pre-outcome R40A.1 authority as `26487c7`.
+- Ran the committed roster builder once. It returned
+  `PASS_PRTA_GEN_R40A1_ROSTER_SUPPORT` with 5,787/1,500/1,500 disjoint
+  fit/discovery/qualification patients and adequate support for every
+  progression class; no resplit or protected outcome read occurred.
+- Added an outcome-free, candidate-specific feature-cache builder so the three
+  probe Seeds do not repeatedly recompute 64-token statistics. Its shards
+  retain aligned IDs/findings and true/current/shuffle features but no labels,
+  sentences, discovery outcomes, or qualification outcomes.
+- Added the generic R40A.1 discovery/qualification probe runner and tests. It
+  trains the same linear readout budget for true/current/shuffle branches,
+  retains query-only as a finding one-hot control, binds every row to the
+  frozen patient roster, and refuses qualification without a valid selected-
+  candidate receipt.
+- Added the generic three-Seed patient-cluster candidate aggregator and ordered
+  selector. Discovery aggregates keep generation locked; the selector reads
+  candidates in the frozen order and unlocks qualification only for the first
+  GO, while a stopped first candidate requires the second aggregate rather
+  than silently skipping it.

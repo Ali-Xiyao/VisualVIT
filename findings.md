@@ -1156,3 +1156,8 @@ preserving the encoder's static medical semantics.
   four zero reserve positions untouched, and keep a single linear classifier.
   This tests within-region distribution/layout loss without introducing a
   second backbone or a high-capacity rescue model.
+- The committed deterministic roster passed without resplitting: fit has
+  5,787 patients/22,036 rows, discovery 1,500/5,869, and one-shot
+  qualification 1,500/5,772. All five progression classes exceed the frozen
+  support threshold in every partition; the smallest is Resolved with
+  830/210/205 rows.

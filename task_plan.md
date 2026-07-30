@@ -357,7 +357,7 @@ smokes during iteration.
 - [x] Summarize every prior failed route relevant to the current proposal and
   map each failure to one testable repair hypothesis rather than retrying the
   same method.
-- [ ] Reserve deterministic discovery and one-shot qualification patient
+- [x] Reserve deterministic discovery and one-shot qualification patient
   partitions before inspecting their route-specific outcomes. Keep them
   disjoint, remove qualification patients from candidate fitting, and retain
   all 300-dev/483/gold/external firewalls.
@@ -455,7 +455,7 @@ smokes during iteration.
 
 ## Next Step
 
-Validate and commit the R40A.1 frozen config, protocol, deterministic feature
-functions, case-study analyzer, and tests. Only after that commit may the
-patient roster/support audit run; no discovery outcome may be read before the
-roster passes.
+Implement and test the generic R40A.1 candidate runner and discovery
+aggregator against the committed config/roster. Run `regional_moments_v1`
+first; do not inspect or launch `regional_cosine4_v1` unless the first
+candidate reaches a registered discovery STOP.
