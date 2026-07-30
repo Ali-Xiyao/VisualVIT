@@ -889,3 +889,36 @@
 - Deleted the `r40-component-baseline-monitor` heartbeat. No next component
   task or strong baseline was launched; Phase 7 is paused until the user
   explicitly resumes it.
+
+## 2026-07-30 Phase 8 PRTA-Gen start
+
+- Restored the existing planning bundle with the user-requested
+  `planning-with-files` workflow and read the full supplied PRTA-Gen design.
+- Confirmed the repository is clean on
+  `codex/r37-prior-responsive-temporal-adapter`; the prior R40
+  component/baseline queue remains paused with no active R40 process.
+- Registered a separate Phase 8 rather than silently resuming or renaming the
+  old R40 protocol. The new scope is R40A token-information sufficiency plus
+  R40B exact-64 generative adapter readiness.
+- Preserved the hard boundary: no reuse of the revealed 483-test for
+  selection, no gold/external reveal, no GPU launch before a new frozen
+  protocol and focused structural tests pass.
+- Added the frozen machine-readable PRTA-Gen R40 readiness config and Chinese
+  protocol in a new `configs/prta_gen/` namespace.
+- Implemented literal, fail-closed generative-target extraction; unchanged
+  exact-64 state/transition/relation summary features; a bounded linear
+  information probe; and the future-gated G-CMCP sequence-margin helper.
+- Implemented `GenerativeVLMAdapter.forward_sft`, `score_sequence`,
+  `generate_text`, cache-equivalence audit, LoRA parameter audit, and the
+  attention-only PEFT installer. Added `peft` as an optional generation
+  dependency rather than changing the existing base environment.
+- The first target-extraction test exposed over-broad masking of “lung” in
+  “lower lung opacity.” Narrowed only the finding mask, retained conflict-to-
+  `Unspecified`, and reran the suite.
+- Added the outcome-independent literal-target support audit CLI. It writes
+  fresh training/development target manifests, validates patient/firewall
+  lineage, and keeps every generation field locked until true-pair probe
+  controls actually run.
+- Focused validation passes: 23 tests, Ruff, compileall, and
+  `git diff --check`. No Qwen load, GPU process, protected-outcome read, hash
+  recomputation, or old R40 queue resume occurred.

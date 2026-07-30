@@ -5,6 +5,7 @@ from typing import Any
 
 import torch
 from torch import Tensor, nn
+import torch.nn.functional as F
 
 from .schemas import ProjectedTokenBundle
 
@@ -468,6 +469,403 @@ class FrozenVLMAdapter(nn.Module):
             "model_frozen": self.freeze_audit()["all_frozen"],
         }
         return normalized_scores, audit
+
+
+class GenerativeVLMAdapter(FrozenVLMAdapter):
+    """Autoregressive exact-64 adapter with an externally configured Qwen LoRA.
+
+    Unlike :class:`FrozenVLMAdapter`, this class does not mutate parameter
+    ``requires_grad`` flags. The caller must freeze the base model and install
+    only the registered LoRA modules before construction.
+    """
+
+    def __init__(
+        self,
+        model: nn.Module,
+        placeholder_token_id: int,
+        *,
+        tokenizer: Any | None = None,
+        token_budget: int = 64,
+        allowed_trainable_name_parts: Sequence[str] = ("lora_",),
+    ) -> None:
+        nn.Module.__init__(self)
+        if token_budget <= 0:
+            raise ValueError("token_budget must be positive")
+        if placeholder_token_id < 0:
+            raise ValueError("placeholder_token_id must be non-negative")
+        if not allowed_trainable_name_parts:
+            raise ValueError("provide at least one allowed trainable-name pattern")
+        self.model = model
+        self.placeholder_token_id = int(placeholder_token_id)
+        self.token_budget = int(token_budget)
+        self.tokenizer = tokenizer
+        self.allowed_trainable_name_parts = tuple(
+            str(part) for part in allowed_trainable_name_parts
+        )
+
+    def train(self, mode: bool = True) -> GenerativeVLMAdapter:
+        nn.Module.train(self, mode)
+        return self
+
+    def trainable_parameter_audit(self) -> dict[str, Any]:
+        audit = frozen_parameter_audit(self.model)
+        unexpected = tuple(
+            name
+            for name in audit["trainable_parameter_names"]
+            if not any(
+                part in name for part in self.allowed_trainable_name_parts
+            )
+        )
+        audit.update(
+            {
+                "allowed_trainable_name_parts": self.allowed_trainable_name_parts,
+                "unexpected_trainable_parameter_names": unexpected,
+                "trainable_boundary_pass": not unexpected,
+                "pixel_path_available": False,
+            }
+        )
+        return audit
+
+    def freeze_audit(self) -> dict[str, Any]:
+        return self.trainable_parameter_audit()
+
+    @staticmethod
+    def _validate_assistant_labels(
+        input_ids: Tensor,
+        labels: Tensor,
+        attention_mask: Tensor,
+        placeholder_mask: Tensor,
+    ) -> Tensor:
+        if tuple(labels.shape) != tuple(input_ids.shape):
+            raise ValueError("labels must match input_ids")
+        labels = labels.to(device=input_ids.device, dtype=torch.long)
+        supervised = labels.ne(-100)
+        if bool(supervised[~attention_mask.bool()].any()):
+            raise ValueError("padding positions must use label -100")
+        if bool(supervised[placeholder_mask].any()):
+            raise ValueError("all visual placeholder labels must be -100")
+        if not bool(supervised.any(dim=1).all()):
+            raise ValueError("each row requires at least one assistant target token")
+        if not torch.equal(labels[supervised], input_ids[supervised]):
+            raise ValueError("supervised labels must equal assistant input token IDs")
+        for row_index in range(input_ids.shape[0]):
+            attended = torch.nonzero(
+                attention_mask[row_index].bool(), as_tuple=False
+            ).flatten()
+            supervised_positions = torch.nonzero(
+                supervised[row_index], as_tuple=False
+            ).flatten()
+            first = int(supervised_positions[0].item())
+            expected = attended[attended >= first]
+            if not torch.equal(supervised_positions, expected):
+                raise ValueError(
+                    "assistant supervision must be a contiguous attended suffix"
+                )
+        return labels
+
+    def forward_sft(
+        self,
+        input_ids: Tensor,
+        projected: ProjectedTokenBundle,
+        *,
+        labels: Tensor,
+        attention_mask: Tensor | None = None,
+        **model_kwargs: Any,
+    ) -> dict[str, Any]:
+        """Run teacher-forced SFT with loss only on the assistant suffix."""
+
+        self._validate_model_kwargs(model_kwargs)
+        model_inputs, audit = self.prepare_inputs(
+            input_ids, projected, attention_mask=attention_mask
+        )
+        placeholder_mask = audit["placeholder_mask"].to(input_ids.device)
+        normalized_labels = self._validate_assistant_labels(
+            input_ids,
+            labels,
+            model_inputs["attention_mask"],
+            placeholder_mask,
+        )
+        output = self.model(**model_inputs, **model_kwargs)
+        logits = self._extract_logits(output)
+        if logits.shape[:2] != input_ids.shape:
+            raise ValueError("causal LM logits must preserve input sequence shape")
+        shift_logits = logits[:, :-1].contiguous()
+        shift_labels = normalized_labels[:, 1:].contiguous()
+        loss = F.cross_entropy(
+            shift_logits.float().view(-1, shift_logits.shape[-1]),
+            shift_labels.view(-1),
+            ignore_index=-100,
+        )
+        parameter_audit = self.trainable_parameter_audit()
+        if not parameter_audit["trainable_boundary_pass"]:
+            raise PermissionError(
+                "unexpected trainable Qwen parameters: "
+                + ", ".join(
+                    parameter_audit["unexpected_trainable_parameter_names"]
+                )
+            )
+        return {
+            "loss": loss,
+            "logits": logits,
+            "model_output": output,
+            "audit": {
+                **audit,
+                "assistant_only_loss": True,
+                "supervised_token_count": normalized_labels.ne(-100)
+                .sum(dim=1)
+                .detach(),
+                "trainable_parameter_audit": parameter_audit,
+            },
+        }
+
+    def score_sequence(
+        self,
+        input_ids: Tensor,
+        projected: ProjectedTokenBundle,
+        target_ids: Tensor,
+        *,
+        attention_mask: Tensor | None = None,
+        target_attention_mask: Tensor | None = None,
+        return_audit: bool = False,
+        **model_kwargs: Any,
+    ) -> Tensor | tuple[Tensor, dict[str, Any]]:
+        """Return mean token log-likelihood for one target sequence per row."""
+
+        self._validate_model_kwargs(model_kwargs)
+        if input_ids.ndim != 2 or input_ids.shape[1] == 0:
+            raise ValueError("input_ids must be a non-empty [B,L] tensor")
+        if target_ids.ndim != 2 or target_ids.shape[0] != input_ids.shape[0]:
+            raise ValueError("target_ids must have shape [B,T]")
+        if target_ids.shape[1] == 0:
+            raise ValueError("target sequences must be non-empty")
+        placeholder_mask = self._placeholder_mask(input_ids)
+        if bool(target_ids.eq(self.placeholder_token_id).any()):
+            raise ValueError("target sequence must not contain placeholder tokens")
+        if attention_mask is None:
+            prompt_attention = torch.ones_like(input_ids, dtype=torch.long)
+        elif tuple(attention_mask.shape) != tuple(input_ids.shape):
+            raise ValueError("attention_mask must match input_ids")
+        else:
+            prompt_attention = attention_mask.to(
+                device=input_ids.device, dtype=torch.long
+            )
+        if target_attention_mask is None:
+            target_attention = torch.ones_like(target_ids, dtype=torch.long)
+        elif tuple(target_attention_mask.shape) != tuple(target_ids.shape):
+            raise ValueError("target_attention_mask must match target_ids")
+        else:
+            target_attention = target_attention_mask.to(
+                device=target_ids.device, dtype=torch.long
+            )
+        for name, mask in (
+            ("attention_mask", prompt_attention),
+            ("target_attention_mask", target_attention),
+        ):
+            if not bool(((mask == 0) | (mask == 1)).all()):
+                raise ValueError(f"{name} must contain only zero or one")
+        if not bool(prompt_attention[placeholder_mask].eq(1).all()):
+            raise ValueError(
+                "all 64 relation placeholders must have physical attention one"
+            )
+
+        batch_size = input_ids.shape[0]
+        prompt_lengths = prompt_attention.sum(dim=1)
+        target_lengths = target_attention.sum(dim=1)
+        if bool(prompt_lengths.eq(0).any() | target_lengths.eq(0).any()):
+            raise ValueError("every prompt and target must contain attended tokens")
+        full_lengths = prompt_lengths + target_lengths
+        full_length = int(full_lengths.max().item())
+        fill_id = int(target_ids[0, target_attention[0].bool()][0].item())
+        full_ids = torch.full(
+            (batch_size, full_length),
+            fill_value=fill_id,
+            dtype=input_ids.dtype,
+            device=input_ids.device,
+        )
+        full_attention = torch.zeros(
+            batch_size,
+            full_length,
+            dtype=torch.long,
+            device=input_ids.device,
+        )
+        prediction_positions: list[Tensor] = []
+        packed_targets: list[Tensor] = []
+        for row_index in range(batch_size):
+            prompt = input_ids[row_index, prompt_attention[row_index].bool()]
+            target = target_ids[row_index, target_attention[row_index].bool()]
+            prompt_length = int(prompt.numel())
+            target_length = int(target.numel())
+            full_ids[row_index, :prompt_length] = prompt
+            full_ids[
+                row_index, prompt_length : prompt_length + target_length
+            ] = target
+            full_attention[
+                row_index, : prompt_length + target_length
+            ] = 1
+            prediction_positions.append(
+                torch.arange(
+                    prompt_length - 1,
+                    prompt_length + target_length - 1,
+                    device=input_ids.device,
+                )
+            )
+            packed_targets.append(target)
+        output = self.forward(
+            full_ids,
+            projected,
+            attention_mask=full_attention,
+            **model_kwargs,
+        )
+        logits = self._extract_logits(output).float()
+        scores = []
+        for row_index, (positions, target) in enumerate(
+            zip(prediction_positions, packed_targets)
+        ):
+            selected = logits[row_index, positions].log_softmax(dim=-1)
+            if int(target.max().item()) >= selected.shape[-1]:
+                raise ValueError("target token ID exceeds causal LM vocabulary")
+            scores.append(
+                selected.gather(-1, target.unsqueeze(-1)).squeeze(-1).mean()
+            )
+        normalized = torch.stack(scores)
+        if not return_audit:
+            return normalized
+        return normalized, {
+            "normalization": "mean_token_log_likelihood",
+            "target_lengths": target_lengths.detach(),
+            "placeholder_count": placeholder_mask.sum(dim=1).detach(),
+            "pixel_inputs_used": False,
+        }
+
+    def generate_text(
+        self,
+        input_ids: Tensor,
+        projected: ProjectedTokenBundle,
+        *,
+        attention_mask: Tensor | None = None,
+        max_new_tokens: int = 128,
+        eos_token_id: int | Sequence[int] | None = None,
+        pad_token_id: int | None = None,
+        return_audit: bool = False,
+        **generation_kwargs: Any,
+    ) -> Any:
+        """Generate autoregressively after a single exact-64 embedding injection."""
+
+        self._validate_model_kwargs(generation_kwargs)
+        if max_new_tokens <= 0:
+            raise ValueError("max_new_tokens must be positive")
+        generate = getattr(self.model, "generate", None)
+        if generate is None or not callable(generate):
+            raise TypeError("model must provide generate()")
+        model_inputs, audit = self.prepare_inputs(
+            input_ids, projected, attention_mask=attention_mask
+        )
+        model_inputs["use_cache"] = True
+        model_inputs.pop("logits_to_keep", None)
+        generated = generate(
+            **model_inputs,
+            max_new_tokens=max_new_tokens,
+            eos_token_id=eos_token_id,
+            pad_token_id=pad_token_id,
+            do_sample=False,
+            **generation_kwargs,
+        )
+        if not return_audit:
+            return generated
+        decoded = None
+        if self.tokenizer is not None and isinstance(generated, Tensor):
+            decoded = self.tokenizer.batch_decode(
+                generated.detach().cpu(), skip_special_tokens=True
+            )
+        return generated, {
+            **audit,
+            "use_cache": True,
+            "visual_injection_calls": 1,
+            "subsequent_placeholder_replacements": 0,
+            "pixel_inputs_used": False,
+            "decoded_text": decoded,
+        }
+
+    @torch.no_grad()
+    def audit_first_step_cache_equivalence(
+        self,
+        input_ids: Tensor,
+        projected: ProjectedTokenBundle,
+        *,
+        attention_mask: Tensor | None = None,
+        atol: float = 1e-5,
+        rtol: float = 1e-5,
+    ) -> dict[str, Any]:
+        """Verify that enabling a fresh cache does not change first-step logits."""
+
+        model_inputs, _ = self.prepare_inputs(
+            input_ids, projected, attention_mask=attention_mask
+        )
+        uncached = dict(model_inputs)
+        cached = dict(model_inputs)
+        cached["use_cache"] = True
+        uncached_logits = self._extract_logits(self.model(**uncached))
+        cached_logits = self._extract_logits(self.model(**cached))
+        last_uncached = uncached_logits[:, -1].float()
+        last_cached = cached_logits[:, -1].float()
+        maximum_absolute_difference = float(
+            (last_uncached - last_cached).abs().max().item()
+        )
+        passed = torch.allclose(
+            last_uncached, last_cached, atol=atol, rtol=rtol
+        )
+        return {
+            "passed": bool(passed),
+            "atol": atol,
+            "rtol": rtol,
+            "maximum_absolute_difference": maximum_absolute_difference,
+            "placeholder_count": self.token_budget,
+            "pixel_inputs_used": False,
+        }
+
+
+def apply_attention_lora(
+    model: nn.Module,
+    *,
+    rank: int = 16,
+    alpha: int = 32,
+    dropout: float = 0.05,
+    target_modules: Sequence[str] = (
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+    ),
+) -> nn.Module:
+    """Freeze Qwen and install the preregistered attention-only PEFT LoRA."""
+
+    if rank <= 0 or alpha <= 0 or not 0.0 <= dropout < 1.0:
+        raise ValueError("invalid LoRA configuration")
+    if tuple(target_modules) != ("q_proj", "k_proj", "v_proj", "o_proj"):
+        raise ValueError("PRTA-Gen R40 permits attention-only LoRA targets")
+    try:
+        from peft import LoraConfig, TaskType, get_peft_model
+    except ImportError as error:
+        raise RuntimeError(
+            "PRTA-Gen LoRA requires the optional 'peft' dependency"
+        ) from error
+    model.requires_grad_(False)
+    configured = get_peft_model(
+        model,
+        LoraConfig(
+            task_type=TaskType.CAUSAL_LM,
+            r=rank,
+            lora_alpha=alpha,
+            lora_dropout=dropout,
+            target_modules=list(target_modules),
+            bias="none",
+        ),
+    )
+    audit = frozen_parameter_audit(configured)
+    trainable = audit["trainable_parameter_names"]
+    if not trainable or any("lora_" not in name for name in trainable):
+        raise PermissionError("LoRA installation changed the trainable boundary")
+    return configured
 
 
 # The implementation is not tied to a particular Transformers class; this

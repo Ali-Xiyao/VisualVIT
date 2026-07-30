@@ -994,3 +994,40 @@ preserving the encoder's static medical semantics.
   active. A later poll found unrelated tooth9 PID 3664 using GPU 1; it was not
   interrupted. A future R40 resume must archive the incomplete boundaries and
   relaunch the same frozen A2 tasks fresh before advancing the fixed queue.
+
+## Phase 8 PRTA-Gen authority and namespace
+
+- The supplied design correctly reclassifies R39 as a frozen-Qwen
+  five-candidate sequence scorer: it demonstrated progression transfer through
+  exact-64 PRTA tokens, not unconstrained or evidence-grounded generation.
+- The next valid scientific gate is representation sufficiency, not immediate
+  LoRA report generation. Laterality, coarse anatomy, degree, and dynamic
+  evidence retrieval must each be measured before those fields are authorized
+  in generated text.
+- The proposed generative system keeps BiomedCLIP, PRTA, alignment, and the
+  exact-64 compiler frozen; trains the projector plus attention-only Qwen LoRA;
+  masks system/user/visual-prefix labels; and optimizes assistant-token causal
+  loss. G-CMCP and temporal-reversal losses belong after the R40 readiness
+  gate, not in the first adapter smoke.
+- A naming collision exists: `configs/r40/r40_component_and_baseline_v1.json`
+  already freezes a post-R39 component/baseline protocol that the user paused.
+  The new work will live under a distinct `configs/prta_gen/` namespace and
+  will refer to its stages as PRTA-Gen R40A/R40B without mutating the older
+  frozen config or its incomplete runtime artifacts.
+- The revealed 483 cohort is historical/descriptive only for all PRTA-Gen
+  development. Gold/external outcomes remain sealed. Existing R37.1
+  training-side patients and caches may be considered only after a new
+  patient-disjoint roster and label-availability audit pass.
+- The R37 transition annotations contain a reliable original comparative
+  sentence plus finding/progression, but no pre-existing trusted laterality,
+  coarse-anatomy, or degree columns. The new extractor therefore masks the
+  finding surface, accepts only literal location/degree expressions, maps
+  conflicts or absence to `Unspecified`, and never synthesizes evidence.
+- `GenerativeVLMAdapter` now supports teacher-forced assistant-only SFT,
+  arbitrary target-sequence likelihood, and autoregressive `generate()` from
+  a single injected exact-64 prefix. Its runtime audit rejects pixel/image/
+  video paths and any trainable Qwen parameter outside registered LoRA names.
+- The optional PEFT entrypoint freezes the model first and permits exactly
+  `q_proj/k_proj/v_proj/o_proj` with rank 16, alpha 32, and dropout 0.05 in
+  the frozen config. G-CMCP code is present only as a later-gated loss helper;
+  the config keeps R41/R42 locked.

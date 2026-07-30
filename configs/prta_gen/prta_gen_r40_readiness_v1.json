@@ -1,0 +1,171 @@
+{
+  "schema": "visualvit.prta-gen.r40-readiness-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R40_READINESS_V1",
+  "protocol_id": "prta-gen-r40a-r40b-v1",
+  "registered_after": "GO_R39_FROZEN_VLM_TRANSFER",
+  "claim_role": "outcome-independent-generative-readiness-engineering",
+  "lineage": {
+    "r39_config": "configs/r39/r39_frozen_vlm_transfer_v1.json",
+    "r37_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+    "source_roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r40_outcome_independent_v1\\transitions",
+    "required_roster_status": "READY_R40_OUTCOME_INDEPENDENT_ROSTER",
+    "training_patients": 8787,
+    "development_patients": 1500,
+    "training_examples": 33677,
+    "development_examples": 5814,
+    "may_reuse_revealed_r39_300_dev_for_smoke": false
+  },
+  "r40a_information_audit": {
+    "token_interface": "unchanged_r38_exact64",
+    "frozen_prta_seed": 17,
+    "summary_features": [
+      "mean_state_tokens_0_19",
+      "mean_transition_tokens_20_39",
+      "mean_relation_tokens_40_59"
+    ],
+    "probes": {
+      "progression": [
+        "Stable",
+        "Improved",
+        "Worse",
+        "New",
+        "Resolved"
+      ],
+      "laterality": [
+        "Left",
+        "Right",
+        "Bilateral",
+        "Midline",
+        "Unspecified"
+      ],
+      "anatomy": [
+        "Upper lung",
+        "Middle lung",
+        "Lower lung",
+        "Hilar",
+        "Pleural",
+        "Cardiac silhouette",
+        "Mediastinal",
+        "Diffuse",
+        "Unspecified"
+      ],
+      "degree": [
+        "Minimal",
+        "Mild",
+        "Moderate",
+        "Marked",
+        "Unspecified"
+      ],
+      "evidence_retrieval": "exact source comparative sentence versus within-finding cross-patient candidates"
+    },
+    "label_policy": {
+      "source": "literal current-report comparative sentence only",
+      "infer_from_finding_name": false,
+      "llm_label_completion": false,
+      "conflicting_explicit_labels": "Unspecified",
+      "missing_explicit_labels": "Unspecified",
+      "evidence_may_be_generated_when_source_sentence_missing": false,
+      "minimum_training_rows_per_explicit_class": 100,
+      "minimum_development_rows_per_explicit_class": 30,
+      "minimum_tier_a_training_rows": 500,
+      "minimum_tier_a_development_rows": 100,
+      "unsupported_class_action": "mark_field_unavailable_without_resplitting"
+    },
+    "controls": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "within_finding_cross_patient_prior_shuffle"
+    ],
+    "field_unlock": {
+      "progression": "macro_f1_exceeds_query_only_and_prior_shuffle",
+      "laterality": "macro_f1_exceeds_query_only_and_prior_shuffle",
+      "anatomy": "macro_f1_exceeds_query_only_and_prior_shuffle",
+      "degree": "macro_f1_exceeds_query_only_and_prior_shuffle",
+      "evidence": "correct_sentence_retrieval_exceeds_controls"
+    }
+  },
+  "r40b_adapter": {
+    "class": "GenerativeVLMAdapter",
+    "required_methods": [
+      "forward_sft",
+      "generate_text",
+      "score_sequence"
+    ],
+    "model": "Qwen3-VL-4B-Instruct",
+    "model_path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "local_files_only": true,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "token_budget": 64,
+    "placeholder_token_id": 151662,
+    "pixel_image_video_inputs_used": false,
+    "frozen_modules": [
+      "BiomedCLIP",
+      "PRTA adapters",
+      "current-to-prior alignment",
+      "exact-64 compiler",
+      "Qwen vision tower",
+      "Qwen base weights",
+      "Qwen embeddings",
+      "Qwen LM head"
+    ],
+    "trainable_modules": [
+      "TierTokenProjector",
+      "Qwen language attention LoRA"
+    ],
+    "lora": {
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "rank": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "learning_rate": 0.00002
+    },
+    "projector_learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "batch_size": 1,
+    "gradient_accumulation": 32,
+    "effective_batch_size": 32,
+    "epochs": 3,
+    "max_target_length": 128,
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "first_smoke_rows": 32,
+    "maximum_smoke_rows": 64,
+    "assistant_only_loss": true,
+    "schema_validity_required": 1.0,
+    "early_stopping": false,
+    "seed_selection": false
+  },
+  "future_locked_losses": {
+    "r41_structured_sft_unlocked": false,
+    "r42_g_cmcp_unlocked": false,
+    "r42_time_reversal_unlocked": false,
+    "g_cmcp_margin": 0.2,
+    "g_cmcp_weight": 0.25,
+    "time_reversal_weight": 0.25
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1",
+    "target_audit": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit",
+    "token_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens",
+    "adapter_smoke": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\adapter_smoke"
+  },
+  "firewall": {
+    "revealed_483_test_may_select_any_setting": false,
+    "sealed_gold_or_external_may_be_read": false,
+    "r37_1_observed_validation_may_select_any_setting": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false,
+    "checkpoint_hashes_recomputed": false,
+    "old_r40_component_queue_resumed": false
+  }
+}

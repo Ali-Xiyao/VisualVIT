@@ -20,6 +20,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=9"]
+generation = ["peft>=0.18"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

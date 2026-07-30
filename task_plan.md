@@ -318,6 +318,32 @@ smokes during iteration.
 - **Status:** paused_by_user (2026-07-30 11:52 +08:00; no R40 GPU
   process or monitor remains active)
 
+### Phase 8 — PRTA-Gen generative readiness (new R40A/R40B namespace)
+
+- [x] Treat the supplied PRTA-Gen judgment as the new design authority while
+  preserving the completed R39 result and the separately paused R40
+  component/baseline protocol.
+- [x] Freeze an outcome-independent PRTA-Gen readiness protocol that forbids
+  the revealed 483-test and sealed gold/external outcomes from development,
+  selection, thresholding, or checkpoint choice.
+- [x] Implement R40A token-information target/audit contracts for progression,
+  laterality,
+  coarse anatomy, degree, and evidence-sentence retrieval, with current-only,
+  query-only, and prior-shuffle controls and fail-closed label availability.
+- [x] Implement `GenerativeVLMAdapter.forward_sft`,
+  `GenerativeVLMAdapter.score_sequence`, and
+  `GenerativeVLMAdapter.generate_text` while preserving exact-64,
+  no-pixel/video, prefix-label masking, and trainable-parameter firewalls.
+- [x] Add focused unit and integration tests for exact placeholder injection,
+  assistant-only causal loss, generation stopping, cached/uncached first-step
+  agreement, sequence scoring, and projector/LoRA-only gradients.
+- [ ] Build and validate only an outcome-free R40A/R40B engineering package;
+  freeze and commit the protocol before any GPU launch.
+- [ ] Run the smallest authorized information-audit and 32–64-row overfit
+  smoke only if structural/data/license gates pass and GPUs are available;
+  stop before R41 formal SFT unless a separate frozen gate unlocks it.
+- **Status:** in_progress
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -384,9 +410,10 @@ smokes during iteration.
 | Initial R40 roster tests omitted the required `current_view` fixture field and used guessed rather than canonical transition example IDs | 1 | Add the field and generate CMCP target IDs with the production `stable_hash` namespace; production roster code was unchanged |
 | First direct R40 roster CLI stopped before reading source rows because the standalone builder did not insert the local `src` path | 1 | Add the same scoped path bootstrap used by other standalone scripts, keep the frozen roster rule unchanged, and rerun only after tests/commit/push |
 | First R40 launch preflight matched its own PowerShell command line as an active `--r40-component` process | 1 | Exclude the current preflight PID; no launcher, status, output, or GPU job had started |
+| First PRTA-Gen literal-target test masked the word `lung` together with `opacity`, hiding an explicit `lower lung` region | 1 | Narrow only the finding-surface mask to the lesion noun; keep missing/conflicting region labels fail-closed as `Unspecified` |
 
 ## Next Step
 
-Monitor the active A2 Seeds 17/29 without using interim outcomes, then fill
-each free GPU from the frozen remaining component queue while implementing the
-already registered strong-baseline and VLM-reversal surfaces.
+Commit and push the frozen PRTA-Gen R40A/R40B implementation, then run only
+the literal-target support audit on the outcome-independent roster and use its
+pre-frozen support rules to decide which information probes may be built.
