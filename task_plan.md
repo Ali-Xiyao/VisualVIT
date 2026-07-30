@@ -459,10 +459,10 @@ smokes during iteration.
 - [x] Audit only receipt-level counts, class balance, patient disjointness,
   exclusion count, firewalls, file hash, and runtime contents without printing
   patient identifiers.
-- [ ] Update the planning/status/preflight handoff to the frozen roster
+- [x] Update the planning/status/preflight handoff to the frozen roster
   receipt, validate diffs, commit, and push.
 - **Status:** `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT` — real roster frozen and
-  audited; Seed/GPU execution remains locked.
+  audited, closure pushed; Seed/GPU execution remains locked.
 
 ## Errors Encountered
 

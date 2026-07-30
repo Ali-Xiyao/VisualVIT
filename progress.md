@@ -1364,3 +1364,7 @@
 - Closure verification passes: 26 R40C/R40B.4 focused tests, repository-wide
   Ruff, compileall, config JSON parsing, modified-document local links, and
   `git diff --check`.
+- Committed and pushed the roster receipt, CLI evidence-hygiene fix, authority
+  docs, and planning evidence as `b4837eb`. Phase 11 is closed at
+  `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT`; the next gate is separate authorization
+  for Seed 17, not an automatic GPU launch.
