@@ -263,10 +263,13 @@ smokes during iteration.
   projector training, pre-reveal sealed prediction freezing, the one-shot
   483-label reveal, and final three-seed patient bootstrap.
 - [x] Commit and push R39 and launch the duplicate-safe two-GPU chain.
-- [ ] Monitor the active chain and stop directly on its
+- [x] Monitor the active chain and stop directly on its
   registered scientific GO/STOP.
-- [ ] Keep gold sealed pending the separately registered post-R39 boundary.
-- **Status:** RUNNING_R39_OUTCOME_FREE_CACHE
+- [x] Keep gold sealed pending the separately registered post-R39 boundary.
+- [x] Record the one-shot 483-patient result, interface audit, engineering
+  receipt repair, limitations, and terminal evidence in the active proposal,
+  result authority, and a dedicated Chinese R39 report.
+- **Status:** `GO_R39_FROZEN_VLM_TRANSFER_GOLD_SEALED`
 
 ## Errors Encountered
 
@@ -302,6 +305,7 @@ smokes during iteration.
 | Both Block-8 parts PASSed, but Windows PowerShell exposed null `ExitCode` values and the launcher misclassified them as failures | 1 | Require PASS part manifests, normalize only null exit codes backed by those manifests, test the launcher logic, merge the existing parts without recaching, and resume the watcher |
 | Two isolated redirected exit-code diagnostics were rejected by command policy because they combined temporary-file cleanup with a child shell | 2 | Stop probing through nested temp cleanup; test manifest-backed recovery through repository-level helpers and fixtures |
 | A second manifest-inspection command repeated the PowerShell direct-`foreach` pipeline parse error | 2 | Reuse the already-recorded explicit-array pattern and keep subsequent commands single-purpose |
+| The terminal R39 validation again piped a PowerShell `foreach` block directly | 3 | Rerun with an explicit `$pidRows` array; terminal status, firewalls, diffs, PIDs, and both GPUs then validated successfully |
 | The first cached A1 CPU probe passed FP16 cache tensors directly to an FP32 linear probe and stopped on a dtype mismatch | 1 | Cast cached or direct canonical features to FP32 at the probe tensor boundary, add an FP16 regression test, and resume only the cached probe |
 | Focused preflight tests invoked through the standalone `pytest.exe` could not import the repository's namespace-style `scripts` modules | 1 | Use the repository's established `python -m pytest` invocation so the workspace root is on `sys.path`; Ruff and diff checks already passed |
 | The partial-output/spec-drift test fixture created a nested temporary transition directory without its parent | 1 | Add `parents=True` to fixture directory creation; production preflight logic was not involved |
@@ -327,8 +331,7 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the frozen R39 implementation, verify both GPUs and all fresh
-runtime roots, then launch the duplicate-safe two-GPU pipeline. It must freeze
-all three projector checkpoints and all three sealed prediction sets before
-the single 483-label reveal, aggregate A6 against frozen A0 plus the three
-controls, and report direct scientific GO/STOP without touching gold.
+R39 has reached its registered terminal scientific GO. Do not tune or rerun
+against the revealed 483-patient outcome. Preserve the frozen artifacts and
+one-shot reveal receipt, keep gold quarantined, and treat any future gold or
+external confirmation as a separately registered descriptive study.

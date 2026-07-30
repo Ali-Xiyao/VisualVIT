@@ -753,3 +753,19 @@
   six outcome-free token caches and fresh downstream roots, then launched
   projector Seeds 17/29 on GPUs 0/1 as PIDs 19020/28556 under resume parent
   22396. Protected 483 labels and gold remain unread.
+- The guarded resume completed all three unchanged projectors and froze all
+  three outcome-blind sealed prediction sets before label access. The
+  registered one-shot 483-label reveal then ran exactly once and aggregation
+  exited 0.
+- Terminal status is `GO_R39_FROZEN_VLM_TRANSFER`: A6-frozen-A0 +15.01 pp
+  (95% CI [+13.80,+16.14]), A6-current-only +3.22 pp
+  ([+2.47,+4.02]), A6-query-only +15.77 pp ([+14.59,+16.84]), and
+  A6-prior-shuffle +2.19 pp ([+1.39,+3.05]). Every Seed 17/29/43 effect is
+  positive for every registered comparison.
+- Interface and firewall audits PASS: zero trainable VLM parameters, no
+  pixels, exact 64-token budget, matched prompt/projector capacity, predictions
+  frozen before reveal, one reveal only, no unchanged hash recomputation, and
+  gold unread. Both GPUs are idle and no R39 workers remain.
+- Added `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md` and synchronized the
+  proposal, result authority, findings, progress, and task plan. The experiment
+  stops here; any gold/external study needs a new frozen registration.

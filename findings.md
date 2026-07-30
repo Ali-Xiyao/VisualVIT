@@ -782,3 +782,32 @@ preserving the encoder's static medical semantics.
   are valid PASS artifacts with labels absent. At 2026-07-30 05:51 +08:00 the
   resume launcher started as PID 22396; projector Seeds 17/29 are now fresh
   processes 19020/28556 on GPUs 0/1. The 483 labels and gold remain sealed.
+- R39 reached the registered terminal verdict
+  `GO_R39_FROZEN_VLM_TRANSFER`. All three projector checkpoints and all three
+  outcome-blind sealed prediction sets were frozen before the single
+  483-label reveal. Gold remained unread.
+- On 483 patients / 4,821 rows, A6 versus frozen A0 gained +15.01 pp macro-F1
+  with patient-bootstrap 95% CI [+13.80,+16.14]. A6 versus current-only gained
+  +3.22 pp [+2.47,+4.02], versus query-only +15.77 pp
+  [+14.59,+16.84], and versus prior-shuffle +2.19 pp [+1.39,+3.05].
+  Every comparison had positive effects in Seeds 17/29/43 and passed its
+  preregistered pooled +2 pp/positive-CI gate.
+- A6 true-pair macro-F1 was 0.2096/0.2502/0.3089 for Seeds 17/29/43. The
+  corresponding frozen-A0 values were 0.1442/0.0894/0.0848 and current-only
+  values were 0.1827/0.2000/0.2894. These modest and seed-dependent absolute
+  scores limit the claim to registered relative transfer, not clinical
+  deployment or gold generalization.
+- The final interface audit PASSed: Qwen trainable parameters 0, no pixel
+  input, exactly 64 tokens, matched prompt and projector capacity, and sealed
+  predictions frozen before reveal. The reveal count is exactly one; source,
+  per-shard, and checkpoint hashes were not recomputed.
+- The parameter-count incident was purely a pre-training engineering receipt
+  mismatch: 7,948,800 came from an input-width-16 smoke while the unchanged
+  768-to-2560 projector has 9,873,920 parameters. No protected outcome had
+  been read, all valid outcome-free caches were reused, and no frozen
+  architecture, loss, seed, control, threshold, or bootstrap choice changed.
+- The complete registered chain is now R37.1 three-seed internal GO → R37C
+  one-shot 300-dev GO → R38 fixed-64 survival GO → R39 frozen-VLM transfer
+  GO. This confirms TIER-CXR-VLM under the frozen silver-cohort protocol;
+  expert gold remains quarantined and cannot be used to strengthen the claim
+  without a separately registered descriptive confirmation.

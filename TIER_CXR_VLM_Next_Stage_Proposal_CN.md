@@ -1,18 +1,52 @@
 # TIER-CXR-VLM：面向纵向胸片视觉语言模型的扰动一致性分层时间视觉 Token 路由
 
-> **文档性质：** 正式 Proposal / R37.1 当前交接文档 / 历史方案谱系
+> **文档性质：** 正式 Proposal / R39 终局交接文档 / 历史方案谱系
 > **原始日期：** 2026-07-26
-> **当前状态更新：** 2026-07-29
+> **当前状态更新：** 2026-07-30
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** `18353da`
-> **当前方法版本：** **PRTA-CXR R37.1**
+> **当前结果提交：** R39 frozen lineage `be10d9f` + receipt-only repair
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
 ---
 
-# 当前执行状态：R37.1 两 Seed 内部 PASS
+# 当前执行状态：R39 Frozen-VLM Transfer 科学 GO
+
+> 2026-07-30 终局权威更新：下方原“两 Seed内部 PASS”内容作为历史快照
+> 保留；当前链路已经按冻结顺序完成 R37.1 三 Seed、R37C 300-dev、
+> R38 exact-64 survival 和 R39 one-shot 483-test。
+
+```text
+GO_R37_1_THREE_SEED_INTERNAL_QUALIFICATION
+→ GO_R37C_ONE_SHOT_DEV
+→ GO_R38_FIXED64_SURVIVAL
+→ GO_R39_FROZEN_VLM_TRANSFER
+```
+
+R39 使用 483 patients / 4,821 rows，三 Seed patient-cluster bootstrap
+2,000 次（seed 39001）。主比较 A6 versus frozen A0 为 +15.01 pp，
+95% CI [+13.80,+16.14]；current-only、query-only、prior-shuffle 三个
+注册控制也全部通过，分别为 +3.22、+15.77、+2.19 pp，CI 下界均大于
+零且每个 Seed 方向为正。
+
+全部三套 projector checkpoint 和 outcome-blind sealed prediction 在
+唯一一次 483-label reveal 前冻结。Qwen 的可训练参数为 0，无 pixel
+bypass，视觉接口严格为 64 tokens，prompt 与 projector capacity 匹配。
+Gold outcomes 仍未读取。
+
+因此，可以确认 **TIER-CXR-VLM 在本项目预注册的 silver cohort、
+固定 Qwen/64-token/projector/seed/control 边界内有效，并通过 frozen-VLM
+transfer gate**。这不等价于 gold 外部泛化、临床可部署或绝对性能已经充分；
+三 Seed A6 absolute macro-F1 为 0.2096/0.2502/0.3089，仍有明显 Seed
+差异。后续若做 gold，只能作为另行预注册的描述性确认，不能回头调参。
+
+完整终局报告：`reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`。
+
+---
+
+# 历史执行快照：R37.1 两 Seed 内部 PASS
 
 > 本节是截至 2026-07-29 的当前权威状态；后续 R32–R36 内容保留为
 > TIER-CXR-VLM 的历史设计与失败谱系，不得覆盖本节结论。
@@ -66,7 +100,7 @@ PASS_R37_1_TWO_SEED_INTERNAL_SCREEN
 方向一致的正确-prior收益，并优于 capacity-matched A0”这一内部描述性
 结论。它不等价于原协议要求的三 Seed scientific GO。
 
-## 为什么暂不解锁 300-dev、483-test、gold、R38/R39
+## 为什么当时暂不解锁 300-dev、483-test、gold、R38/R39
 
 这些不是当前训练缺失的数据，而是不同用途的受保护后续门：
 
@@ -78,7 +112,10 @@ PASS_R37_1_TWO_SEED_INTERNAL_SCREEN
 | R38 | 固定 64-token survival | 必须先有被完整资格化的 R37 表示 |
 | R39 | frozen-VLM transfer | 必须先通过 R38，且 VLM/prompt/projector 全冻结 |
 
-因此“暂不解锁”表示主动维持防泄漏边界，不表示 R37.1 工程失败。当前推荐
+以下是 2026-07-29 两 Seed快照下的原始判断；300-dev、483-test、R38 和
+R39 后来已按顶部终局更新中的注册顺序完成，gold 仍保持锁定。
+
+因此“暂不解锁”表示主动维持防泄漏边界，不表示 R37.1 工程失败。当时推荐
 动作是整理 proposal、结果表和 case study，并以两 Seed 描述性内部 PASS
 停止 GPU 实验。若未来需要 confirmatory scientific GO，唯一协议一致路径是
 补齐 Seed 43 的 A6/A0 和原三 Seed patient bootstrap，再重新判断是否允许
