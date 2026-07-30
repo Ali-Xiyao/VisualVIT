@@ -297,7 +297,7 @@ smokes during iteration.
 - [x] Freeze a new protocol that excludes the revealed 483-test and all gold
   outcomes from model, hyperparameter, threshold, seed, and checkpoint
   selection.
-- [ ] Audit the available patient-disjoint development roster and select a
+- [x] Audit the available patient-disjoint development roster and select a
   valid execution cohort without reading protected outcomes.
 - [x] Implement and test a matched A2/A3/A4/A5/A6 component-ablation bundle
   with identical cache, adapter capacity, optimization budget, seeds, and
@@ -308,7 +308,7 @@ smokes during iteration.
   unequal pixel/token compute reported separately.
 - [x] Freeze the VLM-level temporal-reversal audit and its mapping/statistics
   before any new inference.
-- [ ] Run structural preflight, process/GPU checks, and focused tests; commit
+- [x] Run structural preflight, process/GPU checks, and focused tests; commit
   and push the frozen protocol before any formal GPU execution.
 - [ ] Launch only protocol-authorized jobs on the two GPUs, monitor without
   duplicating processes, and stop directly on engineering or scientific
@@ -382,9 +382,10 @@ smokes during iteration.
 | First combined verification-document patch omitted valid patch-line prefixes between file hunks | 1 | Split the update into correctly delimited file hunks and reapply without changing content |
 | Initial R40 roster tests omitted the required `current_view` fixture field and used guessed rather than canonical transition example IDs | 1 | Add the field and generate CMCP target IDs with the production `stable_hash` namespace; production roster code was unchanged |
 | First direct R40 roster CLI stopped before reading source rows because the standalone builder did not insert the local `src` path | 1 | Add the same scoped path bootstrap used by other standalone scripts, keep the frozen roster rule unchanged, and rerun only after tests/commit/push |
+| First R40 launch preflight matched its own PowerShell command line as an active `--r40-component` process | 1 | Exclude the current preflight PID; no launcher, status, output, or GPU job had started |
 
 ## Next Step
 
-Commit and push the frozen R40 protocol/roster builder/component runner, then
-build the one-time outcome-independent roster and run its fail-closed
-structural preflight before launching the first two component jobs.
+Monitor the active A2 Seeds 17/29 without using interim outcomes, then fill
+each free GPU from the frozen remaining component queue while implementing the
+already registered strong-baseline and VLM-reversal surfaces.

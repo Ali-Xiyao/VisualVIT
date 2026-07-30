@@ -855,3 +855,21 @@
 - The first roster CLI exited 1 before importing `visualvit`; no roster output
   directory was created. Added only the standard standalone-script `src` path
   bootstrap, with the frozen split rule and all settings unchanged.
+- The frozen roster then passed with 8,787/1,500 train/development patients,
+  33,677/5,814 examples, all five labels above minimum support, full CMCP
+  coverage over 19,994 dynamic examples, and every protected/hash firewall
+  false.
+- The first launch preflight self-matched its own command text and stopped
+  before spawning either launcher. Both GPUs and all R40 component output
+  paths remained untouched; retry excludes only the current preflight PID.
+- 2026-07-30 10:58 +08:00: after three clean GPU polls and an explicit
+  duplicate-process check, launched A2 Seed 17 on cuda:0 and Seed 29 on
+  cuda:1. Launcher PIDs are 29212/5552 and Python PIDs are 26336/30980.
+- Both status files report `RUNNING_R40_COMPONENT_SEED`, both stderr logs are
+  empty, both Python processes are responsive, and every 300-dev/483/gold/hash
+  firewall remains false. These are engineering progress checks only; no
+  interim development metric has been inspected.
+- Created the 20-minute `r40-component-baseline-monitor` heartbeat. It fills
+  free GPUs from a fixed preregistered variant/Seed queue, forbids
+  outcome-dependent reordering or early stopping, and continues the already
+  frozen strong-baseline/reversal implementation after fail-closed tests.
