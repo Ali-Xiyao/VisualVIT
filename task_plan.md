@@ -414,6 +414,7 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the frozen PRTA-Gen R40A/R40B implementation, then run only
-the literal-target support audit on the outcome-independent roster and use its
-pre-frozen support rules to decide which information probes may be built.
+Commit and push the post-support R40A probe/cache freeze, then run the
+pre-frozen 64-row development exact-64 cache smoke on the free GPU only.
+Validate its structural receipt before deciding whether to build the full
+training/development token caches.

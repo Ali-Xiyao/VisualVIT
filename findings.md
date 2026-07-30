@@ -1031,3 +1031,18 @@ preserving the encoder's static medical semantics.
   `q_proj/k_proj/v_proj/o_proj` with rank 16, alpha 32, and dropout 0.05 in
   the frozen config. G-CMCP code is present only as a later-gated loss helper;
   the config keeps R41/R42 locked.
+- The committed literal-target audit passed on 33,677 training and 5,814
+  development rows from 8,787/1,500 disjoint patients. No protected cohort or
+  old R40 process was touched.
+- Supported probe classes under the pre-frozen thresholds are all five
+  progression classes; Left/Right/Bilateral; Minimal/Mild/Moderate/Marked;
+  and six coarse anatomy classes (Upper lung, Lower lung, Hilar, Cardiac
+  silhouette, Mediastinal, Diffuse).
+- Midline laterality, Middle lung, and Pleural lack frozen support; they stay
+  excluded. `Unspecified` rows are not converted into pseudo-labels. The audit
+  produced 17,710/3,049 Tier-A training/development rows, so evidence sentence
+  retrieval may be probed, but evidence generation remains locked.
+- The post-support probe freeze selects exact-64 PRTA Seed 17 only for the
+  representation audit, a within-partition/finding cross-patient shuffle with
+  Seed 40011, and a deterministic 64-row cache smoke before any full cache.
+  Probe performance has not been observed.

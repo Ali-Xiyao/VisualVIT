@@ -1,0 +1,119 @@
+{
+  "schema": "visualvit.prta-gen.r40a-probe-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R40A_PROBE_AFTER_TARGET_SUPPORT",
+  "protocol_id": "prta-gen-r40a-probe-v1",
+  "upstream_config": "configs/prta_gen/prta_gen_r40_readiness_v1.json",
+  "upstream_target_audit": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit\\audit.json",
+  "required_target_status": "PASS_PRTA_GEN_R40A_TARGET_SUPPORT",
+  "selection_basis": "pre_frozen_literal_support_thresholds_only_no_probe_metric_observed",
+  "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+  "frozen_prta_seed": 17,
+  "block8_cache_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_block8_token_cache",
+  "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+  "target_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit",
+  "token_cache_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens",
+  "prior_shuffle": {
+    "seed": 40011,
+    "within_partition": true,
+    "within_finding": true,
+    "cross_patient": true,
+    "outcome_used": false
+  },
+  "token_cache": {
+    "batch_size": 8,
+    "shard_size": 256,
+    "dtype": "float16",
+    "variants": [
+      "true_pair",
+      "current_only",
+      "prior_shuffle"
+    ],
+    "smoke_rows": 64,
+    "smoke_order": "sha256(prta-gen-r40a-token-smoke-v1|example_id)",
+    "formal_rows": {
+      "training": 33677,
+      "development": 5814
+    }
+  },
+  "supported_probe_classes": {
+    "progression": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "laterality": [
+      "Left",
+      "Right",
+      "Bilateral"
+    ],
+    "anatomy": [
+      "Upper lung",
+      "Lower lung",
+      "Hilar",
+      "Cardiac silhouette",
+      "Mediastinal",
+      "Diffuse"
+    ],
+    "degree": [
+      "Minimal",
+      "Mild",
+      "Moderate",
+      "Marked"
+    ]
+  },
+  "excluded_as_unsupported": {
+    "laterality": [
+      "Midline",
+      "Unspecified"
+    ],
+    "anatomy": [
+      "Middle lung",
+      "Pleural",
+      "Unspecified"
+    ],
+    "degree": [
+      "Unspecified"
+    ]
+  },
+  "probe": {
+    "features": "concat(mean(tokens[0:20]),mean(tokens[20:40]),mean(tokens[40:60]))",
+    "input_width": 2304,
+    "classifier": "single_linear_layer",
+    "epochs": 100,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "early_stopping": false,
+    "checkpoint_selection": false,
+    "controls": [
+      "current_only",
+      "query_only_finding_one_hot",
+      "prior_shuffle"
+    ],
+    "patient_bootstrap_replicates": 2000,
+    "patient_bootstrap_seed": 40001
+  },
+  "field_unlock": {
+    "requires_all_three_probe_seeds_positive_against_query_only": true,
+    "requires_all_three_probe_seeds_positive_against_prior_shuffle": true,
+    "requires_patient_bootstrap_ci_lower_above_zero": true,
+    "unsupported_classes_may_be_reintroduced": false,
+    "evidence_generation_unlocked": false
+  },
+  "firewall": {
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false,
+    "checkpoint_hashes_recomputed": false,
+    "old_r40_component_queue_resumed": false
+  }
+}

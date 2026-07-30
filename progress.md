@@ -922,3 +922,19 @@
 - Focused validation passes: 23 tests, Ruff, compileall, and
   `git diff --check`. No Qwen load, GPU process, protected-outcome read, hash
   recomputation, or old R40 queue resume occurred.
+- Committed and pushed the frozen readiness package as `746a0c2`.
+- Ran the committed CPU-only target audit. It returned
+  `PASS_PRTA_GEN_R40A_TARGET_SUPPORT` for 33,677/5,814 rows and
+  8,787/1,500 patient-disjoint train/development patients, with every
+  protected/hash/old-R40 firewall false.
+- Froze a separate post-support R40A probe spec before observing any probe
+  metric. It fixes supported class registries, PRTA Seed 17, prior-shuffle
+  Seed 40011, exact-64 pooling, three linear-probe Seeds, and patient
+  bootstrap settings.
+- Implemented the exact-64 token-cache runner for true-pair, current-only, and
+  within-finding cross-patient prior-shuffle branches. The runner reuses the
+  frozen Block-8 cache/checkpoint, stores no labels or sentences, and has a
+  deterministic 64-row structural smoke mode.
+- Validation passes for the post-support package: 26 focused tests, Ruff,
+  compileall, CLI help, and `git diff --check`. GPU 0 was idle at the last
+  check; GPU 1 was occupied by an unrelated job and remains untouched.
