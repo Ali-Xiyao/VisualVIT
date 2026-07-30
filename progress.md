@@ -1211,3 +1211,18 @@
 - Repeated the real-tokenizer preflight with safely constructed JSON. It
   passed: the progression mask selects only Qwen token 3564 for `New`, while
   config JSON parsing and `git diff --check` also pass.
+- Committed and pushed the pre-outcome R40B.2 authority as `27c426a`. The
+  committed builder then returned `PASS_PRTA_GEN_R40B2_SMOKE_COHORT` with
+  32 unique new fit patients and zero overlap with both observed cohorts
+  (64 excluded patients).
+- The single R40B.2 run passed engineering contracts and reached overall token
+  accuracy 98.07%, but progression-token accuracy was 82.22% and structured
+  progression 24/32. It closed as
+  `STOP_PRTA_GEN_R40B2_PROGRESSION_SPAN_UNDERFIT`; the third cohort is frozen.
+- Began R40B.3 around direct five-way classification at the unique first
+  progression token, with a uniform SFT auxiliary and a fourth cohort
+  excluding all 96 observed patients.
+- Added the frozen R40B.3 config/protocol, direct-class training/decoding,
+  fourth-cohort exclusion, and regression tests. Eighteen focused tests,
+  Ruff, compileall, the real five-token registry preflight, JSON parsing, and
+  `git diff --check` pass pre-outcome.

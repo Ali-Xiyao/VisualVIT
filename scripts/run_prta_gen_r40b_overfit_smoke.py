@@ -242,6 +242,34 @@ def target_ids_and_progression_mask(
     return ids, mask
 
 
+def progression_first_token_registry(
+    tokenizer: Any,
+    config: dict[str, Any],
+    *,
+    finding: str,
+) -> tuple[list[int], list[int]]:
+    prefixes: list[list[int]] = []
+    first_tokens: list[int] = []
+    for progression in config["target"]["progression_values"]:
+        text = json.dumps(
+            {"finding": finding, "progression": str(progression)},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        ids, mask = target_ids_and_progression_mask(
+            tokenizer, config, target_text=text
+        )
+        positions = torch.nonzero(mask, as_tuple=False).flatten().tolist()
+        first = int(positions[0])
+        prefixes.append(ids[:first])
+        first_tokens.append(int(ids[first]))
+    if any(prefix != prefixes[0] for prefix in prefixes[1:]):
+        raise ValueError("R40B.3 progression candidates do not share one prefix")
+    if len(set(first_tokens)) != len(first_tokens):
+        raise ValueError("R40B.3 first progression tokens are not unique")
+    return prefixes[0], first_tokens
+
+
 def parse_generated_object(
     text: str,
     *,
@@ -619,6 +647,85 @@ def progression_span_generated_metrics(
     )
 
 
+def direct_class_generated_metrics(
+    *,
+    adapter: GenerativeVLMAdapter,
+    projector: TierTokenProjector,
+    tokenizer: Any,
+    config: dict[str, Any],
+    rows: list[dict[str, Any]],
+    tokens: dict[str, Tensor],
+    device: torch.device,
+) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    adapter.eval()
+    projector.eval()
+    progressions = [
+        str(value) for value in config["target"]["progression_values"]
+    ]
+    outputs: list[dict[str, Any]] = []
+    correct_count = 0
+    with torch.no_grad():
+        for row in rows:
+            prompt = build_prompt_ids(
+                tokenizer, config, finding=row["finding"]
+            ).to(device)
+            prefix, first_tokens = progression_first_token_registry(
+                tokenizer, config, finding=row["finding"]
+            )
+            prefix_ids = torch.tensor(
+                [prefix], dtype=torch.long, device=device
+            )
+            classification_input = torch.cat((prompt, prefix_ids), dim=1)
+            source = tokens[row["example_id"]].unsqueeze(0).to(
+                device=device, dtype=torch.float32
+            )
+            projected = projector(token_bundle(source))
+            output = adapter.forward(classification_input, projected)
+            logits = adapter._extract_logits(output).float()[0, -1]
+            candidate_logits = logits[
+                torch.tensor(first_tokens, dtype=torch.long, device=device)
+            ]
+            selected_index = int(candidate_logits.argmax().item())
+            selected = progressions[selected_index]
+            correct = selected == row["progression"]
+            correct_count += correct
+            text = json.dumps(
+                {"finding": row["finding"], "progression": selected},
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            outputs.append(
+                {
+                    "example_id": row["example_id"],
+                    "expected": {
+                        "finding": row["finding"],
+                        "progression": row["progression"],
+                    },
+                    "generated_text": text,
+                    "selected_progression": selected,
+                    "candidate_logits": {
+                        progression: float(candidate_logits[index].cpu())
+                        for index, progression in enumerate(progressions)
+                    },
+                    "schema_valid": True,
+                    "finding_correct": True,
+                    "progression_correct": correct,
+                    "visual_injection_calls": 1,
+                    "pixel_inputs_used": False,
+                    "decoding": "direct_first_progression_token_classification",
+                }
+            )
+    count = len(rows)
+    return (
+        {
+            "schema_validity": 1.0,
+            "finding_echo_accuracy": 1.0,
+            "progression_accuracy": correct_count / count,
+        },
+        outputs,
+    )
+
+
 def contract_passed(
     *,
     trainable_audit: dict[str, Any],
@@ -891,6 +998,48 @@ def run_smoke(
                     weights,
                 )
                 loss = (per_token * weights).sum() / weights.sum()
+            if (
+                config.get("loss", {}).get("mode")
+                == "direct_first_progression_token_classification"
+            ):
+                prefix, first_tokens = progression_first_token_registry(
+                    tokenizer, config, finding=row["finding"]
+                )
+                prefix_ids = torch.tensor(
+                    [prefix], dtype=torch.long, device=device
+                )
+                prompt = build_prompt_ids(
+                    tokenizer, config, finding=row["finding"]
+                ).to(device)
+                classification_input = torch.cat(
+                    (prompt, prefix_ids), dim=1
+                )
+                classification_output = adapter.forward(
+                    classification_input, projected
+                )
+                next_logits = adapter._extract_logits(
+                    classification_output
+                ).float()[0, -1]
+                class_logits = next_logits[
+                    torch.tensor(
+                        first_tokens, dtype=torch.long, device=device
+                    )
+                ].unsqueeze(0)
+                target_index = list(
+                    config["target"]["progression_values"]
+                ).index(row["progression"])
+                class_loss = F.cross_entropy(
+                    class_logits,
+                    torch.tensor(
+                        [target_index], dtype=torch.long, device=device
+                    ),
+                )
+                loss = (
+                    float(config["loss"]["uniform_sft_weight"])
+                    * result["loss"]
+                    + float(config["loss"]["classification_weight"])
+                    * class_loss
+                )
             if not bool(torch.isfinite(loss)):
                 raise FloatingPointError("non-finite R40B training loss")
             (loss / accumulation).backward()
@@ -973,6 +1122,16 @@ def run_smoke(
         )
     elif decoding_mode == "progression_span_conditional_scoring":
         generated, outputs = progression_span_generated_metrics(
+            adapter=adapter,
+            projector=projector,
+            tokenizer=tokenizer,
+            config=config,
+            rows=rows,
+            tokens=tokens,
+            device=device,
+        )
+    elif decoding_mode == "direct_first_progression_token_classification":
+        generated, outputs = direct_class_generated_metrics(
             adapter=adapter,
             projector=projector,
             tokenizer=tokenizer,

@@ -6,6 +6,7 @@ from scripts.run_prta_gen_r40b_overfit_smoke import (
     build_prompt_ids,
     gate_passed,
     parse_generated_object,
+    progression_first_token_registry,
     result_status,
     target_ids_and_progression_mask,
     validate_attempt_authority,
@@ -158,7 +159,7 @@ class _OffsetTokenizer:
     def __call__(self, text, **kwargs):
         del kwargs
         return {
-            "input_ids": list(range(len(text))),
+            "input_ids": [ord(character) for character in text],
             "offset_mapping": [
                 (index, index + 1) for index in range(len(text))
             ],
@@ -176,3 +177,24 @@ def test_progression_mask_selects_only_value_characters():
     assert "".join(selected) == "New"
     assert ids[-1] == 99
     assert not bool(mask[-1])
+
+
+def test_progression_first_tokens_are_unique_after_shared_prefix():
+    prefix, first_tokens = progression_first_token_registry(
+        _OffsetTokenizer(),
+        {
+            "target": {
+                "append_eos": True,
+                "progression_values": [
+                    "Stable",
+                    "Improved",
+                    "Worse",
+                    "New",
+                    "Resolved",
+                ],
+            }
+        },
+        finding="Edema",
+    )
+    assert prefix
+    assert first_tokens == [ord("S"), ord("I"), ord("W"), ord("N"), ord("R")]

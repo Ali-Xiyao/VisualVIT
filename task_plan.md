@@ -397,6 +397,12 @@ smokes during iteration.
   progression value tokens inside the assistant suffix and score only that
   value span conditioned on the legal JSON prefix; keep the rest of the
   schema, model, exact-64 path, and firewalls unchanged.
+- [x] Execute R40B.2 once and close it after weighted token CE destabilizes
+  the semantic decision (82.22% progression-token, 24/32 structured output).
+- [ ] Freeze R40B.3 on a fourth disjoint cohort with an explicit five-way
+  progression decision at the first differing assistant token, plus a small
+  uniform SFT auxiliary. Use unique registered first-token IDs and construct
+  the legal JSON only from the selected class.
 - [ ] If engineering and scientific gates both pass, update the current
   proposal, result authority, case-study report, and planning bundle; otherwise
   preserve the last STOP and define a genuinely new route instead of tuning
@@ -484,7 +490,7 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze and validate R40B.2 progression-span weighting/scoring on a third
-32-patient fit cohort excluding both observed R40B cohorts. Run one fresh
-attempt on GPU0 and require the unchanged engineering gates plus 100%
-progression-span teacher accuracy and 32/32 structured progression output.
+Freeze and validate R40B.3 direct five-way progression-token classification
+on a fourth 32-patient fit cohort excluding all 96 observed patients. Run one
+fresh attempt on GPU0 and require unchanged contracts, uniform SFT quality,
+and 32/32 direct structured progression.

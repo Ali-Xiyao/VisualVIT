@@ -1,0 +1,184 @@
+{
+  "schema": "visualvit.prta-gen.r40b3-direct-class-smoke-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R40B3_DIRECT_CLASS_SMOKE",
+  "stage_tag": "R40B3",
+  "protocol_id": "prta-gen-r40b3-direct-class-smoke-v1",
+  "closed_predecessor": {
+    "result": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b2_progression_span_smoke_v1\\progression_span_24epoch_v1\\result.json",
+    "required_status": "STOP_PRTA_GEN_R40B2_PROGRESSION_SPAN_UNDERFIT",
+    "observed_cohorts_may_be_reused": false
+  },
+  "upstream": {
+    "qualification_aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\probes\\semantic_layout_means_v1\\qualification\\aggregate.json",
+    "required_status": "GO_PRTA_GEN_R40A2_QUALIFICATION",
+    "required_candidate": "semantic_layout_means_v1",
+    "progression_generation_unlocked": true,
+    "laterality_generation_unlocked": false,
+    "anatomy_generation_unlocked": false,
+    "degree_generation_unlocked": false,
+    "evidence_generation_unlocked": false
+  },
+  "source": {
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\roster.json",
+    "required_roster_status": "PASS_PRTA_GEN_R40A2_ROSTER_SUPPORT",
+    "partition": "fit",
+    "targets": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit\\training_targets.jsonl",
+    "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens\\training\\seed_17\\formal\\index.json",
+    "required_token_status": "PASS_PRTA_GEN_R40A_TOKEN_CACHE",
+    "token_variant": "true_tokens",
+    "exclude_cohorts": [
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b_overfit_smoke_v1\\cohort.json",
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b1_constrained_smoke_v1\\cohort.json",
+      "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b2_progression_span_smoke_v1\\cohort.json"
+    ],
+    "rows": 32,
+    "maximum_rows": 32,
+    "one_row_per_patient": true,
+    "namespace": "prta-gen-r40b3-direct-class-smoke-v1",
+    "progression_class_counts": {
+      "Stable": 7,
+      "Improved": 7,
+      "Worse": 6,
+      "New": 6,
+      "Resolved": 6
+    }
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "local_files_only": true,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "active_tokens": 60,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "pixel_image_video_inputs_used": false,
+    "projector_initialization": "fresh",
+    "qwen_base_initialization": "unchanged_local_checkpoint"
+  },
+  "adapter": {
+    "class": "GenerativeVLMAdapter",
+    "projector": "TierTokenProjector",
+    "trainable_modules": [
+      "TierTokenProjector",
+      "Qwen language attention LoRA"
+    ],
+    "frozen_modules": [
+      "BiomedCLIP",
+      "PRTA adapters",
+      "current-to-prior alignment",
+      "exact-64 compiler",
+      "Qwen vision tower",
+      "Qwen base weights",
+      "Qwen embeddings",
+      "Qwen LM head"
+    ],
+    "lora": {
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "rank": 16,
+      "alpha": 32,
+      "dropout": 0.05
+    }
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "all_other_fields_omitted": true,
+    "compact_json": true,
+    "append_eos": true,
+    "max_target_tokens": 128,
+    "assistant_only_loss": true
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_prefix": "Compare the current chest radiograph with its prior study for the finding {finding}. The next 64 physical positions contain fixed visual tokens. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field. Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "loss": {
+    "mode": "direct_first_progression_token_classification",
+    "assistant_suffix_only": true,
+    "uniform_sft_weight": 0.25,
+    "classification_weight": 1.0,
+    "classification_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ]
+  },
+  "decoding": {
+    "mode": "direct_first_progression_token_classification",
+    "decision_position": "first_unique_progression_value_token",
+    "full_value_emission": "registered_value_for_selected_class",
+    "tie_break": "registered_progression_order",
+    "free_greedy_used_for_gate": false
+  },
+  "attempt_order": [
+    {
+      "name": "direct_class_24epoch_v1",
+      "seed": 17,
+      "epochs": 24,
+      "batch_size": 1,
+      "gradient_accumulation": 4,
+      "projector_learning_rate": 0.001,
+      "lora_learning_rate": 0.0002,
+      "weight_decay": 0.01
+    }
+  ],
+  "gate": {
+    "exact_64_placeholders": true,
+    "assistant_only_labels": true,
+    "physical_attention_all_ones": true,
+    "pixel_inputs_used": false,
+    "unexpected_trainable_parameters": 0,
+    "cached_uncached_first_step_match": true,
+    "finite_loss": true,
+    "final_to_initial_loss_ratio_at_most": 0.9,
+    "teacher_forced_token_accuracy_at_least": 0.95,
+    "generated_schema_validity": 1.0,
+    "generated_finding_echo_accuracy": 1.0,
+    "generated_progression_accuracy": 1.0,
+    "scientific_claim_allowed": false
+  },
+  "result_statuses": {
+    "pass": "PASS_PRTA_GEN_R40B3_DIRECT_CLASS_SMOKE",
+    "contract_stop": "STOP_PRTA_GEN_R40B3_ENGINEERING_CONTRACT",
+    "underfit_by_attempt": {
+      "direct_class_24epoch_v1": "STOP_PRTA_GEN_R40B3_DIRECT_CLASS_UNDERFIT"
+    }
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b3_direct_class_smoke_v1"
+  },
+  "firewall": {
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "observed_r40b_cohorts_used_for_gate": false,
+    "r40a2_discovery_used_only_for_candidate_selection": true,
+    "r40a2_qualification_used_only_for_unlock": true,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_recomputed": false,
+    "checkpoint_hashes_recomputed": false,
+    "old_r40_component_queue_resumed": false
+  }
+}

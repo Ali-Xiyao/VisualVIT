@@ -1319,3 +1319,24 @@ preserving the encoder's static medical semantics.
   distinct token (ID 3564) and the span mask selects only that token, not JSON
   punctuation, finding copy, or EOS. R40B.2 can therefore upweight and score
   the semantic field without weakening assistant-only supervision.
+- The committed R40B.2 cohort passed with 32 unique patients, the exact
+  7/7/6/6/6 class counts, and zero overlap with all 64 patients observed by
+  R40B/R40B.1. All protected-data firewalls remain false.
+- R40B.2 closed as `STOP_PRTA_GEN_R40B2_PROGRESSION_SPAN_UNDERFIT`.
+  Weighted training reached 98.07% overall token accuracy but only 82.22% on
+  the 45 progression tokens and 24/32 span decisions. A fixed 20x weight under
+  the unchanged high learning rate destabilized the semantic class instead of
+  solving dilution.
+- Qwen tokenization reveals a cleaner discriminative interface: the first
+  progression tokens are unique across all five values (`Stable` starts 623,
+  `Improved` 81110, `Worse` 54, `New` 3564, `Resolved` 65394), even though
+  Stable/Worse have a second subtoken. R40B.3 can therefore optimize an
+  explicit five-way CE at the first differing assistant position and
+  deterministically emit the registered full value.
+- R40B.3 must use a fourth new cohort excluding all 96 observed patients.
+  The direct class loss will be combined with a small uniform assistant-SFT
+  auxiliary, rather than another scalar reweighting of the same token loss.
+- The real tokenizer confirms every finding shares a nine-token legal JSON
+  prefix before the progression decision and returns the exact unique
+  first-token registry `[623, 81110, 54, 3564, 65394]`. The direct five-way
+  logit comparison is therefore well-defined before the fourth cohort exists.
