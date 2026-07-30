@@ -315,7 +315,8 @@ smokes during iteration.
   terminal conditions.
 - [ ] Aggregate paired patient-cluster results, update the active reports and
   planning files, then commit and push the completed evidence package.
-- **Status:** in_progress
+- **Status:** paused_by_user (2026-07-30 11:52 +08:00; no R40 GPU
+  process or monitor remains active)
 
 ## Errors Encountered
 

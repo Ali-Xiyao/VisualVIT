@@ -983,3 +983,14 @@ preserving the encoder's static medical semantics.
   B1 naive exact-64 concatenation, B3 raw two-image Qwen3-VL, and the VLM
   reversal execution surface remain pending, so the full comparison-bundle
   task is not yet complete.
+- At 2026-07-30 11:51 +08:00 the user explicitly paused R40. Exact command-line
+  verification tied launcher PIDs 29212/5552 and child PIDs 26336/30980 only
+  to A2 Seeds 17/29 before they were stopped. Both stderr logs remained empty;
+  neither task produced a complete valid result, and no interim metric was
+  inspected.
+- The launcher's generic external-termination status was reclassified as
+  `PAUSED_R40_COMPONENT_SEED_BY_USER`, not an engineering or scientific STOP.
+  Both R40 GPU allocations were released and no R40 component command remains
+  active. A later poll found unrelated tooth9 PID 3664 using GPU 1; it was not
+  interrupted. A future R40 resume must archive the incomplete boundaries and
+  relaunch the same frozen A2 tasks fresh before advancing the fixed queue.

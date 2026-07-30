@@ -881,3 +881,11 @@
   PowerShell syntax parsing, and `git diff --check`. No B0/B2 GPU process was
   launched, no component metric was inspected, and B1/B3 plus the VLM
   reversal execution surface remain pending.
+- 2026-07-30 11:51 +08:00: stopped only the verified R40 A2 Seed 17/29
+  launchers and child processes at the user's request. The two runs are
+  incomplete user-paused work, not scientific results or engineering
+  failures. Both R40 GPU allocations were released; a later unrelated tooth9
+  job on GPU 1 was left untouched.
+- Deleted the `r40-component-baseline-monitor` heartbeat. No next component
+  task or strong baseline was launched; Phase 7 is paused until the user
+  explicitly resumes it.
