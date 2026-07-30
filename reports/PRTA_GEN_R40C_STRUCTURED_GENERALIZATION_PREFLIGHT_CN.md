@@ -1,5 +1,9 @@
 # PRTA-Gen R40C 结构化头内部泛化 Preflight 与 Roster Receipt
 
+> **终态更新：** 本文保留启动前冻结证据。正式执行现已结束，终态为
+> `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION`；结果见
+> `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`。
+
 ## 直接结论
 
 R40C 的 pre-outcome package 已准备并通过真实 receipt 的 CPU/no-write

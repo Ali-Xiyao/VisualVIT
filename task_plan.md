@@ -475,12 +475,13 @@ smokes during iteration.
 - [x] Start Seed 17 on GPU 0 and monitor the automatic chain without changing
   roster, hyperparameters, thresholds, controls, checkpoints, or protected
   data boundaries.
-- [ ] After all three Seed receipts pass, run the frozen aggregate exactly
+- [x] After all three Seed receipts pass, run the frozen aggregate exactly
   once. Treat either registered GO or registered STOP as the terminal
   scientific outcome; do not tune or retry around a failed gate.
 - [ ] Audit final artifacts/processes/GPUs, update all authority and planning
   surfaces, validate, commit, and push the terminal evidence package.
-- **Status:** running_seed_17
+- **Status:** `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` — terminal aggregate
+  passed; documentation closeout in progress.
 
 ## Errors Encountered
 
@@ -572,5 +573,5 @@ smokes during iteration.
 
 ## Next Step
 
-Monitor the running Seed 17 receipt. The launcher will start Seed 29 only
-after Seed 17 passes every frozen receipt check.
+Validate the terminal R40C report and authority surfaces, then commit and push
+the final GO evidence package.

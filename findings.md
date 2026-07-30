@@ -1465,3 +1465,34 @@ preserving the encoder's static medical semantics.
   This did not change selection or gate state, but it was unnecessary
   identity-level output. The CLI handoff is now reduced to a tested scalar
   receipt summary; the roster bytes and hash must remain unchanged.
+
+## Phase 12 R40C internal generalization result
+
+- The authorized automatic Seed 17 → 29 → 43 → aggregate chain completed
+  without retries or engineering errors. The terminal status is
+  `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` with zero gate failures.
+- True-pair development macro-F1 is 0.5058, 0.4941, and 0.4827 for Seeds
+  17/29/43. The minimum class recall is 0.38, 0.38, and 0.36, comfortably
+  above the frozen 0.15 floor for every Seed.
+- True-pair minus query-only effects are +19.72, +20.10, and +17.42 pp with
+  95% CI lower bounds +14.97, +15.68, and +12.64 pp. True-pair minus
+  prior-shuffle effects are +10.50, +10.91, and +9.64 pp with lower bounds
+  +5.75, +6.52, and +5.27 pp.
+- The registered descriptive current-only comparison is also positive for
+  every Seed: +11.71, +7.38, and +8.75 pp, with all bootstrap lower bounds
+  above zero.
+- All comparisons use 500 development patients, 2,000 patient-cluster
+  replicates, and bootstrap seed 40001. Schema validity and finding echo are
+  1.0 for all Seeds; each arm completed exactly 800 updates.
+- The result supports patient-disjoint internal development generalization of
+  the progression-only structured head within the already-used R40A.2 fit
+  domain. It is not independent confirmation and does not reverse the failed
+  Qwen causal-LM routes.
+- Qwen free generation, R41 Qwen SFT, other generation fields, scientific
+  claims, protected 300-dev, revealed 483, gold, and external evaluation all
+  remain locked. Independent-confirmation planning is unlocked, execution is
+  not.
+- Aggregate SHA-256 is
+  `34E2D09C7E2734B34AD028D6E3CDDFE6F08BD84F50D38541B8BD643F14EC0027`.
+  All Seed/aggregate stderr logs are empty, no matching process remains, and
+  both GPUs returned to 0 MiB/0%.

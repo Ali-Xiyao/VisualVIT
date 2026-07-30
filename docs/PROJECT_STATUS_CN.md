@@ -20,7 +20,7 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 | PRTA-Gen R40A.2 | `GO_PRTA_GEN_R40A2_QUALIFICATION` | 修复真实 4/12/16/16/12/4 layout 后，三 Seed 对 query/shuffle 的 point 与 bootstrap 门全部通过 |
 | PRTA-Gen R40B–B.3 | STOP | 四批互斥 cohort 上 Qwen readout 最好 29/32，未达 32/32 |
 | PRTA-Gen R40B.4 | `PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE` | 第五批全新 32-patient cohort 上 progression/schema/finding 均 32/32 |
-| PRTA-Gen R40C | `PASS_PRTA_GEN_R40C_ROSTER_SUPPORT` | 1,000/500 真实 roster 已冻结并审计；四臂、三 Seed 与 bootstrap gate 不变，GPU 未启动 |
+| PRTA-Gen R40C | `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` | 三 Seed true-pair macro-F1 0.5058/0.4941/0.4827；对 query/shuffle 的点效应与 bootstrap CI 全部通过 |
 
 R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
 qualification 修复了明确的 token-layout mismatch。R40B.4 只跑通
@@ -28,9 +28,10 @@ progression-only structured emission 的工程 overfit smoke。Qwen 自由生成
 开放式报告、其他字段、R41 SFT、R42 G-CMCP/reversal 与 R43 gold/external
 仍未解锁。
 
-R40C 当前是 roster-frozen、Seed-gated prelaunch：代码、协议、配置、CPU
-preflight 和一次性真实 roster receipt 均已完成。运行目录当前仅含
-`roster.json`；没有 Seed result、checkpoint、aggregate 或 GPU 进程。
+R40C 已按冻结顺序完成 Seeds 17/29/43 和 2,000 次 patient-bootstrap
+aggregate，gate failures = 0。自动 launcher 与所有 Seed 进程均已退出，
+两张 GPU 回到 0 MiB/0%；protected 300-dev、revealed 483、gold 与 external
+均未读取。
 
 R39 还通过：
 
@@ -55,6 +56,9 @@ R39 还通过：
   prior-specific progression 信息；
 - 受限结构化头可在全新 32-patient engineering cohort 上把该表示输出为
   progression-only 两字段 JSON，并达到 32/32。
+- 排除五批观察患者后，同类 structured head 在 1,000-train /
+  500-development patient-disjoint 内部设计中通过三 Seed、query/shuffle
+  controls 和 patient-bootstrap 门。
 
 暂不支持：
 
@@ -62,19 +66,20 @@ R39 还通过：
 - 临床部署；
 - 所有视觉 backbone、VLM 尺度或 prompt 均有效；
 - Qwen 自由生成、开放式比较句生成、grounding 或 localization 已改善；
-- R40B.4 的 32-row overfit smoke 具有 patient-level 泛化能力；
+- 把 R40C 结果视为独立科学确认、跨机构外部泛化或临床有效性；
 - 根据已揭示 483-test 再选择的新模型属于 confirmatory 结果。
 
 ## 权威阅读顺序
 
-1. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
-2. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
-3. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
-4. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
-5. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
-6. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
-7. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
-8. `task_plan.md`、`findings.md`、`progress.md`
+1. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
+2. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
+3. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
+4. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
+5. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
+6. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
+7. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
+8. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
+9. `task_plan.md`、`findings.md`、`progress.md`
 
 ## Runtime 权威产物
 
@@ -92,19 +97,24 @@ R39 还通过：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40a2_layout_repair_v1\probes\semantic_layout_means_v1\qualification\aggregate.json`
 - PRTA-Gen R40B.4 structured result：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40b4_structured_head_smoke_v1\structured_head\result.json`
+- PRTA-Gen R40C aggregate：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\aggregate.json`
+- PRTA-Gen R40C automatic sequence status：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\sequence_status.json`
 
 这些 runtime 产物不进入 Git。不要为了整理仓库重复计算 source、
 per-shard 或 checkpoint hashes。
 
 ## 当前停止边界
 
-R39 已终止；R40A.2 qualification 与 R40B.4 engineering smoke 也已终止。
+R39、R40A.2 qualification、R40B.4 engineering smoke 和 R40C internal
+generalization 均已终止。
 当前只允许：
 
 - 仓库整理、复现审计和论文材料准备；
 - 使用现有聚合结果生成表格或图；
 - 对 R40B.4 做只读复现审计或独立冻结的后续开发实验；
-- 审阅已冻结 R40C roster receipt；只有新的明确确认才能启动 Seed 17/GPU；
+- 审阅已冻结 R40C aggregate，或先写新的独立确认协议；
 - 独立注册的 gold/external descriptive confirmation。
 
 禁止：
@@ -114,11 +124,12 @@ R39 已终止；R40A.2 qualification 与 R40B.4 engineering smoke 也已终止�
 - 用 gold 选择模型或决定叙事。
 - 把 R40B.4 写成 Qwen free-generation、科学泛化或临床结论；
 - 在五批已观察 cohort 上继续搜索 learning rate、loss、decoder 或阈值；
+- 根据 R40C development outcome 调参、挑 Seed/checkpoint 或重分 roster；
 - 绕过当前锁定状态启动 R41/R42/R43 或其他生成字段。
 
 ## 仓库验证状态
 
-- PRTA-Gen R40C/R40B.4 closure focused tests：26 passed；
+- PRTA-Gen R40C/R40B.4 terminal focused tests：31 passed；
 - Ruff (`src scripts tests`)：PASS；
 - Python compileall：PASS；
 - Markdown local links：PASS；

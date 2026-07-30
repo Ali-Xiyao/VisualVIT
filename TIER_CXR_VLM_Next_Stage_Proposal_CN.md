@@ -5,8 +5,8 @@
 > **当前状态更新：** 2026-07-30
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40A.2/R40B.4 closure
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R40B.4**
+> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R40C**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -22,6 +22,7 @@
 ```text
 GO_PRTA_GEN_R40A2_QUALIFICATION
 → PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE
+→ GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION
 ```
 
 R40A.2 修正了此前错误的 20/20/20 pooling，按真实
@@ -46,15 +47,18 @@ R40B.4 因而把已 qualification 的 semantic-layout 表示接入一个
 - loss ratio `7.33027e-08`；
 - exact64/no-pixel PASS，300-dev/483/gold/external 全部未读。
 
-因此当前 proposal 已跑通的只是
-**progression-only structured emission engineering path**。Qwen 自由生成、
-开放式报告、laterality/anatomy/degree/evidence、R41–R43、科学泛化与临床
-主张仍锁定，不能由 R40B.4 代替或外推。
+R40C 随后把同类 structured head 放到排除五批观察患者后的
+1,000-train / 500-development patient-disjoint 设计中，三 Seed 对
+query-only/prior-shuffle 的冻结门全部通过。因此当前 proposal 已跑通
+**progression-only structured emission internal development
+generalization path**。Qwen 自由生成、开放式报告、
+laterality/anatomy/degree/evidence、R41–R43、独立科学确认与临床主张仍
+锁定，不能由 R40C 代替或外推。
 
 终态报告：
-`reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
+`reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
 
-## R40C 下一阶段：roster 已冻结、Seed 未执行
+## R40C 终态：内部开发泛化 GO
 
 R40B.4 只证明 32-row overfit。下一阶段不继续调 Qwen，而是冻结
 `PRTA-Gen R40C Structured Generalization`，检验同一结构化头的
@@ -71,29 +75,30 @@ patient-disjoint internal development generalization：
 - 主门为 held-out macro-F1、五类 recall、相对 query/shuffle 的 +2 pp
   point effect 与 2,000 次 patient-bootstrap CI 下界。
 
-真实 receipt CPU preflight 已返回：
+preflight、roster 与终态 aggregate 依次返回：
 
 ```text
 PASS_PRTA_GEN_R40C_PREFLIGHT
 PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT
 PASS_PRTA_GEN_R40C_ROSTER_SUPPORT
+GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION
 ```
 
-支持库存为排除后 4,127 patients / 14,687 rows，最稀缺 Resolved 仍有
-489 名患者。真实 roster 已按注册路径一次性写入：train 1,000、
-development 500，五类分别为 200/100，两个 partition 患者重叠为 0。
-receipt SHA-256 为
-`9C076B684BC258EFA60E568004F851CD9EE079EA4DDEA549BD0D2ABCFBF9B0CB`。
-`gpu_training_started=false`；尚无 Seed result、checkpoint 或 aggregate。
+三 Seed true-pair macro-F1 为 0.5058 / 0.4941 / 0.4827，最低类别 recall
+为 0.38 / 0.38 / 0.36。相对 query-only 的效应为
++19.72 / +20.10 / +17.42 pp，95% CI 下界均 >= +12.64 pp；相对
+prior-shuffle 的效应为 +10.50 / +10.91 / +9.64 pp，95% CI 下界均
+>= +5.27 pp。schema 与 finding echo 均为 100%，gate failures = 0。
 
-R40C 即使未来 GO，也只允许称 internal development generalization；
-不会自动解锁 Qwen free generation、R41–R43、gold/external 或科学主张。
+R40C 只允许称 internal development generalization，因为 source 仍是已经
+参与方法开发的 R40A.2 fit partition。它不会自动解锁 Qwen free generation、
+R41–R43、gold/external 或独立科学主张。
 
 冻结协议：
 `docs/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PROTOCOL_CN.md`
 
-preflight 报告：
-`reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
+终态报告：
+`reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
 
 R39 之后的第一版 PRTA-Gen R40A 信息审计已经关闭为：
 

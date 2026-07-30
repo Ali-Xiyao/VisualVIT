@@ -21,6 +21,7 @@
 | R37C-one-shot-dev | R37C | frozen candidate + bootstrap 2,000 | `4e9b52f` lineage | 300 patients / 2,453 rows | reused structural cache | Seeds 17/29/43 | 300-dev：是，一次 | `GO_R37C_ONE_SHOT_DEV` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r37c_one_shot_dev_v1` |
 | R38-fixed64 | R38 | exact-64 no-routing survival | `5604092` | 300 patients / 2,453 rows | frozen R37C inputs | Seeds 17/29/43 | 483-test：否 | `GO_R38_FIXED64_SURVIVAL` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r38_fixed64_survival_v1` |
 | R39-frozen-vlm | R39 | bootstrap 2,000 / seed 39001 | `be10d9f` + receipt-only repair | 483 patients / 4,821 rows | outcome-blind exact-64 token caches | Seeds 17/29/43 | 483-test：是，一次；gold：否 | `GO_R39_FROZEN_VLM_TRANSFER` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r39_sealed_reveal_v1\qualification.json` |
+| PRTA-Gen-R40C | R40C | bootstrap 2,000 / seed 40001 | `5bf56bc` + runtime receipt | 1,000 train / 500 patient-disjoint development；排除 observed 160 | frozen exact-64 semantic-layout cache | structured head Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\aggregate.json` |
 
 ---
 

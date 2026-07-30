@@ -1401,3 +1401,24 @@
   `RUNNING_PRTA_GEN_R40C_AUTHORIZED_SEQUENCE`, `current_stage=seed_17`,
   zero completed Seeds, `retry_allowed=false`, and every protected outcome
   flag false. Launcher and Seed stderr logs are empty.
+- Seed 17 passed and automatically unlocked Seed 29: true-pair macro-F1
+  0.5058, query/shuffle effects +19.72/+10.50 pp, schema/finding 1.0.
+- Seed 29 passed and automatically unlocked Seed 43: true-pair macro-F1
+  0.4941, query/shuffle effects +20.10/+10.91 pp, schema/finding 1.0.
+- Seed 43 passed: true-pair macro-F1 0.4827, query/shuffle effects
+  +17.42/+9.64 pp, schema/finding 1.0. The launcher then ran aggregate exactly
+  once.
+- Aggregate returned `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION`, gate failures
+  0. All three Seeds pass the macro-F1, every-class recall, point-effect,
+  patient-bootstrap CI, schema, and finding gates.
+- Final runtime audit confirms all four stderr logs are empty, aggregate
+  SHA-256 is
+  `34E2D09C7E2734B34AD028D6E3CDDFE6F08BD84F50D38541B8BD643F14EC0027`,
+  no launcher/Seed process remains, and both GPUs are back at 0 MiB/0%.
+- Added the dedicated Chinese terminal report and updated README, proposal,
+  project status, reports index, preflight handoff, and result registry to the
+  same bounded internal-development GO.
+- Terminal closeout validation passes 31 R40C/R40B.4 focused tests,
+  repository-wide Ruff, compileall, modified-document local links,
+  cross-document R40C markers, aggregate terminal consistency, and
+  `git diff --check`.
