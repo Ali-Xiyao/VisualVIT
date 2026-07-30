@@ -412,6 +412,8 @@ smokes during iteration.
 | First R40 launch preflight matched its own PowerShell command line as an active `--r40-component` process | 1 | Exclude the current preflight PID; no launcher, status, output, or GPU job had started |
 | First PRTA-Gen literal-target test masked the word `lung` together with `opacity`, hiding an explicit `lower lung` region | 1 | Narrow only the finding-surface mask to the lesion noun; keep missing/conflicting region labels fail-closed as `Unspecified` |
 | Successful PRTA-Gen smoke created the shared `seed_17` parent that the first full-cache path treated as its own output root | 1 | Preserve the smoke and make `formal/` and `smoke_64/` fresh sibling outputs under the frozen Seed directory |
+| First formal PRTA-Gen development cache read about 105 GB for only 256 rows because hashed counterfactual priors thrashed the four-shard LRU | 1 | Stop only the verified worker, preserve the partial shard, and compact required DICOM features with one source-shard read before fresh relaunch |
+| First compact-cache patch passed generator expressions as a non-final function argument without parentheses | 1 | Parenthesize each generator, rerun collection/tests/Ruff, and do not relaunch before syntax validation passes |
 
 ## Next Step
 

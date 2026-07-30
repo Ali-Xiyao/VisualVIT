@@ -3,6 +3,7 @@ from __future__ import annotations
 # ruff: noqa: E402
 
 import argparse
+from collections import defaultdict
 import hashlib
 import json
 from pathlib import Path
@@ -148,6 +149,50 @@ def token_cache_output_root(
     return base / (f"smoke_{smoke_rows}" if smoke_rows else "formal")
 
 
+def materialize_required_features(
+    cache: Block8CacheIndex,
+    dicom_ids: Iterable[str],
+) -> dict[str, torch.Tensor]:
+    """Clone required rows while reading each source shard only once."""
+
+    unique_ids = sorted({str(value) for value in dicom_ids})
+    missing = [value for value in unique_ids if value not in cache.locations]
+    if missing:
+        raise KeyError(
+            f"{len(missing)} required DICOM IDs are absent; first={missing[0]}"
+        )
+    grouped: dict[Path, list[tuple[str, int]]] = defaultdict(list)
+    for dicom_id in unique_ids:
+        path, local_index = cache.locations[dicom_id]
+        grouped[path].append((dicom_id, local_index))
+    compact: dict[str, torch.Tensor] = {}
+    for path in sorted(grouped, key=str):
+        shard = torch.load(path, map_location="cpu", weights_only=True)
+        features = shard["features"]
+        if tuple(features.shape[1:]) != (197, 768):
+            raise ValueError(f"unexpected Block-8 shard shape: {path}")
+        requests = grouped[path]
+        indices = torch.tensor(
+            [local_index for _, local_index in requests], dtype=torch.long
+        )
+        selected = features.index_select(0, indices).clone()
+        for position, (dicom_id, _) in enumerate(requests):
+            compact[dicom_id] = selected[position]
+    if len(compact) != len(unique_ids):
+        raise RuntimeError("compact Block-8 materialization is incomplete")
+    return compact
+
+
+def compact_get_many(
+    compact: dict[str, torch.Tensor], dicom_ids: Iterable[str]
+) -> torch.Tensor:
+    ids = [str(value) for value in dicom_ids]
+    missing = [value for value in ids if value not in compact]
+    if missing:
+        raise KeyError(f"compact cache is missing DICOM {missing[0]}")
+    return torch.stack([compact[value] for value in ids])
+
+
 def cache_tokens(
     *,
     config_path: Path,
@@ -212,7 +257,18 @@ def cache_tokens(
         )
 
     cache = Block8CacheIndex(
-        Path(config["block8_cache_root"]), maximum_loaded_shards=4
+        Path(config["block8_cache_root"]), maximum_loaded_shards=1
+    )
+    required_dicom_ids = {
+        str(row[key])
+        for row in selected_rows
+        for key in ("prior_dicom_id", "current_dicom_id")
+    }
+    required_dicom_ids.update(
+        shuffle[str(row["example_id"])] for row in selected_rows
+    )
+    compact_cache = materialize_required_features(
+        cache, required_dicom_ids
     )
     encoder = build_frozen_encoder(device)
     model = PRTATemporalAdapter(
@@ -274,14 +330,17 @@ def cache_tokens(
     with torch.inference_mode():
         for start, end in batch_indices(len(selected_rows), batch_size):
             batch = selected_rows[start:end]
-            prior = cache.get_many(
-                row["prior_dicom_id"] for row in batch
+            prior = compact_get_many(
+                compact_cache,
+                (row["prior_dicom_id"] for row in batch),
             ).to(device=device, dtype=torch.float32)
-            current = cache.get_many(
-                row["current_dicom_id"] for row in batch
+            current = compact_get_many(
+                compact_cache,
+                (row["current_dicom_id"] for row in batch),
             ).to(device=device, dtype=torch.float32)
-            shuffled_prior = cache.get_many(
-                shuffle[str(row["example_id"])] for row in batch
+            shuffled_prior = compact_get_many(
+                compact_cache,
+                (shuffle[str(row["example_id"])] for row in batch),
             ).to(device=device, dtype=torch.float32)
             finding_index = torch.tensor(
                 [finding_to_index[str(row["finding"])] for row in batch],
@@ -351,6 +410,8 @@ def cache_tokens(
         "cached_variants": frozen_cache["variants"],
         "labels_in_cache": False,
         "sentences_in_cache": False,
+        "source_shards_materialized_once": True,
+        "compact_required_dicom_count": len(compact_cache),
         "prior_shuffle": config["prior_shuffle"],
         "protected_300_dev_read": False,
         "revealed_483_test_read": False,

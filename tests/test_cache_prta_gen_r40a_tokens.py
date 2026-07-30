@@ -1,6 +1,9 @@
 import pytest
+import torch
 
 from scripts.cache_prta_gen_r40a_tokens import (
+    compact_get_many,
+    materialize_required_features,
     prior_shuffle_assignment,
     select_rows,
     stable_order,
@@ -74,3 +77,28 @@ def test_formal_and_smoke_outputs_are_fresh_siblings(tmp_path):
     assert formal.name == "formal"
     assert smoke.name == "smoke_64"
     assert formal.parent == smoke.parent
+
+
+def test_compact_materialization_reads_only_selected_rows(tmp_path):
+    shard_path = tmp_path / "block8.pt"
+    features = torch.arange(
+        3 * 197 * 768, dtype=torch.float16
+    ).view(3, 197, 768)
+    torch.save({"features": features}, shard_path)
+
+    class FakeCache:
+        locations = {
+            "a": (shard_path, 0),
+            "b": (shard_path, 2),
+        }
+
+    compact = materialize_required_features(FakeCache(), ["b", "a", "b"])
+    batch = compact_get_many(compact, ["b", "a"])
+
+    assert set(compact) == {"a", "b"}
+    assert torch.equal(batch[0], features[2])
+    assert torch.equal(batch[1], features[0])
+    assert (
+        compact["a"].untyped_storage().data_ptr()
+        != features.untyped_storage().data_ptr()
+    )

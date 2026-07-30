@@ -954,3 +954,12 @@
   field/Seed result to a fresh directory with generation still locked.
 - Probe-runner validation passes together with the existing package:
   30 focused tests, Ruff, compileall, CLI help, and `git diff --check`.
+- The first formal development cache worker was responsive but inefficient:
+  after one 256-row shard it had read about 105 GB because hash-shuffled
+  counterfactual priors repeatedly evicted the four-shard LRU. No metric or
+  protected outcome was involved.
+- Stopped only verified PRTA-Gen PID 15212 on GPU 0 and retained its partial
+  shard as failed engineering evidence. Implemented outcome-independent
+  compact materialization that reads each required source shard once, clones
+  only referenced Block-8 rows, and serves true/current/shuffle batches from
+  the compact in-memory map.
