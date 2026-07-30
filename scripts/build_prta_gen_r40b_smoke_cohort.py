@@ -18,6 +18,7 @@ CONFIG_STATUS = "FROZEN_PRTA_GEN_R40B_OVERFIT_SMOKE"
 CONFIG_STATUSES = {
     CONFIG_STATUS,
     "FROZEN_PRTA_GEN_R40B1_CONSTRAINED_SMOKE",
+    "FROZEN_PRTA_GEN_R40B2_PROGRESSION_SPAN_SMOKE",
 }
 COHORT_STATUS = "PASS_PRTA_GEN_R40B_SMOKE_COHORT"
 
@@ -174,14 +175,21 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
         for key, value in source["progression_class_counts"].items()
     }
     excluded_patients: set[str] = set()
-    exclude_cohort_path = source.get("exclude_cohort")
-    if exclude_cohort_path is not None:
+    exclude_cohort_paths = []
+    if source.get("exclude_cohort") is not None:
+        exclude_cohort_paths.append(source["exclude_cohort"])
+    exclude_cohort_paths.extend(source.get("exclude_cohorts", []))
+    allowed_excluded_statuses = {
+        COHORT_STATUS,
+        "PASS_PRTA_GEN_R40B1_SMOKE_COHORT",
+    }
+    for exclude_cohort_path in exclude_cohort_paths:
         excluded_cohort = read_json(Path(exclude_cohort_path))
-        if excluded_cohort.get("status") != COHORT_STATUS:
+        if excluded_cohort.get("status") not in allowed_excluded_statuses:
             raise PermissionError("R40B.1 excluded cohort receipt drift")
-        excluded_patients = {
+        excluded_patients.update(
             str(row["patient_id"]) for row in excluded_cohort["rows"]
-        }
+        )
     if sum(class_counts.values()) != int(source["rows"]):
         raise ValueError("R40B class counts do not sum to frozen row count")
     target_rows = read_targets(Path(source["targets"]))

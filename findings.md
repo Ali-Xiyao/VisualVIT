@@ -1301,3 +1301,21 @@ preserving the encoder's static medical semantics.
   complete legal JSON candidates per row. Scores use mean token
   log-likelihood with registered-order tie breaking; free-greedy output is
   descriptive history only and is not part of the new gate.
+- The committed R40B.1 cohort passed with 32 unique patients, exact 7/7/6/6/6
+  class counts, and zero overlap with all 32 observed R40B patients. Protected
+  300-dev, revealed 483, gold, and external remain unread.
+- R40B.1 closed as `STOP_PRTA_GEN_R40B1_CONSTRAINED_UNDERFIT`. Loss fell
+  1.3086 to 0.0152 and uniform teacher token accuracy reached 99.14%, but
+  whole-JSON mean-likelihood selection achieved only 28/32 progression. The
+  four errors all have close top-two candidate scores, while schema and
+  finding remain 32/32.
+- Uniform assistant CE and whole-sequence mean scoring dilute the semantic
+  decision: only a few of 465 supervised tokens encode the progression value,
+  while most tokens are common JSON syntax or prompt-copied finding text.
+  R40B.2 will address that exact imbalance with a frozen progression-span
+  loss weight and span-only conditional likelihood. It must use a third
+  patient-disjoint cohort; neither observed 32-row set can be reused.
+- The real Qwen tokenizer offset audit confirms the compact `New` value is one
+  distinct token (ID 3564) and the span mask selects only that token, not JSON
+  punctuation, finding copy, or EOS. R40B.2 can therefore upweight and score
+  the semantic field without weakening assistant-only supervision.

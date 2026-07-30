@@ -1191,3 +1191,23 @@
   stage/result receipts, and exact-schema five-candidate sequence scoring to
   the existing fail-closed runner. Sixteen focused tests, Ruff, compileall,
   JSON parsing, and `git diff --check` pass before the new cohort is built.
+- Committed and pushed the pre-outcome R40B.1 authority as `0afb0dd`. The
+  committed builder then returned `PASS_PRTA_GEN_R40B1_SMOKE_COHORT` with
+  32 unique new fit patients, registered class balance, and zero parent-cohort
+  overlap.
+- The single R40B.1 attempt preserved every engineering contract and reached
+  loss 0.0152/token accuracy 99.14%, but exact-schema sequence scoring was
+  only 28/32 on progression. It closed as
+  `STOP_PRTA_GEN_R40B1_CONSTRAINED_UNDERFIT`; that cohort is now observed and
+  frozen.
+- Began R40B.2 around the diagnosed semantic-token dilution: progression-span
+  weighted assistant loss plus progression-span-only conditional scoring on
+  a third cohort excluding both earlier 32-patient sets.
+- Added the frozen R40B.2 config/protocol, multi-cohort exclusion, tokenizer
+  offset-based progression masks, weighted assistant loss, span accuracy
+  audit, and span-only conditional scoring. Seventeen focused tests, Ruff,
+  and compileall pass; a separate PowerShell quoting error affected only the
+  first read-only real-tokenizer preflight command.
+- Repeated the real-tokenizer preflight with safely constructed JSON. It
+  passed: the progression mask selects only Qwen token 3564 for `New`, while
+  config JSON parsing and `git diff --check` also pass.

@@ -17,6 +17,7 @@ sys.path.insert(0, str(WORKSPACE / "src"))
 
 import torch
 from torch import Tensor
+import torch.nn.functional as F
 
 from scripts.build_prta_gen_r40b_smoke_cohort import (
     COHORT_STATUS,
@@ -203,6 +204,44 @@ def build_sft_tensors(
     return prompt, input_ids, labels
 
 
+def target_ids_and_progression_mask(
+    tokenizer: Any,
+    config: dict[str, Any],
+    *,
+    target_text: str,
+) -> tuple[list[int], Tensor]:
+    marker = '"progression":"'
+    start = target_text.find(marker)
+    if start < 0:
+        raise ValueError("R40B target is missing compact progression field")
+    start += len(marker)
+    end = target_text.find('"', start)
+    if end <= start:
+        raise ValueError("R40B progression value span is empty")
+    encoded = tokenizer(
+        target_text,
+        add_special_tokens=False,
+        return_offsets_mapping=True,
+    )
+    ids = [int(value) for value in encoded["input_ids"]]
+    offsets = [tuple(value) for value in encoded["offset_mapping"]]
+    if len(ids) != len(offsets):
+        raise ValueError("R40B tokenizer offset mapping drift")
+    mask = torch.tensor(
+        [
+            offset_start < end and offset_end > start
+            for offset_start, offset_end in offsets
+        ],
+        dtype=torch.bool,
+    )
+    if not bool(mask.any()):
+        raise ValueError("R40B progression span has no supervised tokens")
+    if bool(config["target"]["append_eos"]):
+        ids.append(int(tokenizer.eos_token_id))
+        mask = torch.cat((mask, torch.tensor([False])))
+    return ids, mask
+
+
 def parse_generated_object(
     text: str,
     *,
@@ -238,6 +277,8 @@ def teacher_forced_metrics(
     losses: list[float] = []
     correct = 0
     supervised = 0
+    progression_correct = 0
+    progression_supervised = 0
     with torch.no_grad():
         for row in rows:
             _, input_ids, labels = build_sft_tensors(
@@ -246,6 +287,16 @@ def teacher_forced_metrics(
                 finding=row["finding"],
                 target_text=row["target_text"],
             )
+            target_ids, progression_mask = target_ids_and_progression_mask(
+                tokenizer,
+                config,
+                target_text=row["target_text"],
+            )
+            target_length = int(labels.ne(-100).sum().item())
+            if target_length != len(target_ids):
+                raise ValueError("R40B target/mask tokenization drift")
+            full_progression_mask = torch.zeros_like(labels, dtype=torch.bool)
+            full_progression_mask[:, -target_length:] = progression_mask
             input_ids = input_ids.to(device)
             labels = labels.to(device)
             source = tokens[row["example_id"]].unsqueeze(0).to(
@@ -271,10 +322,22 @@ def teacher_forced_metrics(
                 .item()
             )
             supervised += int(supervised_mask.sum().item())
+            shifted_progression = full_progression_mask[:, 1:].to(device)
+            progression_correct += int(
+                predictions[shifted_progression]
+                .eq(shifted_labels[shifted_progression])
+                .sum()
+                .item()
+            )
+            progression_supervised += int(shifted_progression.sum().item())
     return {
         "mean_loss": sum(losses) / len(losses),
         "token_accuracy": correct / supervised,
         "supervised_tokens": float(supervised),
+        "progression_token_accuracy": (
+            progression_correct / progression_supervised
+        ),
+        "progression_supervised_tokens": float(progression_supervised),
     }
 
 
@@ -457,6 +520,105 @@ def constrained_generated_metrics(
     )
 
 
+def progression_span_generated_metrics(
+    *,
+    adapter: GenerativeVLMAdapter,
+    projector: TierTokenProjector,
+    tokenizer: Any,
+    config: dict[str, Any],
+    rows: list[dict[str, Any]],
+    tokens: dict[str, Tensor],
+    device: torch.device,
+) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    adapter.eval()
+    projector.eval()
+    progressions = [
+        str(value) for value in config["target"]["progression_values"]
+    ]
+    outputs: list[dict[str, Any]] = []
+    progression_correct = 0
+    with torch.no_grad():
+        for row in rows:
+            prompt = build_prompt_ids(
+                tokenizer, config, finding=row["finding"]
+            ).to(device)
+            source = tokens[row["example_id"]].unsqueeze(0).to(
+                device=device, dtype=torch.float32
+            )
+            projected = projector(token_bundle(source))
+            candidate_scores: dict[str, float] = {}
+            candidate_texts: dict[str, str] = {}
+            for progression in progressions:
+                text = json.dumps(
+                    {
+                        "finding": row["finding"],
+                        "progression": progression,
+                    },
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+                ids, progression_mask = target_ids_and_progression_mask(
+                    tokenizer,
+                    config,
+                    target_text=text,
+                )
+                target = torch.tensor([ids], dtype=torch.long, device=device)
+                full_ids = torch.cat((prompt, target), dim=1)
+                output = adapter.forward(full_ids, projected)
+                logits = adapter._extract_logits(output).float()
+                target_positions = torch.nonzero(
+                    progression_mask, as_tuple=False
+                ).flatten().to(device)
+                prediction_positions = (
+                    prompt.shape[1] + target_positions - 1
+                )
+                selected_logits = logits[0, prediction_positions].log_softmax(
+                    dim=-1
+                )
+                selected_targets = target[0, target_positions]
+                score = selected_logits.gather(
+                    -1, selected_targets.unsqueeze(-1)
+                ).squeeze(-1).mean()
+                candidate_scores[progression] = float(score.cpu())
+                candidate_texts[progression] = text
+            selected = max(
+                progressions,
+                key=lambda progression: (
+                    candidate_scores[progression],
+                    -progressions.index(progression),
+                ),
+            )
+            correct = selected == row["progression"]
+            progression_correct += correct
+            outputs.append(
+                {
+                    "example_id": row["example_id"],
+                    "expected": {
+                        "finding": row["finding"],
+                        "progression": row["progression"],
+                    },
+                    "generated_text": candidate_texts[selected],
+                    "selected_progression": selected,
+                    "candidate_scores": candidate_scores,
+                    "schema_valid": True,
+                    "finding_correct": True,
+                    "progression_correct": correct,
+                    "visual_injection_calls": 1,
+                    "pixel_inputs_used": False,
+                    "decoding": "progression_span_conditional_scoring",
+                }
+            )
+    count = len(rows)
+    return (
+        {
+            "schema_validity": 1.0,
+            "finding_echo_accuracy": 1.0,
+            "progression_accuracy": progression_correct / count,
+        },
+        outputs,
+    )
+
+
 def contract_passed(
     *,
     trainable_audit: dict[str, Any],
@@ -493,6 +655,13 @@ def gate_passed(
         <= float(gate["final_to_initial_loss_ratio_at_most"])
         and final["token_accuracy"]
         >= float(gate["teacher_forced_token_accuracy_at_least"])
+        and final.get("progression_token_accuracy", 0.0)
+        >= float(
+            gate.get(
+                "progression_teacher_forced_token_accuracy_at_least",
+                0.0,
+            )
+        )
         and generated["schema_validity"]
         == float(gate["generated_schema_validity"])
         and generated["finding_echo_accuracy"]
@@ -685,6 +854,43 @@ def run_smoke(
                 labels=labels,
             )
             loss = result["loss"]
+            progression_weight = float(
+                config.get("loss", {}).get(
+                    "progression_token_weight", 1.0
+                )
+            )
+            if progression_weight != 1.0:
+                target_ids, progression_mask = (
+                    target_ids_and_progression_mask(
+                        tokenizer,
+                        config,
+                        target_text=row["target_text"],
+                    )
+                )
+                target_length = int(labels.ne(-100).sum().item())
+                if target_length != len(target_ids):
+                    raise ValueError("R40B weighted target mask drift")
+                full_progression_mask = torch.zeros_like(
+                    labels, dtype=torch.bool
+                )
+                full_progression_mask[:, -target_length:] = (
+                    progression_mask.to(labels.device)
+                )
+                shift_logits = result["logits"][:, :-1].contiguous()
+                shift_labels = labels[:, 1:].contiguous()
+                per_token = F.cross_entropy(
+                    shift_logits.float().view(-1, shift_logits.shape[-1]),
+                    shift_labels.view(-1),
+                    ignore_index=-100,
+                    reduction="none",
+                ).view_as(shift_labels)
+                weights = shift_labels.ne(-100).to(per_token.dtype)
+                weights = torch.where(
+                    full_progression_mask[:, 1:].to(device),
+                    torch.full_like(weights, progression_weight),
+                    weights,
+                )
+                loss = (per_token * weights).sum() / weights.sum()
             if not bool(torch.isfinite(loss)):
                 raise FloatingPointError("non-finite R40B training loss")
             (loss / accumulation).backward()
@@ -757,6 +963,16 @@ def run_smoke(
         )
     elif decoding_mode == "exact_schema_sequence_scoring":
         generated, outputs = constrained_generated_metrics(
+            adapter=adapter,
+            projector=projector,
+            tokenizer=tokenizer,
+            config=config,
+            rows=rows,
+            tokens=tokens,
+            device=device,
+        )
+    elif decoding_mode == "progression_span_conditional_scoring":
+        generated, outputs = progression_span_generated_metrics(
             adapter=adapter,
             projector=projector,
             tokenizer=tokenizer,

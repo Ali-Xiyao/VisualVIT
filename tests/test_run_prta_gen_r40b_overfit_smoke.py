@@ -7,6 +7,7 @@ from scripts.run_prta_gen_r40b_overfit_smoke import (
     gate_passed,
     parse_generated_object,
     result_status,
+    target_ids_and_progression_mask,
     validate_attempt_authority,
 )
 
@@ -149,3 +150,29 @@ def test_result_status_uses_new_stage_registry():
     assert (
         result_status(config, "underfit", "attempt") == "STOP_UNDERFIT"
     )
+
+
+class _OffsetTokenizer:
+    eos_token_id = 99
+
+    def __call__(self, text, **kwargs):
+        del kwargs
+        return {
+            "input_ids": list(range(len(text))),
+            "offset_mapping": [
+                (index, index + 1) for index in range(len(text))
+            ],
+        }
+
+
+def test_progression_mask_selects_only_value_characters():
+    text = '{"finding":"Edema","progression":"New"}'
+    ids, mask = target_ids_and_progression_mask(
+        _OffsetTokenizer(),
+        {"target": {"append_eos": True}},
+        target_text=text,
+    )
+    selected = [text[index] for index in range(len(text)) if mask[index]]
+    assert "".join(selected) == "New"
+    assert ids[-1] == 99
+    assert not bool(mask[-1])

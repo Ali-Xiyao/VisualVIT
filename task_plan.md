@@ -391,6 +391,12 @@ smokes during iteration.
   a new 32-patient fit cohort that excludes every observed R40B patient.
   Score exactly the five legal two-key JSON sequences with the existing
   `score_sequence` API; do not tune the exhausted free-greedy cohort.
+- [x] Execute R40B.1 once on its fresh cohort and close it at 28/32
+  progression despite passing all form/contract/loss gates.
+- [ ] Freeze R40B.2 on a third disjoint fit cohort. Upweight only the explicit
+  progression value tokens inside the assistant suffix and score only that
+  value span conditioned on the legal JSON prefix; keep the rest of the
+  schema, model, exact-64 path, and firewalls unchanged.
 - [ ] If engineering and scientific gates both pass, update the current
   proposal, result authority, case-study report, and planning bundle; otherwise
   preserve the last STOP and define a genuinely new route instead of tuning
@@ -474,11 +480,11 @@ smokes during iteration.
 | First qualification aggregate invocation passed a selector-only `--selection` argument | 1 | Argument parsing stopped before aggregation; rerun the aggregate CLI with its registered config/roster/candidate/scope interface |
 | First R40B token-shard inspection guessed the R39-era `record_ids` key | 1 | Use the registered PRTA-Gen `example_ids` key; the read-only inspection changed no artifact |
 | First R40B model run stopped before baseline evaluation because Transformers 5.5 returned rendered chat text from `apply_chat_template(..., tokenize=True)` | 1 | No training/result output occurred; normalize the rendered template through the same tokenizer, add a regression test, and rerun the identical frozen attempt |
+| First one-line real-tokenizer R40B.2 mask preflight mangled JSON quoting in PowerShell | 1 | Unit tests and static checks passed; reconstruct the target with `json.dumps` inside Python and rerun only the read-only tokenizer preflight |
 
 ## Next Step
 
-Freeze and validate R40B.1 constrained two-field JSON sequence scoring on a
-new 32-patient fit cohort that excludes the exhausted R40B cohort. Run one
-predeclared fresh attempt on GPU0; require exact-64, assistant-only loss,
-no-pixel/trainable/cache firewalls, loss/token gates, and 32/32 constrained
-progression before declaring the current proposal runnable.
+Freeze and validate R40B.2 progression-span weighting/scoring on a third
+32-patient fit cohort excluding both observed R40B cohorts. Run one fresh
+attempt on GPU0 and require the unchanged engineering gates plus 100%
+progression-span teacher accuracy and 32/32 structured progression output.
