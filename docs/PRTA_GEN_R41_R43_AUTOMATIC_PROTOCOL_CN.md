@@ -2,7 +2,7 @@
 
 日期：2026-07-30
 
-状态：`FROZEN_PRE_OUTCOME_AUTHORITY`
+状态：`TERMINAL_STOP_AT_R41A`
 
 ## 直接结论
 
@@ -17,6 +17,12 @@ R41A progression-only Qwen SFT survival
 → 若 GO：R43 confirmatory readiness
 → 第一处 STOP 即终态
 ```
+
+实际执行在 R41A 返回
+`STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL`，共有 8 个冻结门失败。
+因此 R42A/R43 均未启动，两个 runtime root 均不存在，gold/external outcome
+仍未读取。完整结果见
+`reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`。
 
 “自动跑完”只表示沿上述 survival gate 自动前进，不允许跳过失败门、后验调参、
 重分 roster、挑 Seed/checkpoint、虚构 external 数据或读取不获准的 gold outcome。

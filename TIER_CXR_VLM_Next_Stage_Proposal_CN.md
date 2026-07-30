@@ -2,11 +2,11 @@
 
 > **文档性质：** 正式 Proposal / R39 终局交接文档 / 历史方案谱系
 > **原始日期：** 2026-07-26
-> **当前状态更新：** 2026-07-30
+> **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R40C**
+> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO + R41A terminal STOP
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R41A**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -23,6 +23,7 @@
 GO_PRTA_GEN_R40A2_QUALIFICATION
 → PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE
 → GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION
+→ STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL
 ```
 
 R40A.2 修正了此前错误的 20/20/20 pooling，按真实
@@ -52,11 +53,19 @@ R40C 随后把同类 structured head 放到排除五批观察患者后的
 query-only/prior-shuffle 的冻结门全部通过。因此当前 proposal 已跑通
 **progression-only structured emission internal development
 generalization path**。Qwen 自由生成、开放式报告、
-laterality/anatomy/degree/evidence、R41–R43、独立科学确认与临床主张仍
-锁定，不能由 R40C 代替或外推。
+laterality/anatomy/degree/evidence、独立科学确认与临床主张仍锁定，不能由
+R40C 代替或外推。
+
+R41A 随后以 375 train / 125 patient-disjoint development、Seeds
+17/29/43、projector-only 与 attention-LoRA、每臂 36 updates 完整执行。
+G1 true macro-F1 为 0.3474/0.3632/0.4304，但 `Worse` recall 为
+0.00/0.08/0.08，且 G1−G0 为 -0.46/-13.40/-6.85 pp。三 Seed aggregate
+共有 8 个冻结门失败，终态为
+`STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL`。因此 proposal 在 R41A
+收束，R42A/R43 未启动，也不得按本次 outcome 调参后重跑。
 
 终态报告：
-`reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
+`reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
 
 ## R40C 终态：内部开发泛化 GO
 

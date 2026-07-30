@@ -1629,3 +1629,13 @@ preserving the encoder's static medical semantics.
   and cached first-step logits were computed sequentially. Cache equivalence
   must be checked with stochastic layers disabled; the audit now temporarily
   uses evaluation mode and restores the original mode in `finally`.
+- R41A is now formally terminal STOP. All six arms completed, so the result is
+  not an engineering failure. G1 cleared macro-F1, schema/finding, and the
+  query-only effect gates, but `Worse` recall failed in every Seed, G1 never
+  exceeded G0, and Seed 17 additionally failed the prior-shuffle point/CI
+  gates. The frozen conjunction therefore records eight failures.
+- This narrows the interpretation of the prior R40C GO: the exact-64
+  semantic-layout representation supports a structured progression head, but
+  the registered Qwen attention-LoRA free-greedy readout did not establish
+  stable progression binding. It does not justify R42A, R43, free-report
+  generation, other fields, external/gold, or clinical claims.

@@ -1,7 +1,7 @@
 # TIER-CXR-VLM / PRTA-CXR 结果表与实验登记
 
 > **用途：** R32–R39 结果权威表；未执行阶段保留为空，已完成阶段必须填入。
-> **当前更新：** 2026-07-30，R39 frozen-VLM transfer 已达到注册科学 GO；gold 仍封存。
+> **当前更新：** 2026-07-31，R41A 已在首个 downstream survival gate 科学 STOP；R42A/R43 未启动，gold 仍封存。
 > **规则：** sealed test / gold 未揭示前不得预填；所有百分比统一使用 pp；所有 CI 必须注明 bootstrap 单位与次数。
 
 ---
@@ -22,6 +22,7 @@
 | R38-fixed64 | R38 | exact-64 no-routing survival | `5604092` | 300 patients / 2,453 rows | frozen R37C inputs | Seeds 17/29/43 | 483-test：否 | `GO_R38_FIXED64_SURVIVAL` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r38_fixed64_survival_v1` |
 | R39-frozen-vlm | R39 | bootstrap 2,000 / seed 39001 | `be10d9f` + receipt-only repair | 483 patients / 4,821 rows | outcome-blind exact-64 token caches | Seeds 17/29/43 | 483-test：是，一次；gold：否 | `GO_R39_FROZEN_VLM_TRANSFER` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r39_sealed_reveal_v1\qualification.json` |
 | PRTA-Gen-R40C | R40C | bootstrap 2,000 / seed 40001 | `5bf56bc` + runtime receipt | 1,000 train / 500 patient-disjoint development；排除 observed 160 | frozen exact-64 semantic-layout cache | structured head Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\aggregate.json` |
+| PRTA-Gen-R41A | R41A | bootstrap 2,000 / seed 41001 | `c796630` authority + `d665221` engineering repair | 375 train / 125 patient-disjoint development；排除 observed 1,660 | frozen exact-64 semantic-layout cache | G0/G1 Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r41a_progression_sft_v1\aggregate.json` |
 
 ---
 

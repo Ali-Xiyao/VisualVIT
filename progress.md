@@ -1524,3 +1524,27 @@
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\history\20260730T235423_r41a_engineering_stop_cache_audit_dropout`.
   The active R41 root again contains only the unchanged frozen roster, with
   both GPUs idle and no downstream Python process.
+- Repeated all four real preflights successfully and launched the unchanged
+  chain at 2026-07-30 23:55:23 +08:00 (master PID 28948). Seed-17 G0/G1
+  workers are active on GPU0/GPU1; the status receipts are RUNNING with no
+  result yet.
+- The third launch completed all six R41A arms across Seeds 17/29/43. Every
+  arm completed 36 optimizer updates, returned
+  `PASS_PRTA_GEN_R41A_ARM_EVALUATION`, achieved 100% schema/finding validity,
+  and passed cache equivalence with maximum absolute difference 0.
+- The terminal aggregate returned
+  `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` with eight gate failures.
+  G1 true macro-F1 was 0.3474/0.3632/0.4304; `Worse` recall was
+  0.00/0.08/0.08; G1−G0 was -0.46/-13.40/-6.85 pp. Seed 17 also failed the
+  prior-shuffle point and CI gates.
+- The master chain stopped normally at R41A. `r42_unlocked=false`,
+  `r43_unlocked=false`; neither downstream runtime root exists. Protected
+  300-dev, revealed 483, gold, and external outcomes remained unread. All
+  matching Python processes exited and both GPUs returned to 0 MiB/0%.
+- Added the terminal R41A report and updated README, project status, frozen
+  protocol, proposal, result table, report index, and planning bundle to the
+  same first-failed-gate conclusion.
+- Final validation passed: 23 focused tests, repository-wide Ruff, compileall,
+  `git diff --check`, seven-file local Markdown link audit, and a scalar-only
+  terminal audit of six results/checkpoints, eight gate failures, aggregate
+  SHA-256, firewalls, absent R42A/R43 roots, zero workers, and idle GPUs.

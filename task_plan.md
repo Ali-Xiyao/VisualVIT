@@ -497,12 +497,13 @@ smokes during iteration.
 - [x] Commit and push the complete pre-outcome authority, run no-write and GPU
   preflights, then automatically execute only while every preceding survival
   gate passes.
-- [ ] Stop at the first registered scientific or feasibility failure; do not
+- [x] Stop at the first registered scientific or feasibility failure; do not
   reinterpret “run all” as permission to bypass a failed gate, invent missing
   external images, violate a DUA, or tune around observed outcomes.
-- [ ] Audit the terminal artifacts/processes/GPUs, update the proposal,
+- [x] Audit the terminal artifacts/processes/GPUs, update the proposal,
   results, reports, and planning bundle, validate, commit, and push.
-- **Status:** ready_authorized_master_chain_launch
+- **Status:** `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` — R41A completed
+  all six arms and failed eight frozen gates; R42A/R43 were not started.
 
 ## Errors Encountered
 
@@ -599,10 +600,10 @@ smokes during iteration.
 | Second R41A launch stopped after training but before checkpoint/result creation because the cache-equivalence audit ran twice with G1 LoRA dropout still active | 1 | Make the shared cache-semantic audit temporarily enter deterministic evaluation mode and restore the caller's prior mode; do not change training, decoding, data, or gates |
 | First cache-audit verification command guessed a nonexistent `tests/test_prta_gen_r40b.py` filename | 1 | Resolve the actual tracked test path with `rg --files` and rerun the intended focused suite; no production execution was involved |
 | First second-launch archive command had an unmatched PowerShell subexpression parenthesis | 1 | The script failed at parse time before mutation; rewrite the target list one path per line and rerun the same validated moves |
+| First terminal document-consistency audit required the full status token in the report index even though it only listed filenames | 1 | Add the reader-facing terminal status to the index, then rerun the same audit |
 
 ## Next Step
 
-Commit and push the deterministic cache-audit repair, archive the second
-engineering-stop receipts, repeat unchanged preflights, and relaunch the
-automatic chain. Continue through R42A/R43 only if each frozen upstream
-scientific survival gate passes.
+No further experiment is authorized. Preserve the R41A scientific STOP and
+its immutable runtime evidence; any future work requires a separately frozen,
+outcome-independent proposal rather than tuning this development result.
