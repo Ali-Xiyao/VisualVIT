@@ -137,6 +137,17 @@ def select_rows(
     )[:smoke_rows]
 
 
+def token_cache_output_root(
+    config: dict[str, Any], *, scope: str, smoke_rows: int
+) -> Path:
+    base = (
+        Path(config["token_cache_root"])
+        / scope
+        / f"seed_{int(config['frozen_prta_seed'])}"
+    )
+    return base / (f"smoke_{smoke_rows}" if smoke_rows else "formal")
+
+
 def cache_tokens(
     *,
     config_path: Path,
@@ -169,13 +180,11 @@ def cache_tokens(
     )
     selected_rows = select_rows(rows, smoke_rows=smoke_rows)
 
-    output_root = (
-        Path(config["token_cache_root"])
-        / scope
-        / f"seed_{int(config['frozen_prta_seed'])}"
+    output_root = token_cache_output_root(
+        config,
+        scope=scope,
+        smoke_rows=smoke_rows,
     )
-    if smoke_rows:
-        output_root = output_root / f"smoke_{smoke_rows}"
     if output_root.exists():
         raise FileExistsError(
             f"PRTA-Gen token cache must be fresh: {output_root}"

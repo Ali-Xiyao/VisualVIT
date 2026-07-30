@@ -4,6 +4,7 @@ from scripts.cache_prta_gen_r40a_tokens import (
     prior_shuffle_assignment,
     select_rows,
     stable_order,
+    token_cache_output_root,
 )
 
 
@@ -55,3 +56,21 @@ def test_smoke_selection_is_outcome_independent_and_fixed_size():
     assert selected == expected
     with pytest.raises(ValueError, match="invalid smoke"):
         select_rows(rows(), smoke_rows=6)
+
+
+def test_formal_and_smoke_outputs_are_fresh_siblings(tmp_path):
+    config = {
+        "token_cache_root": str(tmp_path / "tokens"),
+        "frozen_prta_seed": 17,
+    }
+
+    formal = token_cache_output_root(
+        config, scope="development", smoke_rows=0
+    )
+    smoke = token_cache_output_root(
+        config, scope="development", smoke_rows=64
+    )
+
+    assert formal.name == "formal"
+    assert smoke.name == "smoke_64"
+    assert formal.parent == smoke.parent

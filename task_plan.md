@@ -411,6 +411,7 @@ smokes during iteration.
 | First direct R40 roster CLI stopped before reading source rows because the standalone builder did not insert the local `src` path | 1 | Add the same scoped path bootstrap used by other standalone scripts, keep the frozen roster rule unchanged, and rerun only after tests/commit/push |
 | First R40 launch preflight matched its own PowerShell command line as an active `--r40-component` process | 1 | Exclude the current preflight PID; no launcher, status, output, or GPU job had started |
 | First PRTA-Gen literal-target test masked the word `lung` together with `opacity`, hiding an explicit `lower lung` region | 1 | Narrow only the finding-surface mask to the lesion noun; keep missing/conflicting region labels fail-closed as `Unspecified` |
+| Successful PRTA-Gen smoke created the shared `seed_17` parent that the first full-cache path treated as its own output root | 1 | Preserve the smoke and make `formal/` and `smoke_64/` fresh sibling outputs under the frozen Seed directory |
 
 ## Next Step
 

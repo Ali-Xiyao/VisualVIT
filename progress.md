@@ -938,3 +938,10 @@
 - Validation passes for the post-support package: 26 focused tests, Ruff,
   compileall, CLI help, and `git diff --check`. GPU 0 was idle at the last
   check; GPU 1 was occupied by an unrelated job and remains untouched.
+- The committed 64-row development token-cache smoke passed on GPU 0:
+  64 rows/60 patients, one 18.9 MB shard, exact `[64,768]` float16 tokens,
+  three frozen variants, no labels/sentences, and every protected/hash/old-R40
+  firewall false.
+- Before a full-cache launch, fixed a fresh-output namespace collision exposed
+  by the successful smoke: formal and smoke caches now use sibling
+  `formal/` and `smoke_64/` directories. The valid smoke is preserved.
