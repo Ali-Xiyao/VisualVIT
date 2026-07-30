@@ -1046,3 +1046,10 @@ preserving the encoder's static medical semantics.
   representation audit, a within-partition/finding cross-patient shuffle with
   Seed 40011, and a deterministic 64-row cache smoke before any full cache.
   Probe performance has not been observed.
+- The formal probe runner trains separate capacity-bounded linear readouts for
+  true-pair, current-only, prior-shuffle, and finding-one-hot query-only
+  features. It selects only the pre-frozen supported target rows and refuses
+  any token/target example or patient-order drift.
+- Formal field decisions remain deferred until all three registered probe
+  Seeds and the patient-cluster bootstrap exist. A single probe run cannot
+  unlock generation.

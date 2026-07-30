@@ -337,7 +337,7 @@ smokes during iteration.
 - [x] Add focused unit and integration tests for exact placeholder injection,
   assistant-only causal loss, generation stopping, cached/uncached first-step
   agreement, sequence scoring, and projector/LoRA-only gradients.
-- [ ] Build and validate only an outcome-free R40A/R40B engineering package;
+- [x] Build and validate only an outcome-free R40A/R40B engineering package;
   freeze and commit the protocol before any GPU launch.
 - [ ] Run the smallest authorized information-audit and 32–64-row overfit
   smoke only if structural/data/license gates pass and GPUs are available;
@@ -415,7 +415,7 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the post-support R40A probe/cache freeze, then run the
-pre-frozen 64-row development exact-64 cache smoke on the free GPU only.
-Validate its structural receipt before deciding whether to build the full
-training/development token caches.
+Keep the single full development exact-64 cache worker running on GPU 0 until
+its formal receipt is written; do not duplicate or inspect probe outcomes.
+After the cache completes, validate every shard/row firewall before starting
+the training cache or any linear probe.

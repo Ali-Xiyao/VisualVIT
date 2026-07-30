@@ -945,3 +945,12 @@
 - Before a full-cache launch, fixed a fresh-output namespace collision exposed
   by the successful smoke: formal and smoke caches now use sibling
   `formal/` and `smoke_64/` directories. The valid smoke is preserved.
+- Committed and pushed the cache-namespace repair as `27856f7`, then launched
+  exactly one formal development token-cache worker on GPU 0. The first
+  256-row shard is complete; no duplicate worker or probe metric exists.
+- Implemented the frozen R40A linear-probe runner for progression,
+  laterality, anatomy, and degree across true-pair/current-only/query-only/
+  prior-shuffle controls. It retains row/patient alignment and writes each
+  field/Seed result to a fresh directory with generation still locked.
+- Probe-runner validation passes together with the existing package:
+  30 focused tests, Ruff, compileall, CLI help, and `git diff --check`.
