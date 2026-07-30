@@ -126,10 +126,12 @@ def validate_roster(
 
 
 def _trainable_summary(audit: dict[str, Any]) -> dict[str, Any]:
+    parameter_count = int(audit["parameter_count"])
+    trainable_count = int(audit["trainable_parameter_count"])
     return {
-        "total_parameters": int(audit["total_parameters"]),
-        "trainable_parameters": int(audit["trainable_parameters"]),
-        "frozen_parameters": int(audit["frozen_parameters"]),
+        "total_parameters": parameter_count,
+        "trainable_parameters": trainable_count,
+        "frozen_parameters": parameter_count - trainable_count,
         "unexpected_trainable_parameter_count": len(
             audit["unexpected_trainable_parameter_names"]
         ),
@@ -353,11 +355,11 @@ def run_arm(
     if not trainable_audit["trainable_boundary_pass"]:
         raise PermissionError("R41A unexpected trainable Qwen parameter")
     if model_arm == "g0_projector_only" and int(
-        trainable_audit["trainable_parameters"]
+        trainable_audit["trainable_parameter_count"]
     ) != 0:
         raise PermissionError("R41A G0 Qwen must be fully frozen")
     if model_arm == "g1_attention_lora" and int(
-        trainable_audit["trainable_parameters"]
+        trainable_audit["trainable_parameter_count"]
     ) <= 0:
         raise PermissionError("R41A G1 LoRA parameters are absent")
     training = config["training"]

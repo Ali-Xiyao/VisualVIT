@@ -21,6 +21,7 @@ from scripts.run_prta_gen_r41a_authorized_sequence import (
     validate_arm_result,
 )
 from scripts.run_prta_gen_r41a_progression_sft import (
+    _trainable_summary,
     per_class_recall,
     target_text,
 )
@@ -101,6 +102,24 @@ def test_target_text_and_invalid_prediction_metrics():
     )
     assert comparison["effect_pp"] == pytest.approx(100.0)
     assert comparison["invalid_predictions_supported"] is True
+
+
+def test_trainable_summary_uses_qwen_audit_field_names():
+    summary = _trainable_summary(
+        {
+            "parameter_count": 100,
+            "trainable_parameter_count": 20,
+            "unexpected_trainable_parameter_names": (),
+            "trainable_boundary_pass": True,
+        }
+    )
+    assert summary == {
+        "total_parameters": 100,
+        "trainable_parameters": 20,
+        "frozen_parameters": 80,
+        "unexpected_trainable_parameter_count": 0,
+        "trainable_boundary_pass": True,
+    }
 
 
 def _gate_config() -> dict:

@@ -595,10 +595,11 @@ smokes during iteration.
 | Two Phase-13 PowerShell scalar-audit drafts piped `foreach` directly and reused the read-only `$PID` automatic variable | 2 | Keep the commands read-only, accumulate rows in an explicit array, rename the local value to `$patientKey`, and rerun without identity-level output |
 | R42A reverse-cache data preflight could not find the not-yet-written R41A roster | 1 | Preserve the pre-outcome ordering: validate static R42A code now, commit the full authority, write the one-time R41A roster, then rerun the data preflight before launch |
 | A wrapper around the expected R43 preflight exit code 2 still surfaced a nonzero PowerShell result | 1 | Treat the JSON STOP receipt as the evidence; use explicit captured native exit handling in the master chain, which accepts only registered 0/2 terminal codes |
+| First R41A launch stopped during Seed-17 model setup because the runner expected `trainable_parameters` instead of the adapter's real `trainable_parameter_count` key | 1 | No training/result occurred; normalize the real audit keys into the registered scalar receipt, mirror the check in R42A, add a regression test, archive failed logs, and relaunch unchanged |
 
 ## Next Step
 
-Commit and push the complete pre-outcome R41A–R43 authority, write and hash the
-one-time R41A roster, pass the remaining data/master preflights, then launch
-the authorized automatic two-GPU chain and monitor it to the first registered
+Commit and push the outcome-free audit-key repair, archive the failed
+pre-training launch receipts, rerun unchanged preflights, then relaunch the
+authorized automatic two-GPU chain and monitor it to the first registered
 terminal gate.

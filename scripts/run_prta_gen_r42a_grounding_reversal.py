@@ -325,7 +325,7 @@ def run_arm(
     trainable_audit = adapter.trainable_parameter_audit()
     if (
         trainable_audit["trainable_boundary_pass"] is not True
-        or int(trainable_audit["trainable_parameters"]) <= 0
+        or int(trainable_audit["trainable_parameter_count"]) <= 0
     ):
         raise PermissionError("R42A trainable boundary drift")
     training = config["training"]

@@ -1611,3 +1611,12 @@ preserving the encoder's static medical semantics.
   R42A reverse cache (500 rows, 1,000 required Block-8 DICOM features,
   zero missing), and the complete master chain. No GPU work has started and
   all execution output directories remain fresh.
+- The first authorized launch stopped during Seed-17 model setup before any
+  training update, checkpoint, prediction, or scientific result. G0 accessed
+  a nonexistent normalized audit key (`trainable_parameters`) instead of the
+  adapter's real `trainable_parameter_count`; the paired launcher then
+  terminated G1. This is an implementation-contract failure, not an outcome.
+- The repair changes only audit-field normalization in R41A and the matching
+  R42A check. Data, roster/hash, Seeds, losses, hyperparameters, gates, and
+  output schema remain unchanged. A regression test now pins the real
+  Qwen-audit field names; 22 focused tests pass.

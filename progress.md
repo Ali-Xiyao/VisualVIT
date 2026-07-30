@@ -1490,3 +1490,11 @@
 - Real R41A runner/sequence, R42A reverse-cache data, and full master-chain
   preflights all pass. The reverse-cache preflight resolves all 1,000 required
   DICOM features for 500 rows with zero missing. Both GPUs remain idle.
+- Launched the master chain. Seed-17 G0/G1 loaded tokens and Qwen weights, then
+  stopped before training because R41A referenced the wrong scalar key in the
+  model trainable-parameter audit. No result directory or scientific outcome
+  was created; both GPUs returned to 0 MiB.
+- Corrected only the audit-key adapter (`trainable_parameter_count`), mirrored
+  the fix in R42A, added a regression test, and passed 22 focused tests plus
+  Ruff, compileall, and diff checks. The failed runtime logs are retained for
+  archival before a fresh engineering relaunch.
