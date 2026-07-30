@@ -472,7 +472,7 @@ smokes during iteration.
 - [x] Install a fail-closed sequential runtime launcher for Seeds 17, 29, and
   43. Each next Seed may start only after the preceding `result.json` passes
   its frozen receipt audit.
-- [ ] Start Seed 17 on GPU 0 and monitor the automatic chain without changing
+- [x] Start Seed 17 on GPU 0 and monitor the automatic chain without changing
   roster, hyperparameters, thresholds, controls, checkpoints, or protected
   data boundaries.
 - [ ] After all three Seed receipts pass, run the frozen aggregate exactly
@@ -480,7 +480,7 @@ smokes during iteration.
   scientific outcome; do not tune or retry around a failed gate.
 - [ ] Audit final artifacts/processes/GPUs, update all authority and planning
   surfaces, validate, commit, and push the terminal evidence package.
-- **Status:** in_progress_authorized_execution
+- **Status:** running_seed_17
 
 ## Errors Encountered
 
@@ -572,5 +572,5 @@ smokes during iteration.
 
 ## Next Step
 
-Complete the Phase 12 launch preflight, then start the fail-closed automatic
-Seed 17 → 29 → 43 → aggregate chain.
+Monitor the running Seed 17 receipt. The launcher will start Seed 29 only
+after Seed 17 passes every frozen receipt check.

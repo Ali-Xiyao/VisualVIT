@@ -1394,3 +1394,10 @@
   all three Seed directories, aggregate, and sequence status are absent.
   H: has 529.31 GiB free, no compute process exists, and both GPUs are at
   0 MiB/0%.
+- Committed and pushed the automatic sequence authority as `5bf56bc`, then
+  launched it hidden with PID 20904 on `cuda:0`.
+- Live process audit confirms launcher PID 20904 and Seed 17 worker PID 6000
+  with exact frozen command lines. `sequence_status.json` reports
+  `RUNNING_PRTA_GEN_R40C_AUTHORIZED_SEQUENCE`, `current_stage=seed_17`,
+  zero completed Seeds, `retry_allowed=false`, and every protected outcome
+  flag false. Launcher and Seed stderr logs are empty.
