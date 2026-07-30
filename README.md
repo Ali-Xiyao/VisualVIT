@@ -16,19 +16,28 @@ R37.1 three-seed internal GO
 silver cohort、Qwen3-VL-4B、PRTA-CXR A6、Seeds 17/29/43 及注册 controls。
 Gold outcomes 仍未读取，当前结果不等于临床部署或外部泛化证明。
 
-后续 PRTA-Gen R40A 信息充分性审计已经完成，终局为
-`STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY`。这不改写 R39 的 GO；
-它表示 exact-64 token 尚未通过开放式、证据可溯源生成所需的冻结信息门槛，
-因此 R40B LoRA 和后续生成训练没有启动。
+后续 PRTA-Gen 案例驱动修复已经跑通一个严格限定的结构化路径：
+
+```text
+GO_PRTA_GEN_R40A2_QUALIFICATION
+→ PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE
+```
+
+R40A.2 修复 semantic token layout 后，在独立 qualification 上证明
+progression 信息可读；R40B.4 在第五批全新 32-patient engineering cohort
+上以受限结构化头达到 progression/schema/finding 32/32。四条 Qwen
+free/constrained causal-LM readout 路线仍为 STOP，因此这不是 Qwen 自由
+生成或科学泛化结论，R41–R43 与其他字段仍锁定。
 
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
-2. [PRTA-Gen R40A 信息充分性终局报告](reports/PRTA_GEN_R40A_INFORMATION_SUFFICIENCY_RESULT_CN.md)
-3. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-4. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-5. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-6. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+2. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
+3. [PRTA-Gen 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
+4. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+5. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+6. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+7. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 
@@ -55,7 +64,7 @@ git diff --check
 ```
 
 Current-method focused tests pass. The complete historical suite currently
-reports `742 passed, 1 expected xfailed, 1 failed`; the single failure is a
+reports `777 passed, 1 expected xfailed, 1 failed`; the single failure is a
 preexisting R6 frozen-manifest hash drift reproduced unchanged at clean commit
 `24f57c3`. It is intentionally not “fixed” by rewriting the closed R6
 registry. See `docs/PROJECT_STATUS_CN.md`.

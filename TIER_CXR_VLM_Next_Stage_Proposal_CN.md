@@ -5,14 +5,54 @@
 > **当前状态更新：** 2026-07-30
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage `be10d9f` + receipt-only repair
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39**
+> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40A.2/R40B.4 closure
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R40B.4**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
 ---
 
 # 2026-07-30 PRTA-Gen 案例驱动修复附录
+
+## 终态更新
+
+案例驱动修复已经按“新边界、先冻结、后读取、首失败门停止”的顺序跑通一个
+严格限定的 proposal 路径：
+
+```text
+GO_PRTA_GEN_R40A2_QUALIFICATION
+→ PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE
+```
+
+R40A.2 修正了此前错误的 20/20/20 pooling，按真实
+`4/12/16/16/12/4` semantic layout 读取 exact-64 token。独立 discovery2
+和原封未读的 qualification 均通过三 Seed、query-only、prior-shuffle 与
+patient-cluster bootstrap 门；因此 progression-only engineering generation
+被合法解锁。
+
+随后四类 Qwen readout 在四批互不重叠的 32-patient fit cohort 上依次失败：
+free-greedy 最好 29/32、整段候选评分 28/32、progression-span 加权 24/32、
+首 token 五分类 23/32。它们都能学习 JSON 形式和 finding echo，但没有在
+冻结预算内稳定完成 progression 语义绑定。这里的结论不是“Qwen 不是
+LLM”，而是当前 Qwen causal-LM readout 路线没有通过工程 overfit 门。
+
+R40B.4 因而把已 qualification 的 semantic-layout 表示接入一个
+499,973 参数的受限 progression head，再确定性输出唯一合法的两字段 JSON。
+它在第五批、排除前 128 名已观察患者的全新 32-patient cohort 上达到：
+
+- progression 32/32；
+- schema validity 32/32；
+- finding echo 32/32；
+- loss ratio `7.33027e-08`；
+- exact64/no-pixel PASS，300-dev/483/gold/external 全部未读。
+
+因此当前 proposal 已跑通的只是
+**progression-only structured emission engineering path**。Qwen 自由生成、
+开放式报告、laterality/anatomy/degree/evidence、R41–R43、科学泛化与临床
+主张仍锁定，不能由 R40B.4 代替或外推。
+
+终态报告：
+`reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
 
 R39 之后的第一版 PRTA-Gen R40A 信息审计已经关闭为：
 

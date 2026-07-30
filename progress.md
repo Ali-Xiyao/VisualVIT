@@ -1253,3 +1253,23 @@
 - The first runner invocation stopped before token loading because the cohort
   already occupied the configured runtime root. No training/output occurred;
   results will be isolated under a frozen `structured_head/` child directory.
+- Isolated the unchanged R40B.4 result under `structured_head/`, committed and
+  pushed the repair as `d59facd`, then reran the same frozen cohort and
+  settings on GPU0.
+- R40B.4 returned `PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE`: initial/final
+  loss 1.6262604/1.1920928e-07 (ratio 7.33027e-08), training and structured
+  progression 32/32, schema 32/32, finding echo 32/32, and 499,973 trainable
+  parameters. Exact64/no-pixel and every protected-data firewall passed.
+- Closed Phase 9 with the progression-only structured route engineering-ready.
+  Qwen free generation and all untested fields/stages remain explicitly
+  locked; no generalization or scientific-generation claim is made.
+- Updated the proposal, root README, project-status authority, report index,
+  failure case study, and a new R40A.2/R40B.4 terminal report to the same
+  bounded verdict.
+- Final validation passes 32 focused tests, Ruff, compileall, all nine
+  PRTA-Gen config parses, modified-document local-link checks, and
+  `git diff --check`. Full pytest reports 777 passed, 1 expected xfailed,
+  and the same one historical R6 frozen-manifest failure documented before
+  this route; the closed R6 registry remains untouched.
+- Post-closeout `nvidia-smi` shows both RTX 3090 devices at 0 MiB used and
+  0% utilization.

@@ -382,38 +382,43 @@ smokes during iteration.
 - [x] Freeze the selected route before the one-shot qualification boundary;
   require all three Seeds and patient-cluster confidence intervals rather than
   a favorable point estimate.
-- [ ] Only after a new information GO, run the 32–64-row R40B generative
+- [x] Only after a new information GO, run the 32–64-row R40B generative
   overfit smoke and its exact-64/no-pixel/assistant-only/LoRA firewalls.
 - [x] Execute and close that R40B free-greedy task: the preregistered
   3/12/24-epoch ladder preserved every engineering contract but stopped below
   the required 32/32 progression generation.
-- [ ] Freeze a distinct R40B.1 constrained structured-decoding case study on
+- [x] Freeze a distinct R40B.1 constrained structured-decoding case study on
   a new 32-patient fit cohort that excludes every observed R40B patient.
   Score exactly the five legal two-key JSON sequences with the existing
   `score_sequence` API; do not tune the exhausted free-greedy cohort.
 - [x] Execute R40B.1 once on its fresh cohort and close it at 28/32
   progression despite passing all form/contract/loss gates.
-- [ ] Freeze R40B.2 on a third disjoint fit cohort. Upweight only the explicit
+- [x] Freeze R40B.2 on a third disjoint fit cohort. Upweight only the explicit
   progression value tokens inside the assistant suffix and score only that
   value span conditioned on the legal JSON prefix; keep the rest of the
   schema, model, exact-64 path, and firewalls unchanged.
 - [x] Execute R40B.2 once and close it after weighted token CE destabilizes
   the semantic decision (82.22% progression-token, 24/32 structured output).
-- [ ] Freeze R40B.3 on a fourth disjoint cohort with an explicit five-way
+- [x] Freeze R40B.3 on a fourth disjoint cohort with an explicit five-way
   progression decision at the first differing assistant token, plus a small
   uniform SFT auxiliary. Use unique registered first-token IDs and construct
   the legal JSON only from the selected class.
 - [x] Execute R40B.3 once and close it after direct causal-LM token
   classification still reaches only 23/32 on the fresh cohort.
-- [ ] Freeze R40B.4 as an architecture-level convergence route on a fifth
+- [x] Freeze R40B.4 as an architecture-level convergence route on a fifth
   disjoint cohort: a capacity-bounded progression decision head consumes the
   qualification-supported semantic-layout exact64 features and emits the
   legal two-field JSON deterministically. Keep Qwen free generation locked.
-- [ ] If engineering and scientific gates both pass, update the current
+- [x] Execute R40B.4 once on its fresh cohort. It passes the frozen engineering
+  gate at 32/32 progression, schema, and finding echo with a
+  7.33e-08 final/initial loss ratio; no protected outcomes are read.
+- [x] If engineering and scientific gates both pass, update the current
   proposal, result authority, case-study report, and planning bundle; otherwise
   preserve the last STOP and define a genuinely new route instead of tuning
   the failed one.
-- **Status:** in_progress
+- **Status:** `PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE` — progression-only
+  structured emission is engineering-runnable; Qwen free generation, other
+  fields, generalization, and R41–R43 remain locked.
 
 ## Errors Encountered
 
@@ -496,11 +501,12 @@ smokes during iteration.
 | First R40B.3 cohort build rejected the valid R40B.2 exclusion receipt because the generic historical-status registry stopped at R40B.1 | 1 | No cohort was written; add the already-observed R40B.2 cohort status to the exclusion whitelist, test, and rerun unchanged selection |
 | R40B.4 focused test expected the pre-R40B.3 exclusion registry exactly | 1 | Production correctly added the newly observed R40B.3 receipt; extend the registry assertion and rerun before freezing the fifth cohort |
 | First R40B.4 runner treated its cohort-bearing runtime root as an existing result directory | 1 | No token load/training occurred; freeze a dedicated `structured_head/` result subdirectory and rerun the unchanged cohort/settings |
+| Final focused-test command guessed a nonexistent R40A.2-specific aggregate test filename | 1 | No tests ran in that invocation; use the actual generalized R40A.1/R40A.2 aggregate and runner test files, then rerun the full focused set |
+| Final authority-marker audit expected a machine-field spelling in the reader-facing proposal | 1 | The proposal already states the same boundary in Chinese prose; audit that actual phrase while keeping the machine field in the terminal result report |
 
 ## Next Step
 
-Freeze and validate the R40B.4 semantic-layout decision head on a fifth
-32-patient cohort excluding all 128 observed patients. Require fresh
-initialization, exact64/no-label-cache firewalls, a fixed parameter budget,
-loss reduction, 32/32 progression, and 32/32 two-field JSON; do not claim
-Qwen free generation passed.
+Phase 9 is complete. Preserve the five observed 32-patient engineering cohorts
+and the R40A.2 qualification boundary as immutable evidence. Any next stage
+must be independently frozen and must not reinterpret R40B.4 as Qwen free
+generation or scientific generalization.

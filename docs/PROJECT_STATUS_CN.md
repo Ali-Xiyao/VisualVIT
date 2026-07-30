@@ -15,11 +15,17 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 
 | 阶段 | 决策 | 核心证据 |
 |---|---|---|
-| PRTA-Gen R40A | `STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY` | progression Seed 17 对 prior-shuffle +1.06 pp，patient-cluster 95% CI [-0.93,+3.26]，未满足下界严格大于零 |
+| PRTA-Gen R40A | `STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY` | 历史三均值 readout 在 Seed 17 对 prior-shuffle 的 CI 跨零 |
+| PRTA-Gen R40A.1 | `STOP_PRTA_GEN_R40A1_DISCOVERY` | moments Seed 29 为负；cosine Seed 17 为负 |
+| PRTA-Gen R40A.2 | `GO_PRTA_GEN_R40A2_QUALIFICATION` | 修复真实 4/12/16/16/12/4 layout 后，三 Seed 对 query/shuffle 的 point 与 bootstrap 门全部通过 |
+| PRTA-Gen R40B–B.3 | STOP | 四批互斥 cohort 上 Qwen readout 最好 29/32，未达 32/32 |
+| PRTA-Gen R40B.4 | `PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE` | 第五批全新 32-patient cohort 上 progression/schema/finding 均 32/32 |
 
-R40A STOP 不撤销 R39 GO。它只关闭当前 exact-64 表示通向开放式比较句
-生成的解锁路径；R40B LoRA、R41 SFT、R42 G-CMCP/reversal 与 R43
-gold/external 均未启动。
+R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
+qualification 修复了明确的 token-layout mismatch。R40B.4 只跑通
+progression-only structured emission 的工程 overfit smoke。Qwen 自由生成、
+开放式报告、其他字段、R41 SFT、R42 G-CMCP/reversal 与 R43 gold/external
+仍未解锁。
 
 R39 还通过：
 
@@ -40,23 +46,29 @@ R39 还通过：
 - PRTA-CXR 的正确纵向 prior 表示优于 capacity-matched A0；
 - 收益不是仅由 finding query、current image 或随机 prior shortcut 造成；
 - 表示收益在固定 64-token 接口和完全冻结的 Qwen3-VL 后仍然存在。
+- R40A.2 semantic-layout 表示含有通过独立 qualification 的
+  prior-specific progression 信息；
+- 受限结构化头可在全新 32-patient engineering cohort 上把该表示输出为
+  progression-only 两字段 JSON，并达到 32/32。
 
 暂不支持：
 
 - gold 或跨机构外部泛化；
 - 临床部署；
 - 所有视觉 backbone、VLM 尺度或 prompt 均有效；
-- 开放式比较句生成、grounding 或 localization 已改善；
+- Qwen 自由生成、开放式比较句生成、grounding 或 localization 已改善；
+- R40B.4 的 32-row overfit smoke 具有 patient-level 泛化能力；
 - 根据已揭示 483-test 再选择的新模型属于 confirmatory 结果。
 
 ## 权威阅读顺序
 
-1. `reports/PRTA_GEN_R40A_INFORMATION_SUFFICIENCY_RESULT_CN.md`
-2. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
-3. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
+1. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
+2. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
+3. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
 4. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
-5. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
-6. `task_plan.md`、`findings.md`、`progress.md`
+5. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
+6. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
+7. `task_plan.md`、`findings.md`、`progress.md`
 
 ## Runtime 权威产物
 
@@ -70,17 +82,22 @@ R39 还通过：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40_readiness_v1\target_audit\audit.json`
 - PRTA-Gen R40A progression aggregate：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40_readiness_v1\probes\progression\aggregate.json`
+- PRTA-Gen R40A.2 qualification：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40a2_layout_repair_v1\probes\semantic_layout_means_v1\qualification\aggregate.json`
+- PRTA-Gen R40B.4 structured result：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40b4_structured_head_smoke_v1\structured_head\result.json`
 
 这些 runtime 产物不进入 Git。不要为了整理仓库重复计算 source、
 per-shard 或 checkpoint hashes。
 
 ## 当前停止边界
 
-R39 已终止；PRTA-Gen R40A 也已在信息门槛 STOP。当前只允许：
+R39 已终止；R40A.2 qualification 与 R40B.4 engineering smoke 也已终止。
+当前只允许：
 
 - 仓库整理、复现审计和论文材料准备；
 - 使用现有聚合结果生成表格或图；
-- 在运行前独立冻结的新开发实验；
+- 对 R40B.4 做只读复现审计或独立冻结的后续开发实验；
 - 独立注册的 gold/external descriptive confirmation。
 
 禁止：
@@ -88,18 +105,18 @@ R39 已终止；PRTA-Gen R40A 也已在信息门槛 STOP。当前只允许：
 - 针对 483-test outcome 调参、换阈值、挑 Seed 或换 checkpoint；
 - 把 post-hoc 483 分析改写成新的 confirmatory GO；
 - 用 gold 选择模型或决定叙事。
-- 绕过 R40A STOP 启动 R40B/R41/R42，或针对当前 development 结果调整
-  token compiler、Seed、control、阈值或 checkpoint。
+- 把 R40B.4 写成 Qwen free-generation、科学泛化或临床结论；
+- 在五批已观察 cohort 上继续搜索 learning rate、loss、decoder 或阈值；
+- 绕过当前锁定状态启动 R41/R42/R43 或其他生成字段。
 
 ## 仓库验证状态
 
-- PRTA-Gen R40A focused tests：28 passed；
-- PRTA/R38/R39 focused tests：24 passed；
+- PRTA-Gen R40A.2/R40B.4 focused tests：32 passed；
 - Ruff (`src scripts tests`)：PASS；
 - Python compileall：PASS；
 - Markdown local links：PASS；
 - `git diff --check`：PASS；
-- full pytest：742 passed、1 expected xfailed、1 failed。
+- full pytest：777 passed、1 expected xfailed、1 failed。
 
 唯一 full-suite failure 是历史 R6 closed-manifest freeze-record hash drift。
 同一 targeted test 在没有本轮整理修改的 clean commit `24f57c3` 上也失败，

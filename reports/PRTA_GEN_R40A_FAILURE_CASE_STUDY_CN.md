@@ -118,3 +118,43 @@ transition 16、local transition 16、relation 12、reserve 4，而失败 probe
 
 因此 R40A.2 不增加模型容量，而是首先修复 token-type 语义边界，并使用
 新的 discovery2 验证。原 R40A.1 qualification 保持未读。
+
+## 案例驱动修复终局
+
+R40A.2 的 semantic-layout means 在 discovery2 和一次性 qualification
+上均通过。qualification 的三个 Seed true-pair macro-F1 分别为
+0.3876、0.3512、0.3900；相对 query-only 为 +17.93、+12.64、+13.85 pp，
+相对 prior-shuffle 为 +2.17、+18.55、+8.23 pp。所有注册 point gate 和
+patient-cluster bootstrap 下界均通过，终态为：
+
+```text
+GO_PRTA_GEN_R40A2_QUALIFICATION
+```
+
+生成工程随后使用五批互不重叠的 32-patient fit cohort。每次新方法都先冻结，
+没有回到已经观察的患者上挑设置。
+
+| 路线 | 核心改变 | progression | 结论 |
+|---|---|---:|---|
+| R40B 3 epochs | Qwen attention-LoRA free greedy | 5/32 | underfit STOP |
+| R40B 12 epochs | 冻结的第二级预算 | 27/32 | underfit STOP |
+| R40B 24 epochs | 冻结的最终预算 | 29/32 | underfit STOP |
+| R40B.1 | 五个完整合法 JSON 候选评分 | 28/32 | constrained STOP |
+| R40B.2 | 20x progression span loss + span score | 24/32 | weighted-span STOP |
+| R40B.3 | 首个不同 token 的五分类 | 23/32 | direct-class STOP |
+| R40B.4 | semantic-layout MLP + 确定性 JSON | 32/32 | engineering PASS |
+
+前三类修复没有解决问题：共同 JSON token 会稀释 progression 分数；固定
+20x 权重反而使语义 token 不稳定；即使直接比较五个首 token，Qwen 的
+causal-LM 决策仍未在小样本冻结预算内完成精确记忆。继续调学习率、loss
+权重或 decoding，实质上会在同一失败假设上调参。
+
+R40B.4 的成功机制是把语义决策和语言实现分开。499,973 参数的受限 head
+直接消费 R40A.2 已验证的 3,840 维 semantic-layout means，并只确定性发出
+`finding` 与 `progression` 两个键。第五批 cohort 排除了前四批共 128 名
+已观察患者，最终 progression/schema/finding 均为 32/32，loss ratio 为
+`7.33027e-08`。
+
+这不是把失败改名为成功：Qwen 是真正的 LLM，但 Qwen free-generation
+路线仍为 STOP；跑通的是 progression-only structured engineering smoke。
+它不提供泛化证据，也不解锁其他字段、R41–R43、gold 或 external。

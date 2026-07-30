@@ -1362,3 +1362,23 @@ preserving the encoder's static medical semantics.
   semantic-layout means. It uses only a fifth 32-row training cohort,
   full-batch optimization, and deterministic two-field emission; its PASS
   cannot be interpreted as a Qwen or free-text result.
+- The fifth cohort passed with 32 unique fit patients, exact 7/7/6/6/6 class
+  counts, and zero overlap with all 128 patients observed by the four failed
+  Qwen routes. All protected-data firewalls remain false.
+- R40B.4 passed its frozen overfit gate. The 499,973-parameter structured head
+  reduced full-batch training loss from 1.6262604 to 1.1920928e-07
+  (ratio 7.33027e-08) and produced 32/32 correct progression values, 32/32
+  valid two-key JSON objects, and 32/32 finding echoes on the fifth fresh
+  cohort.
+- The successful claim is deliberately narrow: a semantic-layout exact64
+  representation can drive a deterministic progression-only structured
+  emitter in an engineering overfit smoke. The result does not unlock Qwen
+  free generation, anatomy/laterality/degree/evidence fields, R41 Qwen SFT,
+  scientific generalization, gold, or external evaluation.
+- The case-study sequence isolates two different facts. R40A.2 proves
+  prior-specific progression information survives on a sealed qualification
+  boundary; R40B through R40B.3 shows that four Qwen causal-LM readout
+  variants do not reliably bind that information under the frozen
+  small-sample budgets. R40B.4 runs by separating the semantic decision from
+  language realization, not by claiming Qwen is not an LLM or by silently
+  weakening the original gate.
