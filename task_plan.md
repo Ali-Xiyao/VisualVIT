@@ -598,6 +598,7 @@ smokes during iteration.
 | First R41A launch stopped during Seed-17 model setup because the runner expected `trainable_parameters` instead of the adapter's real `trainable_parameter_count` key | 1 | No training/result occurred; normalize the real audit keys into the registered scalar receipt, mirror the check in R42A, add a regression test, archive failed logs, and relaunch unchanged |
 | Second R41A launch stopped after training but before checkpoint/result creation because the cache-equivalence audit ran twice with G1 LoRA dropout still active | 1 | Make the shared cache-semantic audit temporarily enter deterministic evaluation mode and restore the caller's prior mode; do not change training, decoding, data, or gates |
 | First cache-audit verification command guessed a nonexistent `tests/test_prta_gen_r40b.py` filename | 1 | Resolve the actual tracked test path with `rg --files` and rerun the intended focused suite; no production execution was involved |
+| First second-launch archive command had an unmatched PowerShell subexpression parenthesis | 1 | The script failed at parse time before mutation; rewrite the target list one path per line and rerun the same validated moves |
 
 ## Next Step
 

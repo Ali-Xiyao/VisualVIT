@@ -1519,3 +1519,8 @@
   changes no model weight, optimizer, data, decoding, or gate. A stochastic
   dropout regression test now covers the exact failure; 30 focused tests,
   Ruff, compileall, and `git diff --check` pass.
+- Committed and pushed the repair as `d665221`, then preserved the second
+  failed-launch receipts under
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\history\20260730T235423_r41a_engineering_stop_cache_audit_dropout`.
+  The active R41 root again contains only the unchanged frozen roster, with
+  both GPUs idle and no downstream Python process.
