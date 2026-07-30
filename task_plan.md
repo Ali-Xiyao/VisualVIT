@@ -420,6 +420,35 @@ smokes during iteration.
   structured emission is engineering-runnable; Qwen free generation, other
   fields, generalization, and R41–R43 remain locked.
 
+### Phase 10 — R40C patient-disjoint structured generalization preflight
+
+- [x] Inventory only the R40A.2 fit-side support needed to freeze a new
+  patient-disjoint development generalization protocol. Exclude every patient
+  observed by R40B through R40B.4 and do not read 300-dev, revealed 483,
+  gold, external, or any new sealed outcomes.
+- [x] Freeze an R40C config and Chinese protocol before any route-specific
+  outcome exists. Keep the R40B.4 semantic-layout head architecture,
+  optimizer, feature standardization, class vocabulary, and deterministic
+  two-field JSON surface fixed.
+- [x] Implement a deterministic roster builder that assigns remaining fit
+  patients to train/development partitions with one row per patient, explicit
+  class support, stable hashes, and zero overlap against all five observed
+  32-patient cohorts.
+- [x] Implement a fail-closed CPU dry-run/preflight plus the GPU train/evaluate
+  runner. Evaluation must fit normalization on training only and report
+  patient-level five-class macro-F1, per-class recall, schema/finding
+  contracts, and true-pair versus query-only/current-only/prior-shuffle
+  controls.
+- [x] Implement a registered three-Seed patient-cluster bootstrap aggregator.
+  Require directionally positive true-pair effects versus query-only and
+  prior-shuffle with lower confidence bounds above zero; prevent class-collapse
+  PASS with a frozen per-class recall floor.
+- [x] Add focused tests, Ruff, compileall, JSON parsing, local-link checks, and
+  `git diff --check`; write the proposal/status/planning handoff.
+- [ ] Commit and push the complete pre-outcome authority, then stop before
+  building the real roster or starting any GPU training.
+- **Status:** in_progress_preoutcome_only
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -503,10 +532,10 @@ smokes during iteration.
 | First R40B.4 runner treated its cohort-bearing runtime root as an existing result directory | 1 | No token load/training occurred; freeze a dedicated `structured_head/` result subdirectory and rerun the unchanged cohort/settings |
 | Final focused-test command guessed a nonexistent R40A.2-specific aggregate test filename | 1 | No tests ran in that invocation; use the actual generalized R40A.1/R40A.2 aggregate and runner test files, then rerun the full focused set |
 | Final authority-marker audit expected a machine-field spelling in the reader-facing proposal | 1 | The proposal already states the same boundary in Chinese prose; audit that actual phrase while keeping the machine field in the terminal result report |
+| First R40C support inventory reused PowerShell's read-only `$PID` automatic variable inside a JSONL loop | 1 | The read-only command wrote no artifact and was stopped by exact command-line match; rename the local value to `$patientKey` and rerun only the aggregate inventory |
+| R40C finding-registry search passed a Windows-incompatible `configs/r37/*.json` path to `rg` | 1 | Use `rg` on the directory to resolve the exact config, then pin the 12-value registry from `r37_1_candidate_for_r37c_v1.json` |
 
 ## Next Step
 
-Phase 9 is complete. Preserve the five observed 32-patient engineering cohorts
-and the R40A.2 qualification boundary as immutable evidence. Any next stage
-must be independently frozen and must not reinterpret R40B.4 as Qwen free
-generation or scientific generalization.
+Run final no-write authority checks, stage only the R40C package and planning
+surfaces, commit/push the pre-outcome authority, and stop before real roster.

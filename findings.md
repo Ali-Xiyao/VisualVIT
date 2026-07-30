@@ -1382,3 +1382,64 @@ preserving the encoder's static medical semantics.
   small-sample budgets. R40B.4 runs by separating the semantic decision from
   language realization, not by claiming Qwen is not an LLM or by silently
   weakening the original gate.
+
+## Phase 10 R40C framing
+
+- The highest-priority evidence gap is patient-level generalization of the
+  R40B.4 structured decision head, not another Qwen loss/decoding variant.
+- R40C must remain an internal development-generalization study because its
+  source is the already-used R40A.2 fit partition. A patient-disjoint split
+  prevents direct row leakage but does not create a new scientific
+  confirmation cohort.
+- The five observed R40B cohorts contain 160 patients in total and are
+  immutable diagnostic evidence. R40C must exclude all of them before
+  deterministic train/development assignment.
+- Schema validity and finding echo are deterministic interface contracts, not
+  primary evidence. The primary outcome must be held-out five-class
+  progression macro-F1 with true-pair controls and patient-cluster bootstrap.
+- R41 Qwen SFT, other generation fields, protected 300-dev, revealed 483,
+  gold, and external evaluation remain locked during the entire R40C
+  pre-outcome package.
+- Aggregate-only support inventory confirms the R40A.2 fit partition contains
+  4,287 patients/16,154 rows. Excluding all five observed 32-patient cohorts
+  removes exactly 160 patients and leaves 4,127 patients/14,687 eligible rows.
+- Remaining unique-patient label support is Stable 2,968, Improved 1,405,
+  Worse 1,601, New 990, and Resolved 489. Resolved is the limiting class, so
+  the frozen R40C one-row-per-patient roster must select rare classes first
+  and retain a safety margin instead of attempting to exhaust all 489.
+- A balanced 1,000-patient train / 500-patient development design
+  (200/100 patients per class) is supported with substantial margin even
+  after enforcing global patient uniqueness. This is large enough to test
+  held-out behavior while keeping the first run bounded and outcome-blind.
+- The existing formal token cache provides `true_tokens`, `current_tokens`,
+  and `shuffled_tokens` for every training example without labels or report
+  sentences. Query-only remains a finding-registry control rather than a
+  token-cache payload.
+- R40C will therefore train four independent, capacity-matched heads per Seed:
+  true-pair, current-only, prior-shuffle, and a 12-class finding one-hot padded
+  to the identical 3,840-wide input. This preserves the 499,973-parameter head
+  budget across every arm.
+- The primary gate will compare held-out true-pair macro-F1 to query-only and
+  prior-shuffle. Current-only remains a registered descriptive control.
+  A true-head counterfactual evaluation on current/shuffled tokens may be
+  reported diagnostically but cannot replace the primary arm comparison.
+- Frozen training scales R40B.4's optimizer to 1,000 patients without
+  route-specific tuning: AdamW at 0.001, no weight decay, batch 128,
+  100 epochs, fixed 800 update steps, gradient clip 1.0, no early stopping,
+  and no checkpoint selection.
+- The proposed internal GO requires, for every Seed: true-pair macro-F1 at
+  least 0.30, every class recall at least 0.15, true minus query/shuffle at
+  least +2 pp, and patient-bootstrap 95% CI lower bounds above zero. These
+  thresholds are frozen before any R40C roster or prediction exists.
+- The query-only arm is now pinned to the same canonical 12-finding registry
+  used by the frozen R37.1 candidate. Its one-hot vector is zero-padded to
+  width 3,840 before the identical head, preventing an implicit registry or
+  parameter-budget change.
+- Real-receipt no-write preflight passes. It confirms 4,127 remaining fit
+  patients/14,687 rows, the exact 160-patient historical exclusion, sufficient
+  support for 1,000/500 balanced selection, four registered arms, three Seeds,
+  499,973 parameters, and exactly 800 updates per arm.
+- The preflight explicitly reports `real_roster_written=false` and
+  `gpu_training_started=false`; the R40C runtime root does not exist. Both
+  GPUs remained idle, and protected 300-dev, revealed 483, gold, and external
+  flags stayed false.

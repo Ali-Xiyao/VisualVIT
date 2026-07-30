@@ -29,22 +29,29 @@ progression 信息可读；R40B.4 在第五批全新 32-patient engineering coho
 free/constrained causal-LM readout 路线仍为 STOP，因此这不是 Qwen 自由
 生成或科学泛化结论，R41–R43 与其他字段仍锁定。
 
+下一阶段 R40C 的 pre-outcome authority 已准备完成：冻结 1,000 名 train /
+500 名 development、三 Seed、四个容量匹配控制臂与 patient-bootstrap
+门。CPU preflight 已通过，但真实 roster 尚未写入、GPU 训练尚未启动；
+R40C 仍处于 review-gated prelaunch 状态。
+
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
 2. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
-3. [PRTA-Gen 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
-4. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-5. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-6. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-7. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+3. [R40C 内部泛化 preflight](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
+4. [PRTA-Gen 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
+5. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+6. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+7. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+8. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 
 - `configs/r37/`：R37.1 候选与 R37C 冻结配置；
 - `configs/r38/`：exact-64 survival 配置；
 - `configs/r39/`：frozen-VLM transfer 配置；
-- `configs/prta_gen/`：PRTA-Gen R40A/R40B readiness 与 probe 冻结配置；
+- `configs/prta_gen/`：PRTA-Gen R40A–R40C probe、structured generation
+  与 internal-generalization 冻结配置；
 - `src/visualvit/prta.py`：PRTA-CXR adapter、loss 与等变投影；
 - `src/visualvit/prta_gen.py`、`qwen_adapter.py`：生成目标/probe 与
   exact-64 generative adapter 工程面；
@@ -64,7 +71,7 @@ git diff --check
 ```
 
 Current-method focused tests pass. The complete historical suite currently
-reports `777 passed, 1 expected xfailed, 1 failed`; the single failure is a
+reports `787 passed, 1 expected xfailed, 1 failed`; the single failure is a
 preexisting R6 frozen-manifest hash drift reproduced unchanged at clean commit
 `24f57c3`. It is intentionally not “fixed” by rewriting the closed R6
 registry. See `docs/PROJECT_STATUS_CN.md`.

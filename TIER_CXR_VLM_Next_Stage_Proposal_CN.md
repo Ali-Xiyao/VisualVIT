@@ -54,6 +54,43 @@ R40B.4 因而把已 qualification 的 semantic-layout 表示接入一个
 终态报告：
 `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
 
+## R40C 下一阶段：已冻结、未执行
+
+R40B.4 只证明 32-row overfit。下一阶段不继续调 Qwen，而是冻结
+`PRTA-Gen R40C Structured Generalization`，检验同一结构化头的
+patient-disjoint internal development generalization：
+
+- 排除 R40B–R40B.4 五批共 160 名已观察患者；
+- 从剩余 R40A.2 fit 固定 1,000 train / 500 development，每类分别
+  200/100 名患者；
+- Seeds 17/29/43；
+- true-pair、current-only、query-only、prior-shuffle 四个
+  499,973 参数容量匹配 arm；
+- train-only mean/std，AdamW 0.001、batch 128、100 epochs、800
+  updates/arm，不早停、不选 checkpoint；
+- 主门为 held-out macro-F1、五类 recall、相对 query/shuffle 的 +2 pp
+  point effect 与 2,000 次 patient-bootstrap CI 下界。
+
+真实 receipt CPU preflight 已返回：
+
+```text
+PASS_PRTA_GEN_R40C_PREFLIGHT
+PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT
+```
+
+支持库存为排除后 4,127 patients / 14,687 rows，最稀缺 Resolved 仍有
+489 名患者。preflight 只在内存验证选择能力；`real_roster_written=false`、
+`gpu_training_started=false`，R40C runtime 根目录尚不存在。
+
+R40C 即使未来 GO，也只允许称 internal development generalization；
+不会自动解锁 Qwen free generation、R41–R43、gold/external 或科学主张。
+
+冻结协议：
+`docs/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PROTOCOL_CN.md`
+
+preflight 报告：
+`reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
+
 R39 之后的第一版 PRTA-Gen R40A 信息审计已经关闭为：
 
 ```text

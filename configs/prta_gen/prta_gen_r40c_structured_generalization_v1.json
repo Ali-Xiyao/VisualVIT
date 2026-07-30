@@ -1,0 +1,202 @@
+{
+  "schema": "visualvit.prta-gen.r40c-structured-generalization-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R40C_STRUCTURED_GENERALIZATION",
+  "stage_tag": "R40C",
+  "protocol_id": "prta-gen-r40c-structured-generalization-v1",
+  "study_tier": "internal_development_generalization",
+  "closed_predecessor": {
+    "result": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b4_structured_head_smoke_v1\\structured_head\\result.json",
+    "required_status": "PASS_PRTA_GEN_R40B4_STRUCTURED_HEAD_SMOKE",
+    "qwen_free_generation_must_remain_locked": true,
+    "scientific_claim_must_remain_locked": true
+  },
+  "upstream": {
+    "qualification_aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\probes\\semantic_layout_means_v1\\qualification\\aggregate.json",
+    "required_status": "GO_PRTA_GEN_R40A2_QUALIFICATION",
+    "required_candidate": "semantic_layout_means_v1",
+    "progression_generation_unlocked": true,
+    "laterality_generation_unlocked": false,
+    "anatomy_generation_unlocked": false,
+    "degree_generation_unlocked": false,
+    "evidence_generation_unlocked": false
+  },
+  "source": {
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\roster.json",
+    "required_roster_status": "PASS_PRTA_GEN_R40A2_ROSTER_SUPPORT",
+    "partition": "fit",
+    "targets": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit\\training_targets.jsonl",
+    "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens\\training\\seed_17\\formal\\index.json",
+    "required_token_status": "PASS_PRTA_GEN_R40A_TOKEN_CACHE",
+    "token_variants": {
+      "true_pair": "true_tokens",
+      "current_only": "current_tokens",
+      "prior_shuffle": "shuffled_tokens"
+    },
+    "query_only_representation": "finding_one_hot_12_padded_to_3840",
+    "exclude_cohorts": [
+      {
+        "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b_overfit_smoke_v1\\cohort.json",
+        "required_status": "PASS_PRTA_GEN_R40B_SMOKE_COHORT"
+      },
+      {
+        "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b1_constrained_smoke_v1\\cohort.json",
+        "required_status": "PASS_PRTA_GEN_R40B1_SMOKE_COHORT"
+      },
+      {
+        "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b2_progression_span_smoke_v1\\cohort.json",
+        "required_status": "PASS_PRTA_GEN_R40B2_SMOKE_COHORT"
+      },
+      {
+        "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b3_direct_class_smoke_v1\\cohort.json",
+        "required_status": "PASS_PRTA_GEN_R40B3_SMOKE_COHORT"
+      },
+      {
+        "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40b4_structured_head_smoke_v1\\cohort.json",
+        "required_status": "PASS_PRTA_GEN_R40B4_SMOKE_COHORT"
+      }
+    ],
+    "expected_excluded_patient_count": 160
+  },
+  "roster": {
+    "namespace": "prta-gen-r40c-structured-generalization-v1",
+    "assignment": "rare-class-first stable SHA-256 without replacement; development before training",
+    "class_order": [
+      "Resolved",
+      "New",
+      "Improved",
+      "Worse",
+      "Stable"
+    ],
+    "one_row_per_patient": true,
+    "train_patients": 1000,
+    "development_patients": 500,
+    "train_class_counts": {
+      "Stable": 200,
+      "Improved": 200,
+      "Worse": 200,
+      "New": 200,
+      "Resolved": 200
+    },
+    "development_class_counts": {
+      "Stable": 100,
+      "Improved": 100,
+      "Worse": 100,
+      "New": 100,
+      "Resolved": 100
+    },
+    "unselected_patients_must_remain_unused": true,
+    "resplit_allowed": false
+  },
+  "head": {
+    "class": "ProgressionDecisionHead",
+    "input_features": "exact64_semantic_mean_features",
+    "semantic_regions": [
+      [0, 4],
+      [4, 16],
+      [16, 32],
+      [32, 48],
+      [48, 60]
+    ],
+    "reserved_positions_ignored": [60, 64],
+    "input_width": 3840,
+    "hidden_width": 128,
+    "class_count": 5,
+    "parameter_count": 499973,
+    "feature_standardization": "training_arm_mean_std_clamp_1e-6",
+    "fresh_initialization_per_seed_and_arm": true
+  },
+  "training": {
+    "seeds": [17, 29, 43],
+    "arms": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "prior_shuffle"
+    ],
+    "epochs": 100,
+    "batch_size": 128,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "gradient_clip_norm": 1.0,
+    "expected_updates_per_arm": 800,
+    "early_stopping": false,
+    "checkpoint_selection": false
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "finding_values": [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Enlarged Cardiomediastinum",
+      "Fracture",
+      "Lung Lesion",
+      "Lung Opacity",
+      "Pleural Effusion",
+      "Pleural Other",
+      "Pneumonia",
+      "Pneumothorax"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "all_other_fields_omitted": true,
+    "compact_json": true
+  },
+  "evaluation": {
+    "primary_metric": "development_macro_f1",
+    "per_class_metric": "development_recall",
+    "required_primary_controls": [
+      "query_only",
+      "prior_shuffle"
+    ],
+    "descriptive_control": "current_only",
+    "true_head_counterfactuals_descriptive_only": true,
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 40001
+  },
+  "gate": {
+    "all_seed_true_macro_f1_at_least": 0.3,
+    "all_seed_all_class_recall_at_least": 0.15,
+    "all_seed_required_control_effects_at_least_pp": 2.0,
+    "all_seed_required_control_ci95_lower_above_pp": 0.0,
+    "structured_schema_validity": 1.0,
+    "structured_finding_echo_accuracy": 1.0,
+    "scientific_claim_allowed": false
+  },
+  "result_statuses": {
+    "roster_pass": "PASS_PRTA_GEN_R40C_ROSTER_SUPPORT",
+    "seed_complete": "PASS_PRTA_GEN_R40C_SEED_EVALUATION",
+    "aggregate_go": "GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION",
+    "aggregate_stop": "STOP_PRTA_GEN_R40C_INTERNAL_GENERALIZATION"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40c_structured_generalization_v1",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40c_structured_generalization_v1\\roster.json"
+  },
+  "firewall": {
+    "original_fit_partition_already_used_for_method_development": true,
+    "independent_scientific_confirmation": false,
+    "pixel_inputs_used": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "observed_r40b_cohorts_used_for_training_or_evaluation": false,
+    "qwen_free_generation_unlocked": false,
+    "laterality_generation_unlocked": false,
+    "anatomy_generation_unlocked": false,
+    "degree_generation_unlocked": false,
+    "evidence_generation_unlocked": false,
+    "r41_qwen_sft_unlocked": false
+  }
+}

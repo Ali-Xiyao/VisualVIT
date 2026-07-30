@@ -1273,3 +1273,61 @@
   this route; the closed R6 registry remains untouched.
 - Post-closeout `nvidia-smi` shows both RTX 3090 devices at 0 MiB used and
   0% utilization.
+
+## 2026-07-30 Phase 10 R40C pre-outcome start
+
+- User authorized the recommended next stage.
+- Reopened the active planning bundle with a new Phase 10. The authorized
+  scope is protocol/config/roster/runner/aggregator/tests and dry-run
+  validation only; formal GPU execution remains behind a new review gate.
+- Preserved R40B.4 as an engineering-only 32-row overfit PASS and kept Qwen
+  free generation, scientific generalization, other fields, R41–R43, and all
+  protected outcomes locked.
+- Completed aggregate fit-side support inventory without protected reads:
+  4,127 patients/14,687 rows remain after excluding all 160 patients from the
+  five observed R40B cohorts. The limiting Resolved label still has 489
+  unique patients, supporting a frozen balanced 1,000-train/500-development
+  design.
+- The first inventory command used PowerShell's reserved `$PID` name and was
+  stopped by exact process match after producing only repeated shell errors.
+  The corrected read-only aggregation used `$patientKey` and completed
+  normally; no artifact or outcome boundary changed.
+- Inspected the existing R40B.4 head, token loader, R40A.2 feature/control
+  logic, and patient-bootstrap aggregator. Froze the R40C design at four
+  capacity-matched arms, three Seeds, 1,000 balanced training patients,
+  500 balanced development patients, and a no-tuning 100-epoch schedule.
+- Added the pre-outcome R40C JSON config and Chinese frozen protocol. They
+  register the source/exclusion receipts, balanced roster, four arms,
+  architecture/training schedule, three-Seed bootstrap gate, internal-only
+  claim tier, and the explicit stop-before-real-roster/GPU boundary.
+- Added the deterministic fail-closed R40C roster builder with an in-memory
+  `--preflight-only` mode. It validates predecessor/upstream/token/cohort
+  receipts, excludes exactly 160 historical patients, assigns rare classes
+  first, enforces one row per patient and train/development disjointness, and
+  writes nothing during preflight.
+- Roster-builder validation passes four focused tests and Ruff. Tests cover
+  deterministic assignment, balanced/disjoint output, no-write preflight, and
+  protected-parent fail-closed behavior; no real runtime roster was created.
+- Added the R40C GPU runner. It loads all three token variants in one shard
+  pass, derives semantic-layout means, constructs a padded 12-finding
+  query-only control, fits normalization on training only, trains four fresh
+  capacity-matched heads, and records held-out metrics plus descriptive
+  true-head counterfactuals.
+- Added the three-Seed R40C aggregator with patient-cluster bootstrap,
+  absolute macro-F1 and per-class recall gates, query/shuffle effect gates,
+  deterministic structured-interface checks, and locked downstream claims.
+- The combined R40C/R40B.4 focused suite passes 13 tests and Ruff. No real
+  roster, Seed output, aggregate, checkpoint, or GPU process exists.
+- Ran both real-receipt CPU preflights in no-write mode. The roster path
+  returned `PASS_PRTA_GEN_R40C_PREFLIGHT`; the runner returned
+  `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT`, with 1,000/500 in-memory counts,
+  four arms, Seeds 17/29/43, 499,973 parameters, and 800 updates per arm.
+- Before and after preflight, the R40C runtime root/roster were absent, no
+  R40C process existed, and both GPUs were at 0 MiB/0% utilization. Every
+  protected/gold/external flag remained false.
+- Updated the root README, current proposal, project status, report index, and
+  a dedicated R40C preflight report to the same review-gated prelaunch state.
+- Final focused validation passes 18 tests, repository-wide Ruff, compileall,
+  R40C JSON parsing, modified-document link checks, and `git diff --check`.
+  Full pytest reports 787 passed, 1 expected xfailed, and the same historical
+  R6 frozen-manifest failure; the sealed R6 authority remains untouched.
