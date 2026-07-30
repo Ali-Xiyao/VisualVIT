@@ -450,6 +450,19 @@ smokes during iteration.
 - **Status:** `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT` — pre-outcome package
   complete and pushed; real roster and GPU execution await explicit review.
 
+### Phase 11 — R40C one-time real roster freeze
+
+- [ ] Revalidate the pushed R40C config/protocol, clean worktree, absent
+  runtime root, real-receipt no-write preflight, and idle GPUs before writing.
+- [ ] Execute the committed roster builder exactly once at the registered
+  runtime path. Do not start any Seed or GPU process.
+- [ ] Audit only receipt-level counts, class balance, patient disjointness,
+  exclusion count, firewalls, file hash, and runtime contents without printing
+  patient identifiers.
+- [ ] Update the planning/status/preflight handoff to the frozen roster
+  receipt, validate diffs, commit, and push.
+- **Status:** in_progress_roster_only
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -538,5 +551,5 @@ smokes during iteration.
 
 ## Next Step
 
-Wait for explicit authorization to write the one-time R40C roster. Do not
-start any Seed or GPU process until that roster receipt is reviewed.
+Revalidate the committed R40C authority and absent runtime root, then write the
+one-time roster only. Stop before every Seed/GPU command.

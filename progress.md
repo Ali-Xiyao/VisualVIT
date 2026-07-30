@@ -1335,3 +1335,12 @@
   Phase 10 preparation is closed at
   `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT`; the next action is user review before
   the one-time real roster write. No formal command was launched.
+
+## 2026-07-30 Phase 11 R40C roster authorization
+
+- User authorized the next action. Interpreted the incomplete phrase against
+  the immediately preceding gate as authorization for the one-time real
+  roster write and receipt audit only, not for Seed/GPU execution.
+- Opened Phase 11 with an explicit roster-only boundary. The committed
+  pre-outcome authority remains unchanged; all protected outcomes and every
+  GPU command stay locked until the roster receipt is reviewed.
