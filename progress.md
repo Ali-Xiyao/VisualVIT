@@ -851,3 +851,7 @@
   and no GPU process was launched before the protocol commit.
 - Reused the exact existing R39 Qwen model path after a read-only path check;
   the first draft's guessed path did not exist and was fixed before freeze.
+- Commit `835caef` was pushed before roster generation.
+- The first roster CLI exited 1 before importing `visualvit`; no roster output
+  directory was created. Added only the standard standalone-script `src` path
+  bootstrap, with the frozen split rule and all settings unchanged.

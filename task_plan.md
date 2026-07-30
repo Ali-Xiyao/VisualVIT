@@ -381,6 +381,7 @@ smokes during iteration.
 | Full pytest had one R6 frozen-manifest failure after 700 passes | 1 | The same targeted test fails at clean commit `24f57c3`; document the preexisting closed-registry drift and do not rewrite historical R6 hashes |
 | First combined verification-document patch omitted valid patch-line prefixes between file hunks | 1 | Split the update into correctly delimited file hunks and reapply without changing content |
 | Initial R40 roster tests omitted the required `current_view` fixture field and used guessed rather than canonical transition example IDs | 1 | Add the field and generate CMCP target IDs with the production `stable_hash` namespace; production roster code was unchanged |
+| First direct R40 roster CLI stopped before reading source rows because the standalone builder did not insert the local `src` path | 1 | Add the same scoped path bootstrap used by other standalone scripts, keep the frozen roster rule unchanged, and rerun only after tests/commit/push |
 
 ## Next Step
 

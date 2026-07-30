@@ -1,11 +1,17 @@
 from __future__ import annotations
 
+# ruff: noqa: E402
+
 import argparse
 from collections import Counter
 import hashlib
 import json
 from pathlib import Path
+import sys
 from typing import Any, Iterable
+
+WORKSPACE = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(WORKSPACE / "src"))
 
 from visualvit.cmcp import transition_examples
 from visualvit.prta import PROGRESSION_LABELS

@@ -960,3 +960,7 @@ preserving the encoder's static medical semantics.
   nonexistent guessed Qwen directory. It was corrected to the already proven
   local R39 model path `H:\Xiyao_Wang\001_models\Qwen3-VL-4B-Instruct`;
   no download, model load, or outcome access occurred.
+- The first direct roster command stopped at Python import time because the
+  standalone builder lacked the repository `src` bootstrap. No source row,
+  label support, roster manifest, cache, or protected outcome was read; the
+  runtime root contains only the empty stdout and import traceback.
