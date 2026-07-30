@@ -811,3 +811,103 @@ preserving the encoder's static medical semantics.
   GO. This confirms TIER-CXR-VLM under the frozen silver-cohort protocol;
   expert gold remains quarantined and cannot be used to strengthen the claim
   without a separately registered descriptive confirmation.
+
+## Repository closeout and experiment-gap audit
+
+- The repository has no root `README.md`, so a new reader currently encounters
+  nine root-level authority/planning/proposal files with no declared reading
+  order. This is the largest handoff problem; code organization itself is
+  already conventional (`configs/`, `docs/`, `reports/`, `scripts/`, `src/`,
+  `tests/`).
+- `history/2026-07-30-legacy-proposals/CAPES_Final_Complete_Proposal_CN.md`
+  and `history/2026-07-30-legacy-proposals/DIVE_Proposal.md` are now labeled
+  historical proposal surfaces. The active TIER authority is
+  instead `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`,
+  `TIER_CXR_VLM_Empty_Result_Tables_CN.md`, and
+  `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`. Moving CAPES/DIVE into a
+  dated history package will reduce ambiguity without deleting provenance.
+- The repository already preserves prior planning closures under five dated
+  `history/` packages. A matching closeout package and a small history index
+  are preferable to deleting old documents.
+- R39 has a compact reproducibility surface: one frozen config, dedicated
+  cache/train/predict/reveal/aggregate scripts, focused tests, and a terminal
+  report. Runtime data, checkpoints, predictions, and credentialed images are
+  outside Git and must remain so.
+- Historical reports and protocol specs are numerous but appropriately named;
+  they should be indexed rather than physically reorganized, because moving
+  them would break many existing local references and add little reader value.
+- The active R39 evidence already covers the core shortcut boundary:
+  capacity-matched frozen A0, current-only, query-only, within-finding
+  cross-patient prior shuffle, exact-64/no-pixel/zero-trainable-VLM audits,
+  three paired Seeds, and patient-cluster bootstrap. These should not be
+  described as missing ablations.
+- The original proposal's Sections 17–21 contain a much broader R32-era paper
+  wish list. It includes raw two-image VLM, naive concatenation, always-rich,
+  random-route, continuous/oracle routing, multiple ensemble heuristics,
+  per-tier removals, 32/96-token budgets, unshared projectors, 8B VLM,
+  time reversal, ROI shuffle, image blank, label permutation, side swap,
+  grounding, generation, external/gold, and second-backbone studies.
+  Completing every row is neither necessary for the already registered R39
+  core GO nor protocol-valid on the revealed 483 cohort.
+- The strongest current paper gap is not another Seed. It is a fair strong
+  baseline package: raw two-image frozen VLM and naive fixed-64 concatenation,
+  evaluated on a new outcome-independent cohort or under a separately frozen
+  post-reveal protocol. Without it, the result establishes A6 over A0 and
+  shortcut controls, but does not yet show superiority over the most direct
+  multi-image VLM formulation.
+- A VLM-level time-reversal control is also high value. R37.1 proves
+  representation/logit equivariance before the VLM, while R39 does not report
+  whether frozen-VLM predictions reverse according to
+  Improved↔Worse/New↔Resolved. This should be an audit of frozen predictions
+  where possible, not a tuning signal.
+- PRTA-CXR has a clean component registry: A2 classification only; A3 adds
+  transition alignment; A4 adds inversion; A5 adds CMCP; A6 combines
+  classification, alignment, inversion, CMCP, and state preservation. Only A6
+  received the full formal three-seed qualification; A3/A6 evidence outside
+  that chain is engineering-only, and A2/A4/A5 are not a matched formal
+  component ablation series.
+- Therefore the most informative method ablation is a frozen A2/A3/A4/A5/A6
+  ladder on a new development cohort, with equal training budget and paired
+  Seeds. It would attribute the A6 gain to alignment, inversion, CMCP, and
+  state preservation rather than merely showing full A6 beats A0.
+- Per-tier removal and routing ablations from the old TIER proposal do not map
+  one-to-one onto the implemented PRTA-CXR A6 architecture. The implemented
+  model uses a query-conditioned cross-time adapter with state and transition
+  resamplers, not the original robust-versus-rich hard router. Before running
+  any “remove Tier 0/1/2/3” experiment, the paper must decide whether its
+  method claim is PRTA-CXR or the older four-tier router. Mixing these
+  namespaces would create an invalid ablation story.
+- CAPES/DIVE are clearly historical proposal families and are safe to archive
+  from the root. Their content remains useful as provenance and should be
+  labeled non-authoritative rather than deleted.
+- The closeout organization now has one root README, a current-status document,
+  a reports index, a history index, and a dedicated experiment-gap audit. Only
+  CAPES/DIVE moved; protocol specs and historical result paths remain stable.
+- `pyproject.toml` previously described the package as non-confirmatory
+  CAPES-first/DIVE-soft code. That description was stale after the completed
+  TIER/PRTA chain and is updated to the current project identity.
+- The advertised repository-wide Ruff command initially exposed 28 preexisting
+  issues in six historical/utility scripts: three genuinely unused or
+  unnecessary constructs and 25 intentional imports after local `src` path
+  insertion. The cleanup removes the unused constructs and marks only those
+  five path-bootstrap files with file-level `E402` exemptions; no experiment
+  behavior or protocol is changed.
+- The tracked `data/official` package contains small pinned CheXTemporal gold
+  annotation files but no credentialed images. Because those files remain
+  quarantined even though tracked, the repository now has an explicit
+  `data/README.md` warning that file presence is not outcome-access authority.
+- The four active frozen configs now have a compact index that distinguishes
+  the historical R37 STOP lineage from the terminal R37C/R38/R39 GO chain and
+  forbids editing a completed config into a new 483-test claim.
+- Full pytest reached 700 PASS / 1 expected XFAIL / 1 FAIL. The failure is an
+  old R6 closed-manifest resolution test:
+  `test_r6_resolution_and_nested_manifests_are_exact_and_fail_closed`.
+  Its false checks concern frozen R6 implementation-observation and
+  freeze-record hashes; the changed closeout files are outside that R6 source
+  allowlist. A clean base-commit comparison is required before classifying it
+  as preexisting drift.
+- The exact targeted R6 test also fails at clean detached commit `24f57c3`
+  with the same `gate["passed"] is False` versus expected frozen `True`
+  assertion. This proves the failure predates the repository closeout. Do not
+  “repair” it by changing closed R6 registry hashes; document it as historical
+  frozen-manifest drift while retaining 24/24 current-method focused PASS.

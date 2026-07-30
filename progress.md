@@ -769,3 +769,60 @@
 - Added `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md` and synchronized the
   proposal, result authority, findings, progress, and task plan. The experiment
   stops here; any gold/external study needs a new frozen registration.
+
+## 2026-07-30 repository closeout
+
+- Started Phase 6 using `planning-with-files`; no new experiment is
+  authorized or launched.
+- Confirmed the branch is clean and synchronized at the R39 terminal commit
+  before closeout edits.
+- Inventoried root files and tracked directories. Found no root README; found
+  two historical proposals at the root, five dated planning-history packages,
+  40 tracked reports, 33 protocol/spec documents, four active R37–R39 configs,
+  and dedicated R38/R39 scripts/tests.
+- Chose a conservative organization strategy: add one active entrypoint and
+  indexes, archive only the two clearly stale root proposals, and avoid broad
+  path churn across historical reports/specs.
+- Compared the proposal's main-table, ablation, shortcut-control, grounding,
+  and minimum-publishable-package sections with the frozen R39 config and
+  implementation.
+- Confirmed R39 implemented A0/current-only/query-only/prior-shuffle controls
+  plus all core interface firewalls. Identified raw two-image/naive-concat
+  baselines and VLM-level time reversal as the highest-value evidence gaps;
+  no missing experiment authorizes tuning on the revealed 483 cohort.
+- Audited the PRTA variant registry and formal spec. Only full A6 has the
+  complete three-seed chain; a matched A2→A6 component ladder is the clearest
+  missing method ablation.
+- Confirmed the old four-tier routing ablation list is not directly identical
+  to the implemented PRTA adapter, so it will be classified as legacy/optional
+  unless the method namespace is explicitly reopened.
+- Added the root `README.md`, current-status document, experiment-gap audit,
+  reports index, and history index.
+- Moved the CAPES/DIVE proposal files into
+  `history/2026-07-30-legacy-proposals/` with explicit non-authoritative
+  archive notices, and updated the one tracked spec that referenced their old
+  root paths.
+- Updated the package description from the stale CAPES/DIVE qualification
+  wording to the current TIER-CXR-VLM / PRTA-CXR research identity.
+- Focused PRTA/R38/R39 tests passed: 24 tests in 3.58 seconds.
+- The first repository-wide Ruff run found 28 preexisting findings in six
+  utility scripts. Removed one unused import, one unused variable, and two
+  unnecessary f-string prefixes; added scoped `E402` exemptions to five
+  scripts that intentionally insert the local `src` path before imports.
+- Added `configs/README.md` and `data/README.md` so frozen-config lineage and
+  the tracked-but-quarantined gold annotation boundary are visible without
+  opening protocol or data payload files.
+- Full pytest completed in 236.09 seconds: 700 passed, 1 expected xfailed, and
+  1 old R6 closed-manifest test failed. Focused current-method tests remain
+  24/24 PASS. Began a base-commit comparison to determine whether the R6
+  failure predates this closeout.
+- Created a temporary detached worktree at clean commit `24f57c3`, reran only
+  the failing R6 test, reproduced the same failure, and removed the temporary
+  worktree. The failure is confirmed preexisting and remains visible rather
+  than being hidden by editing a closed protocol registry.
+- Final closeout validation passed: local Markdown links, active archive
+  references, Ruff across `src/scripts/tests`, Python compileall, and
+  `git diff --check`. The temporary worktree list contains only the active
+  repository.
+- Phase 6 is complete. No GPU process, protected-outcome read, hash
+  recomputation, checkpoint change, or new experiment occurred.

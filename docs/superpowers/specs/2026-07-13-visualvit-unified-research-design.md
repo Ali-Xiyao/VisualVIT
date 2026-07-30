@@ -2,7 +2,9 @@
 
 **状态**：架构已获用户确认；允许启动 `NON_CONFIRMATORY_PROXY` 预实验  
 **日期**：2026-07-13  
-**原始提案**：`CAPES_Final_Complete_Proposal_CN.md`、`DIVE_Proposal.md`
+**原始提案**：
+`history/2026-07-30-legacy-proposals/CAPES_Final_Complete_Proposal_CN.md`、
+`history/2026-07-30-legacy-proposals/DIVE_Proposal.md`
 
 ## 1. 目标与边界
 

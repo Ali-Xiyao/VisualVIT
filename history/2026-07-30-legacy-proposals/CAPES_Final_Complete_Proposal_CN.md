@@ -1,5 +1,6 @@
 ---
 title: "CAPES (Final) — Diagnosing and Repairing the Relational Blind Spot of Longitudinal Medical VLMs"
+archive_status: "Historical proposal; not the active TIER-CXR-VLM authority"
 aliases:
   - CAPES Final
   - Change-Aware Persistent Entity Slots

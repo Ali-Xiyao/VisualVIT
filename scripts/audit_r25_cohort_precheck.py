@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import csv
 import gzip
-import io
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -152,7 +151,6 @@ def main() -> None:
     print()
 
     # ---- R24 v3 cohort (for cross-source exclusion estimate) ----
-    r24_patients: set[str] = set()
     if R24_V3_SUMMARY.is_file():
         r24_summary = json.loads(R24_V3_SUMMARY.read_text(encoding="utf-8"))
         r24_cohort = r24_summary.get("cohort", {})
@@ -356,8 +354,8 @@ def main() -> None:
 
     # ---- Cross-source exclusion estimate ----
     print("Cross-source exclusion estimate:")
-    print(f"  R24 v3 cohort: 34 patients (CheXTemporal source, different patient namespace)")
-    print(f"  R24 progression pilot: 70 patients (CheXTemporal source)")
+    print("  R24 v3 cohort: 34 patients (CheXTemporal source, different patient namespace)")
+    print("  R24 progression pilot: 70 patients (CheXTemporal source)")
     print(f"  Chest ImaGenome gold: {len(cohort_patients)} patients (MIMIC subject_id namespace)")
     print("  Patient_id namespaces differ between CheXTemporal and Chest ImaGenome,")
     print("  so patient-level overlap is unlikely. dicom_id-level overlap is the")

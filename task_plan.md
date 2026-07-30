@@ -271,6 +271,27 @@ smokes during iteration.
   result authority, and a dedicated Chinese R39 report.
 - **Status:** `GO_R39_FROZEN_VLM_TRANSFER_GOLD_SEALED`
 
+### Phase 6 — Repository closeout and experiment-gap audit
+
+- [x] Inventory the tracked repository, identify the single active entrypoint,
+  and separate current TIER-CXR-VLM authority from historical proposals,
+  planning bundles, runtime-only outputs, and local caches.
+- [x] Add a concise root README and durable project-status/index document that
+  point readers to the R39 result, proposal, result authority, reproduction
+  surfaces, and protected-data boundaries.
+- [x] Archive stale root-level CAPES/DIVE proposal surfaces without deleting
+  their history, and keep all runtime datasets/checkpoints/predictions outside
+  the Git publication boundary.
+- [x] Audit completed experiments against the current method claim and the
+  proposal's ablation/control/baseline matrix. Classify each gap as required
+  for core validity, recommended for a stronger paper, optional, or invalid
+  after the one-shot 483 reveal.
+- [x] Produce a frozen, outcome-independent next-experiment recommendation;
+  do not launch GPU work or use the revealed 483 outcome for tuning.
+- [x] Validate links, Markdown, Git cleanliness, and existing focused tests;
+  update the three planning files, then commit and push the organized handoff.
+- **Status:** completed
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -328,10 +349,16 @@ smokes during iteration.
 | The staged check exposed three remaining hard-break spaces in the new case-study header, but PowerShell continued to commit after native `git diff --check` returned nonzero | 3 | Remove the remaining spaces, run `git diff --check` as a standalone gate, then create and push a dedicated formatting-fix commit |
 | R37C Seeds 17/29 stopped before model loading because 11 structural rows used lowercase/case-variant finding names | 1 | Canonicalize finding names case-insensitively to the already frozen 12-class registry, reject all non-case variants, preserve the cache/reveal, and resume only fresh seed evaluations |
 | R39 projector Seed 17 stopped before training because the parameter-count receipt came from the input-width-16 R32 smoke | 1 | Correct only the derived receipt to the unchanged input-width-768 projector's 9,873,920 parameters, add an exact regression test, preserve all outcome-free caches, and resume from fresh projector outputs |
+| Initial repository-inventory command used invalid multi-property `Sort-Object` parameter syntax | 1 | Rerun with explicit property expression hash tables; inventory completed without changing files |
+| A report search passed a Windows wildcard path directly to `rg` | 1 | Resolve report paths with `rg --files` before searching; no result or source file was changed |
+| A stale-reference search used unsupported regex lookbehind in default `rg` mode | 1 | Use literal searches and filter known archive paths instead of enabling a more complex regex engine |
+| Repository-wide Ruff found 28 preexisting issues in six utility scripts | 1 | Remove four genuine lint defects and add scoped `E402` exemptions only where scripts intentionally bootstrap the local `src` path; rerun the full lint command |
+| Full pytest had one R6 frozen-manifest failure after 700 passes | 1 | The same targeted test fails at clean commit `24f57c3`; document the preexisting closed-registry drift and do not rewrite historical R6 hashes |
+| First combined verification-document patch omitted valid patch-line prefixes between file hunks | 1 | Split the update into correctly delimited file hunks and reapply without changing content |
 
 ## Next Step
 
-R39 has reached its registered terminal scientific GO. Do not tune or rerun
-against the revealed 483-patient outcome. Preserve the frozen artifacts and
-one-shot reveal receipt, keep gold quarantined, and treat any future gold or
-external confirmation as a separately registered descriptive study.
+Use `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md` as the authority for any
+future experiment choice. If the user authorizes new GPU work, freeze an
+outcome-independent A2→A6 component-ablation and strong-baseline protocol
+before launching; do not reuse the revealed 483 cohort for selection.

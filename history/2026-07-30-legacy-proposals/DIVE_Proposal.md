@@ -1,4 +1,7 @@
-# DIVE: Divided Intra-inter Visual Encoding for Multi-Image VLMs
+# DIVE: Divided Intra-inter Visual Encoding for Multi-Image VLMs（历史提案）
+
+> **归档状态：** 本文档保留为方法谱系，不是当前 TIER-CXR-VLM
+> 实验或主张的授权入口。
 
 > **一句话**：当前多图 VLM 把所有跨图推理都甩给 LLM 的 self-attention，但 LLM 在深层会发生跨图注意力坍塌。DIVE 在视觉侧预计算跨图关系，分离"对应"与"差异"信息，让 LLM 收到的是已经结构化的跨图 token。
 
