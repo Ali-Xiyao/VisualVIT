@@ -478,10 +478,10 @@ smokes during iteration.
 - [x] After all three Seed receipts pass, run the frozen aggregate exactly
   once. Treat either registered GO or registered STOP as the terminal
   scientific outcome; do not tune or retry around a failed gate.
-- [ ] Audit final artifacts/processes/GPUs, update all authority and planning
+- [x] Audit final artifacts/processes/GPUs, update all authority and planning
   surfaces, validate, commit, and push the terminal evidence package.
 - **Status:** `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` — terminal aggregate
-  passed; documentation closeout in progress.
+  and documentation closeout complete and pushed.
 
 ## Errors Encountered
 
@@ -573,5 +573,5 @@ smokes during iteration.
 
 ## Next Step
 
-Validate the terminal R40C report and authority surfaces, then commit and push
-the final GO evidence package.
+R40C is terminal. Do not launch or tune further work without a new,
+independently frozen confirmation protocol and explicit authorization.
