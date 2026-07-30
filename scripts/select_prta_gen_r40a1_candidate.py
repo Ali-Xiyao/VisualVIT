@@ -12,7 +12,10 @@ WORKSPACE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKSPACE))
 sys.path.insert(0, str(WORKSPACE / "src"))
 
-from scripts.build_prta_gen_r40a1_roster import CONFIG_STATUS, ROSTER_PASS
+from scripts.cache_prta_gen_r40a1_features import (
+    CONFIG_STATUSES,
+    ROSTER_STATUSES,
+)
 from scripts.cache_prta_gen_r40a_tokens import read_json
 
 
@@ -21,15 +24,18 @@ def select_candidate(
 ) -> dict[str, Any]:
     config = read_json(config_path)
     roster = read_json(roster_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40A.1 config is not frozen")
     if (
-        roster.get("status") != ROSTER_PASS
+        roster.get("status") not in ROSTER_STATUSES
         or roster.get("qualification_outcomes_read") is not False
         or roster.get("revealed_483_test_read") is not False
         or roster.get("gold_outcomes_read") is not False
     ):
         raise PermissionError("R40A.1 roster firewall drift")
+    stage_tag = str(config.get("stage_tag", "R40A1"))
+    go_status = f"GO_PRTA_GEN_{stage_tag}_DISCOVERY"
+    stop_status = f"STOP_PRTA_GEN_{stage_tag}_DISCOVERY"
     selected: str | None = None
     aggregate_paths = []
     for candidate in config["candidate_order"]:
@@ -56,15 +62,15 @@ def select_candidate(
         ):
             raise PermissionError("R40A.1 discovery aggregate drift")
         aggregate_paths.append(str(path))
-        if aggregate.get("status") == "GO_PRTA_GEN_R40A1_DISCOVERY":
+        if aggregate.get("status") == go_status:
             selected = name
             break
-        if aggregate.get("status") != "STOP_PRTA_GEN_R40A1_DISCOVERY":
+        if aggregate.get("status") != stop_status:
             raise ValueError("R40A.1 discovery aggregate status drift")
     status = (
-        "SELECTED_PRTA_GEN_R40A1_CANDIDATE"
+        f"SELECTED_PRTA_GEN_{stage_tag}_CANDIDATE"
         if selected is not None
-        else "STOP_PRTA_GEN_R40A1_DISCOVERY"
+        else stop_status
     )
     return {
         "schema": "visualvit.prta-gen.r40a1-selection.v1",

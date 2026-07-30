@@ -369,6 +369,13 @@ smokes during iteration.
 - [ ] Run candidates only on the discovery boundary, stop each failed
   candidate at its first registered gate, and select at most one route using
   the predeclared rule.
+- [x] Close R40A.1 after both predeclared candidates fail their first
+  Seed-level prior-shuffle gate; keep its 1,500-patient qualification boundary
+  unread.
+- [x] Freeze R40A.2 around the newly identified token-layout mismatch:
+  use the registered `4/12/16/16/12/4` query/state/global/local/relation/reserve
+  boundaries, exclude the observed R40A.1 discovery patients, and reserve a
+  fresh discovery2 split from the old fit partition.
 - [ ] Freeze the selected route before the one-shot qualification boundary;
   require all three Seeds and patient-cluster confidence intervals rather than
   a favorable point estimate.
@@ -452,10 +459,10 @@ smokes during iteration.
 | First compact-cache patch passed generator expressions as a non-final function argument without parentheses | 1 | Parenthesize each generator, rerun collection/tests/Ruff, and do not relaunch before syntax validation passes |
 | First direct PRTA-Gen aggregate CLI lacked the standalone repository import bootstrap | 1 | Add the standard scoped workspace/src bootstrap, rerun tests/Ruff/CLI, then retry without changing bootstrap settings |
 | First Phase-9 case-study test expected the fourth synthetic row to be both-wrong even though its true-pair prediction matched the target | 1 | Correct only the fixture prediction so all four registered correctness categories occur once; keep production categorization unchanged |
+| First combined R40A.2 planning writeback expected a longer moments-candidate finding sentence than the live file contained | 1 | Inspect the exact planning-file tails and reapply the writeback against current text; no runtime or result changed |
 
 ## Next Step
 
-Implement and test the generic R40A.1 candidate runner and discovery
-aggregator against the committed config/roster. Run `regional_moments_v1`
-first; do not inspect or launch `regional_cosine4_v1` unless the first
-candidate reaches a registered discovery STOP.
+Commit and push the R40A.2 authority, then run its deterministic roster/support
+audit. Only after a PASS may semantic-layout means be cached and evaluated on
+discovery2.

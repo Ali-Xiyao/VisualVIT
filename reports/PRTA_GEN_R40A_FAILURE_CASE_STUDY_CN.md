@@ -101,3 +101,20 @@ qualification。若 qualification GO，只解锁 progression-only R40B smoke；
 
 协议：
 `docs/PRTA_GEN_R40A1_CASE_DRIVEN_REPAIR_PROTOCOL_CN.md`
+
+## R40A.1 结果与新发现
+
+R40A.1 两个候选均未进入 qualification：
+
+- regional moments：Seed 17 对 prior-shuffle +8.13 pp，但 Seed 29
+  为 -5.18 pp；
+- regional cosine4：Seed 17 对 prior-shuffle -1.23 pp。
+
+这排除了“只要增加区域内统计或固定位置分量即可”的解释。
+
+随后审计 `pack_fixed64` 发现，真实布局是 query 4、state 12、global
+transition 16、local transition 16、relation 12、reserve 4，而失败 probe
+使用了 20/20/20 分段。这会混合 query/state 并切开两个 transition 类型。
+
+因此 R40A.2 不增加模型容量，而是首先修复 token-type 语义边界，并使用
+新的 discovery2 验证。原 R40A.1 qualification 保持未读。

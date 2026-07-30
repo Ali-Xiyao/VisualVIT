@@ -15,9 +15,10 @@ sys.path.insert(0, str(WORKSPACE / "src"))
 import torch
 from torch import Tensor
 
-from scripts.build_prta_gen_r40a1_roster import CONFIG_STATUS, ROSTER_PASS
 from scripts.cache_prta_gen_r40a1_features import (
+    CONFIG_STATUSES,
     FEATURE_STATUS,
+    ROSTER_STATUSES,
     candidate_spec,
 )
 from scripts.cache_prta_gen_r40a_tokens import read_json, read_jsonl
@@ -109,9 +110,17 @@ def partition_indices(
         "discovery": [],
         "qualification": [],
     }
+    excluded = {
+        str(value)
+        for value in roster.get("excluded_parent_discovery", {}).get(
+            "patient_ids", ()
+        )
+    }
     for index, row in enumerate(rows):
         patient_id = str(row["patient_id"])
         if patient_id not in patient_to_partition:
+            if patient_id in excluded:
+                continue
             raise ValueError("R40A.1 row patient absent from roster")
         indices[patient_to_partition[patient_id]].append(index)
     tensors = {
@@ -128,12 +137,14 @@ def validate_qualification_selection(
     *,
     selection_path: Path | None,
     candidate_name: str,
+    stage_tag: str,
 ) -> dict[str, Any]:
     if selection_path is None:
         raise PermissionError("qualification requires a selection receipt")
     selection = read_json(selection_path)
     if (
-        selection.get("status") != "SELECTED_PRTA_GEN_R40A1_CANDIDATE"
+        selection.get("status")
+        != f"SELECTED_PRTA_GEN_{stage_tag}_CANDIDATE"
         or selection.get("selected_candidate") != candidate_name
         or selection.get("qualification_unlocked") is not True
         or selection.get("qualification_outcomes_read") is not False
@@ -154,7 +165,7 @@ def run_probe(
     selection_path: Path | None = None,
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40A.1 config is not frozen")
     if seed not in config["probe"]["seeds"]:
         raise ValueError("R40A.1 probe seed drift")
@@ -163,7 +174,7 @@ def run_probe(
     spec = candidate_spec(config, candidate_name)
     roster = read_json(roster_path)
     if (
-        roster.get("status") != ROSTER_PASS
+        roster.get("status") not in ROSTER_STATUSES
         or roster.get("patient_sets_disjoint") is not True
         or roster.get("discovery_outcomes_read") is not False
         or roster.get("qualification_outcomes_read") is not False
@@ -173,7 +184,9 @@ def run_probe(
         raise PermissionError("R40A.1 roster firewall drift")
     if scope == "qualification":
         validate_qualification_selection(
-            selection_path=selection_path, candidate_name=candidate_name
+            selection_path=selection_path,
+            candidate_name=candidate_name,
+            stage_tag=str(config.get("stage_tag", "R40A1")),
         )
 
     example_ids, patient_ids, findings, feature_rows = load_feature_rows(
@@ -304,7 +317,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--feature-index", type=Path, required=True)
     parser.add_argument(
         "--candidate",
-        choices=("regional_moments_v1", "regional_cosine4_v1"),
+        choices=(
+            "regional_moments_v1",
+            "regional_cosine4_v1",
+            "semantic_layout_means_v1",
+            "semantic_layout_moments_v1",
+        ),
         required=True,
     )
     parser.add_argument(

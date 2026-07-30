@@ -1167,3 +1167,18 @@ preserving the encoder's static medical semantics.
   mean/std/max therefore increases information capacity without producing
   Seed-stable correct-prior specificity. Seed 43 is unnecessary under the
   predeclared first-failed-gate rule.
+- The second ordered cosine candidate also stopped immediately: Seed 17 was
+  +7.60 pp versus query-only but -1.23 pp versus prior-shuffle. R40A.1 is
+  formally closed with qualification unread.
+- Source inspection after closing R40A.1 found a more specific architectural
+  mismatch in the failed probes. The actual R38 layout is
+  `query 4 | state 12 | global transition 16 | local transition 16 |
+  relation 12 | reserve 4`, but R40A/R40A.1 pooled arbitrary
+  `0:20 | 20:40 | 40:60` blocks. Those cuts mix query with state and split
+  both global/local transition groups. The Qwen path sees all positions, so
+  this mismatch plausibly explains why R39 transferred while shallow probes
+  were unstable.
+- R40A.2 should first respect the registered token-type boundaries rather than
+  add a nonlinear rescue model. Its discovery2 must be newly drawn from
+  R40A.1 fit patients; observed R40A.1 discovery rows are excluded, while the
+  original qualification list remains sealed.

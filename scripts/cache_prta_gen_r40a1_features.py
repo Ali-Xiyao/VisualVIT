@@ -20,10 +20,20 @@ from scripts.cache_prta_gen_r40a_tokens import read_json
 from visualvit.prta_gen import (
     exact64_regional_cosine_features,
     exact64_regional_moment_features,
+    exact64_semantic_mean_features,
+    exact64_semantic_moment_features,
 )
 
 
 FEATURE_STATUS = "PASS_PRTA_GEN_R40A1_FEATURE_CACHE"
+CONFIG_STATUSES = {
+    CONFIG_STATUS,
+    "FROZEN_PRTA_GEN_R40A2_LAYOUT_REPAIR",
+}
+ROSTER_STATUSES = {
+    ROSTER_PASS,
+    "PASS_PRTA_GEN_R40A2_ROSTER_SUPPORT",
+}
 TOKEN_KEYS = {
     "true_pair": "true_tokens",
     "current_only": "current_tokens",
@@ -49,6 +59,10 @@ def candidate_features(tokens: Tensor, *, candidate_name: str) -> Tensor:
         return exact64_regional_moment_features(tokens)
     if candidate_name == "regional_cosine4_v1":
         return exact64_regional_cosine_features(tokens, components=4)
+    if candidate_name == "semantic_layout_means_v1":
+        return exact64_semantic_mean_features(tokens)
+    if candidate_name == "semantic_layout_moments_v1":
+        return exact64_semantic_moment_features(tokens)
     raise ValueError("unregistered R40A.1 candidate feature function")
 
 
@@ -61,11 +75,11 @@ def build_feature_cache(
     device_name: str,
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40A.1 config is not frozen")
     roster = read_json(roster_path)
     if (
-        roster.get("status") != ROSTER_PASS
+        roster.get("status") not in ROSTER_STATUSES
         or roster.get("discovery_outcomes_read") is not False
         or roster.get("qualification_outcomes_read") is not False
         or roster.get("revealed_483_test_read") is not False
@@ -173,7 +187,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--roster", type=Path, required=True)
     parser.add_argument(
         "--candidate",
-        choices=("regional_moments_v1", "regional_cosine4_v1"),
+        choices=(
+            "regional_moments_v1",
+            "regional_cosine4_v1",
+            "semantic_layout_means_v1",
+            "semantic_layout_moments_v1",
+        ),
         required=True,
     )
     parser.add_argument("--output-root", type=Path, required=True)

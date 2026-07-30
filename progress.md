@@ -1065,3 +1065,25 @@
   real moments candidate is now closed as
   `STOP_PRTA_GEN_R40A1_DISCOVERY`, with Seeds 17/29 complete and Seed 43
   explicitly skipped after the first failed gate.
+- Committed and pushed the early-stop implementation as `a7d8d53`, then built
+  the second and final ordered candidate cache. `regional_cosine4_v1` passed
+  with 33,677 rows, 132 shards, width 9,216, and all outcome/cache firewalls
+  intact.
+- `regional_cosine4_v1` Seed 17 completed at true-pair 0.3342 versus
+  query-only 0.2582 and prior-shuffle 0.3465: +7.60/-1.23 pp. It was closed
+  immediately as the second ordered discovery STOP; Seeds 29/43 and all
+  R40A.1 qualification outcomes remain unread.
+- The ordered selector wrote terminal
+  `STOP_PRTA_GEN_R40A1_DISCOVERY` with no selected candidate and
+  `qualification_unlocked=false`.
+- After that terminal receipt, inspected the frozen exact-64 compiler and
+  identified that the probe's 20/20/20 pooling did not match the real
+  4/12/16/16/12/4 token-type layout. Began a distinct R40A.2 authority around
+  this semantic-boundary repair rather than adding an outcome-tuned threshold.
+- Added the frozen R40A.2 config/protocol, semantic-layout mean/moment feature
+  functions, a roster builder that preserves the original qualification list
+  and excludes observed R40A.1 discovery patients, and generalized the
+  fail-closed cache/probe/aggregate/selection engine across R40A.1/R40A.2.
+- R40A.2 focused validation currently passes 19 tests plus Ruff.
+- Final pre-freeze validation passes 22 focused tests, Ruff, compileall, JSON
+  parsing, and `git diff --check`.

@@ -40,11 +40,26 @@ STOP_PRTA_GEN_R40A_INFORMATION_SUFFICIENCY
    generative overfit smoke；
 6. laterality、anatomy、degree、evidence、R41/R42/R43 仍锁定。
 
+R40A.1 后续已经按首失败门关闭：regional moments 在 Seed 29 相对
+prior-shuffle 为 -5.18 pp；regional cosine 在 Seed 17 为 -1.23 pp。
+其 qualification 未读取。
+
+关闭后审计发现 20/20/20 probe 分区与真实
+`4/12/16/16/12/4` token layout 不一致。当前进一步冻结 R40A.2：
+
+- 保留原 qualification 不动；
+- 排除已观察 R40A.1 discovery；
+- 从原 fit 新划 1,500 discovery2 / 4,287 fit2；
+- 先测 semantic-layout means，再测同边界 moments；
+- 仍使用三 Seed、query/prior-shuffle controls 和 patient bootstrap。
+
 权威文件：
 
 - `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
 - `docs/PRTA_GEN_R40A1_CASE_DRIVEN_REPAIR_PROTOCOL_CN.md`
 - `configs/prta_gen/prta_gen_r40a1_case_repair_v1.json`
+- `docs/PRTA_GEN_R40A2_LAYOUT_REPAIR_PROTOCOL_CN.md`
+- `configs/prta_gen/prta_gen_r40a2_layout_repair_v1.json`
 
 ---
 

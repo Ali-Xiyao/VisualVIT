@@ -14,8 +14,11 @@ sys.path.insert(0, str(WORKSPACE))
 sys.path.insert(0, str(WORKSPACE / "src"))
 
 from scripts.aggregate_prta_gen_r40a_field import paired_patient_bootstrap
-from scripts.build_prta_gen_r40a1_roster import CONFIG_STATUS, ROSTER_PASS
-from scripts.cache_prta_gen_r40a1_features import candidate_spec
+from scripts.cache_prta_gen_r40a1_features import (
+    CONFIG_STATUSES,
+    ROSTER_STATUSES,
+    candidate_spec,
+)
 from scripts.cache_prta_gen_r40a_tokens import read_json
 from scripts.run_prta_gen_r40a1_probe import RESULT_STATUS
 
@@ -28,14 +31,14 @@ def finalize_early_stop(
     scope: str,
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40A.1 config is not frozen")
     candidate_spec(config, candidate_name)
     if scope != "discovery":
         raise ValueError("early stop is registered only for discovery")
     roster = read_json(roster_path)
     if (
-        roster.get("status") != ROSTER_PASS
+        roster.get("status") not in ROSTER_STATUSES
         or roster.get("qualification_outcomes_read") is not False
         or roster.get("revealed_483_test_read") is not False
         or roster.get("gold_outcomes_read") is not False
@@ -88,9 +91,10 @@ def finalize_early_stop(
             f"R40A.1 aggregate output must be fresh: {output_path}"
         )
     completed_seeds = [int(result["seed"]) for result in completed]
+    stage_tag = str(config.get("stage_tag", "R40A1"))
     aggregate = {
         "schema": "visualvit.prta-gen.r40a1-candidate-aggregate.v1",
-        "status": "STOP_PRTA_GEN_R40A1_DISCOVERY",
+        "status": f"STOP_PRTA_GEN_{stage_tag}_DISCOVERY",
         "protocol_id": config["protocol_id"],
         "candidate": candidate_name,
         "scope": scope,
@@ -126,12 +130,12 @@ def aggregate_candidate(
     scope: str,
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") not in CONFIG_STATUSES:
         raise PermissionError("R40A.1 config is not frozen")
     candidate_spec(config, candidate_name)
     roster = read_json(roster_path)
     if (
-        roster.get("status") != ROSTER_PASS
+        roster.get("status") not in ROSTER_STATUSES
         or roster.get("patient_sets_disjoint") is not True
         or roster.get("qualification_outcomes_read") is not False
         or roster.get("revealed_483_test_read") is not False
@@ -195,10 +199,11 @@ def aggregate_candidate(
         for control in required_controls
         for seed in seeds
     )
+    stage_tag = str(config.get("stage_tag", "R40A1"))
     status = (
-        f"GO_PRTA_GEN_R40A1_{scope.upper()}"
+        f"GO_PRTA_GEN_{stage_tag}_{scope.upper()}"
         if passed
-        else f"STOP_PRTA_GEN_R40A1_{scope.upper()}"
+        else f"STOP_PRTA_GEN_{stage_tag}_{scope.upper()}"
     )
     output_path = result_root / "aggregate.json"
     if output_path.exists():
@@ -247,7 +252,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--roster", type=Path, required=True)
     parser.add_argument(
         "--candidate",
-        choices=("regional_moments_v1", "regional_cosine4_v1"),
+        choices=(
+            "regional_moments_v1",
+            "regional_cosine4_v1",
+            "semantic_layout_means_v1",
+            "semantic_layout_moments_v1",
+        ),
         required=True,
     )
     parser.add_argument(

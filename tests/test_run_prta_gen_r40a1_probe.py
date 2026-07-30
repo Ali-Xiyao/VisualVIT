@@ -136,6 +136,22 @@ def test_partition_indices_are_patient_disjoint():
     assert result["qualification"].tolist() == [2]
 
 
+def test_partition_indices_skip_registered_observed_parent_discovery():
+    rows = [{"patient_id": "fit"}, {"patient_id": "old-discovery"}]
+    roster = {
+        "partitions": {
+            "fit": {"patient_ids": ["fit"], "rows": 1},
+            "discovery": {"patient_ids": [], "rows": 0},
+            "qualification": {"patient_ids": [], "rows": 0},
+        },
+        "excluded_parent_discovery": {
+            "patient_ids": ["old-discovery"]
+        },
+    }
+    result = partition_indices(rows, roster)
+    assert result["fit"].tolist() == [0]
+
+
 def test_discovery_probe_runs_with_generation_locked(tmp_path):
     config, roster, feature_index = write_fixture(tmp_path)
     result = run_probe(

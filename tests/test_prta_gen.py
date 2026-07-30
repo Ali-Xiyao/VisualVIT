@@ -5,6 +5,8 @@ from visualvit.prta_gen import (
     LinearInformationProbe,
     exact64_regional_cosine_features,
     exact64_regional_moment_features,
+    exact64_semantic_mean_features,
+    exact64_semantic_moment_features,
     exact64_summary_features,
     extract_explicit_generative_target,
     field_support,
@@ -141,6 +143,28 @@ def test_case_repair_cosine_feature_contract_is_fail_closed():
         exact64_regional_cosine_features(
             torch.zeros(1, 64, 4), components=21
         )
+
+
+def test_semantic_layout_features_respect_registered_token_types():
+    tokens = torch.zeros(1, 64, 2)
+    for value, (start, end) in enumerate(
+        ((0, 4), (4, 16), (16, 32), (32, 48), (48, 60)), start=1
+    ):
+        tokens[:, start:end] = value
+    tokens[:, 60:64] = 1000
+
+    means = exact64_semantic_mean_features(tokens)
+    moments = exact64_semantic_moment_features(tokens)
+    tokens[:, 60:64] = -1000
+
+    assert means.shape == (1, 10)
+    assert torch.equal(
+        means,
+        torch.tensor([[1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0]]),
+    )
+    assert moments.shape == (1, 30)
+    assert torch.equal(means, exact64_semantic_mean_features(tokens))
+    assert torch.equal(moments, exact64_semantic_moment_features(tokens))
 
 
 def test_field_support_and_g_cmcp_loss_are_deterministic():

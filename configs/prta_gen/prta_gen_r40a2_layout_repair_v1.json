@@ -1,0 +1,128 @@
+{
+  "schema": "visualvit.prta-gen.r40a2-layout-repair-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R40A2_LAYOUT_REPAIR",
+  "stage_tag": "R40A2",
+  "protocol_id": "prta-gen-r40a2-layout-repair-v1",
+  "closed_predecessor": {
+    "selection": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a1_case_repair_v1\\selection.json",
+    "required_status": "STOP_PRTA_GEN_R40A1_DISCOVERY",
+    "qualification_was_read": false,
+    "may_be_overwritten": false
+  },
+  "diagnosis": {
+    "actual_exact64_layout": [
+      ["query_control", 4],
+      ["state", 12],
+      ["global_transition", 16],
+      ["local_transition", 16],
+      ["relation_context", 12],
+      ["reserved", 4]
+    ],
+    "failed_probe_layout": [
+      ["mixed_0", 20],
+      ["mixed_1", 20],
+      ["mixed_2", 20],
+      ["reserved", 4]
+    ],
+    "repair": "pool_only_within_registered_token_type_boundaries"
+  },
+  "source": {
+    "target_rows": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\target_audit\\training_targets.jsonl",
+    "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40_readiness_v1\\tokens\\training\\seed_17\\formal\\index.json",
+    "expected_patients": 8787,
+    "expected_rows": 33677,
+    "frozen_prta_seed": 17,
+    "exact_visual_tokens": 64,
+    "active_visual_tokens": 60,
+    "token_width": 768
+  },
+  "patient_partitions": {
+    "parent_roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a1_case_repair_v1\\roster.json",
+    "namespace": "prta-gen-r40a2-layout-repair-v1",
+    "order": "sha256(namespace|patient_id)",
+    "preserve_parent_qualification_patients": 1500,
+    "exclude_observed_parent_discovery_patients": 1500,
+    "discovery_patients": 1500,
+    "fit_patients": 4287,
+    "assignment": "preserve_parent_qualification_exclude_parent_discovery_hash_parent_fit_first_1500_discovery_remainder_fit",
+    "roster_output": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r40a2_layout_repair_v1\\roster.json",
+    "support_minimums": {
+      "fit_rows_per_progression_class": 100,
+      "discovery_rows_per_progression_class": 30,
+      "qualification_rows_per_progression_class": 30
+    },
+    "resplit_allowed": false
+  },
+  "candidate_order": [
+    {
+      "name": "semantic_layout_means_v1",
+      "regions": [[0, 4], [4, 16], [16, 32], [32, 48], [48, 60]],
+      "features": ["mean"],
+      "input_width": 3840,
+      "classifier": "single_linear_layer"
+    },
+    {
+      "name": "semantic_layout_moments_v1",
+      "regions": [[0, 4], [4, 16], [16, 32], [32, 48], [48, 60]],
+      "features": ["mean", "population_std", "channelwise_max"],
+      "input_width": 11520,
+      "classifier": "single_linear_layer"
+    }
+  ],
+  "candidate_selection": {
+    "rule": "first_candidate_in_registered_order_passing_discovery_gate",
+    "maximum_selected_candidates": 1,
+    "if_none_pass": "STOP_PRTA_GEN_R40A2_DISCOVERY",
+    "qualification_result_may_reselect_candidate": false
+  },
+  "probe": {
+    "field": "progression",
+    "classes": ["Stable", "Improved", "Worse", "New", "Resolved"],
+    "seeds": [17, 29, 43],
+    "epochs": 100,
+    "batch_size": 256,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "early_stopping": false,
+    "checkpoint_selection": false,
+    "controls": ["current_only", "query_only", "prior_shuffle"],
+    "required_controls": ["query_only", "prior_shuffle"],
+    "patient_bootstrap_replicates": 2000,
+    "patient_bootstrap_seed": 40201
+  },
+  "discovery_gate": {
+    "all_three_seed_effects_at_least_pp": 2.0,
+    "patient_bootstrap_ci_lower_above_zero": true,
+    "required_controls": ["query_only", "prior_shuffle"]
+  },
+  "qualification_gate": {
+    "one_shot": true,
+    "all_three_seed_effects_at_least_pp": 2.0,
+    "patient_bootstrap_ci_lower_above_zero": true,
+    "required_controls": ["query_only", "prior_shuffle"],
+    "progression_generation_unlocked_on_pass": true,
+    "laterality_generation_unlocked": false,
+    "anatomy_generation_unlocked": false,
+    "degree_generation_unlocked": false,
+    "evidence_generation_unlocked": false
+  },
+  "r40b": {
+    "overfit_rows": 32,
+    "maximum_overfit_rows": 64,
+    "unlocked_only_after_qualification_go": true,
+    "output_schema": ["finding", "progression"],
+    "all_other_fields_omitted": true
+  },
+  "firewall": {
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "r40a_development_used_for_selection": false,
+    "r40a1_discovery_used_for_selection": false,
+    "r40a1_qualification_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_recomputed": false,
+    "checkpoint_hashes_recomputed": false,
+    "old_r40_component_queue_resumed": false
+  }
+}

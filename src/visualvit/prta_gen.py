@@ -30,6 +30,13 @@ ANATOMY_CLASSES = (
     "Unspecified",
 )
 DEGREE_CLASSES = ("Minimal", "Mild", "Moderate", "Marked", "Unspecified")
+EXACT64_SEMANTIC_REGIONS = (
+    ("query_control", 0, 4),
+    ("state", 4, 16),
+    ("global_transition", 16, 32),
+    ("local_transition", 32, 48),
+    ("relation_context", 48, 60),
+)
 
 _FINDING_SURFACES: dict[str, tuple[str, ...]] = {
     "Atelectasis": (r"\batelecta(?:sis|tic)\b",),
@@ -298,6 +305,38 @@ def exact64_regional_cosine_features(
             torch.einsum("kl,bld->bkd", weights, region).flatten(1)
         )
     return torch.cat(projected, dim=-1)
+
+
+def exact64_semantic_mean_features(tokens: Tensor) -> Tensor:
+    """Pool the exact registered R38 token types without crossing boundaries."""
+
+    if tokens.ndim != 3 or tokens.shape[1] != 64:
+        raise ValueError("exact64 tokens must have shape [B,64,D]")
+    return torch.cat(
+        [
+            tokens[:, start:end].mean(dim=1)
+            for _, start, end in EXACT64_SEMANTIC_REGIONS
+        ],
+        dim=-1,
+    )
+
+
+def exact64_semantic_moment_features(tokens: Tensor) -> Tensor:
+    """Retain moments within each registered non-reserve R38 token type."""
+
+    if tokens.ndim != 3 or tokens.shape[1] != 64:
+        raise ValueError("exact64 tokens must have shape [B,64,D]")
+    features = []
+    for _, start, end in EXACT64_SEMANTIC_REGIONS:
+        region = tokens[:, start:end]
+        features.extend(
+            (
+                region.mean(dim=1),
+                region.std(dim=1, unbiased=False),
+                region.amax(dim=1),
+            )
+        )
+    return torch.cat(features, dim=-1)
 
 
 class LinearInformationProbe(nn.Module):
