@@ -487,6 +487,7 @@ smokes during iteration.
 | First R40B token-shard inspection guessed the R39-era `record_ids` key | 1 | Use the registered PRTA-Gen `example_ids` key; the read-only inspection changed no artifact |
 | First R40B model run stopped before baseline evaluation because Transformers 5.5 returned rendered chat text from `apply_chat_template(..., tokenize=True)` | 1 | No training/result output occurred; normalize the rendered template through the same tokenizer, add a regression test, and rerun the identical frozen attempt |
 | First one-line real-tokenizer R40B.2 mask preflight mangled JSON quoting in PowerShell | 1 | Unit tests and static checks passed; reconstruct the target with `json.dumps` inside Python and rerun only the read-only tokenizer preflight |
+| First R40B.3 cohort build rejected the valid R40B.2 exclusion receipt because the generic historical-status registry stopped at R40B.1 | 1 | No cohort was written; add the already-observed R40B.2 cohort status to the exclusion whitelist, test, and rerun unchanged selection |
 
 ## Next Step
 

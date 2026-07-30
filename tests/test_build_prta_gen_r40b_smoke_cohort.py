@@ -4,10 +4,19 @@ from pathlib import Path
 import pytest
 
 from scripts.build_prta_gen_r40b_smoke_cohort import (
+    EXCLUDED_COHORT_STATUSES,
     build_cohort,
     compact_target,
     select_rows,
 )
+
+
+def test_exclusion_registry_includes_every_observed_cohort_stage():
+    assert EXCLUDED_COHORT_STATUSES == {
+        "PASS_PRTA_GEN_R40B_SMOKE_COHORT",
+        "PASS_PRTA_GEN_R40B1_SMOKE_COHORT",
+        "PASS_PRTA_GEN_R40B2_SMOKE_COHORT",
+    }
 
 
 def test_select_rows_is_deterministic_balanced_and_patient_unique():

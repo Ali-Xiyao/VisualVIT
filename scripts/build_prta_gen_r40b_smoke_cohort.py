@@ -22,6 +22,11 @@ CONFIG_STATUSES = {
     "FROZEN_PRTA_GEN_R40B3_DIRECT_CLASS_SMOKE",
 }
 COHORT_STATUS = "PASS_PRTA_GEN_R40B_SMOKE_COHORT"
+EXCLUDED_COHORT_STATUSES = {
+    COHORT_STATUS,
+    "PASS_PRTA_GEN_R40B1_SMOKE_COHORT",
+    "PASS_PRTA_GEN_R40B2_SMOKE_COHORT",
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -180,13 +185,9 @@ def build_cohort(*, config_path: Path, output_path: Path) -> dict[str, Any]:
     if source.get("exclude_cohort") is not None:
         exclude_cohort_paths.append(source["exclude_cohort"])
     exclude_cohort_paths.extend(source.get("exclude_cohorts", []))
-    allowed_excluded_statuses = {
-        COHORT_STATUS,
-        "PASS_PRTA_GEN_R40B1_SMOKE_COHORT",
-    }
     for exclude_cohort_path in exclude_cohort_paths:
         excluded_cohort = read_json(Path(exclude_cohort_path))
-        if excluded_cohort.get("status") not in allowed_excluded_statuses:
+        if excluded_cohort.get("status") not in EXCLUDED_COHORT_STATUSES:
             raise PermissionError("R40B.1 excluded cohort receipt drift")
         excluded_patients.update(
             str(row["patient_id"]) for row in excluded_cohort["rows"]

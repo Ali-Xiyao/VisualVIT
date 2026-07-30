@@ -1226,3 +1226,6 @@
   fourth-cohort exclusion, and regression tests. Eighteen focused tests,
   Ruff, compileall, the real five-token registry preflight, JSON parsing, and
   `git diff --check` pass pre-outcome.
+- Committed and pushed R40B.3 as `58ef113`. Its first cohort build stopped
+  before writing because the generic exclusion whitelist omitted the valid
+  R40B.2 cohort status; only that receipt registry will be repaired.
