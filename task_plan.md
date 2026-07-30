@@ -445,9 +445,10 @@ smokes during iteration.
   PASS with a frozen per-class recall floor.
 - [x] Add focused tests, Ruff, compileall, JSON parsing, local-link checks, and
   `git diff --check`; write the proposal/status/planning handoff.
-- [ ] Commit and push the complete pre-outcome authority, then stop before
+- [x] Commit and push the complete pre-outcome authority, then stop before
   building the real roster or starting any GPU training.
-- **Status:** in_progress_preoutcome_only
+- **Status:** `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT` — pre-outcome package
+  complete and pushed; real roster and GPU execution await explicit review.
 
 ## Errors Encountered
 
@@ -537,5 +538,5 @@ smokes during iteration.
 
 ## Next Step
 
-Run final no-write authority checks, stage only the R40C package and planning
-surfaces, commit/push the pre-outcome authority, and stop before real roster.
+Wait for explicit authorization to write the one-time R40C roster. Do not
+start any Seed or GPU process until that roster receipt is reviewed.

@@ -1331,3 +1331,7 @@
   R40C JSON parsing, modified-document link checks, and `git diff --check`.
   Full pytest reports 787 passed, 1 expected xfailed, and the same historical
   R6 frozen-manifest failure; the sealed R6 authority remains untouched.
+- Committed and pushed the complete R40C pre-outcome authority as `de4c85d`.
+  Phase 10 preparation is closed at
+  `PASS_PRTA_GEN_R40C_RUNNER_PREFLIGHT`; the next action is user review before
+  the one-time real roster write. No formal command was launched.
