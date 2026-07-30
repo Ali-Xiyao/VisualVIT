@@ -4,12 +4,16 @@ import pytest
 import torch
 
 from scripts.run_r37_prta_smoke import (
+    R40_CONFIG,
     balanced_sample,
     formal_partition,
+    load_r40_config,
     macro_f1,
+    resolve_r40_variant,
     responsiveness_diagnostics,
     validate_formal_args,
     validate_r37_1_args,
+    validate_r40_args,
 )
 
 
@@ -89,6 +93,31 @@ def test_r37_1_args_require_exact_frozen_bundle():
     args.learning_rate = 2e-4
     with pytest.raises(ValueError, match="configuration drift"):
         validate_r37_1_args(args)
+
+
+def test_r40_component_args_and_no_state_variant_are_frozen():
+    config = load_r40_config(R40_CONFIG)
+    args = Namespace(
+        variant="A6_no_state",
+        seed=17,
+        epochs=3,
+        batch_size=2,
+        learning_rate=1e-4,
+        adapter_rank=32,
+        max_train_examples=0,
+        max_calibration_examples=0,
+        formal=False,
+        r37_1=False,
+        r37_1_engineering=False,
+    )
+    validate_r40_args(args, config)
+    variant = resolve_r40_variant(args.variant, config)
+    assert variant.temporal_inversion
+    assert variant.cmcp
+    assert not variant.state_preservation
+    args.epochs = 4
+    with pytest.raises(ValueError, match="configuration drift"):
+        validate_r40_args(args, config)
 
 
 def test_macro_f1_is_one_for_perfect_five_class_predictions():

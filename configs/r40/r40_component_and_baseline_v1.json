@@ -1,0 +1,177 @@
+{
+  "schema": "visualvit.r40.outcome-independent-component-baseline.v1",
+  "status": "FROZEN_R40_OUTCOME_INDEPENDENT_PROTOCOL",
+  "protocol_id": "r40-component-baseline-v1",
+  "registered_after": "GO_R39_FROZEN_VLM_TRANSFER",
+  "claim_role": "post-r39-secondary-outcome-independent-development",
+  "selection_firewall": {
+    "revealed_483_test_may_select_any_setting": false,
+    "gold_may_select_any_setting": false,
+    "r37_1_observed_validation_may_select_any_setting": false,
+    "early_stopping": false,
+    "seed_selection": false,
+    "checkpoint_selection": false,
+    "all_registered_jobs_must_run": true
+  },
+  "roster": {
+    "source_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_1_transitions_v1",
+    "source_partition": "pretrain",
+    "source_status": "READY_R37_1_FRESH_HOLDOUT",
+    "source_training_patients": 10287,
+    "development_patients": 1500,
+    "selection_namespace": "r40-development-roster-v1",
+    "selection_seed": 40701,
+    "selection_rule": "sort patients by sha256(namespace|seed|patient_id), take first 1500 for development and retain all others for training",
+    "output_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r40_outcome_independent_v1\\transitions",
+    "minimum_train_examples_per_label": 100,
+    "minimum_development_examples_per_label": 30,
+    "fail_closed_without_resplit": true
+  },
+  "shared_artifacts": {
+    "block8_cache_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_block8_token_cache",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "cmcp_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_counterfactual_prior_index.json",
+    "qwen_model": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct"
+  },
+  "component_ablation": {
+    "output_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r40_outcome_independent_v1\\components",
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "training": {
+      "epochs": 3,
+      "batch_size": 2,
+      "learning_rate": 0.0001,
+      "adapter_rank": 32,
+      "weight_decay": 0.05,
+      "order": "seeded_full_partition_order",
+      "use_all_training_examples": true,
+      "use_all_development_examples_once": true
+    },
+    "variants": {
+      "A2": {
+        "classification": true,
+        "alignment": false,
+        "z2_inversion_projection": false,
+        "cmcp": false,
+        "state_preservation": false
+      },
+      "A3": {
+        "classification": true,
+        "alignment": true,
+        "z2_inversion_projection": false,
+        "cmcp": false,
+        "state_preservation": false
+      },
+      "A4": {
+        "classification": true,
+        "alignment": true,
+        "z2_inversion_projection": true,
+        "cmcp": false,
+        "state_preservation": false
+      },
+      "A5": {
+        "classification": true,
+        "alignment": true,
+        "z2_inversion_projection": false,
+        "cmcp": true,
+        "state_preservation": false
+      },
+      "A6_no_state": {
+        "classification": true,
+        "alignment": true,
+        "z2_inversion_projection": true,
+        "cmcp": true,
+        "state_preservation": false
+      },
+      "A6": {
+        "classification": true,
+        "alignment": true,
+        "z2_inversion_projection": true,
+        "cmcp": true,
+        "state_preservation": true
+      }
+    }
+  },
+  "strong_baselines": {
+    "output_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r40_outcome_independent_v1\\baselines",
+    "B0_frozen_a0": "frozen BiomedCLIP current-minus-prior CLS with a finding-conditioned linear probe",
+    "B1_naive_exact64_concat": "30 deterministic prior plus 30 deterministic current frozen visual tokens plus four shared zero-reserved positions; one shared-capacity projector; no routing",
+    "B2_siamese_signed_abs": "frozen prior CLS, current CLS, signed difference, and absolute difference with a preregistered finding-conditioned probe; reported as a representation baseline, not an equal-token VLM baseline",
+    "B3_raw_two_image_qwen": "native frozen Qwen3-VL prior/current pixel input with the fixed five-label prompt and no trained visual-token projector; pixel and compute cost reported separately"
+  },
+  "frozen_vlm": {
+    "model": "Qwen3-VL-4B-Instruct",
+    "all_vlm_parameters_frozen": true,
+    "prompt_family": "same finding-conditioned five-label instruction as R39",
+    "label_order": [
+      "Stable",
+      "Worse",
+      "Improved",
+      "New",
+      "Resolved"
+    ],
+    "exact64_variants": [
+      "A6",
+      "B1_naive_exact64_concat"
+    ],
+    "projector_training": {
+      "epochs": 1,
+      "batch_size": 1,
+      "gradient_accumulation": 32,
+      "effective_batch_size": 32,
+      "learning_rate": 0.0001,
+      "weight_decay": 0.01,
+      "early_stopping": false,
+      "seed_selection": false
+    },
+    "raw_two_image_compute_is_not_matched": true
+  },
+  "time_reversal": {
+    "frozen_before_inference": true,
+    "mapping": {
+      "Stable": "Stable",
+      "Improved": "Worse",
+      "Worse": "Improved",
+      "New": "Resolved",
+      "Resolved": "New"
+    },
+    "report": [
+      "mapped_prediction_consistency",
+      "forward_macro_f1",
+      "reversed_mapped_macro_f1",
+      "failure_counts_by_transition"
+    ],
+    "may_select_model_or_prompt": false
+  },
+  "statistics": {
+    "unit": "patient_cluster",
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 40001,
+    "component_contrasts": [
+      "A3_minus_A2_alignment",
+      "A4_minus_A3_z2_inversion",
+      "A5_minus_A3_cmcp_without_inversion",
+      "A6_no_state_minus_A4_cmcp_with_inversion",
+      "A6_no_state_minus_A5_inversion_with_cmcp",
+      "A6_minus_A6_no_state_state_preservation"
+    ],
+    "baseline_contrasts": [
+      "A6_minus_B0_frozen_a0",
+      "A6_minus_B1_naive_exact64_concat",
+      "A6_minus_B2_siamese_signed_abs",
+      "A6_minus_B3_raw_two_image_qwen"
+    ],
+    "report_effects_and_95ci_without_posthoc_threshold_tuning": true
+  },
+  "firewall": {
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "source_hashes_recomputed": false,
+    "per_shard_hashes_computed": false,
+    "checkpoint_hashes_recomputed": false
+  }
+}

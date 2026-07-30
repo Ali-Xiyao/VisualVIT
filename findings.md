@@ -911,3 +911,52 @@ preserving the encoder's static medical semantics.
   assertion. This proves the failure predates the repository closeout. Do not
   “repair” it by changing closed R6 registry hashes; document it as historical
   frozen-manifest drift while retaining 24/24 current-method focused PASS.
+
+## Phase 7 component-ablation and strong-baseline execution
+
+- The user explicitly authorized the P1 package: matched A2/A3/A4/A5/A6
+  component ablations plus strong temporal/VLM baselines.
+- The revealed 483-test cannot be reused for model, hyperparameter, threshold,
+  seed, or checkpoint selection. Gold remains sealed.
+- The first action is protocol and cohort feasibility, not GPU launch. Existing
+  caches and registered receipts should be reused without recomputing unchanged
+  source, shard, or checkpoint hashes.
+- The existing `PRTAVariant` registry already defines the required ladder:
+  A2 classification-only, A3 + alignment, A4 + inversion, A5 + CMCP, and A6
+  + inversion + CMCP + state preservation. The shared runner already switches
+  these losses, but locked formal mode currently admits only A6.
+- R37.1 used a one-time 1,815-patient holdout drawn from the former R37
+  pretraining partition and removed those patients from its 10,287-patient
+  training set. Those observed validation outcomes must not be reused for the
+  new ablation selection.
+- A valid new roster can be constructed deterministically from only the
+  remaining R37.1 training patients, while retaining the existing Block-8 and
+  text caches. Its split rule and size must be frozen before reading its label
+  support; inadequate post-freeze support must cause STOP rather than a
+  resplit.
+- The current formal trainer uses the same adapter and head construction for
+  A2-A6, so a new formal mode can preserve capacity and optimization exactly.
+  It needs separate schema/status/output roots, full-count validation, and
+  outcome-independent roster/firewall checks.
+- The current exact-64 R39 surface contains A6, A0, current-only, and shuffled
+  tokens only. Naive concatenation, Siamese/signed-absolute temporal tokens,
+  raw two-image Qwen3-VL, and VLM-level reversal require newly frozen
+  implementations; they cannot be inferred from the already revealed R39
+  outcomes.
+- R40 is now frozen as a post-R39 secondary protocol. The deterministic
+  development split uses only the remaining 10,287 R37.1 training patients,
+  selects 1,500 by SHA-256 order with namespace/Seed fixed in advance, and
+  requires STOP without resplitting if label or CMCP support is inadequate.
+- Component attribution includes `A6_no_state`. This is necessary because the
+  original A2-A6 ladder confounds state preservation with inversion and CMCP;
+  A6 minus A6_no_state is the only registered state-only contrast.
+- The R40 runner keeps all trainable capacity and optimization settings
+  matched, activates Z2 projection only for A4/A6_no_state/A6, validates every
+  roster and protected-outcome firewall, and writes separate formal schemas
+  and outputs instead of mutating closed R37/R37.1 artifacts.
+- Fourteen focused tests, Ruff, compileall, CLI help, PowerShell parsing, and
+  `git diff --check` pass for the frozen roster/runner/launcher package.
+- A final pre-commit path check caught that the draft R40 config pointed at a
+  nonexistent guessed Qwen directory. It was corrected to the already proven
+  local R39 model path `H:\Xiyao_Wang\001_models\Qwen3-VL-4B-Instruct`;
+  no download, model load, or outcome access occurred.

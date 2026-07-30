@@ -292,6 +292,31 @@ smokes during iteration.
   update the three planning files, then commit and push the organized handoff.
 - **Status:** completed
 
+### Phase 7 — Outcome-independent component ablation and strong baselines
+
+- [x] Freeze a new protocol that excludes the revealed 483-test and all gold
+  outcomes from model, hyperparameter, threshold, seed, and checkpoint
+  selection.
+- [ ] Audit the available patient-disjoint development roster and select a
+  valid execution cohort without reading protected outcomes.
+- [x] Implement and test a matched A2/A3/A4/A5/A6 component-ablation bundle
+  with identical cache, adapter capacity, optimization budget, seeds, and
+  patient-cluster statistics.
+- [ ] Implement and test the strongest feasible comparison bundle: frozen
+  A0, naive exact-64 prior/current concatenation, Siamese temporal pooling or
+  signed-plus-absolute difference, and raw two-image frozen Qwen3-VL with its
+  unequal pixel/token compute reported separately.
+- [x] Freeze the VLM-level temporal-reversal audit and its mapping/statistics
+  before any new inference.
+- [ ] Run structural preflight, process/GPU checks, and focused tests; commit
+  and push the frozen protocol before any formal GPU execution.
+- [ ] Launch only protocol-authorized jobs on the two GPUs, monitor without
+  duplicating processes, and stop directly on engineering or scientific
+  terminal conditions.
+- [ ] Aggregate paired patient-cluster results, update the active reports and
+  planning files, then commit and push the completed evidence package.
+- **Status:** in_progress
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -355,10 +380,10 @@ smokes during iteration.
 | Repository-wide Ruff found 28 preexisting issues in six utility scripts | 1 | Remove four genuine lint defects and add scoped `E402` exemptions only where scripts intentionally bootstrap the local `src` path; rerun the full lint command |
 | Full pytest had one R6 frozen-manifest failure after 700 passes | 1 | The same targeted test fails at clean commit `24f57c3`; document the preexisting closed-registry drift and do not rewrite historical R6 hashes |
 | First combined verification-document patch omitted valid patch-line prefixes between file hunks | 1 | Split the update into correctly delimited file hunks and reapply without changing content |
+| Initial R40 roster tests omitted the required `current_view` fixture field and used guessed rather than canonical transition example IDs | 1 | Add the field and generate CMCP target IDs with the production `stable_hash` namespace; production roster code was unchanged |
 
 ## Next Step
 
-Use `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md` as the authority for any
-future experiment choice. If the user authorizes new GPU work, freeze an
-outcome-independent A2→A6 component-ablation and strong-baseline protocol
-before launching; do not reuse the revealed 483 cohort for selection.
+Commit and push the frozen R40 protocol/roster builder/component runner, then
+build the one-time outcome-independent roster and run its fail-closed
+structural preflight before launching the first two component jobs.

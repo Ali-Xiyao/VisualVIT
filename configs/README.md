@@ -6,7 +6,10 @@
 | `r37/r37_1_candidate_for_r37c_v1.json` | Unique frozen R37.1 candidate and R37C gate | `GO_R37C_ONE_SHOT_DEV` |
 | `r38/r38_fixed64_survival_v1.json` | Exact-64/no-routing survival protocol | `GO_R38_FIXED64_SURVIVAL` |
 | `r39/r39_frozen_vlm_transfer_v1.json` | Frozen Qwen/projector/sealed-transfer protocol | `GO_R39_FROZEN_VLM_TRANSFER` |
+| `r40/r40_component_and_baseline_v1.json` | Outcome-independent A2-A6 component attribution, strong baselines, and VLM reversal audit | Post-R39 secondary protocol; execution in progress |
 
 R39 has completed its one-shot protected reveal. Do not edit these files to
 form a new claim on the revealed 483-patient cohort. Any extension must use a
 new config, a new protocol identifier, and an explicit post-R39 evidence label.
+R40 follows that rule and forbids using the revealed 483-test, gold, or the
+previously observed R37.1 validation outcomes for any selection.

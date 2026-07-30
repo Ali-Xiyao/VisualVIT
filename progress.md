@@ -826,3 +826,28 @@
   repository.
 - Phase 6 is complete. No GPU process, protected-outcome read, hash
   recomputation, checkpoint change, or new experiment occurred.
+
+## 2026-07-30 Phase 7 start
+
+- The user authorized the outcome-independent component-ablation and
+  strong-baseline package.
+- Restored the existing planning bundle with `planning-with-files` and added
+  Phase 7 before touching experiment code or runtime state.
+- Current boundary: audit and freeze the new roster/protocol first; do not use
+  the revealed 483-test or gold for selection, do not recompute unchanged
+  hashes, and do not launch duplicate GPU jobs.
+- Added the first frozen R40 config, Chinese protocol, deterministic roster
+  builder, and focused tests. The initial fixture failed because it omitted
+  `current_view` and guessed example IDs; corrected only the test fixture to
+  use the production transition-ID namespace.
+- Implemented the separate R40 formal component mode in the shared PRTA
+  trainer, including `A6_no_state`, protocol-local Z2 activation, full-count
+  roster validation, distinct schemas/statuses, and new protected firewalls.
+- Added a duplicate-safe PowerShell launcher for one registered
+  variant/Seed/GPU. It requires fresh status/log/output paths and validates
+  the terminal result before reporting PASS.
+- Validation passes: 14 focused tests, Ruff, compileall, runner CLI help,
+  PowerShell syntax parsing, and `git diff --check`. No roster was generated
+  and no GPU process was launched before the protocol commit.
+- Reused the exact existing R39 Qwen model path after a read-only path check;
+  the first draft's guessed path did not exist and was fixed before freeze.

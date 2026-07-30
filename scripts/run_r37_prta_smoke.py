@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from dataclasses import replace
 import json
 from pathlib import Path
 import random
@@ -72,6 +73,10 @@ R37_1_TRAIN_EXAMPLES = 39_491
 R37_1_CALIBRATION_EXAMPLES = 6_858
 R37_1_SEEDS = (17, 29, 43)
 R37_1_STATUS = "READY_R37_1_FRESH_HOLDOUT"
+R40_CONFIG = (
+    WORKSPACE / "configs" / "r40" / "r40_component_and_baseline_v1.json"
+)
+R40_STATUS = "READY_R40_OUTCOME_INDEPENDENT_ROSTER"
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -194,6 +199,81 @@ def validate_r37_1_args(args: argparse.Namespace) -> None:
         )
 
 
+def load_r40_config(path: Path) -> dict[str, Any]:
+    config = json.loads(path.read_text(encoding="utf-8"))
+    if config.get("status") != "FROZEN_R40_OUTCOME_INDEPENDENT_PROTOCOL":
+        raise PermissionError("R40 component protocol is not frozen")
+    expected_firewall = {
+        "protected_300_dev_read": False,
+        "revealed_483_test_read": False,
+        "gold_outcomes_read": False,
+        "source_hashes_recomputed": False,
+        "per_shard_hashes_computed": False,
+        "checkpoint_hashes_recomputed": False,
+    }
+    if config.get("firewall") != expected_firewall:
+        raise PermissionError("R40 component protocol firewall drift")
+    return config
+
+
+def resolve_r40_variant(
+    identifier: str,
+    config: dict[str, Any],
+):
+    if identifier == "A6_no_state":
+        variant = replace(
+            prta_variant_registry()["A6"],
+            identifier=identifier,
+            state_preservation=False,
+        )
+    else:
+        variant = prta_variant_registry()[identifier]
+    expected = config["component_ablation"]["variants"][identifier]
+    observed = {
+        "classification": variant.classification,
+        "alignment": variant.transition_alignment,
+        "z2_inversion_projection": variant.temporal_inversion,
+        "cmcp": variant.cmcp,
+        "state_preservation": variant.state_preservation,
+    }
+    if observed != expected:
+        raise ValueError(
+            f"R40 variant registry drift for {identifier}: "
+            f"expected {expected}, got {observed}"
+        )
+    return variant
+
+
+def validate_r40_args(
+    args: argparse.Namespace,
+    config: dict[str, Any],
+) -> None:
+    training = config["component_ablation"]["training"]
+    expected = {
+        "epochs": int(training["epochs"]),
+        "batch_size": int(training["batch_size"]),
+        "learning_rate": float(training["learning_rate"]),
+        "adapter_rank": int(training["adapter_rank"]),
+        "max_train_examples": 0,
+        "max_calibration_examples": 0,
+        "formal": False,
+        "r37_1": False,
+        "r37_1_engineering": False,
+    }
+    observed = {name: getattr(args, name) for name in expected}
+    if observed != expected:
+        raise ValueError(
+            f"formal R40 component configuration drift: expected {expected}, "
+            f"got {observed}"
+        )
+    if args.variant not in config["component_ablation"]["variants"]:
+        raise ValueError(f"unregistered R40 component variant: {args.variant}")
+    seeds = tuple(int(value) for value in config["component_ablation"]["seeds"])
+    if args.seed not in seeds:
+        raise ValueError(f"formal R40 requires one of frozen seeds {seeds}")
+    resolve_r40_variant(args.variant, config)
+
+
 def macro_f1(targets: list[int], predictions: list[int]) -> float:
     scores = []
     for label in range(len(PROGRESSION_LABELS)):
@@ -260,7 +340,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run the R37 PRTA engineering or locked formal trainer"
     )
-    parser.add_argument("--variant", choices=[f"A{i}" for i in range(2, 7)], default="A3")
+    parser.add_argument(
+        "--variant",
+        choices=[*[f"A{i}" for i in range(2, 7)], "A6_no_state"],
+        default="A3",
+    )
     parser.add_argument("--transition-root", type=Path, default=TRANSITION_ROOT)
     parser.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
     parser.add_argument("--text-cache", type=Path, default=TEXT_CACHE)
@@ -277,24 +361,47 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--formal", action="store_true")
     parser.add_argument("--r37-1", action="store_true")
     parser.add_argument("--r37-1-engineering", action="store_true")
+    parser.add_argument("--r40-component", action="store_true")
+    parser.add_argument("--config", type=Path, default=R40_CONFIG)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    modes = (args.formal, args.r37_1, args.r37_1_engineering)
+    modes = (
+        args.formal,
+        args.r37_1,
+        args.r37_1_engineering,
+        args.r40_component,
+    )
     if sum(bool(value) for value in modes) > 1:
         raise ValueError(
-            "--formal, --r37-1, and --r37-1-engineering are "
+            "--formal, --r37-1, --r37-1-engineering, and "
+            "--r40-component are "
             "mutually exclusive"
         )
-    equivariant_mode = bool(args.r37_1 or args.r37_1_engineering)
+    r40_config = (
+        load_r40_config(args.config) if args.r40_component else None
+    )
     if args.formal:
         validate_formal_args(args)
     if args.r37_1:
         validate_r37_1_args(args)
     if args.r37_1_engineering and args.variant != "A6":
         raise ValueError("R37.1 engineering requires frozen A6 losses")
+    if args.r40_component:
+        assert r40_config is not None
+        validate_r40_args(args, r40_config)
+    variant = (
+        resolve_r40_variant(args.variant, r40_config)
+        if args.r40_component and r40_config is not None
+        else prta_variant_registry()[args.variant]
+    )
+    equivariant_mode = bool(
+        args.r37_1
+        or args.r37_1_engineering
+        or (args.r40_component and variant.temporal_inversion)
+    )
     output_root = args.output_root
     if output_root is None:
         if args.formal:
@@ -305,6 +412,13 @@ def main() -> int:
             output_root = (
                 OUTPUT_BASE
                 / f"a6e_seed{args.seed}_training_side_engineering_v1"
+            )
+        elif args.r40_component:
+            assert r40_config is not None
+            output_root = (
+                Path(r40_config["component_ablation"]["output_root"])
+                / args.variant
+                / f"seed_{args.seed}"
             )
         else:
             output_root = (
@@ -326,7 +440,7 @@ def main() -> int:
         raise PermissionError(
             "formal R37B remains locked pending independent human QA"
         )
-    if equivariant_mode:
+    if args.r37_1 or args.r37_1_engineering:
         if transition_audit.get("status") != R37_1_STATUS:
             raise PermissionError("R37.1 fresh holdout is not ready")
         if transition_audit.get("one_shot_validation") is not True:
@@ -335,14 +449,38 @@ def main() -> int:
             raise PermissionError("R37.1 patient-disjointness drift")
         if transition_audit.get("old_calibration_excluded") is not True:
             raise PermissionError("old R37 calibration exclusion drift")
-    if not (args.formal or args.r37_1) and (
+    if args.r40_component:
+        assert r40_config is not None
+        required_r40_audit = {
+            "status": R40_STATUS,
+            "protocol_id": r40_config["protocol_id"],
+            "formal_training_unlocked": True,
+            "patient_disjoint": True,
+            "previous_r37_1_validation_excluded": True,
+            "one_shot_development": True,
+            "protected_300_dev_read": False,
+            "revealed_483_test_read": False,
+            "gold_outcomes_read": False,
+            "source_hashes_recomputed": False,
+            "per_shard_hashes_computed": False,
+            "checkpoint_hashes_recomputed": False,
+        }
+        observed_r40_audit = {
+            key: transition_audit.get(key) for key in required_r40_audit
+        }
+        if observed_r40_audit != required_r40_audit:
+            raise PermissionError(
+                "R40 roster/audit drift: "
+                f"expected {required_r40_audit}, "
+                f"got {observed_r40_audit}"
+            )
+    if not (args.formal or args.r37_1 or args.r40_component) and (
         args.max_train_examples > 1000
         or args.max_calibration_examples > 500
         or args.epochs > 3
     ):
         raise ValueError("engineering smoke exceeds its non-formal scale limit")
 
-    variant = prta_variant_registry()[args.variant]
     cmcp_by_target: dict[str, dict[str, Any]] = {}
     if variant.cmcp:
         if not args.cmcp_index.is_file():
@@ -378,6 +516,15 @@ def main() -> int:
         calibration_examples = formal_partition(
             flatten_partition(args.transition_root, "internal_calibration"),
             expected_count=R37_1_CALIBRATION_EXAMPLES,
+        )
+    elif args.r40_component:
+        train_examples = formal_partition(
+            flatten_partition(args.transition_root, "pretrain"),
+            expected_count=int(transition_audit["training_examples"]),
+        )
+        calibration_examples = formal_partition(
+            flatten_partition(args.transition_root, "internal_calibration"),
+            expected_count=int(transition_audit["development_examples"]),
         )
     elif args.r37_1_engineering:
         training_pool = flatten_partition(args.transition_root, "pretrain")
@@ -795,7 +942,9 @@ def main() -> int:
         any(parameter.grad is not None for parameter in adapter.parameters())
         for adapter in model.tail.adapters
     )
-    if args.r37_1:
+    if args.r40_component:
+        pass_status = "PASS_R40_COMPONENT_FORMAL_TRAINING"
+    elif args.r37_1:
         pass_status = "PASS_R37_1_PRTA_FORMAL_TRAINING"
     elif args.r37_1_engineering:
         pass_status = "PASS_R37_1_PRTA_TRAINING_SIDE_ENGINEERING"
@@ -805,15 +954,19 @@ def main() -> int:
         pass_status = "PASS_R37_PRTA_ENGINEERING_SMOKE"
     result = {
         "schema": (
-            "visualvit.r37-1.prta-formal-training.v1"
-            if args.r37_1
+            "visualvit.r40.component-formal-training.v1"
+            if args.r40_component
             else (
-                "visualvit.r37-1.prta-training-side-engineering.v1"
-                if args.r37_1_engineering
+                "visualvit.r37-1.prta-formal-training.v1"
+                if args.r37_1
                 else (
-                    "visualvit.r37.prta-formal-training.v1"
-                    if args.formal
-                    else "visualvit.r37.prta-engineering-smoke.v1"
+                    "visualvit.r37-1.prta-training-side-engineering.v1"
+                    if args.r37_1_engineering
+                    else (
+                        "visualvit.r37.prta-formal-training.v1"
+                        if args.formal
+                        else "visualvit.r37.prta-engineering-smoke.v1"
+                    )
                 )
             )
         ),
@@ -822,12 +975,18 @@ def main() -> int:
             if frozen_gradients_absent and adapter_gradients_present
             else "STOP_R37_PRTA_GRADIENT_AUDIT"
         ),
-        "formal": bool(args.formal or args.r37_1),
+        "formal": bool(args.formal or args.r37_1 or args.r40_component),
         "r37_1": args.r37_1,
         "r37_1_engineering": args.r37_1_engineering,
+        "r40_component": args.r40_component,
+        "protocol_id": (
+            r40_config["protocol_id"]
+            if args.r40_component and r40_config is not None
+            else None
+        ),
         "scientific_claim_allowed": False,
         "formal_training_unlocked": bool(
-            (args.formal or args.r37_1)
+            (args.formal or args.r37_1 or args.r40_component)
             and transition_audit["formal_training_unlocked"]
         ),
         "variant": args.variant,
@@ -837,35 +996,47 @@ def main() -> int:
             "inversion_objective": (
                 "z2_logit_projection"
                 if equivariant_mode
-                else "detached_forward_kl"
+                else (
+                    "detached_forward_kl"
+                    if variant.temporal_inversion
+                    else "none"
+                )
             ),
         },
         "seed": args.seed,
         "train_examples": len(train_examples),
         "selection_contract": {
             "train": (
-                "r37_1_training_side_balanced_sample"
-                if args.r37_1_engineering
+                "r40_outcome_independent_full_patient_order"
+                if args.r40_component
                 else (
-                    "r37_1_fresh_patient_order"
-                    if args.r37_1
+                    "r37_1_training_side_balanced_sample"
+                    if args.r37_1_engineering
                     else (
-                        "all_seed_independent_order"
-                        if args.formal
-                        else "balanced_engineering_sample"
+                        "r37_1_fresh_patient_order"
+                        if args.r37_1
+                        else (
+                            "all_seed_independent_order"
+                            if args.formal
+                            else "balanced_engineering_sample"
+                        )
                     )
                 )
             ),
             "calibration": (
-                "r37_1_training_side_patient_disjoint_sample"
-                if args.r37_1_engineering
+                "r40_outcome_independent_one_shot_development_order"
+                if args.r40_component
                 else (
-                    "r37_1_fresh_patient_order"
-                    if args.r37_1
+                    "r37_1_training_side_patient_disjoint_sample"
+                    if args.r37_1_engineering
                     else (
-                        "all_seed_independent_order"
-                        if args.formal
-                        else "balanced_engineering_sample"
+                        "r37_1_fresh_patient_order"
+                        if args.r37_1
+                        else (
+                            "all_seed_independent_order"
+                            if args.formal
+                            else "balanced_engineering_sample"
+                        )
                     )
                 )
             ),
@@ -884,6 +1055,10 @@ def main() -> int:
         "sealed_test_read": False,
         "gold_outcomes_read": False,
         "source_hashes_recomputed": False,
+        "protected_300_dev_read": False,
+        "revealed_483_test_read": False,
+        "per_shard_hashes_computed": False,
+        "checkpoint_hashes_recomputed": False,
     }
     output_root.mkdir(parents=True, exist_ok=False)
     (output_root / "result.json").write_text(
@@ -895,9 +1070,17 @@ def main() -> int:
             "heads": heads.state_dict(),
             "variant": args.variant,
             "seed": args.seed,
-            "formal": bool(args.formal or args.r37_1),
+            "formal": bool(
+                args.formal or args.r37_1 or args.r40_component
+            ),
             "r37_1": args.r37_1,
             "r37_1_engineering": args.r37_1_engineering,
+            "r40_component": args.r40_component,
+            "protocol_id": (
+                r40_config["protocol_id"]
+                if args.r40_component and r40_config is not None
+                else None
+            ),
         },
         output_root / "checkpoint.pt",
     )
