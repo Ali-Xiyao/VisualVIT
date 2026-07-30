@@ -873,3 +873,11 @@
   free GPUs from a fixed preregistered variant/Seed queue, forbids
   outcome-dependent reordering or early stopping, and continues the already
   frozen strong-baseline/reversal implementation after fail-closed tests.
+- Implemented the first outcome-independent strong-baseline slice without
+  disturbing the active component jobs: B0 frozen-current-image BiomedCLIP
+  and B2 Siamese prior/current plus signed/absolute-difference probes, together
+  with a duplicate-safe launcher.
+- Validation for this slice passes: six focused tests, Ruff, compileall,
+  PowerShell syntax parsing, and `git diff --check`. No B0/B2 GPU process was
+  launched, no component metric was inspected, and B1/B3 plus the VLM
+  reversal execution surface remain pending.

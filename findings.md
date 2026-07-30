@@ -964,3 +964,22 @@ preserving the encoder's static medical semantics.
   standalone builder lacked the repository `src` bootstrap. No source row,
   label support, roster manifest, cache, or protected outcome was read; the
   runtime root contains only the empty stdout and import traceback.
+- The first strong-baseline implementation slice is outcome-independent and
+  covers the registered B0 frozen-current-image probe and B2 Siamese
+  prior/current plus signed/absolute-difference probe. Both reuse the frozen
+  BiomedCLIP encoder and the R40 patient-disjoint roster; all backbone
+  parameters remain frozen and no protected outcome or interim R40 metric is
+  an input to their construction.
+- B2 encodes prior and current images once per batch, concatenates normalized
+  prior CLS, normalized current CLS, their signed difference, and their
+  absolute difference, then trains only the registered finding-conditioned
+  linear probe. The resulting feature width is 3,072 and the directionality
+  behavior is covered by focused reversal tests.
+- The B0/B2 launcher is fail-closed on baseline/Seed/GPU choices, refuses
+  duplicate active commands and non-fresh status/log/output paths, and does
+  not start work merely because the component jobs are still running.
+- Six focused runner/launcher tests, Ruff, compileall, PowerShell syntax
+  parsing, and `git diff --check` pass for this partial strong-baseline slice.
+  B1 naive exact-64 concatenation, B3 raw two-image Qwen3-VL, and the VLM
+  reversal execution surface remain pending, so the full comparison-bundle
+  task is not yet complete.
