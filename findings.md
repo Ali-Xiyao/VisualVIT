@@ -1825,3 +1825,12 @@ preserving the encoder's static medical semantics.
   the source pool may be excluded. Requiring zero missing references across
   all CheXpert silver rows would be stricter than the frozen protocol and could
   create a false STOP despite adequate image-complete support.
+- The one allowed CheXTemporal file matches both frozen acquisition checks
+  exactly (29,502,280 bytes; SHA-256 `31237F...3C807`). No masks, report/study
+  parquet, sentence parquet, or ReXGradient image archive was downloaded.
+- The official silver paths are uniform five-component `.jpg` references
+  rooted under the literal `chexpert/` prefix. The CheXpert subset contains
+  197,449 pair-finding rows and 112,934 unique image references. The local
+  parent root contains 223,650 files, so a one-pass relative-path index is
+  semantically equivalent to repeated `Path.is_file` resolution after stripping
+  that prefix and is substantially faster on this NTFS/H: layout.

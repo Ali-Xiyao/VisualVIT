@@ -1665,3 +1665,23 @@
   a scalar support failure that the top-level audit converts to formal STOP.
   The same 3 tests, Ruff, compilation, missing-source preflight, and whitespace
   checks pass after the correction.
+- Committed and pushed the entire pre-outcome R44 support-audit authority as
+  `6d306d9`. After that freeze, downloaded only the allowed CheXTemporal
+  `silver_findings.parquet` from the official endpoint and pinned revision.
+  The local artifact is exactly 29,502,280 bytes with SHA-256
+  `31237F...3C807`; the fresh audit destination does not yet exist.
+- The first formal audit command exceeded the 120-second shell yield while
+  performing selection-independent local image existence checks. The verified
+  Python worker remains active, the atomic audit output is still absent, and
+  no result or roster was partially written. Two bounded 45-second checks show
+  continuing CPU progress; this is an execution-latency event, not a support
+  PASS/STOP.
+- After one final bounded wait, stopped only the verified R44 audit worker.
+  It had written no audit output. The CheXpert subset contains 197,449 rows but
+  only 112,934 unique image references; a single read-only `rg --files` index
+  enumerated all 223,650 local parent-root files in 36.4 seconds. Replaced only
+  the per-reference filesystem calls with an equivalent case-insensitive
+  one-pass image index.
+- Post-optimization validation passes 29 focused tests across R44 support,
+  R41A authority, R40 support utilities, and the closed case-study path, plus
+  Ruff, Python compilation, and whitespace checks.

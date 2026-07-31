@@ -6,6 +6,7 @@ import argparse
 from collections import Counter
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 from typing import Any
@@ -62,17 +63,26 @@ def stable_key(namespace: str, row: dict[str, Any]) -> str:
     return hashlib.sha256(raw.encode()).hexdigest()
 
 
-def resolve_parent_image(root: Path, raw_path: str) -> Path | None:
+def index_parent_images(root: Path) -> set[str]:
+    indexed: set[str] = set()
+    for directory, _, filenames in os.walk(root):
+        relative_directory = Path(directory).relative_to(root)
+        for filename in filenames:
+            indexed.add(
+                (relative_directory / filename).as_posix().casefold()
+            )
+    return indexed
+
+
+def parent_image_is_indexed(
+    *, root: Path, indexed: set[str], raw_path: str
+) -> bool:
     normalized = raw_path.replace("\\", "/").lstrip("/")
-    candidates = [root / normalized]
-    for prefix in ("chexpert/", "CheXpert-v1.0-small/"):
-        if normalized.lower().startswith(prefix.lower()):
-            candidates.append(root / normalized[len(prefix) :])
-    candidates.append(root.parent / normalized)
-    for candidate in candidates:
-        if candidate.is_file():
-            return candidate
-    return None
+    candidates = [normalized]
+    for prefix in ("chexpert/", f"{root.name}/"):
+        if normalized.casefold().startswith(prefix.casefold()):
+            candidates.append(normalized[len(prefix) :])
+    return any(candidate.casefold() in indexed for candidate in candidates)
 
 
 def validate_closed_r41a(config: dict[str, Any]) -> dict[str, Any]:
@@ -211,13 +221,16 @@ def audit_chextemporal_support(
         raise ValueError("R44 progression registry drift")
     source["patient_id"] = source["patient_id"].astype(str)
     source = source.loc[~source["patient_id"].isin(gold_patients)]
+    indexed_images = index_parent_images(image_root)
     path_cache: dict[str, bool] = {}
 
     def available(raw: Any) -> bool:
         value = str(raw)
         if value not in path_cache:
-            path_cache[value] = (
-                resolve_parent_image(image_root, value) is not None
+            path_cache[value] = parent_image_is_indexed(
+                root=image_root,
+                indexed=indexed_images,
+                raw_path=value,
             )
         return path_cache[value]
 
@@ -262,6 +275,7 @@ def audit_chextemporal_support(
         "source_patients": int(source["patient_id"].nunique()),
         "image_complete_rows": len(complete),
         "image_complete_patients": int(complete["patient_id"].nunique()),
+        "indexed_parent_image_files": len(indexed_images),
         "missing_image_references": int(
             (~current_available).sum() + (~prior_available).sum()
         ),

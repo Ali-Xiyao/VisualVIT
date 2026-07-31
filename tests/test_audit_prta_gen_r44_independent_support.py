@@ -57,6 +57,7 @@ def test_support_audit_is_patient_disjoint_and_scalar(
         },
     )
     assert result["missing_image_references"] == 0
+    assert result["indexed_parent_image_files"] == 40
     assert result["gold_patients_absent"] is True
     assert result["patient_partitions_disjoint"] is True
     assert result["selected_counts_in_memory_only"]["train"]["rows"] == 5
@@ -64,6 +65,31 @@ def test_support_audit_is_patient_disjoint_and_scalar(
         result["selected_counts_in_memory_only"]["development"]["rows"] == 5
     )
     assert "patient_id" not in str(result)
+
+
+def test_support_audit_resolves_chexpert_prefix(tmp_path: Path) -> None:
+    frame = make_frame(tmp_path)
+    frame["parent_image_curr"] = (
+        "chexpert/" + frame["parent_image_curr"].astype(str)
+    )
+    frame["parent_image_prev"] = (
+        "chexpert/" + frame["parent_image_prev"].astype(str)
+    )
+    result = audit_chextemporal_support(
+        frame=frame,
+        gold_patients=set(),
+        image_root=tmp_path / "images",
+        dataset_filter="chexpert",
+        classes=CLASSES,
+        class_order=["Resolved", "New", "Improved", "Worse", "Stable"],
+        namespace="test",
+        partition_counts={
+            "train": {label: 1 for label in CLASSES},
+            "development": {label: 1 for label in CLASSES},
+        },
+    )
+    assert result["support_sufficient"] is True
+    assert result["missing_image_references"] == 0
 
 
 def test_support_audit_rejects_missing_image(tmp_path: Path) -> None:

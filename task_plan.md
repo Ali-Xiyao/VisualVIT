@@ -650,6 +650,7 @@ smokes during iteration.
 | First focused R41A case-study validation found one unused test import | 1 | Remove the unused `copy` import and rerun tests, Ruff, compileall, and diff validation as independent gates |
 | Phase-14 full pytest retained one R6 frozen-manifest failure after 814 passes | 1 | This is the same closed R6 registry drift already reproduced on clean commit `24f57c3`; record it as preexisting and do not rewrite historical hashes |
 | First ReXGradient `hf download --dry-run` failed during remote file metadata resolution | 1 | `hf datasets info` still resolves the official repository; inspect `hf env`, query official Hub file metadata directly, and retry only with an explicit verified endpoint |
+| First R44 formal support audit exceeded the 120-second shell command yield during local image-existence scanning | 1 | Do not infer a gate result or create a second audit; verify the original worker/output state with bounded waits, then either accept its atomic result or stop only that worker and optimize the path scan without changing data, selection, or gates |
 
 ## Next Step
 
