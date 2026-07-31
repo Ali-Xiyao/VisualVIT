@@ -520,10 +520,10 @@ smokes during iteration.
   active Proposal/status/index surfaces. Separate observed evidence from
   hypotheses and require any future experiment to use a separately frozen,
   outcome-independent protocol.
-- [ ] Validate hashes/firewalls, Markdown links, tests, Ruff, compileall, and
+- [x] Validate hashes/firewalls, Markdown links, tests, Ruff, compileall, and
   `git diff --check`; commit and push the analysis/report terminal package.
-- **Status:** terminal analysis complete; final commit/push pending — no new
-  experiment or downstream stage is unlocked.
+- **Status:** complete — analyzer commit `0445a6d` and report commit `6ce4d41`
+  are pushed; no new experiment or downstream stage is unlocked.
 
 ## Errors Encountered
 
@@ -629,7 +629,7 @@ smokes during iteration.
 
 ## Next Step
 
-Implement the fail-closed, identity-free R41A case-study analyzer and focused
-tests first. Commit and push that code before its one-time real run, then
-analyze the six completed payloads and immutable roster. No training is
-authorized.
+Phase 14 is closed. Preserve the R41A STOP, the identity-free derived JSON, and
+the published report/Proposal boundary. Any future readout study requires a
+new outcome-independent protocol and genuinely independent patient cohort;
+do not reuse this development analysis for selection.
