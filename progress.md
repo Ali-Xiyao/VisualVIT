@@ -2551,3 +2551,33 @@
   1.0 on 4/4 combined, progression is correct on 2/4, peak VRAM is
   8.54–8.55 GiB, and two-row generation is 3.16–3.47 seconds per card.
   Do not tune from these four engineering rows.
+- Committed/pushed the smoke-summary fix as `d4c9472`, verified a fresh formal
+  root, and launched the frozen raw baseline simultaneously: PID 27600 runs
+  even roster rows on GPU0 and PID 30848 runs odd rows on GPU1, 250 each.
+- Both formal raw shards remained healthy through 2.3 minutes, each using
+  about 9.1 GiB with active GPU utilization; neither atomic result exists yet.
+- Through 4.4 minutes both PIDs continued on their assigned GPUs with stable
+  memory and no result/error publication.
+- Both formal raw shards completed between 5.5 and 6.5 minutes, wrote atomic
+  250-row results (82,339 and 82,132 bytes), exited cleanly, and released both
+  GPUs. Proceed to scalar-only shard audit and one paired aggregate.
+- Both 250-row shards pass with schema/finding accuracy 1.0 and zero invalid
+  predictions, but their macro-F1 values are only 0.1694 and 0.1119.
+- Ran the raw B3 aggregate exactly once. Complete 500-row macro-F1 is 0.141724
+  versus FPRR true-pair 0.400584; paired raw-minus-FPRR is -25.886 pp with
+  CI95 [-30.773, -20.934]. The result is terminal characterization, with no
+  threshold, prompt, parser, or pixel-budget tuning.
+- Added the R45–R48 failure-mechanism and Raw B3 result report, refreshed the
+  report index, project status, and proposal with the exact narrow claim and
+  runtime hashes. Raw outputs are Stable/Improved/Worse/New/Resolved =
+  4/52/370/71/3; aggregate SHA-256 is
+  `4D57F6AF0AD2B5D84A35566B643A512A51C3D8A31FD4631C73460ED2EC231BDF`.
+- Final raw-stage validation: seven focused tests pass, repository-wide Ruff
+  and compileall pass, both new JSON configs parse, and `git diff --check`
+  passes. Full pytest is 866 passed, 1 xfailed, 1 failed; the sole failure is
+  the previously documented closed R6 frozen-manifest drift in
+  `test_query_anchor_r4_runner.py`, not an R45–R48 regression.
+- After the user requested continuing to completion, repeated the unchanged
+  R48 confirmation runner preflight successfully and launched PID 24492 on
+  GPU0. The confirmation result root was fresh; GPU1 remains idle and no
+  setting changed from the pre-Raw committed authority.

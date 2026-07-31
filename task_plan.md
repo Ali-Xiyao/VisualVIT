@@ -681,12 +681,14 @@ smokes during iteration.
 - [x] Run the frozen 500-patient R48 qualification and apply its registered
   bootstrap gate exactly once; status is
   `GO_PRTA_GEN_R48_FPRR_QUALIFICATION`.
-- [ ] Keep the already-unlocked 250-patient R48 confirmation frozen and
+- [x] Keep the already-unlocked 250-patient R48 confirmation frozen and
   unexecuted while the user-requested raw two-image Qwen baseline runs first.
+- [ ] Execute the unchanged 250-patient confirmation once after Raw B3
+  handoff; PID 24492 is active on GPU0.
 - [ ] Close R45–R48 with a case-study/negative-result synthesis, exact hashes,
   ICLR claim boundary, tests, processes/GPUs, reader surfaces, and Git handoff.
-- **Status:** paused before confirmation generation at the user's requested
-  ordering boundary; its cache is pinned and runner preflight passes.
+- **Status:** in progress — Raw B3 finished first; unchanged confirmation
+  generation is now active.
 
 ### Phase 24 — Raw two-image frozen Qwen baseline first
 
@@ -695,16 +697,17 @@ smokes during iteration.
   target and frozen model.
 - [x] Run a fixed engineering smoke without changing the prompt from outcomes;
   both GPUs pass with strict JSON/finding echo and about 8.55 GiB peak VRAM.
-- [ ] Evaluate once on the already-read 500-patient R48 qualification cohort
+- [x] Evaluate once on the already-read 500-patient R48 qualification cohort
   using two fixed 250-row shards so its result is directly comparable to the
   R48 frozen-token baseline.
-- [ ] Report macro-F1, per-class recall, schema/finding validity, runtime,
+- [x] Report macro-F1, per-class recall, schema/finding validity, runtime,
   peak VRAM, and exact cohort/model pins. Treat this as a development case
   study, not independent confirmation.
-- [ ] Show the user the raw two-image result before resuming the already-frozen
+- [x] Show the user the raw two-image result before resuming the already-frozen
   250-patient R48 confirmation.
-- **Status:** in progress — two-card Qwen3-VL smoke passes; commit the
-  smoke-summary fix, then launch the two frozen 250-row formal shards.
+- **Status:** complete — raw macro-F1 is 0.141724 versus FPRR 0.400584;
+  paired delta is -25.886 pp, CI95 [-30.773, -20.934]. The user then requested
+  automatic continuation, so R48 confirmation resumed unchanged.
 
 ## Errors Encountered
 

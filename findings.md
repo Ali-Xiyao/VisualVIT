@@ -2397,3 +2397,19 @@ preserving the encoder's static medical semantics.
   Each GPU peaks at about 8.55 GiB; two generations take 3.16–3.47 seconds
   after a 14.27-second model load. The full frozen setup is therefore feasible
   without reducing pixels or changing the prompt.
+- Formal raw two-image B3 completes on all 500 qualification patients with
+  schema validity and finding echo both 1.0, but macro-F1 only `0.141724` and
+  accuracy `0.216`. Recall is highly imbalanced: Improved `0.12`, New `0.09`,
+  Resolved `0.02`, Stable `0.03`, Worse `0.82`.
+- The matched frozen-token FPRR true-pair macro-F1 is `0.400584`. Raw-minus-
+  FPRR is `-25.886 pp`, patient-bootstrap 95% CI
+  `[-30.773,-20.934]`; thus direct full-image ingestion is decisively worse on
+  this development cohort despite perfect output formatting.
+- Raw B3 uses 621.6 aggregate GPU-seconds, about 312.3 seconds parallel
+  generation wall upper bound, max 8.55 GiB allocated per card, 264,395 input
+  tokens, and 831,888 vision-grid tokens. It is not compute-matched to the
+  exact-64 FPRR baseline.
+- Raw prediction counts are Stable 4, Improved 52, Worse 370, New 71, and
+  Resolved 3, confirming a 74% `Worse` collapse rather than formatting failure.
+  The 1,904-byte aggregate SHA-256 is
+  `4D57F6AF0AD2B5D84A35566B643A512A51C3D8A31FD4631C73460ED2EC231BDF`.

@@ -1,0 +1,122 @@
+# PRTA-Gen R45–R48 Case Study 与 Raw Two-Image Qwen3-VL 结果
+
+## 直接结论
+
+这条实验链已经把“为什么前面的修复失败”与“什么最小命题可以复现”分开：
+
+- R45–R47 的 learned bridge/router 没有带来可靠的 baseline 增益；
+- R48 不再训练或选择，复现了 frozen generator 对正确 prior 的响应；
+- 用户优先要求的 Raw two-image Qwen3-VL 已在同一 500 人 qualification
+  cohort 跑完，但显著弱于 R48 frozen-token baseline。
+
+Raw B3 的完整结果为：
+
+| 指标 | Raw two-image Qwen3-VL | R48 FPRR true-pair |
+|---|---:|---:|
+| macro-F1 | 0.141724 | 0.400584 |
+| accuracy | 0.216 | 0.412 |
+| schema validity | 1.000 | 1.000 |
+| finding echo | 1.000 | 1.000 |
+| invalid | 0/500 | 0/500 |
+
+paired patient-bootstrap 的 Raw−FPRR 差值为 **−25.886 pp**，
+95% CI **[−30.773, −20.934] pp**。这是明确的负结果，不是波动或统计不确定。
+
+## Raw B3 做了什么
+
+- 同一个本地 frozen `Qwen3-VL-4B-Instruct`；
+- 每例按 `[prior 完整胸片, current 完整胸片]` 顺序输入两张未裁剪 JPEG；
+- processor 只做模型所需的内部 resize，固定
+  `min_pixels=200704`、`max_pixels=802816`；
+- 没有 BiomedCLIP、projector、64-token 压缩、router、LoRA 或训练；
+- 同一个 finding-conditioned 两字段 JSON prompt；
+- greedy generation，最多 64 个新 token；
+- GPU0/GPU1 按 roster row 奇偶分成两个互斥 250 人 shard。
+
+两张卡均完成并原子写出结果。每卡峰值约 8.55 GiB；两卡并行 generation
+wall-time 上界约 312.3 秒，累计 621.6 GPU 秒。总 input token 为 264,395，
+vision-grid token 为 831,888，因此它与 exact-64 FPRR **不等计算量**。
+
+## 失败模式
+
+Raw Qwen 的格式能力没有问题：500/500 schema 合法、500/500 finding
+复制正确。问题是 progression 判别塌缩：
+
+| 类别 | recall | 预测次数 |
+|---|---:|---:|
+| Stable | 0.03 | 4 |
+| Improved | 0.12 | 52 |
+| Worse | 0.82 | 370 |
+| New | 0.09 | 71 |
+| Resolved | 0.02 | 3 |
+
+它把 74% 的病例预测成 `Worse`。所以失败不是 parser、JSON 或 finding
+conditioning，而是 raw full-field pixels 没有自动形成可靠的五类纵向状态
+比较。
+
+## R45–R48 case-study 轨迹
+
+### R45 CDEB
+
+把 `true_pair-current_only` delta soft evidence 桥接进 frozen Qwen。
+Full CDEB F1 0.3420，低于 baseline 0.3806；true−shuffle −1.26 pp。结论：
+低质量 delta evidence 进入生成器并不会自动建立正确-prior grounding。
+
+### R46 CEA
+
+在排除 R45 roster 的新 250 人 cohort 上做 selective arbitration。点估计
+比 baseline 高约 +1.06 pp，但 bootstrap CI `[−0.914,+3.273]` 跨零，
+structured heads 也没有稳定达到绝对门槛。结论：router 的选择性不足以
+形成可靠增益。
+
+### R47 UCC
+
+在另一个新 500 人 cohort 上使用无阈值的 3/3 true-consensus +
+3/3 current-disagreement。UCC−baseline 只有 +0.440 pp，
+CI `[−1.984,+2.921]`。但 true−shuffle 为 +5.921 pp，
+CI `[+1.423,+10.786]`。结论：存在 prior signal，但 router 没有把它转化为
+可重复的额外预测价值。
+
+### R48 FPRR
+
+由此删除所有 training、selection、threshold 和 router，只测试 immutable
+R45 Seed-17 frozen generator。500 人 qualification：
+
+- true-pair F1 0.400584；
+- current-only 0.303250；
+- query-only 0.113459；
+- prior-shuffle 0.320763；
+- true−shuffle +7.982 pp，CI `[+3.873,+11.991]`；
+- true−current +9.733 pp，CI `[+5.818,+13.706]`。
+
+资格门全部通过，状态为 `GO_PRTA_GEN_R48_FPRR_QUALIFICATION`。它证明的不是
+router 成功，而是冻结 token interface 下存在可重复的 correct-prior
+responsiveness。
+
+## ICLR 标准下的解释
+
+Raw B3 是必要的强基线，而且结果必须保留：直接把两张完整胸片交给通用
+Qwen3-VL 并不等于模型会做细粒度 longitudinal progression reasoning。
+R48 的优势更可能来自医学视觉 encoder 与固定 temporal token interface
+提供的归纳偏置，而不是仅仅“看到了两张图”。
+
+但当前边界仍然很窄：
+
+- Raw B3 与 R48 qualification 都是同一内部 development 数据源；
+- Raw B3 是 qualification 上的 development case study，不是独立确认；
+- R48 confirmation 已冻结并完成无标签 token cache，但按用户要求暂停在
+  generation/outcome read 之前；
+- gold、external、开放式报告、临床效用和 ICLR 接收主张都未解锁。
+
+## 可复核证据
+
+- Raw aggregate：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r48_b3_raw_two_image_v1\formal\aggregate.json`
+- aggregate：1,904 bytes，SHA-256
+  `4D57F6AF0AD2B5D84A35566B643A512A51C3D8A31FD4631C73460ED2EC231BDF`
+- shard 0 SHA-256：
+  `089D266E88ECFE09CD4BF583CDE23F6F1AEAD61A49242B843F8145531C2DC8EC`
+- shard 1 SHA-256：
+  `582EAE01BC3FBD5617ECA9E607732A460B6EFF7BC17975E4B34B72FA98ED14AD`
+- 冻结代码提交：`ad745ee`
+- smoke 修复与正式执行代码提交：`d4c9472`

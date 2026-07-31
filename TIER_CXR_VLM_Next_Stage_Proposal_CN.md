@@ -5,8 +5,8 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO + R41A/R44A/R45 terminal STOP
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R45**
+> **当前结果提交：** R39 frozen lineage + R40C internal GO + R41A/R44A/R45–R47 STOP + R48 qualification GO
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R48**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -94,13 +94,37 @@ inherited baseline 0.380648；相对 prior-shuffle 为 -1.258606 pp，
 checkpoint、Seed 或 gate 后重跑。完整报告：
 `reports/PRTA_GEN_R45_CDEB_DISCOVERY_RESULT_CN.md`。
 
-相关工作审计还显示，generic expert-guided decoding、constrained decoding
-和 product-of-experts 都已有先例。因此下一步如继续，只能另立更窄的
-**R46 Causal Evidence Arbitration (CEA)**：在排除整个 R45 roster 的
-新 development patients 上，预注册 true-pair 相对 current-only 的因果
-证据分数；证据充分时才允许 structured progression expert 覆盖 frozen
-generator，否则回退 baseline。该方向的主张边界是选择性、progression-only
-结构化生成，不是自由文本生成或临床泛化。
+## 2026-07-31 R46–R48 与 Raw Two-Image 强基线
+
+R46 CEA 与 R47 UCC 在两个新的 patient-disjoint development cohort 上继续
+检验 learned arbitration。两者都出现正向点估计或 true/shuffle separation，
+但相对 inherited baseline 的 paired bootstrap CI 均跨零，因此分别冻结为
+STOP。这个序列排除了“再加一个 router”作为合理下一步。
+
+R48 随后删除 training、checkpoint selection、threshold 和 router，只用
+immutable R45 Seed-17 generator 在原封存 500 人 qualification 上做
+selection-free replication。true-pair macro-F1 0.400584，true−shuffle
++7.982 pp、CI `[+3.873,+11.991]`，true−current +9.733 pp、
+CI `[+5.818,+13.706]`，资格门全部通过：
+
+`GO_PRTA_GEN_R48_FPRR_QUALIFICATION`
+
+按用户要求，下一步顺序先执行 R40 已预声明的 B3 Raw two-image frozen
+Qwen3-VL。它在同一 500 人 qualification cohort 上直接读取 prior/current
+两张完整未裁剪胸片，schema/finding 均为 100%，但 macro-F1 只有 0.141724，
+并有 370/500 输出为 `Worse`。Raw−FPRR 为 −25.886 pp，
+patient-bootstrap 95% CI `[−30.773,−20.934]`。因此“原生看到两张完整图”
+不是充分的 temporal progression baseline；固定医学 encoder + temporal
+token interface 提供了实质归纳偏置。
+
+该比较不等计算量，也不是独立确认。R48 confirmation 的无标签 token cache
+已经固定，但 generation/outcome read 仍按用户要求暂停。完整 case study：
+`reports/PRTA_GEN_R45_R48_CASE_STUDY_AND_RAW_B3_RESULT_CN.md`。
+
+历史上，R45 后曾据相关工作审计另立 **R46 Causal Evidence Arbitration
+(CEA)**；R46 与后续 R47 的实际 STOP 已由上节覆盖，不再把它们写成未来
+动作。当前唯一已经冻结且尚未读取 outcome 的下一科学门是 R48
+confirmation。
 
 # 2026-07-30 PRTA-Gen 案例驱动修复附录
 

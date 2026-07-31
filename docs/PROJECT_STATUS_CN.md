@@ -23,13 +23,18 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 | PRTA-Gen R40C | `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` | 三 Seed true-pair macro-F1 0.5058/0.4941/0.4827；对 query/shuffle 的点效应与 bootstrap CI 全部通过 |
 | PRTA-Gen R41A | `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` | G1 true macro-F1 0.3474/0.3632/0.4304，但 Worse recall 0.00/0.08/0.08，G1−G0 全为负；8 个门失败 |
 | PRTA-Gen R44A | `STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL` | 跨来源 1,000/250 silver cohort 上，G1 对 query-only 明显为正，但三 Seed 均未通过 prior-shuffle 门；Seed 43 进一步退化；9 个门失败 |
+| PRTA-Gen R45 | `STOP_PRTA_GEN_R45_CDEB_DISCOVERY` | CDEB F1 0.3420，低于 inherited baseline 0.3806；true−shuffle 为负 |
+| PRTA-Gen R46 | `STOP_PRTA_GEN_R46_CEA_DISCOVERY` | +1.06 pp 点增益但 paired bootstrap CI 跨零 |
+| PRTA-Gen R47 | `STOP_PRTA_GEN_R47_UCC_DISCOVERY` | true−shuffle 显著，但 UCC−baseline 仅 +0.44 pp 且 CI 跨零 |
+| PRTA-Gen R48 qualification | `GO_PRTA_GEN_R48_FPRR_QUALIFICATION` | 无训练/选择/router；true F1 0.4006，true−shuffle +7.98 pp，CI 下界 +3.87 |
+| R48-B3 Raw two-image | `COMPLETE_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_QUALIFICATION` | 原生 prior/current 双图 F1 0.1417；比 FPRR 低 25.89 pp，CI [−30.77,−20.93] |
 
 R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
 qualification 修复了明确的 token-layout mismatch。R40B.4 只跑通
 progression-only structured emission 的工程 overfit smoke。R41A 随后完整
 执行 progression-only Qwen SFT，但 attention-LoRA 未通过冻结 survival gate。
-Qwen 自由生成、开放式报告、其他字段、R42 G-CMCP/reversal 与 R43
-gold/external 仍未解锁。
+Raw 双图 baseline 使用冻结 Qwen 的受约束两字段生成，不解锁开放式报告、
+其他字段、R42 G-CMCP/reversal 或 R43 gold/external。
 
 R40C 已按冻结顺序完成 Seeds 17/29/43 和 2,000 次 patient-bootstrap
 aggregate，gate failures = 0。自动 launcher 与所有 Seed 进程均已退出，
