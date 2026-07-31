@@ -2960,3 +2960,38 @@
   roster, translation, prompt, target, training, three seeds, paired statistics,
   and runtime paths are frozen before any R51 cache or model outcome. Stage and
   push this authority, then begin the authorized two-GPU label-free caches.
+- Published the R51 precache authority as commit `5a7b3a4`. Launched the two
+  unique label-free cache workers: PRTA evaluation PID 16164 on GPU0 and B2
+  exact64 PID 29280 on GPU1. Both hold about 637 MiB at the first snapshot and
+  all four cache stdout/stderr logs are initially empty. Monitor these workers;
+  start TILA only on the first GPU that returns idle.
+- Cache monitor: PRTA PID 16164 entered active encoding on GPU0 at about 979 MiB
+  and 75% utilization. B2 PID 29280 remains live at its 637 MiB model-loaded
+  state while DataLoader workers initialize. Both stderr logs remain empty and
+  neither index exists yet; do not launch a duplicate.
+- PRTA evaluation cache completed cleanly: 500 rows/patients, four shards,
+  labels/sentences false, zero-byte stderr, index 2,347 bytes with SHA-256
+  `58BBAFCEB198747548798F9BBDD25CA4C4A6F6AFEE95FA667330335A58487405`.
+  Launched TILA as PID 15340 on freed GPU0. B2 PID exited with zero stderr and
+  nonempty terminal stdout while GPU1 returned idle; validate its index before
+  declaring completion.
+- B2 exact64 cache validated: 3,000 unique rows/patients, 24 shards, labels
+  false, four reserved positions exactly zero, zero-byte stderr, and index
+  SHA-256 `1B1F58FD74055EDB639FD3DE923AF0F1304B2CD2D8053D32D30733E3C8403BC3`.
+  TILA PID 15340 remains the sole cache worker on GPU0 with empty stderr; GPU1
+  is idle. Continue monitoring without starting another task on the result-
+  independent cache lane.
+- TILA cache completed and both GPUs returned idle with zero cache stderr. The
+  first combined shard audit stopped before tensor inspection because its
+  ad-hoc Python process lacked the repository `src` path. Add the explicit path
+  bootstrap and rerun; no cache artifact changed.
+- Full shard audit passes for all caches. PRTA evaluation has 500 ordered unique
+  rows; TILA/B2 each have 3,000 ordered unique train+evaluation rows. Every
+  tensor is finite `[64,768]`, positions 60-63 are zero, common-normalized
+  positive-token RMS lies within 0.9999998-1.0000003, and all cache stderr logs
+  are zero. Pinned index bytes/SHA values and promoted the main authority from
+  `PRECACHE` to final `FROZEN`; validate and publish before Qwen execution.
+- Final pinned-authority validation passes with 2,500/500 rows and all four
+  source indexes verified; 11 focused tests, Ruff, and diff check pass. Only
+  the derived cache receipts changed after commit `5a7b3a4`; stage and publish
+  them before implementing or launching the Qwen runner.

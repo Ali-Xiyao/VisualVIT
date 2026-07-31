@@ -799,10 +799,10 @@ smokes during iteration.
 - [ ] Aggregate patient-paired results, write the R51 case study and update the
   proposal/status/index/planning bundle, then run terminal tests, hashes,
   process/GPU closure, commit, and push.
-- **Status:** in progress — fresh 500-patient roster is materialized and pinned;
-  the precache benchmark authority and parameter-free translations pass 22
-  focused tests, Ruff, compileall, real-data preflight, and diff validation.
-  Publish this no-outcome authority before starting the three GPU caches.
+- **Status:** in progress — fresh roster and all three label-free caches are
+  complete and hash-pinned; final authority validation, 11 focused tests, Ruff,
+  and diff check pass. No R51 Qwen/model outcome exists. Publish the cache pins,
+  then implement and validate the common frozen-Qwen runner/aggregator.
 
 ## Errors Encountered
 
@@ -821,6 +821,7 @@ smokes during iteration.
 | R51 TILA source inspection guessed `modeling_tila.py` although the pinned official repository uses `model.py` | 1 | Inspect the already hash-pinned `model.py`; feature caching and all runtime artifacts were untouched |
 | First R51 precache planning writeback matched a wrapped `progress.md` sentence incorrectly | 1 | Read the exact UTF-8 tail and reapply against the live sentence; the rejected patch was atomic and changed no planning file |
 | First R51 cache static gate found one unused `read_json` import, while later commands masked Ruff's nonzero native exit | 1 | Remove the import and rerun Ruff as an independent gate before treating preflight as launch-ready; cache roots remained fresh and no GPU work started |
+| First post-cache R51 shard audit did not add the repository `src` directory to Python's import path | 1 | Add the explicit workspace/src bootstrap and rerun the read-only tensor audit; no cache tensor or receipt was modified |
 | R46 targeted Ruff command included the JSON discovery config and parsed `true`/`false`/`null` as Python names | 1 | Validate JSON with the JSON parser and run Ruff only on Python sources; no config, roster, or runtime state changed |
 | R46 authority hash inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate rows in an explicit array before formatting; no file or runtime state changed |
 | First R46 inspection guessed the R45 baseline checkpoint below `discovery/baseline_projector/seed_17` | 1 | Resolve the actual immutable layout `discovery/seed_17/baseline_projector/trainable_checkpoint.pt`; no runtime file was changed |
@@ -955,6 +956,6 @@ smokes during iteration.
 
 ## Next Step
 
-Commit and push the frozen R51 precache authority and implementation, then
-launch PRTA evaluation and B2 caches concurrently on GPUs 0/1; run TILA after
-the first lane frees, without loading Qwen or reading an R51 model outcome.
+Commit and push the final hash-pinned R51 authority, then implement the common
+three-seed frozen-Qwen runner, deterministic two-GPU lanes, and paired
+aggregator without changing any frozen method or training field.

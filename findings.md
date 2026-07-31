@@ -2854,6 +2854,15 @@ preserving the encoder's static medical semantics.
   PRTA evaluation can reuse the R45 engine via the already established narrow
   validator-wrapper pattern. All three cache receipts can therefore remain
   label-free and no Qwen model needs to load during cache generation.
+- R51 label-free caches are terminal and reproducible. PRTA evaluation index is
+  2,347 bytes / SHA-256
+  `58BBAFCEB198747548798F9BBDD25CA4C4A6F6AFEE95FA667330335A58487405`;
+  TILA is 6,856 bytes /
+  `B1242083A14DA5183A16D20D09A670E1F15D2D3B5F0F76C07285914B5DE354C1`;
+  B2 is 6,431 bytes /
+  `1B1F58FD74055EDB639FD3DE923AF0F1304B2CD2D8053D32D30733E3C8403BC3`.
+  All row orders match the frozen rosters, all tensors are finite with four
+  exact-zero reserved slots, and cache generation produced no model outcome.
 - R51 roster authority should reuse the R45 source validation and exact hashes,
   exclude every patient in all four R45 partitions, use stable rare-class-first
   selection with class order Resolved/New/Improved/Worse/Stable, allocate 100
