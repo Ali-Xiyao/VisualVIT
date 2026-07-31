@@ -5,7 +5,7 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution + R50 method benchmark + R52 matched direct head
+> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution + R50 method benchmark + R51/R52 matched interfaces
 > **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R52**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
@@ -207,6 +207,33 @@ projector 和 frozen-Qwen 合同，而不是继续堆叠 router。
 post-hoc internal benchmark，不覆盖 R48 confirmation STOP，也不解锁
 gold/external 或临床主张。完整报告：
 `reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md`。
+
+## 2026-07-31 R51 Exact-64 Frozen-Qwen Matched Interface 终态
+
+R50 的 TILA/B2 强结果来自直接分类接口，仍未回答它们在与 PRTA 相同的
+exact-64 + frozen-Qwen 系统合同下是否更强。R51 在新的 500 人五类均衡
+evaluation cohort 上，统一了 2,500-train、64 个物理 token、9,873,920 参数
+projector、初始化、训练顺序、79 updates、prompt、JSON parser、greedy decoding
+和完全冻结的 Qwen3-VL-4B。
+
+| 系统 | Seed 17 | Seed 29 | Seed 43 | Mean macro-F1 |
+|---|---:|---:|---:|---:|
+| **PRTA exact-64 + frozen Qwen** | 0.382583 | 0.369964 | 0.401842 | **0.384796** |
+| TILA exact-64 + frozen Qwen | 0.308364 | 0.327341 | 0.314151 | 0.316618 |
+| B2 exact-64 + frozen Qwen | 0.275904 | 0.213986 | 0.275378 | 0.255090 |
+
+PRTA−TILA 为 **+6.818 pp**、patient-paired 95% CI
+`[+3.512,+10.080]`；PRTA−B2 为 **+12.971 pp**、CI
+`[+9.729,+16.286]`。九个 arm 的 schema/finding 均为 1.0，Qwen trainable
+parameters 为 0，同 seed 初始化哈希一致。因此 R51 正式支持：在当前严格
+配平的 frozen-Qwen 系统接口下，PRTA 显著优于 TILA/B2 exact-64 适配。
+
+终态为 `COMPLETE_PRTA_GEN_R51_MATCHED_INTERFACE_BENCHMARK`。
+
+TILA encoder/checkpoint 是官方现成方法，但 60-patch exact-64 翻译是本项目
+适配；B2 是本地 classic Siamese control。R51 不是对官方 TILA 原生 global
+classifier 的普遍否定，也不是 gold/external 或临床结论。完整报告：
+`reports/PRTA_GEN_R51_MATCHED_INTERFACE_RESULT_CN.md`。
 
 ## 2026-07-31 R52 统一 exact-64 直接分类头终态
 

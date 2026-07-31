@@ -68,8 +68,10 @@ inversion、CMCP 还是 state-preservation。
 归因；R50 已完成 TILA-CE、TILA-BiCE/TCL、Siamese signed/absolute 与
 TAC-adapted 三 Seed 直接分类对比。R52 又在 fresh 500 人上完成 PRTA、
 TILA-exact64、B2-exact64 的同 token、同 5,991,173 参数直接头、三 Seed
-比较，PRTA 对两者的 paired CI 下界均大于零。直接分类 matched-interface
-缺口已关闭；exact-64 + frozen-Qwen 的系统级对比由 R51 正在执行，尚未终态。
+比较，PRTA 对两者的 paired CI 下界均大于零。R51 也已完成相同
+exact-64、projector、prompt 与 frozen-Qwen 系统级对比，PRTA−TILA
++6.818 pp、CI [+3.512,+10.080]，PRTA−B2 +12.971 pp、CI
+[+9.729,+16.286]。强方法的直接头与 frozen-Qwen matched-interface 缺口均关闭。
 
 至少补：
 

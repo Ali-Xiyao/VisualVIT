@@ -2905,3 +2905,17 @@ preserving the encoder's static medical semantics.
   0.273 mean shows that the current parameter-free translation loses native
   global-interface readability. The valid claim is PRTA superiority under the
   registered matched exact64 direct head, not universal superiority over TILA.
+- R51 completed all nine frozen-Qwen system runs. Mean macro-F1 is PRTA
+  0.384796, TILA-exact64 0.316618, and B2-exact64 0.255090. Reversing the
+  aggregate's stored control-minus-PRTA direction gives PRTA−TILA +6.818 pp,
+  CI [+3.512,+10.080], and PRTA−B2 +12.971 pp, CI [+9.729,+16.286]. TILA also
+  exceeds B2 by +6.153 pp, CI [+3.466,+8.739].
+- R51 and R52 agree: PRTA is best under both the shared frozen-Qwen projector
+  interface and the shared direct head. This narrows the readout-confound
+  explanation, but the two studies share the same 500 evaluation patients and
+  R52 was initiated after partial R51 outcomes, so they are complementary
+  interfaces rather than independent confirmations.
+- R51 class behavior shows B2 instability: Seed29 preserves Stable/Resolved
+  recall 0.64/0.63 but collapses Improved/Worse/New to 0.03/0.04/0.08. PRTA's
+  mean advantage instead comes from Improved 0.503, Worse 0.347, New 0.280,
+  and Resolved 0.560, although its Stable recall 0.277 is not best.

@@ -3116,3 +3116,85 @@
   one report-header Markdown hard-break, but the sequential PowerShell command
   still committed and pushed. Remove only that trailing whitespace, validate
   independently, and push a small hygiene fix; no result value changes.
+- Removed the single hard-break and published clean follow-up `44eef69`; worktree
+  is clean. R51 remains healthy at 4/9. TILA Seed17/29 macro-F1 is
+  0.308364/0.327341 versus PRTA 0.382583/0.369964, with 1.0 schema/finding,
+  79 updates, frozen Qwen, 9,873,920 matched projector parameters, and identical
+  within-seed initialization hashes. Both B2 Seed17/29 arms continue; stderr
+  contains only repeated weight-load bars and greedy-flag notices, no error.
+- Bounded R51 snapshots through 22:38 remain at 4/9 with both B2 Seed17/29
+  workers live, stable 10.5/10.7 GiB allocations, and utilization returning to
+  31-37% after one transient low-utilization sample. Continue without restart.
+- Through 22:42 both B2 arms remain live at 4/9, stable memory and 22-33% GPU
+  utilization. No log/error or scheduling change is observed; this is still
+  within the registered arm's expected training-plus-generation duration.
+- Through 22:45 both B2 workers remain active at stable 10.5/10.7 GiB and about
+  32% utilization. Result count remains 4/9; inspect only warning counts to
+  distinguish training from the expected generation transition.
+- Shared-log audit confirms zero traceback/error and only two prior greedy
+  warnings per lane, so current B2 arms are still training. Snapshots through
+  22:49 show both workers live and continuing GPU work; retain unchanged.
+- Through 22:52 both B2 Seed17/29 workers remain continuously compute-active at
+  roughly 32-43% GPU utilization with stable allocations and 4/9 results. No
+  timeout, restart, output drift, or engineering failure has occurred.
+- B2 Seed17/29 completed cleanly, advancing R51 to 6/9. Their macro-F1 is
+  0.275904/0.213986 with 1.0 schema/finding, 79 updates, matched 9,873,920
+  projector parameters and within-seed initialization hashes. Lane0 advanced
+  to PRTA Seed43 and lane1 to B2 Seed43; both reloaded successfully and resumed
+  GPU work by 22:55. Seed43 outcomes remain unseen.
+- PRTA/B2 Seed43 snapshots through 22:59 remain healthy at 6/9. One transient
+  GPU0 zero-utilization sample recovered immediately to 36-38%; both processes
+  and stable 10.4 GiB allocations persisted throughout. Continue unchanged.
+- The first bounded monitor completed at 23:01 with R51 still 6/9, both Seed43
+  workers live, 10.4 GiB per card, and 41-49% utilization. Start a second
+  bounded read-only monitor; do not touch the experiment lanes.
+- Second-monitor snapshots through 23:05 keep both Seed43 workers at 38-50%
+  utilization with stable 10.4 GiB allocations and 6/9 results. No intervention
+  is warranted before the expected training/generation transition.
+- Through 23:10 PRTA/B2 Seed43 remain live at 6/9 with continuous, fluctuating
+  GPU use and unchanged memory. The monitor and progress writes do not touch
+  either experiment process; continue the registered lane schedule.
+- Shared-log warning counts show both Seed43 arms entered their 500-patient
+  greedy evaluations with zero traceback/error. Through 23:14 both evaluations
+  remain active at roughly 36-45% utilization; await atomic result publication.
+- PRTA Seed43 and B2 Seed43 completed, advancing R51 to 8/9. PRTA macro-F1 is
+  0.401842 versus B2 0.275378; both have 1.0 schema/finding, 79 updates,
+  9,873,920 projector parameters, and the same registered initialization hash.
+  Lane1 exited normally. Lane0 launched the sole remaining TILA Seed43 arm on
+  GPU0 and resumed at 10.1 GiB/46%; GPU1 is correctly idle.
+- TILA Seed43 remains live at 8/9 through 23:19. GPU0 memory is stable at
+  10.1-10.4 GiB; utilization varied from 40% to one zero-utilization sample
+  while the process persisted. Continue monitoring for recovery before any
+  intervention; GPU1 remains intentionally idle after lane1 completion.
+- GPU0 recovered immediately and TILA Seed43 remained continuously active at
+  32-49% through 23:23 with stable 10.4 GiB memory. R51 stays 8/9 and error-free;
+  continue the sole remaining registered arm.
+- The second bounded monitor ended at 23:27 with TILA Seed43 still live at 8/9,
+  stable 10.4 GiB and recovered 24-36% utilization after one 2% sample. Start a
+  third bounded monitor; the formal lane remains untouched.
+- Third-monitor snapshots through 23:32 show the sole TILA Seed43 arm active at
+  31-52% GPU0 utilization with unchanged 10.4 GiB memory and 8/9 results. GPU1
+  remains idle because its registered lane is complete.
+- TILA Seed43 entered greedy evaluation and published the ninth result; both
+  lanes/workers then exited and both GPUs returned to 0 MiB. Frozen R51
+  aggregation completed: PRTA/TILA/B2 mean macro-F1
+  0.384796/0.316618/0.255090; PRTA−TILA +6.818 pp CI [+3.512,+10.080],
+  PRTA−B2 +12.971 pp CI [+9.729,+16.286]. Aggregate is 9,298 bytes with
+  SHA-256 `7D4467CA0CED7B8F60F1597917EC8709D31B6204F47968F7E8BFA0DFE6516545`.
+- Added the terminal R51 result/case-study report. It records exact system
+  parity, method provenance, per-seed/per-class behavior, paired intervals,
+  relationship to R49/R50/R52, runtime receipts, and internal-only boundaries.
+- Terminal focused verification passes 23 R49-R52 tests, repository-wide Ruff,
+  compileall, diff check, aggregate byte/SHA checks, zero R51/R52 processes and
+  both GPUs at 0 MiB. The first combined document audit then used an overly
+  broad status-marker assertion and its sequential shell masked Python's exit;
+  replace it with file-specific assertions and rerun as a standalone gate.
+- File-specific document audit first caught the proposal's missing exact R51
+  status token; after adding it, a PowerShell here-string mojibake affected only
+  one Chinese assertion literal. Replacing that assertion with stable ASCII
+  numeric/status markers yields `R51_R52_DOC_LINK_HASH_AUDIT_PASS` with all
+  local links, report values, aggregate bytes/SHA, statuses, and 9+9 receipts.
+- Full repository pytest completed in 231.28 s: 890 passed, 1 expected xfail,
+  and the sole failure is the already registered historical R6 resolution/
+  frozen-manifest drift in `tests/test_query_anchor_r4_runner.py`. No R51/R52
+  test failed; preserve the closed R6 hashes rather than rewriting history.

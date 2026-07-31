@@ -1,7 +1,7 @@
 # TIER-CXR-VLM / PRTA-CXR 结果表与实验登记
 
 > **用途：** R32–R39 结果权威表；未执行阶段保留为空，已完成阶段必须填入。
-> **当前更新：** 2026-07-31，R52 matched direct-head benchmark 已完成；R51 frozen-Qwen matched interface 仍在执行，R42A/R43 未启动，gold 仍封存。
+> **当前更新：** 2026-07-31，R51 frozen-Qwen 与 R52 direct-head 两个 matched-interface benchmark 均已完成；R42A/R43 未启动，gold 仍封存。
 > **规则：** sealed test / gold 未揭示前不得预填；所有百分比统一使用 pp；所有 CI 必须注明 bootstrap 单位与次数。
 
 ---
@@ -24,6 +24,7 @@
 | PRTA-Gen-R40C | R40C | bootstrap 2,000 / seed 40001 | `5bf56bc` + runtime receipt | 1,000 train / 500 patient-disjoint development；排除 observed 160 | frozen exact-64 semantic-layout cache | structured head Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\aggregate.json` |
 | PRTA-Gen-R41A | R41A | bootstrap 2,000 / seed 41001 | `c796630` authority + `d665221` engineering repair | 375 train / 125 patient-disjoint development；排除 observed 1,660 | frozen exact-64 semantic-layout cache | G0/G1 Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r41a_progression_sft_v1\aggregate.json` |
 | PRTA-Gen-R50 | R50 | bootstrap 2,000 / seeds 50001–50006 | frozen R50 authority；post-hoc internal | 2,500 train / 750 evaluation；一人一行 | official TILA / frozen BiomedCLIP / R49 Block-8 tokens | TILA-CE、TILA-BiCE/TCL、B2、TAC Seeds 17/29/43 | protected 483/gold/external：否 | `COMPLETE_PRTA_GEN_R50_METHOD_BENCHMARK` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r50_method_benchmark_v1\aggregate.json` |
+| PRTA-Gen-R51 | R51 | bootstrap 2,000 / seeds 51002–51004 | `5a7b3a4`/`c0082b4`/`3a24486` pre-outcome authority | 2,500 train / fresh 500 evaluation；一人一行 | frozen PRTA/TILA/B2 exact-64 caches | shared projector + frozen Qwen Seeds 17/29/43 | protected 483/gold/external：否 | `COMPLETE_PRTA_GEN_R51_MATCHED_INTERFACE_BENCHMARK` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r51_matched_interface_v1\aggregate.json` |
 | PRTA-Gen-R52 | R52 | bootstrap 2,000 / seed 52001–52003 | `a3f00a9` pre-outcome authority | 2,500 train / fresh 500 evaluation；一人一行 | R51 frozen PRTA/TILA/B2 exact-64 caches | shared 5,991,173-param direct head Seeds 17/29/43 | protected 483/gold/external：否 | `COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r52_matched_direct_head_v1\aggregate.json` |
 
 ---

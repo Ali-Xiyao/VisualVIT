@@ -793,16 +793,17 @@ smokes during iteration.
 - [x] Implement deterministic TILA/B2-to-64 tokenizers and a common runner;
   verify shape, label blindness, patient disjointness, cache hashes, parameter
   parity, frozen-Qwen state, and synthetic/focused tests.
-- [ ] Execute all registered seeds across both RTX 3090s without result-based
+- [x] Execute all registered seeds across both RTX 3090s without result-based
   tuning or seed selection; retain failed scientific arms and retry only
   pre-outcome engineering failures under the frozen authority.
 - [ ] Aggregate patient-paired results, write the R51 case study and update the
   proposal/status/index/planning bundle, then run terminal tests, hashes,
   process/GPU closure, commit, and push.
-- **Status:** in progress — fresh roster/caches are pinned and the common runner,
-  aggregator, and two-GPU lanes pass 14 focused tests, Ruff, compileall, diff,
-  and real preflight. Qwen remains unloaded and no R51 outcome exists. Publish
-  the runner, then execute all nine frozen arms without tuning or selection.
+- **Status:** terminal package ready — 9/9 arms and aggregate completed;
+  PRTA/TILA/B2 means are 0.384796/0.316618/0.255090. PRTA−TILA is
+  +6.818 pp CI [+3.512,+10.080] and PRTA−B2 +12.971 pp CI
+  [+9.729,+16.286]. Writeback, focused/static/hash/link/process/GPU checks pass;
+  full pytest retains only the known unrelated R6 failure. Commit/push remains.
 
 ### Phase 29 — R52 matched exact-64 direct-head comparison
 
@@ -821,13 +822,13 @@ smokes during iteration.
 - [x] Execute all nine arm/seed runs on the two authorized GPUs as soon as an
   R51 lane releases, aggregate patient-paired macro-F1 differences and CIs,
   and issue a strict yes/no PRTA-superiority verdict without post-hoc tuning.
-- [x] Write the R52 case study and synchronize proposal/status/index/planning;
+- [ ] Write the R52 case study and synchronize proposal/status/index/planning;
   close both R51 and R52 with terminal tests, process/GPU audit, commit and push.
-- **Status:** scientific result complete — all 9/9 arms passed, aggregate is
+- **Status:** terminal package ready — all 9/9 arms passed, aggregate is
   `COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK`, and strict PRTA
   superiority is supported: PRTA−TILA +8.747 pp CI [+4.481,+12.861],
-  PRTA−B2 +9.258 pp CI [+4.768,+13.199]. Finish terminal validation/commit
-  while the preserved R51 lanes continue automatically.
+  PRTA−B2 +9.258 pp CI [+4.768,+13.199]. Both matched reports and authority
+  surfaces are synchronized and validated; final commit/push remains.
 
 ## Errors Encountered
 
@@ -985,9 +986,13 @@ smokes during iteration.
 | First R52 synthetic aggregate test guessed a nested `ci95.lower` field, and its follow-up search used Windows-incompatible wildcard paths | 1 | Bind the strict rule to the bootstrap helper's real `ci95_lower_pp` field and search resolved files/directories rather than shell wildcards; no R52 runtime or outcome existed |
 | First R52 process audit counted its own PowerShell inspection command | 1 | Exclude the current shell PID and require a Python-runner or lane-launcher command shape; confirmed zero R52 processes and absent runtime root before publication |
 | R52 result staged diff check found one Markdown hard-break trailing space, but PowerShell continued to commit and push | 1 | Remove the single hard-break, run `git diff --check` as a standalone gate, and publish a dedicated formatting/planning fix; scientific artifacts and results are unchanged |
+| First combined R51 terminal-report/planning patch matched PowerShell's earlier mojibake rendering of the live Phase-28 status | 1 | Create the report independently, then patch the UTF-8 status text and append findings/progress against exact live content; aggregate and runtime artifacts were unchanged |
+| First terminal R51/R52 document audit required the full R51 machine status in every index-like file, and a sequential shell masked the Python assertion exit | 1 | Replace the blanket assertion with file-specific link/value/status markers and run the Python audit as a standalone fail-fast gate before any commit |
+| Corrected standalone document audit found the active proposal stated the R51 conclusion but omitted its exact terminal status token | 1 | Add `COMPLETE_PRTA_GEN_R51_MATCHED_INTERFACE_BENCHMARK` beside the proposal conclusion and rerun the same standalone audit |
+| The next standalone audit embedded a Chinese sentence marker through the PowerShell here-string and compared a mojibake literal | 1 | Keep UTF-8 document content unchanged and use stable ASCII numeric/status markers for the gap-audit assertion; the full link/hash/value gate then passed |
 
 ## Next Step
 
-Validate and commit the terminal R52 case study, while preserving and monitoring
-the already-running R51 B2 Seed17/29 arms; then run the remaining R51 schedule,
-aggregate, report, validate, and push both terminal surfaces.
+Synchronize the terminal R51/R52 joint result across the active proposal,
+status/index/registry/gap-audit/planning surfaces; run focused/full validation,
+confirm clean process/GPU state, then commit and push the final closure.
