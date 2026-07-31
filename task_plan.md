@@ -540,20 +540,22 @@ smokes during iteration.
   and no checkpoint/threshold selection.
 - [x] Implement fail-closed roster/preflight/runner tests and commit/push the
   complete pre-outcome authority before any roster write or GPU launch.
-- [ ] Execute automatically only while the new registered gates pass; stop at
+- [x] Execute automatically only while the new registered gates pass; stop at
   the first feasibility, engineering, or scientific STOP. R42A/R43 remain
   locked regardless of R44A.
-- [ ] Update the Proposal, reports, status, and planning bundle; validate and
+- [x] Update the Proposal, reports, status, and planning bundle; validate and
   push the terminal evidence package.
-- **Status:** in progress — the scalar support authority passed and the complete
-  R44A pre-outcome code/protocol now passes roster, cache, and runner
-  preflights; commit/push remains before the one-time roster write. No roster
-  has been written and no GPU command has run.
+- **Status:** complete — the one-time 1,000/250 roster and exact64 cache passed,
+  all six G0/G1 × Seed arms completed 94 updates, and the frozen aggregate
+  returned `STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL` with nine
+  gate failures. R42A/R43 were not started; protected/gold/external outcome
+  flags remained false.
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| R44A terminal authority search guessed nonexistent root `Proposal.md` and `PROJECT_STATUS.md` | 1 | Use the authoritative `TIER_CXR_VLM_Next_Stage_Proposal_CN.md` and `docs/PROJECT_STATUS_CN.md`; no experiment state was affected |
 | Pure move-only planning-file patch was rejected as an empty hunk | 1 | Move each file with an explicit archived heading change, then create the new active bundle |
 | Combined archive patch used the wrong findings heading | 1 | Inspect exact headings, then archive with matching context |
 | First R37 inventory writeback patch expected a different `findings.md` evidence-hygiene body | 1 | Read the active planning files and reapply against exact current context |
@@ -661,7 +663,7 @@ smokes during iteration.
 
 ## Next Step
 
-Run the final combined R41A/R44A/support regression suite, static validation,
-and pre-outcome consistency audit; commit/push the complete R44A authority.
-Only then write and hash the one-time roster, rerun cache/sequence preflights,
-and start the registered exact64 GPU cache if every gate remains green.
+Preserve the R44A terminal STOP. Do not tune on its 250-patient development
+outcome and do not launch R42A/R43. Permissible follow-up is read-only
+reproduction/paper material, or a separately authorized outcome-independent
+protocol for a genuinely new hypothesis and untouched evidence source.

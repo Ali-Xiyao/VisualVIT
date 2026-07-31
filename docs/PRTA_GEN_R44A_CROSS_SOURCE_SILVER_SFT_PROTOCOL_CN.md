@@ -78,3 +78,14 @@ R42/R43。
 代码、配置、测试和 preflight 必须在 roster 写入与 GPU 启动前提交。roster、cache、每个
 Seed/arm 和 aggregate 输出都必须是 fresh path。首个工程或科学门失败即停止，不允许根据
 development 结果重选 cohort、改训练设置或追加 Seed。
+
+## 终态附记（2026-07-31）
+
+冻结 sequence 已完成六个 arm 与三 Seed aggregate，终态为
+`STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL`。九个门失败；
+R42/R43 未启动，protected 300-development、revealed 483-test、gold 与
+external outcome 均未读取。完整结果和边界见
+`../reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md`。
+
+该附记只记录冻结协议的执行结果，不修改本页任何数据、模型、训练或 gate
+定义，也不授权 outcome-dependent retry。

@@ -43,27 +43,39 @@ macro-F1 为 0.3474/0.3632/0.4304，但 `Worse` recall 为
 只输出 0/7/9 次该类，且 49/125 个样本在三个 G1 Seed 中全部答错。
 这是对 STOP 的机制性描述，不是新实验或重启依据。
 
+另立的 R44A 跨来源 silver case study 随后在 CheXpert silver 上以
+1,000 train / 250 patient-disjoint development、相同 G0/G1、Seeds
+17/29/43 和冻结门完整执行。六个 arm 均完成 94 次 updates，schema 与
+finding echo 均为 100%；G1 相对 query-only 为
++24.42/+21.14/+18.04 pp，但相对 prior-shuffle 仅为
+-0.15/+1.59/-0.25 pp，三个 95% CI 下界均不大于零。Seed 43 还出现
+macro-F1 0.2863、`Worse` recall 0.02 和 G1−G0 -7.25 pp。九个门失败，
+终态为 `STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL`。
+这说明扩大跨来源 silver 数据仍未建立稳定的正确 prior grounding；
+R42/R43 继续锁定。
+
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
-2. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
-3. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
-4. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
-5. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
-6. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
-7. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
-8. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-9. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-10. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-11. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+2. [R44A 跨来源 silver SFT 终态报告](reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md)
+3. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
+4. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
+5. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
+6. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
+7. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
+8. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
+9. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+10. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+11. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+12. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 
 - `configs/r37/`：R37.1 候选与 R37C 冻结配置；
 - `configs/r38/`：exact-64 survival 配置；
 - `configs/r39/`：frozen-VLM transfer 配置；
-- `configs/prta_gen/`：PRTA-Gen R40A–R40C probe、structured generation
-  与 internal-generalization 冻结配置；
+- `configs/prta_gen/`：PRTA-Gen R40A–R40C probe、structured generation、
+  internal-generalization 与 R44A cross-source silver 冻结配置；
 - `src/visualvit/prta.py`：PRTA-CXR adapter、loss 与等变投影；
 - `src/visualvit/prta_gen.py`、`qwen_adapter.py`：生成目标/probe 与
   exact-64 generative adapter 工程面；

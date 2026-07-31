@@ -5,12 +5,43 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO + R41A terminal STOP
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R41A**
+> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO + R41A/R44A terminal STOP
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R44A**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
 ---
+
+# 2026-07-31 PRTA-Gen R44A 跨来源 Silver Case Study 终态
+
+R41A STOP 后没有按其 development outcome 调参。新的 R44A 在任何 R44A
+outcome 可见前另立冻结协议，把数据来源换成 CheXTemporal CheXpert silver，
+按 patient-disjoint、gold 患者排除、五类均衡规则固定 1,000 train / 250
+development，同时原样继承 R41A 的 G0/G1、Seeds 17/29/43、训练设置与
+生存门。
+
+六个 arm 均完成 94 次 optimizer update 和四个注册对照评估。G1 true-pair
+macro-F1 为 0.3503/0.3512/0.2863；schema validity 与 finding echo 均为
+100%。G1 相对 query-only 为 +24.42/+21.14/+18.04 pp，说明模型不是仅凭
+finding query 完成任务。然而 G1 相对 prior-shuffle 仅为
+-0.15/+1.59/-0.25 pp，三个 patient-bootstrap 95% CI 下界均不大于零。
+Seed 43 还出现 `Worse` recall 0.02 与 G1−G0 -7.25 pp。冻结 aggregate
+共有九个 gate failure，终态为：
+
+`STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL`
+
+Proposal 由此新增一个更明确的负结论：**扩大跨来源 silver 数据可以解决
+格式、finding echo 和 query-only separation，但不能单独建立稳定的正确
+prior grounding。** R44A 不撤销 R40C progression-only structured-head 的
+有限 internal-development GO，也不改写 R41A 原 STOP；它不是独立专家
+确认、gold/external 泛化或临床证据。R42/R43 仍未启动且继续锁定。
+
+终态报告：
+`reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md`
+
+未来如需继续，只能先提出另一个真正独立、outcome-independent 且在新数据
+outcome 可见前冻结的新假设；不得针对 R44A 的 250 名 development 患者
+调整 roster、Seed、checkpoint、LoRA、学习率、prompt、类别权重或门。
 
 # 2026-07-30 PRTA-Gen 案例驱动修复附录
 

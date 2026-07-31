@@ -1742,3 +1742,236 @@
   94-update/downstream-lock contract. The R44A runtime root, roster, and token
   root are all absent, and `nvidia-smi` reports no compute process before the
   authority commit.
+- Committed and pushed the complete pre-outcome R44A authority as `d767311`.
+  Only afterward, wrote the one-time roster. It passes with exactly 1,000
+  train and 250 development patients, balanced 200/50 per class, complete
+  selected images, disjoint partitions, excluded gold patients, and no
+  protected/gold/external outcome read.
+- The frozen roster is 967,619 bytes with SHA-256
+  `60FE40D3483B85C9B462D69BF631D82DE68620BA722606862D263F095271C292`.
+- Re-ran the cache preflight against the committed authority: PASS, fresh token
+  root, present PRTA checkpoint/text cache, both RTX 3090 GPUs idle, and
+  524.81 GiB free on H:. Started the single registered exact64 cache worker on
+  GPU0 (PID 4968). The token root now exists as an active output, the final
+  index is not yet present, and both stdout/stderr remain empty at startup.
+- The cache worker completed cleanly in 98.0 seconds. Its terminal index is
+  `PASS_PRTA_GEN_R44A_EXACT64_TOKEN_CACHE`: 1,250 rows/patients, 2,500 unique
+  images, 10 shards, deterministic repeated block-8 batch, zero labels or
+  sentences in cache, exact roster SHA match, and empty stderr. Index SHA-256
+  is `8ADA1A1116375B66BA951F17174B8D391EE906814FCCF23B1F8960C444820546`.
+- Full cache consumption preflight loads all 1,250 examples for each of
+  true/current/shuffled, verifies finite 64×768 tensors, and reconciles every
+  patient/finding receipt to the roster. The two-GPU sequence preflight then
+  passes with the exact roster hash, 1,000/250 counts, three Seeds, G0/G1, and
+  retry disabled. Both GPUs are idle immediately before launch.
+- Started the single authorized R44A sequence. The launcher and two registered
+  Seed-17 arm workers are active; sequence status is
+  `RUNNING_PRTA_GEN_R44A_AUTHORIZED_SEQUENCE` at
+  `seed_17_parallel_arms`, with zero completed arms and empty launcher
+  stdout/stderr at startup.
+- Seed 17 G0/G1 remain healthy in training across repeated bounded checks:
+  three expected Python processes, roughly 10 GiB allocated per GPU, nonzero
+  utilization, zero stderr bytes, no partial result file, and no sequence-state
+  transition. This is active execution, not a completed arm or gate result.
+- Further Seed-17 checks remain unchanged in the meaningful fields: both GPUs
+  allocated, utilization fluctuating as expected for per-example SFT, all
+  three registered processes alive, stderr zero, and no result file. The arm
+  runtime includes 3,000 training examples plus four 250-row free-generation
+  evaluations per GPU, so this duration is not itself an error.
+- Seed 17 continues without resource or error drift: GPU memory remains stable
+  near 10 GiB per arm, utilization is repeatedly nonzero, and stderr/result
+  state remains 0/absent. No intervention is warranted while forward progress
+  and the registered process set remain intact.
+- Around ten minutes into Seed 17, both arms remain synchronized and healthy.
+  The frozen runner writes history only inside the terminal result after all
+  training and four evaluation arms complete, so absent epoch/result files are
+  expected while GPU utilization and zero-stderr evidence continue.
+- Two later bounded checks again show transient utilization variation rather
+  than a stall: GPU0 sampled from 0% to 45% and GPU1 from 25% to 33%, with
+  stable allocations, live workers, zero stderr, and unchanged sequence stage.
+- Subsequent Seed-17 samples remain in the same healthy contract, with both
+  GPUs returning to roughly 37–39% utilization and no stderr or partial
+  outputs. The sequence has not advanced and no gate can yet be evaluated.
+- A later low-utilization sample (6%/13%) recovered on the next bounded check
+  to 32%/22%, while allocations, workers, stage, and zero-stderr state stayed
+  constant. This confirms normal per-example/evaluation cadence rather than a
+  stalled worker.
+- Seed 17 remains compute-bound with later utilization samples of 42%/27% and
+  25%/24%. No resource, stderr, process-count, or atomic-output condition has
+  changed, so the fail-closed sequence continues without intervention.
+- Another pair of bounded samples rose to 51–57% on G0 and recovered from 7%
+  to 42% on G1, still with zero stderr and no partial results. Both arms are
+  demonstrably executing, not orphaned or idle.
+- Later Seed-17 samples fluctuate down to 20%/13% after 39%/28%, with stable
+  memory and zero stderr. This remains consistent with the transition between
+  training and serial free-generation evaluations; no terminal receipt exists
+  yet.
+- An evaluation-like 7–8% utilization sample recovered on the next check to
+  39%/44%, with unchanged memory, workers, stage, and zero stderr. This further
+  rules out a persistent GPU stall.
+- Seed 17 continues at 27%/20% then 42%/25% utilization with all fail-closed
+  health indicators unchanged. No scientific metric is available until both
+  complete receipts are written.
+- At 27.5–28.4 minutes elapsed, Seed 17 remains healthy at 45%/31% then
+  35%/30% GPU utilization, stable allocations, zero stderr, and no partial
+  result. The measured duration is now recorded without inferring a gate.
+- At 29.5–30.4 minutes, the same Seed remains active with utilization ranging
+  25–51%, stable memory, zero stderr, and no output contract violation.
+- At 31.4–32.4 minutes, a 19%/15% sample recovered to 27%/25%; the registered
+  workers and zero-stderr contract remain intact and no result is yet complete.
+- At 33.4–34.4 minutes, utilization remained active at 53%/39% then 30%/24%,
+  with unchanged memory, process set, zero stderr, and absent terminal files.
+- At 36.3 minutes, Seed-17 G0 completed atomically and released GPU0; G1
+  remains active on GPU1 at roughly 10.3 GiB/29%. Total stderr is still zero.
+  The sequence correctly holds at `seed_17_parallel_arms` until the paired G1
+  receipt exists, so the completed G0 outcome is not inspected in isolation.
+- At 37.4–38.4 minutes, G1 continues alone at 41% then 36% utilization with
+  stable memory and zero stderr. G0 remains complete and untouched; the
+  sequence has not yet accepted the pair.
+- At 39.5–40.4 minutes, G1 remains healthy at 32% utilization with zero
+  stderr; G0 remains atomically complete and GPU0 idle. No pair transition yet.
+- At 41.5–42.5 minutes, G1 continues at 27–29% utilization with the same
+  stable allocation and zero stderr; G0 remains complete and untouched.
+- At 43.5–44.4 minutes, G1 remains active at 23–30% utilization with zero
+  stderr; the paired Seed-17 result is still incomplete.
+- At 45.4–46.4 minutes, G1 continues at 35% then 31%, with no stderr or
+  resource drift. G0 remains complete and GPU0 remains idle by design.
+- At 47.4–48.4 minutes, G1 remains live at 26% then 14% utilization with zero
+  stderr. The paired receipt is still incomplete; no retry or second process
+  has been started.
+- At 49.4–50.4 minutes, G1 utilization swings from 56% to 13% while memory and
+  zero-stderr state remain fixed, continuing to demonstrate live serialized
+  generation rather than a dead worker.
+- At 51.4–52.4 minutes, G1 continues at 27% then 42% utilization with zero
+  stderr. Its longer runtime relative to completed G0 is accepted as the
+  registered LoRA-arm cost, not used to alter the comparison.
+- At 53.4 minutes, both Seed-17 arms completed and passed the sequence's
+  engineering-receipt checks. The sequence automatically advanced to
+  `seed_29_parallel_arms` with two completed receipts and both GPUs allocated
+  to the new pair.
+- The 582 Seed-17 stderr bytes are benign Transformers progress/warnings:
+  successful 713/713 weight loading and ignored sampling flags under frozen
+  greedy generation. There is no traceback, failed stage, or sequence error;
+  Seed-29 stderr starts at zero. Seed-17 scientific metrics remain unreviewed
+  until aggregate.
+- Seed 29 is healthy at 54.7–55.7 total minutes: both GPUs hold roughly
+  10.3–10.7 GiB at 30–35% utilization, completed-arm count remains two, no new
+  stderr bytes appear, and neither Seed-29 result is partial.
+- Seed-29 training continues with later utilization at 45–51% on G0 and 37%
+  on G1, stable allocations, no new stderr, and unchanged completed-arm count.
+- Seed-29 later sampled at 41%/34% and then transiently 0%/14%, while memory,
+  workers, stderr, stage, and partial-output state remained unchanged. This
+  matches the non-stall cadence already observed and recovered in Seed 17.
+- The next two Seed-29 checks recovered to 47%/34% and then 24%/21%, with no
+  new stderr or output state, confirming continued execution.
+- At 62.8–63.8 total minutes, Seed 29 remains healthy at 37%/33% then 28%/21%.
+  Relative to the 53.4-minute transition, it is only about ten minutes into
+  the registered workload; no timeout inference is appropriate.
+- Later Seed-29 checks continue at 35%/27% then 41%/35%, with stable memory,
+  no new stderr, and neither arm result yet complete.
+- Seed-29 utilization continues to fluctuate productively from 22%/37% to
+  47%/35%, with all receipt and error indicators unchanged.
+- Two later Seed-29 samples show G0 at 33–50% while G1 is transiently 3–5%.
+  G1 memory remains allocated and stderr/output state is unchanged; verify its
+  process CPU progress on the next check before considering any intervention.
+- The 20-second activity audit confirms both Seed-29 arm workers advanced by
+  about 16.8 CPU-seconds, retain roughly 2.2–2.3 GiB working sets, and still
+  drive their assigned GPUs. G1 is active; no intervention is justified.
+- Later Seed-29 samples return to 31%/23%, then a transient 0%/29%; the recent
+  CPU-delta proof and unchanged zero-error state keep this within normal
+  execution cadence.
+- Seed-29 utilization subsequently recovered from 10%/17% to 31%/43%, with no
+  new stderr or receipt-state change.
+- Later Seed-29 checks remain active at 15%/17% then 26%/22%; stderr and
+  result-state remain unchanged.
+- Seed-29 utilization later recovers from 16%/14% to 33%/23%, with the same
+  stable error and output state.
+- Subsequent Seed-29 checks remain active at 26%/27% then 19%/21%, with no new
+  stderr or result file.
+- At 81.5–82.5 total minutes (about 28–29 minutes into Seed 29), utilization
+  rises from 35%/28% to 52%/41%, with stable memory and unchanged stderr.
+- Later Seed-29 checks remain strongly active at 46%/38% then 43%/48%, with no
+  terminal or error-state change.
+- Seed-29 remains strongly active in the next two checks at 47%/34% and
+  47%/41%; no result has yet crossed the atomic boundary.
+- At 88.4 total minutes (about 35 minutes into Seed 29), G0 completed
+  atomically and released GPU0. G1 remains active on GPU1 at roughly
+  10.7 GiB/29%, total stderr is unchanged, and the sequence correctly waits for
+  the pair before accepting either outcome.
+- Seed-29 G1 continues alone at 32% then 19% utilization, with stable memory
+  and no new stderr; G0 remains complete and unreviewed in isolation.
+- Later Seed-29 G1 checks remain healthy at 39% then 35%, with no new stderr
+  or terminal receipt.
+- Seed-29 G1 continues at 38% then 34%, with stable allocation and unchanged
+  zero-error state.
+- A transient Seed-29 G1 sample at 13% recovers to 34% on the next check,
+  without any stderr or output-state change.
+- At 98.5 total minutes (about 45 minutes into Seed 29), G1 remains steady at
+  roughly 33% utilization, with G0 complete and no new stderr.
+- Later Seed-29 G1 utilization changes from 24% to 36%, with stable memory and
+  unchanged zero-error state.
+- Seed 29 then completed as a validated pair; the sequence advanced
+  automatically to the final `seed_43_parallel_arms` with four completed arm
+  receipts and both GPUs allocated to the new workers.
+- All Seed-17/29 stderr files contain no `Traceback` or `Error:` marker; the
+  size increase is limited to the same model-loading/generation warnings.
+  Seed-43 stderr begins at zero, and the sequence has no failed stage or error
+  type. Scientific metrics remain deferred to aggregate.
+- Seed 43 enters stable training at roughly 10.2/10.6 GiB per GPU, with
+  utilization rising from 54%/37% to 58%/43%. The startup stderr increment is
+  warning-sized, and neither final-Seed result is partial.
+- Seed-43 later remains at 55%/15% then 50%/41%; G1's transient dip recovers,
+  while stderr and result state stay unchanged.
+- Seed-43 G0 remains at 53% across two checks while G1 moves from 39% to a
+  transient 4%; stable allocation and zero new stderr preserve the healthy
+  classification pending the next recovery check.
+- Seed-43 G1 recovers from 4% to 38% and remains 36%; G0 moves from 45% to a
+  transient 4%. These alternating dips occur without stderr/memory drift and
+  remain consistent with live serialized work.
+- Both Seed-43 arms then return to strong activity at 45%/37% and 54%/35%,
+  with no new stderr or terminal receipt.
+- Seed-43 remains active at 51%/32% then 36%/36%, with stable memory and error
+  state.
+- Later Seed-43 checks remain at 37%/29% and 37%/35%, without stderr or output
+  changes.
+- Seed-43 then continues at 44%/31% and 43%/43%, with no new stderr or partial
+  result.
+- Later Seed-43 checks hold at 24%/23% then 24%/35%, with stable error and
+  output state.
+- At 121.6 total minutes (roughly 16 minutes into Seed 43), utilization moves
+  from 38%/33% to 21%/23%; no stderr or result-state change appears.
+- Seed-43 later steadies at 36%/24% then 36%/32%, with no new stderr or partial
+  result.
+- Seed-43 remains strongly active at 40%/31% then 46%/33%, with unchanged
+  error and output state.
+- Later Seed-43 utilization remains active at 27%/24% then 34%/29%, with no
+  new stderr or terminal output.
+- Seed-43 later rises to 43%/30% and 53%/37%, with unchanged healthy state.
+- Seed-43 G0 then completed atomically and released GPU0. G1 remains active on
+  GPU1 at roughly 10.6 GiB/23%, with no new stderr; the sequence correctly
+  waits for the final arm before aggregation.
+- Final Seed-43 G1 continues alone at 41% then 24% utilization with stable
+  memory, unchanged stderr, and no aggregate yet.
+- Final G1 later runs at 37% then 45%, with no terminal result or aggregate
+  yet.
+- Final G1 then moves from 24% to 40% utilization, with the same stable
+  pre-terminal state.
+- Final G1 remains at 41% then 36% utilization; no result or aggregate is yet
+  complete.
+- Final G1 later remains active at 35% then 42%, with unchanged terminal state.
+- At 141.9 total minutes (roughly 37 minutes into Seed 43), final G1 remains
+  active at 39% then 31%, with no aggregate yet.
+
+# 2026-07-31 R44A terminal closure
+
+- The authorized R44A six-arm sequence and aggregation completed with terminal status `STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL`.
+- R42/R43 remain locked and were not launched. Terminal documentation, integrity checks, and Git handoff are now in progress.
+- The current authority surfaces are `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`, `docs/PROJECT_STATUS_CN.md`, `README.md`, and `reports/README.md`.
+- Fresh terminal audit confirmed six valid arm receipts, 94 optimizer updates per arm, nine gate failures, false protected-outcome reads, and immutable aggregate/sequence hashes.
+- The initial authority inventory showed every reader surface still stopped at R41A; the proposal, status, README, report index, and R44A protocol now carry the terminal R44A addendum and refreshed reading order.
+- The terminal artifacts match the frozen R44A protocol exactly: 1,000/250 patient-disjoint roster, inherited G0/G1 settings, three Seeds, 94 updates per arm, and unchanged all-Seed survival gates.
+- Final combined R41A/R44A/support/failure-analyzer regression suite: 31 passed in 14.82 seconds.
+- Repository-wide Ruff, Python compileall, and `git diff --check` passed. No dedicated tracked Markdown-link checker exists, so the terminal pass uses a bounded local-link audit over the edited authority documents.
+- Edited-document Markdown local-link audit passed (5 authority documents).
+- Terminal integrity audit passed: exact STOP status and four registered hashes, six arm receipts, nine gate failures, all protected/unlock flags false, zero R44A workers, and both GPUs at 0 MiB/0%.
+- Final diff review confirmed consistent R44A STOP and R42/R43 lock markers across all authority documents.

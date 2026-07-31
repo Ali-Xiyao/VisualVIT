@@ -1869,3 +1869,19 @@ preserving the encoder's static medical semantics.
   and executable aggregation: `downstream_unlock_allowed=false` forces
   `qwen_free_generation_survival_unlocked=false` and `r42_unlocked=false`
   even if the separately named R44A survival gate passes.
+- The one-time roster realizes the preflight exactly; no post-selection
+  replacement was needed. Its SHA-256 `60FE40...1C292` is now the runtime
+  authority for the exact64 cache and all downstream R44A Seed/arm receipts.
+- Targeted CheXpert exact64 generation is operational: all 2,500 selected
+  images encoded without replacement or missing-file repair, and the frozen
+  PRTA path produced all three registered token variants for 1,250 examples in
+  98 seconds. The cache contains identity/finding alignment receipts but no
+  progression labels, sentences, reports, or Qwen pixel inputs.
+
+# R44A terminal finding (2026-07-31)
+
+- R44A completed all six registered arms (G0/G1 × seeds 17/29/43), each with 94 optimizer updates and a valid checkpoint/evaluation receipt.
+- The frozen aggregate returned `STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL` with nine gate failures. G1 true-pair macro-F1 was 0.3503/0.3512/0.2863; its true-vs-prior-shuffle effects were -0.1474/+1.5886/-0.2486 pp, so correct-prior grounding did not survive the frozen multiseed gate.
+- Query-only separation was large (+24.4157/+21.1441/+18.0435 pp), and schema validity plus finding echo were 1.0, but those properties are insufficient for the intended prior-sensitive scientific claim.
+- R44A aggregate SHA-256 is `8860C6A7AF52665148713271B98B89592411FE57BEA70644E1B6E65E9F5DF335`; sequence-status SHA-256 is `9C075CD28192509C0F19C2F748059301E3459F2E38278FCA31F30D0675960A3B`.
+- All protected outcome flags remained false, and R42/R43 remained locked. This terminal result is a STOP, not a tuning invitation.
