@@ -505,6 +505,26 @@ smokes during iteration.
 - **Status:** `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` — R41A completed
   all six arms and failed eight frozen gates; R42A/R43 were not started.
 
+### Phase 14 — R41A read-only failure case study and proposal closure
+
+- [x] Freeze the analysis boundary before inspecting row-level predictions:
+  use only the already-completed R41A 125-patient development outputs; do not
+  train, tune, resplit, select a checkpoint, or read protected/gold/external
+  outcomes.
+- [ ] Audit all six result/prediction payloads and their alignment with the
+  immutable roster without printing patient identifiers.
+- [ ] Quantify G0/G1 class confusion, prediction migration, control-arm
+  sensitivity, cross-Seed consistency, and representative de-identified
+  failure categories, with special attention to `Worse` collapse.
+- [ ] Write `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md` and update the
+  active Proposal/status/index surfaces. Separate observed evidence from
+  hypotheses and require any future experiment to use a separately frozen,
+  outcome-independent protocol.
+- [ ] Validate hashes/firewalls, Markdown links, tests, Ruff, compileall, and
+  `git diff --check`; commit and push the document-only terminal package.
+- **Status:** in progress — read-only failure analysis authorized; no new
+  experiment or downstream stage is unlocked.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -601,9 +621,14 @@ smokes during iteration.
 | First cache-audit verification command guessed a nonexistent `tests/test_prta_gen_r40b.py` filename | 1 | Resolve the actual tracked test path with `rg --files` and rerun the intended focused suite; no production execution was involved |
 | First second-launch archive command had an unmatched PowerShell subexpression parenthesis | 1 | The script failed at parse time before mutation; rewrite the target list one path per line and rerun the same validated moves |
 | First terminal document-consistency audit required the full status token in the report index even though it only listed filenames | 1 | Add the reader-facing terminal status to the index, then rerun the same audit |
+| First Phase-14 field-shape audit piped PowerShell `foreach` blocks directly | 1 | The command failed at parse time before reading payloads; accumulate each scalar-only table in an explicit array and rerun |
+| The corrected field-shape audit assumed a top-level development array, but the roster stores it under `partitions` | 1 | No identity value was printed; inspect only nested property names/counts, then bind the analyzer to the actual registered schema |
+| A Phase-14 scalar metric audit again left an empty pipeline after a `foreach` block | 1 | The command failed at parse time before reading payloads; collect objects into `$items`, then serialize the completed array |
+| First focused R41A case-study validation found one unused test import | 1 | Remove the unused `copy` import and rerun tests, Ruff, compileall, and diff validation as independent gates |
 
 ## Next Step
 
-No further experiment is authorized. Preserve the R41A scientific STOP and
-its immutable runtime evidence; any future work requires a separately frozen,
-outcome-independent proposal rather than tuning this development result.
+Implement the fail-closed, identity-free R41A case-study analyzer and focused
+tests first. Commit and push that code before its one-time real run, then
+analyze the six completed payloads and immutable roster. No training is
+authorized.

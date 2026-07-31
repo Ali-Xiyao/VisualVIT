@@ -1639,3 +1639,30 @@ preserving the encoder's static medical semantics.
   the registered Qwen attention-LoRA free-greedy readout did not establish
   stable progression binding. It does not justify R42A, R43, free-report
   generation, other fields, external/gold, or clinical claims.
+- Phase 14 is analysis-only. Row-level predictions may be used solely to
+  aggregate de-identified failure modes on the same completed development
+  cohort; observed errors cannot authorize post-hoc tuning or turn a new run
+  on that cohort into confirmatory evidence.
+- Each R41A arm result already contains aligned `targets` plus four 125-value
+  integer prediction arrays (`true_pair`, `current_only`, `query_only`,
+  `prior_shuffle`). The payload therefore supports reproducible confusion,
+  migration, and control-sensitivity analysis without joining patient
+  identities or reading any new outcome.
+- The immutable roster stores train/development rows below `partitions`, not
+  as a top-level development array. The analyzer must validate the result's
+  registered ID ordering against that nested schema but must emit no ID field.
+- The existing R40A case-study analyzer supplies the correct repository
+  precedent: fail closed on seed/alignment/firewall drift, write only to a
+  fresh output, label the result descriptive-only, and prohibit reuse of the
+  observed development cohort for selection.
+- R41A does not require reopening token caches for this diagnosis. The six
+  frozen result files plus the immutable nested roster are sufficient to
+  recompute confusion, G0/G1 migration, control sensitivity, and cross-Seed
+  stability. This keeps the new analysis narrower than the earlier R40A
+  token-distance case study.
+- The technical report contract is frozen before implementation: result-first
+  summary, visual evidence, explicit 125-patient development scope and metric
+  definitions, reproducible method, limitations/robustness, then only
+  outcome-independent next steps. A static tracked figure is appropriate
+  because the selected source-of-truth surface is the repository Markdown
+  report, not a dashboard.

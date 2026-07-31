@@ -1548,3 +1548,17 @@
   `git diff --check`, seven-file local Markdown link audit, and a scalar-only
   terminal audit of six results/checkpoints, eight gate failures, aggregate
   SHA-256, firewalls, absent R42A/R43 roots, zero workers, and idle GPUs.
+- 2026-07-31: began Phase 14 after explicit user authorization. Scope is a
+  read-only R41A failure case study plus Proposal/status closure using only the
+  already-completed 125-patient development outputs. New training, tuning,
+  resplitting, checkpoint selection, R42A/R43 execution, and protected/gold/
+  external outcome reads remain forbidden.
+- Selected the technical-report shape and a repository-native Markdown report
+  with a reproducible static figure. Audited the six result schemas and metric
+  payloads without printing identities; all contain the registered four
+  evaluation arms, 36 optimizer updates, exact-64 inputs, and no pixel input.
+- Froze the analyzer design to validate the immutable roster/result alignment,
+  emit no patient/example identifier, and quantify only descriptive confusion,
+  G0/G1 migration, control sensitivity, finding/class concentration, and
+  cross-Seed patterns. The analyzer and tests will be committed before the
+  one-time real read.
