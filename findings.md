@@ -2312,3 +2312,9 @@ preserving the encoder's static medical semantics.
   Remaining support is 17,372 patients, including 170 Resolved; the frozen
   100-per-class selection leaves exactly 70 Resolved patients as registered.
   No real roster, cache, GPU job, or sealed read occurred.
+- R47 real roster is 387,900 bytes with SHA-256
+  `A5EC3A579F9C283F67B74E11C0B7F98C1C1B39CE50754B078CF716E86A16A90C`.
+- R47 method/cache authority implements the fixed 3/3 true and 3/3
+  current-disagreement UCC rule with no threshold or quantile selection. Five
+  focused tests, Ruff, compileall, JSON parsing, and the 500-row cache
+  preflight pass before any R47 token or outcome read.

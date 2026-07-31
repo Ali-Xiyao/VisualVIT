@@ -2370,3 +2370,11 @@
   and compileall pass; in-memory preflight returns
   `PASS_PRTA_GEN_R47_UCC_ROSTER_PREFLIGHT` with 500 balanced patients and a
   70-patient Resolved reserve.
+- Committed/pushed R47 roster authority as `c090fa1`, verified a fresh runtime
+  root, and wrote the roster exactly once. It returns
+  `PASS_PRTA_GEN_R47_UCC_ROSTER_SUPPORT`: 500 balanced patients, all 4,000
+  R45/R46 patients absent, sealed flags false, and 70 Resolved patients left.
+- Implemented the R47 cache, inherited baseline/Seed wrapper, fixed UCC
+  aggregate, gates, protocol, and tests. All targeted checks pass and cache
+  preflight returns `PASS_PRTA_GEN_R47_UCC_CACHE_PREFLIGHT` for 500 rows with
+  a fresh token root.

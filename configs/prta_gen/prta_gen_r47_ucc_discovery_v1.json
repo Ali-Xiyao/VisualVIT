@@ -1,0 +1,210 @@
+{
+  "schema": "visualvit.prta-gen.r47-ucc-discovery-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R47_UCC_DISCOVERY",
+  "stage_tag": "R47",
+  "protocol_id": "prta-gen-r47-ucc-v1",
+  "study_tier": "cross_source_silver_unanimous_counterfactual_consensus_discovery",
+  "authorization": {
+    "user_authorized_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "outcome_driven_tuning_allowed": false,
+    "discovery_budget_is_terminal": true
+  },
+  "authority": {
+    "roster_config": "configs\\prta_gen\\prta_gen_r47_ucc_roster_v1.json",
+    "roster_config_bytes": 2637,
+    "roster_config_sha256": "4532DE1213C0E33BC8E41E3A40F902D02015696BDE9BBB43C2972ED0175E9AD9",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r47_ucc_v1\\roster.json",
+    "roster_bytes": 387900,
+    "roster_sha256": "A5EC3A579F9C283F67B74E11C0B7F98C1C1B39CE50754B078CF716E86A16A90C",
+    "roster_status": "PASS_PRTA_GEN_R47_UCC_ROSTER_SUPPORT"
+  },
+  "closed_r45": {
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json",
+    "roster_bytes": 2898864,
+    "roster_sha256": "0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8",
+    "roster_status": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT",
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\discovery\\aggregate.json",
+    "aggregate_bytes": 13840,
+    "aggregate_sha256": "9FC9DCEC7471DD169B63555B4BA395817ACB5187B3EA1B351F8D12C742BEE75E",
+    "aggregate_status": "STOP_PRTA_GEN_R45_CDEB_DISCOVERY",
+    "training_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\tokens\\discovery\\index.json",
+    "training_token_index_bytes": 5992,
+    "training_token_index_sha256": "2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6",
+    "training_token_status": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_TOKEN_CACHE",
+    "baseline_projector_checkpoint": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\discovery\\seed_17\\baseline_projector\\trainable_checkpoint.pt",
+    "baseline_projector_checkpoint_bytes": 39500802,
+    "baseline_projector_checkpoint_sha256": "41A0A3D16E5B3F4286013F9EE76C6A3B7B035DD33880260033C183108965C966",
+    "fit_partition": "train",
+    "fit_rows": 2500,
+    "fit_patients": 2500
+  },
+  "cache": {
+    "partition": "development",
+    "partitions": [
+      "development"
+    ],
+    "expected_rows": 500,
+    "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+    "source_candidate_sha256": "8D4437572245199213133AE17E13F8F5E7E3AAC7472D8B2E683A630EA7F3DEF0",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "frozen_prta_seed": 17,
+    "prior_shuffle_seed": 47001,
+    "prior_shuffle_namespace": "prta-gen-r47-ucc-development-prior-shuffle-v1",
+    "batch_size": 16,
+    "shard_size": 128,
+    "workers": 4,
+    "token_shape": [
+      64,
+      768
+    ],
+    "token_dtype": "torch.float16",
+    "variants": [
+      "true_tokens",
+      "current_tokens",
+      "shuffled_tokens"
+    ],
+    "labels_in_cache": false,
+    "sentences_in_cache": false
+  },
+  "source": {
+    "development_token_index": null,
+    "development_token_index_bytes": null,
+    "development_token_index_sha256": null,
+    "required_development_token_status": "PASS_PRTA_GEN_R47_UCC_DEVELOPMENT_TOKEN_CACHE",
+    "token_variants": {
+      "true_pair": "true_tokens",
+      "current_only": "current_tokens",
+      "prior_shuffle": "shuffled_tokens"
+    },
+    "query_only_representation": "all_zero_exact64_tokens"
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "local_files_only": true,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "qwen_base_frozen": true,
+    "qwen_lora_used": false
+  },
+  "head": {
+    "feature_function": "exact64_semantic_mean_features",
+    "input_width": 3840,
+    "hidden_width": 128,
+    "class_count": 5,
+    "normalization": "training_partition_mean_std_clamp_1e-6"
+  },
+  "training": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "epochs": 100,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "optimizer": "AdamW",
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "expected_updates_per_seed": 2000,
+    "early_stopping": false,
+    "checkpoint_selection": false
+  },
+  "arbitration": {
+    "candidate_override_coverage_quantiles": [
+      0.2,
+      0.35,
+      0.5,
+      0.65,
+      0.8,
+      0.9
+    ],
+    "r47_candidates_diagnostic_only": true
+  },
+  "ucc": {
+    "minimum_true_seed_votes": 3,
+    "minimum_current_only_disagreement_votes": 3,
+    "override_only_if_consensus_differs_from_baseline": true,
+    "thresholds_used": false,
+    "r46_selected_quantile_used": false,
+    "fallback": "inherited_frozen_generator_prediction"
+  },
+  "evaluation": {
+    "generator_arms": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "prior_shuffle"
+    ],
+    "head_arms": [
+      "true_pair",
+      "current_only",
+      "prior_shuffle"
+    ],
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 47002
+  },
+  "discovery_gate": {
+    "ucc_true_macro_f1_at_least": 0.4,
+    "ucc_all_class_recall_at_least": 0.12,
+    "ucc_minus_baseline_macro_f1_at_least_pp": 1.0,
+    "ucc_minus_baseline_ci95_lower_above_pp": 0.0,
+    "ucc_true_minus_prior_shuffle_at_least_pp": 1.0,
+    "ucc_true_minus_prior_shuffle_ci95_lower_above_pp": 0.0,
+    "override_rate_at_least": 0.05,
+    "override_rate_at_most": 0.25,
+    "net_recovery_at_least": 1,
+    "low_evidence_baseline_agreement": 1.0,
+    "schema_validity": 1.0,
+    "finding_echo_accuracy": 1.0,
+    "qualification_unlock_requires_all": true
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "max_target_tokens": 64
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_prefix": "Compare the current chest radiograph with its prior study for the finding {finding}. The next 64 physical positions contain fixed visual tokens. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field. Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "result_statuses": {
+    "cache_preflight_pass": "PASS_PRTA_GEN_R47_UCC_CACHE_PREFLIGHT",
+    "cache_pass": "PASS_PRTA_GEN_R47_UCC_DEVELOPMENT_TOKEN_CACHE",
+    "baseline_complete": "PASS_PRTA_GEN_R47_UCC_BASELINE",
+    "seed_complete": "PASS_PRTA_GEN_R47_UCC_SEED",
+    "aggregate_go": "GO_PRTA_GEN_R47_UCC_DISCOVERY",
+    "aggregate_stop": "STOP_PRTA_GEN_R47_UCC_DISCOVERY"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r47_ucc_v1",
+    "token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r47_ucc_v1\\tokens\\development",
+    "discovery_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r47_ucc_v1\\discovery"
+  },
+  "firewall": {
+    "r46_closed": true,
+    "r45_qualification_tokens_materialized": false,
+    "r45_confirmation_tokens_materialized": false,
+    "r45_qualification_outcomes_read": false,
+    "r45_confirmation_outcomes_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "scientific_claim_allowed": false
+  }
+}
