@@ -659,17 +659,16 @@ smokes during iteration.
 
 ### Phase 22 — post-R46 identity-free case study and independent R47
 
-- [ ] Freeze and run a read-only R46 failure-case analyzer to quantify when
+- [x] Freeze and run a read-only R46 failure-case analyzer to quantify when
   each Seed's override helped or hurt, cross-Seed causal agreement, coverage,
   and baseline preservation without exposing identities.
-- [ ] Select a separately named R47 hypothesis only from the case-study
+- [x] Select a separately named R47 hypothesis only from the case-study
   mechanism, freeze a new development roster outside all R45 and R46 patients,
   and preserve the original sealed cohorts.
 - [ ] Implement, preregister, commit, push, and execute R47 once; accept either
   the frozen GO or STOP and do not tune around its outcome.
-- **Status:** in progress — close R46 and test whether cross-Seed causal
-  consensus can turn the small but uncertain CEA gain into a stable effect on
-  a new cohort.
+- **Status:** in progress — case study selects R47 Unanimous Counterfactual
+  Consensus (UCC); freeze its new 500-patient development authority next.
 
 ## Errors Encountered
 

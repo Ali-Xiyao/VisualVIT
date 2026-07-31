@@ -2296,3 +2296,19 @@ preserving the encoder's static medical semantics.
 - The terminal aggregate is 183,421 bytes with SHA-256
   `FCB30C804D8A3A58A9F7337FE12819BFF37ACE6591D558A54B787D24A65C2D4B`;
   no R46 worker remains and both GPUs are idle.
+- The frozen identity-free case study shows 66.4% raw structured unanimity and
+  91.2% selected-CEA unanimity. Broad majority rules regress the baseline, but
+  the strict 3/3 true consensus plus 3/3 current-only disagreement rule changes
+  31/250 cases, recovers 8, regresses 5, and raises true macro-F1 from 0.39981
+  to 0.41638.
+- The same strict rule on prior-shuffle reaches only 0.38376 macro-F1 with
+  8 recoveries and 12 regressions. This true/shuffle asymmetry motivates the
+  separate R47 **Unanimous Counterfactual Consensus (UCC)** hypothesis.
+- The case-study artifact contains no identities or row predictions; it is
+  5,005 bytes with SHA-256
+  `FF263268544D0658D1F48A8D54D0E9090C710CAB2DB98E519D9135EF3CA38651`.
+  These R46 values may define R47 but cannot modify or rescue R46.
+- R47 roster preflight passes after excluding all 4,000 R45+R46 patients.
+  Remaining support is 17,372 patients, including 170 Resolved; the frozen
+  100-per-class selection leaves exactly 70 Resolved patients as registered.
+  No real roster, cache, GPU job, or sealed read occurred.

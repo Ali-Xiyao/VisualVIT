@@ -2362,3 +2362,11 @@
 - Implemented and validated the pre-analysis R46 identity-free case-study
   protocol, analyzer, and three focused tests. It freezes three causal-consensus
   rules and suppresses identities/row predictions; commit/push it before use.
+- Committed/pushed the analyzer authority as `44acaeb` and ran it once.
+  Strict 3/3 true consensus plus 3/3 current disagreement is the only tested
+  rule with positive net recovery (+3), true F1 0.41638 versus shuffle 0.38376.
+  Select it as R47 UCC on an entirely new 500-patient development cohort.
+- Implemented R47 roster config/builder/tests/protocol. Focused tests, Ruff,
+  and compileall pass; in-memory preflight returns
+  `PASS_PRTA_GEN_R47_UCC_ROSTER_PREFLIGHT` with 500 balanced patients and a
+  70-patient Resolved reserve.
