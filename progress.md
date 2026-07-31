@@ -2319,3 +2319,46 @@
 - Post-pin validation again passes 12 focused tests, repository-wide Ruff,
   compileall, JSON parsing, and `git diff --check`; commit/push the immutable
   cache receipt before baseline generation.
+- Committed and pushed the development cache pin as `61a9b29`, then launched
+  the authorized inherited frozen baseline on GPU0 as PID 22372. It is active
+  with empty stderr; GPU1 remains idle until the baseline predictions exist.
+- R46 baseline loaded all 713 Qwen weight tensors and entered free-greedy
+  generation at about 9.1 GiB / 39% sampled GPU utilization. Stderr contains
+  only the expected weight-loader progress and ignored sampling-flag notice.
+- Baseline generation remains healthy across subsequent checks at 43-46%
+  sampled utilization, stable memory, steadily increasing CPU time, and
+  unchanged warning-only stderr; no partial result is being treated as final.
+- Through 4.8 elapsed minutes the baseline remains active at sampled 49-50%
+  utilization, stable 9.1 GiB memory, and increasing CPU time. No result or
+  error transition has occurred.
+- Through 6.7 minutes the baseline remains healthy at sampled 48-49%
+  utilization with unchanged memory/logs and continuing CPU-time growth.
+- Through 8.6 minutes baseline generation remains active; sampled utilization
+  rose to 57% with stable memory and no result/error transition.
+- Through 10.4 minutes the baseline remains healthy at sampled 47%
+  utilization, stable memory, increasing CPU time, and unchanged logs.
+- The baseline exited cleanly at about 11 minutes with
+  `PASS_PRTA_GEN_R46_CEA_BASELINE`: true macro-F1 0.39981, current 0.30742,
+  query 0.13114, shuffle 0.38993, schema/finding 1.0, cache-equivalence PASS,
+  zero trainable Qwen/projector parameters, and all sealed flags false.
+- Launched lightweight structured-head Seeds 17/29 in parallel as PIDs
+  9832/2944 on GPUs 0/1. Both processes are alive; initial 0 MiB samples
+  occurred before their CUDA training tensors were materialized.
+- Seeds 17/29 exited cleanly within 15 seconds and returned
+  `PASS_PRTA_GEN_R46_CEA_SEED`, each with 2,000 updates. Structured true F1 is
+  0.36275/0.38093, preliminary failures of the 0.40 per-Seed gate; complete
+  Seed 43 and aggregate without modifying any frozen setting.
+- Launched Seed 43 on GPU0; it exited cleanly within 12 seconds and wrote its
+  result. Inspect its registered receipt, then execute the frozen aggregate
+  exactly once.
+- Seed 43 passed engineering contracts with 2,000 updates and structured true
+  F1 0.36679. Frozen aggregation then returned
+  `STOP_PRTA_GEN_R46_CEA_DISCOVERY` with five failures. CEA raised mean F1 to
+  0.41031 (+1.057 pp) but both registered pooled confidence intervals crossed
+  zero; no sealed cohort was unlocked.
+- Audited aggregate SHA-256 `FCB30C80...C2D4B`, zero remaining workers, both
+  GPUs idle, and all qualification/confirmation token/outcome flags false.
+  Opened a separate identity-free R46 case study before any R47 design.
+- Implemented and validated the pre-analysis R46 identity-free case-study
+  protocol, analyzer, and three focused tests. It freezes three causal-consensus
+  rules and suppresses identities/row predictions; commit/push it before use.

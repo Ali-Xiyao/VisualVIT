@@ -2270,3 +2270,29 @@ preserving the encoder's static medical semantics.
   250-row R46 development cache align, the inherited checkpoint has exactly
   12 projector tensors, local Qwen and sentinel 151662 are valid, all baseline
   and Seed outputs are fresh, and every sealed flag remains false.
+- The inherited R46 baseline completed with true/current/query/shuffle
+  macro-F1 0.39981 / 0.30742 / 0.13114 / 0.38993. Schema and finding echo are
+  1.0, cache equivalence passes, Qwen/projector trainable counts are zero, and
+  the result SHA-256 is `F3469195...5813`.
+- Baseline true minus shuffle is only +0.99 pp on the new cohort, so R46 must
+  earn its registered causal-control and bootstrap gates through the
+  structured arbitration rather than inheriting a large generator effect.
+- Seeds 17/29 both completed all 2,000 registered head updates with 499,973
+  parameters and 0.098 GiB peak CUDA allocation. Their structured true
+  macro-F1 values are 0.36275 and 0.38093, below the registered 0.40 per-Seed
+  gate; the final verdict must still wait for Seed 43 and frozen aggregation.
+- Seed 17's structured shuffle F1 (0.38870) exceeds its true F1, while Seed 29
+  is nearly tied (0.37949 vs 0.38093). This preliminary pattern suggests the
+  structured head may again lack stable correct-prior specificity, but it is
+  not yet a terminal aggregate.
+- R46 is terminal `STOP_PRTA_GEN_R46_CEA_DISCOVERY`. Quantile 0.65 was selected;
+  CEA true F1 is 0.41843 / 0.40043 / 0.41207 with mean 0.41031, a pooled
+  +1.057 pp over the inherited baseline. Eligible coverage is
+  0.092 / 0.132 / 0.112 and actual override rate 0.056 / 0.084 / 0.072;
+  low-evidence agreement is exactly 1.0.
+- Five registered gates fail: all three raw structured heads are below 0.40,
+  CEA-minus-baseline CI95 is [-0.914, +3.273] pp, and CEA true-minus-shuffle
+  CI95 is [-2.845, +8.534] pp. Qualification and confirmation remain locked.
+- The terminal aggregate is 183,421 bytes with SHA-256
+  `FCB30C804D8A3A58A9F7337FE12819BFF37ACE6591D558A54B787D24A65C2D4B`;
+  no R46 worker remains and both GPUs are idle.

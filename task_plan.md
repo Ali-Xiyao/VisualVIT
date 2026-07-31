@@ -623,12 +623,11 @@ smokes during iteration.
   entire R45 roster, while reusing only R45 train for fitting. Keep the already
   untouched R45 qualification/confirmation cohorts sealed for a later,
   independently frozen R46 gate.
-- [ ] Implement, preregister, commit, and push R46 before any new outcome read;
+- [x] Implement, preregister, commit, and push R46 before any new outcome read;
   execute discovery and only proceed to sealed qualification/confirmation if
   every newly frozen gate passes.
-- **Status:** in progress — R46's balanced 250-patient development roster is
-  frozen outside all R45 patients; next freeze and validate the CEA
-  cache/method authority before reading its outcomes.
+- **Status:** complete — R46 discovery reached terminal
+  `STOP_PRTA_GEN_R46_CEA_DISCOVERY`; qualification/confirmation remain sealed.
 
 ### Phase 20 — R46 CEA discovery execution
 
@@ -639,13 +638,13 @@ smokes during iteration.
   250 new development patients and pin the cache index without reading model
   outcomes. The authority is pushed and the cache is complete; its immutable
   index is now pinned and awaits validation/commit/push.
-- [ ] Run the inherited frozen baseline once, train/evaluate Seeds 17/29/43,
+- [x] Run the inherited frozen baseline once, train/evaluate Seeds 17/29/43,
   select the shared registered train-score quantile, and aggregate exactly
   once.
-- [ ] Treat the registered discovery GO or STOP as terminal; do not retune
+- [x] Treat the registered discovery GO or STOP as terminal; do not retune
   score, coverage, thresholds, training, or gates around the result.
-- **Status:** in progress — authority commit `20d1708` is pushed; development
-  cache passed and its index pin awaits validation/Git handoff.
+- **Status:** complete — terminal `STOP_PRTA_GEN_R46_CEA_DISCOVERY`; five gates
+  failed and no sealed stage was unlocked.
 
 ### Phase 21 — R46 sealed qualification and confirmation
 
@@ -656,7 +655,21 @@ smokes during iteration.
   gate passes, execute the separately frozen confirmation once.
 - [ ] Close with an ICLR-style result/case-study report, exact hashes,
   limitations, process/GPU audit, and synchronized reader surfaces.
-- **Status:** locked behind R46 discovery GO.
+- **Status:** permanently locked for R46 after discovery STOP.
+
+### Phase 22 — post-R46 identity-free case study and independent R47
+
+- [ ] Freeze and run a read-only R46 failure-case analyzer to quantify when
+  each Seed's override helped or hurt, cross-Seed causal agreement, coverage,
+  and baseline preservation without exposing identities.
+- [ ] Select a separately named R47 hypothesis only from the case-study
+  mechanism, freeze a new development roster outside all R45 and R46 patients,
+  and preserve the original sealed cohorts.
+- [ ] Implement, preregister, commit, push, and execute R47 once; accept either
+  the frozen GO or STOP and do not tune around its outcome.
+- **Status:** in progress — close R46 and test whether cross-Seed causal
+  consensus can turn the small but uncertain CEA gain into a stable effect on
+  a new cohort.
 
 ## Errors Encountered
 
