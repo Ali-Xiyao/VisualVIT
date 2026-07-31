@@ -1,7 +1,7 @@
 # TIER-CXR-VLM / PRTA-CXR 结果表与实验登记
 
 > **用途：** R32–R39 结果权威表；未执行阶段保留为空，已完成阶段必须填入。
-> **当前更新：** 2026-07-31，R41A 已在首个 downstream survival gate 科学 STOP；R42A/R43 未启动，gold 仍封存。
+> **当前更新：** 2026-07-31，R50 强 temporal method benchmark 已完成；R42A/R43 未启动，gold 仍封存。
 > **规则：** sealed test / gold 未揭示前不得预填；所有百分比统一使用 pp；所有 CI 必须注明 bootstrap 单位与次数。
 
 ---
@@ -23,6 +23,7 @@
 | R39-frozen-vlm | R39 | bootstrap 2,000 / seed 39001 | `be10d9f` + receipt-only repair | 483 patients / 4,821 rows | outcome-blind exact-64 token caches | Seeds 17/29/43 | 483-test：是，一次；gold：否 | `GO_R39_FROZEN_VLM_TRANSFER` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\r39_sealed_reveal_v1\qualification.json` |
 | PRTA-Gen-R40C | R40C | bootstrap 2,000 / seed 40001 | `5bf56bc` + runtime receipt | 1,000 train / 500 patient-disjoint development；排除 observed 160 | frozen exact-64 semantic-layout cache | structured head Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `GO_PRTA_GEN_R40C_INTERNAL_GENERALIZATION` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\aggregate.json` |
 | PRTA-Gen-R41A | R41A | bootstrap 2,000 / seed 41001 | `c796630` authority + `d665221` engineering repair | 375 train / 125 patient-disjoint development；排除 observed 1,660 | frozen exact-64 semantic-layout cache | G0/G1 Seeds 17/29/43 | protected 300-dev/483/gold/external：否 | `STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r41a_progression_sft_v1\aggregate.json` |
+| PRTA-Gen-R50 | R50 | bootstrap 2,000 / seeds 50001–50006 | frozen R50 authority；post-hoc internal | 2,500 train / 750 evaluation；一人一行 | official TILA / frozen BiomedCLIP / R49 Block-8 tokens | TILA-CE、TILA-BiCE/TCL、B2、TAC Seeds 17/29/43 | protected 483/gold/external：否 | `COMPLETE_PRTA_GEN_R50_METHOD_BENCHMARK` | `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r50_method_benchmark_v1\aggregate.json` |
 
 ---
 
@@ -502,3 +503,26 @@ Gate：两个观察 Seed 均至少 +2 pp，且 patient-bootstrap 95% CI lower > 
 replicates，seed 39001；Qwen trainable parameters = 0；无 pixel path；
 exactly 64 tokens；prompt 与 projector capacity 匹配；三套 prediction 在
 唯一一次 label reveal 前冻结。Gold outcomes 仍未读取。
+
+---
+
+# AJ. R50 强 Temporal Method Benchmark
+
+| Method | Reproduction type | Seed 17 | Seed 29 | Seed 43 | Mean F1 | Mean reversal consistency | Trainable params |
+|---|---|---:|---:|---:|---:|---:|---:|
+| TILA-CE | official frozen embedding transfer | 0.453228 | 0.458893 | 0.460959 | **0.457693** | 0.360000 | 700 |
+| Siamese signed/absolute | strong representation baseline | 0.415895 | 0.414092 | 0.422242 | 0.417409 | 0.290222 | 15,420 |
+| TILA-BiCE/TCL | five-class contract adaptation | 0.396846 | 0.390419 | 0.398101 | 0.395122 | **0.865778** | 700 |
+| TAC-adapted | Libra component adaptation, not native Libra | 0.267522 | 0.246597 | 0.283137 | 0.265752 | 0.252000 | 10,645,308 |
+
+| Registered contrast | Mean Δ | Patient-bootstrap 95% CI | Interpretation |
+|---|---:|---|---|
+| TILA-BiCE/TCL − TILA-CE | −6.257 pp | [−9.579,−2.786] | reversal consistency improves but standard F1 falls |
+| TAC-adapted − Siamese signed/absolute | −15.166 pp | [−18.802,−11.635] | partial TAC transfer is worse |
+| TILA-CE − R49 PRTA exact-64 | +10.332 pp | [+6.599,+14.005] | descriptive cross-interface only |
+| B2 − R49 PRTA exact-64 | +6.304 pp | [+2.695,+9.903] | descriptive cross-interface only |
+
+R50 使用同一 2,500 train / 750 evaluation 患者、Seeds 17/29/43 与 2,000
+次 patient bootstrap。R49 PRTA 经 frozen Qwen JSON generation；R50 methods
+使用直接 finding-conditioned classifier，因此最后两项不是 matched-interface
+system claims。483-test、gold 与 external outcomes 均未读取。

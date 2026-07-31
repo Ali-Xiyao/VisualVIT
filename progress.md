@@ -2726,3 +2726,140 @@
   are zero, both RTX 3090 GPUs are 0 MiB/0%, and `git diff --check` is clean.
   Stage only the R49 protocol/result/planning/documentation scope, commit, and
   push the completed package.
+- User requested comparison with additional methodologies. Opened Phase 27 as
+  R50: first perform a primary-source literature/reproducibility audit, then
+  freeze 2–4 strong baselines under the existing 2,500/750 internal contract
+  and execute them on both local RTX 3090s. R49 outcomes are already visible,
+  so R50 will be labeled post-hoc and cannot be presented as fresh confirmation.
+- First primary-source scan found TILA, TempA-VLP, and Libra as the closest
+  progression/temporal-alignment families, with MLRG, TIM, and BiOTPrompt as
+  report-generation references requiring explicit task adaptation. Next audit
+  official repositories, licenses, checkpoints, input contracts, and resource
+  cost before selecting the R50 reproducible subset.
+- Official-artifact audit makes TILA the strongest paper-backed executable
+  candidate: MIT model/code, 0.2B temporal encoder, 128-d embeddings, and an
+  inversion-aware training rule close to the current progression task. Libra
+  is code-available but natively report-generative; TempA-VLP/BiOTPrompt lack a
+  located official release. Inspect TILA and Libra artifacts plus existing R40
+  B2/TAC-like local surfaces before freezing the final R50 method set.
+- Verified the official TILA runtime contract (448px processor, 128-d pair
+  embeddings, binary released head) and Libra's published native compute/task
+  mismatch. The likely fair package is now one official-checkpoint TILA
+  transfer, one TILA inversion-aware five-class adaptation, and one or two
+  explicitly component-faithful token baselines rather than an unaffordable
+  full Libra report-generation retrain. No R50 outcome has been generated.
+- Checked out the official Libra source in a temporary reference directory and
+  located the exact TAC builder plus published projector surfaces. Also found
+  the repo's frozen-but-unrun R40 B2 Siamese signed/absolute runner. Inspect
+  their precise feature contracts next, then freeze the R50 registry.
+- Audited TAC source and B2 code. TAC can only be component-adapted because the
+  local cache lacks Libra's 12 RAD-DINO layer stack; B2 is reusable but must be
+  retrained on the R50 2,500/750 roster. Read the Hugging Face CLI skill and
+  will pin/download TILA through its official Hub revision before execution.
+- Pinned official TILA revision `a9c6da4...63d33f4dfc6a` and confirmed the
+  existing R49 roster directly supplies identical train/evaluation patients,
+  image paths, findings, and five-class targets for all R50 arms. Selection can
+  now be frozen without creating or inspecting a new split.
+- Audited TILA's exact source revision through an LFS-smudge-disabled checkout
+  after `hf download` hit a metadata HEAD failure. Recorded the 642.5 MB weight
+  object's official SHA-256 and confirmed the frozen 128-d pair embedding is
+  the valid transfer interface. The binary packaged head will not be reused.
+- Extracted the paper's exact BiCE/TCL/inversion-aware inference equations and
+  20+30 epoch schedule with `lambda=50`. The five-class New/Resolved extension
+  will be explicitly contract-adapted; no R50 result has been inspected.
+- Selected the four-method R50 matrix and marked the literature/reproducibility
+  gates complete. Confirmed the hash-pinned R49 30+30 token cache is directly
+  reusable for TAC-adapted, the full cache supports B2, both GPUs are idle, and
+  storage/dependencies are adequate. Freeze JSON authority and tests next.
+- Audited label/finding support and the existing probe: the roster is exactly
+  five-class balanced, so no weighting/resampling will be added; every method
+  will use the same finding-conditioned linear classifier family and disclose
+  representation/adapter parameter counts.
+- Recorded the immutable R49 aggregate hash for descriptive cross-system
+  comparisons and verified both the R50 runtime root and stable TILA model
+  directory are absent. Ready to write the outcome-free authority.
+- Located the R49 row-level PRTA/Naive result files needed for paired
+  bootstraps. A first PowerShell hash loop had an empty-pipe parse error; no
+  file or runtime state changed. Rerun with an explicit result array, then pin
+  the files in the R50 authority.
+- Corrected the hash loop and pinned both row-level R49 result hashes. Added the
+  complete outcome-free R50 JSON authority with fixed sources, adaptations,
+  hyperparameters, statistics, and fresh runtime paths. Implementation/tests
+  remain before the authority is declared executable.
+- Added the shared R50 validator/loader/metric utilities and the TAC/TILA/B2
+  method primitives. Verified the R49 image identifiers directly address the
+  full Block-8 cache, so B2 feature caching needs no new mapping layer.
+- Added the feature-cache runner, three-seed method runner, registered paired
+  aggregator, and six focused tests. Initial verification stopped before GPU
+  work on one Ruff unused import and one pytest namespace-import collection
+  error; direct import works. Fix those two local issues and rerun unchanged.
+- Focused tests now pass 11/11; applied the narrow Ruff E402 waiver needed by
+  the explicit workspace bootstrap. Official TILA Git revision is cloned to
+  the stable model root, but LFS download failed with endpoint EOF and left
+  only a pointer. No runtime/GPU work started; retry weights separately.
+- Immutable direct download recovered the official 642.5 MB TILA weight and
+  exact SHA validation passed. Focused Ruff, 11 tests, and R50 preflight all
+  pass with two idle CUDA devices and a fresh runtime. Marked authority and
+  implementation complete; launch TILA and B2 caches concurrently next.
+- Launched TILA cache on PID 21904/GPU0 and B2 cache on PID 26776/GPU1 with
+  hidden windows and separate logs. Both are live, logs have no errors, and the
+  first GPU snapshot was still at startup. Monitor to terminal cache receipts.
+- Both cache workers stopped pre-outcome: TILA dynamic-module registration
+  error; B2 source-cache mismatch because R49 CheXpert images are outside the
+  older MIMIC cache. No cache/result was written. Frozen repair: register the
+  module and directly re-encode the same 6,500 images for B2, then relaunch.
+- Repair validation passed, including strict official TILA image-encoder load
+  and finite forward/reverse embedding smoke. Relaunched TILA as PID 28396 on
+  GPU0 and B2 as PID 25324 on GPU1; both hold GPU memory and attempt-2 stderr
+  logs are empty. Monitor to completion without starting duplicate workers.
+- TILA and B2 caches both completed with validated PASS metadata, shapes,
+  finite tensors, exact row order, and label-free receipts; both GPUs are idle.
+  Added a deterministic two-lane launcher: lane0 runs TILA-CE then TAC seeds
+  17/43 on GPU0; lane1 runs TILA-BiCE/TCL, B2, then TAC seed29 on GPU1.
+- Launched both fixed lanes after Ruff/tests. TILA-CE Seed17 completed at
+  macro-F1 0.453228; lane0 is on TILA-CE Seed29 and lane1 on TILA-BiCE/TCL
+  Seed17. Treat all per-seed values as provisional until all 12 runs and the
+  registered paired aggregate complete.
+- Completed 6/12 runs: all TILA-CE and TILA-BiCE/TCL seeds. CE is consistently
+  higher on standard macro-F1; do not interpret directionality until the frozen
+  reversal-consistency and paired bootstrap fields are aggregated. Lane0 is
+  TAC Seed17; lane1 is B2 Seed17; both error logs remain empty.
+- Completed 10/12: all B2 seeds and TAC Seed17 are terminal; TAC Seeds 29/43
+  are now the only live jobs. B2 ranges 0.4141–0.4222 macro-F1; TAC Seed17 is
+  0.2675 and will not be tuned or discarded. Both lane stderr logs remain empty.
+- Completed 11/12. TAC Seed29 finished at 0.246597 and lane1 is terminal with
+  empty stderr; TAC Seed43 on GPU0 is the only remaining method run. Aggregate
+  only after the last lane exits and all 12 row-parity checks pass.
+- Completed 12/12 with empty stderr and idle GPUs; TAC Seed43 is 0.283137.
+  Registered aggregate status is COMPLETE on 750 matched patients. Mean F1:
+  TILA-CE 0.457693, B2 0.417409, TILA-BiCE/TCL 0.395122, TAC-adapted 0.265752.
+  Read the frozen CI/consistency/compute fields and draft the final case study.
+- Inspected all registered contrasts, consistency, capacity, and cost receipts.
+  Same-interface verdicts: BiCE/TCL trades +~50.6 points mapped consistency for
+  -6.257 pp F1 versus TILA-CE; TAC-adapted is -15.166 pp versus B2. TILA-CE and
+  B2 descriptively exceed R49 PRTA exact-64, but through direct heads rather
+  than Qwen. Draft the R50 report and synchronize proposal/status/index.
+- Located all active reader-facing surfaces and exact insertion points. A
+  Python console print failed on GBK Unicode encoding only; UTF-8 reads work.
+  Create the dedicated R50 literature/reproduction report, then synchronize the
+  proposal, README, project status, reports index, and R45-R50 case study.
+- Completed the reader-facing R50 writeback. Added the dedicated literature and
+  reproduction result report, synchronized the proposal, root README, project
+  status, reports index, R45-R50 case study, empty-result registry, and gap
+  audit, and moved R50/R49 to the front of the authority reading order. The
+  planning checklist now reflects the actual 12/12 terminal experiment state;
+  terminal validation and Git publication are the only remaining steps.
+- Terminal validation layer one passed: R50/R49 focused tests 11/11, full Ruff,
+  compileall, JSON/hash checks, and `git diff --check`. Full pytest completed
+  with 878 passed, 1 xfailed, and the same single historical R6 frozen-manifest
+  failure already reproduced outside R50. The first scalar artifact audit then
+  misread the aggregate's integer `patients` field as a list; no artifact was
+  changed and the audit is being rerun against the real schema.
+- Terminal audit completed against the actual aggregate schema: 750 patients,
+  same-patient/target parity true, 12 unique receipts, three seeds for each of
+  four methods, and exact aggregate SHA-256 match. All local Markdown links
+  resolve; the R50 report has no TODO/TBD/placeholders. Attempt-2 cache and
+  both formal lane stderr logs are zero bytes; the two nonzero attempt-1 logs
+  are retained evidence for the documented pre-output failures. No R50 process
+  remains, and GPUs 0/1 are both at 0 MiB and 0% utilization. Ready to stage,
+  commit, and push the complete package.

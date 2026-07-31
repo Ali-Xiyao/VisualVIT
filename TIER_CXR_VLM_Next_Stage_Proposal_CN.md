@@ -5,8 +5,8 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R49**
+> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution + R50 method benchmark
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R50**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -170,6 +170,43 @@ exact-64 相等；完整 multimodal serialization 也因图像与 placeholder �
 case study，不覆盖 R48 confirmation STOP，不扩展为 gold/external、临床或
 独立确认。完整报告：
 `reports/PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md`。
+
+## 2026-07-31 R50 文献方法复现与强时间表征基线
+
+R49 回答了 PRTA 是否优于 Raw two-image Qwen 和同预算 Naive concat，但这两者
+不是最强纵向医学表征。R50 因而先审计 TILA、Libra、TempA-VLP、MLRG、TIM
+与 CheXTemporal 的官方论文、代码、权重、许可和任务适配，再在任何 R50
+outcome 可见前冻结四个可运行方法：官方 TILA frozen embedding + CE、
+TILA-style BiCE+TCL、BiomedCLIP Siamese signed/absolute，以及 Libra TAC
+temporal-fusion adapted。
+
+四个方法均使用 R49 的 2,500 train / 750 evaluation 患者、相同 finding 与
+五类标签，完整运行 Seeds 17/29/43。三 Seed mean macro-F1 为：
+
+| 方法 | Mean macro-F1 | Mean mapped reversal consistency |
+|---|---:|---:|
+| TILA frozen embedding + CE | **0.457693** | 0.360000 |
+| Siamese signed/absolute | 0.417409 | 0.290222 |
+| TILA-style BiCE+TCL | 0.395122 | **0.865778** |
+| TAC temporal fusion adapted | 0.265752 | 0.252000 |
+
+在相同直接分类接口上，BiCE+TCL−CE 为 −6.257 pp，95% CI
+`[−9.579,−2.786]`：时间反转一致性大幅提高，但五类标准 F1 显著下降，
+主要代价出现在 New/Resolved。TAC-adapted−Siamese 为 −15.166 pp，CI
+`[−18.802,−11.635]`，说明缺少 Libra 的 12-layer RAD-DINO LFE 与原生生成
+对齐时，复杂 fusion block 不如简单 signed/absolute 表征。
+
+相对 R49 PRTA exact-64，TILA-CE 与 B2 的跨接口描述效应分别为 +10.332 pp
+和 +6.304 pp，CI 下界均为正。但 R50 使用直接 structured classifier，
+PRTA 使用 frozen-Qwen JSON generation，因此不能写成等接口系统替代。新的
+论文结论是：R49 的 alignment attribution 仍成立，同时强 temporal encoder
+baseline 是必须补充的；下一步若继续，应把 TILA/B2 接入完全相同的 exact-64、
+projector 和 frozen-Qwen 合同，而不是继续堆叠 router。
+
+终态为 `COMPLETE_PRTA_GEN_R50_METHOD_BENCHMARK`。R50 是 outcome 已可见后的
+post-hoc internal benchmark，不覆盖 R48 confirmation STOP，也不解锁
+gold/external 或临床主张。完整报告：
+`reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md`。
 
 历史上，R45 后曾据相关工作审计另立 **R46 Causal Evidence Arbitration
 (CEA)**；R46 与后续 R47 的实际 STOP 已由上节覆盖，不再把它们写成未来

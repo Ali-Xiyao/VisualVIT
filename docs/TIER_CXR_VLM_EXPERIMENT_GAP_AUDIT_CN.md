@@ -64,6 +64,12 @@ inversion、CMCP 还是 state-preservation。
 
 ### 2. 强 multi-image baseline 包
 
+**2026-07-31 更新：** R49 已完成 Raw/Naive exact-64/PRTA 的统一 750 人
+归因；R50 已完成 TILA-CE、TILA-BiCE/TCL、Siamese signed/absolute 与
+TAC-adapted 三 Seed直接分类对比。强 representation baseline 缺口已关闭，
+但 TILA/B2 尚未被翻译到与 PRTA 完全相同的 exact-64 + frozen-Qwen 接口，
+因此 matched-interface strong-method comparison 仍是独立的后续缺口。
+
 至少补：
 
 - Raw two-image frozen Qwen3-VL；

@@ -747,10 +747,49 @@ smokes during iteration.
   (CI95 +2.610 to +9.081). Both registered superiority questions and the
   cross-time-alignment attribution are supported on this internal case study.
 
+### Phase 27 — R50 literature-method reproduction benchmark
+
+- [x] Build a primary-source literature map for longitudinal chest-X-ray
+  comparison, temporal vision-language representation, and prior-image report
+  generation; record code/weight/data/license availability and exact task fit.
+- [x] Select 2–4 non-trivial baselines that are reproducible on two RTX 3090s.
+  Label each as paper-faithful reuse, component-faithful reimplementation, or
+  contract-adapted reproduction; do not imply equivalence where tasks differ.
+- [x] Freeze one R50 benchmark authority before new method outcomes: reuse the
+  R49 2,500-train / 750-evaluation patients and output contract, fix training
+  budgets/seeds/capacity reporting, and state that R49 outcomes are already
+  visible so R50 is a post-hoc internal benchmark rather than new confirmation.
+- [x] Implement and validate selected methods, including strong representation
+  and temporal-fusion baselines rather than only weak raw/concat controls.
+- [x] Run all registered methods, use paired patient bootstrap against PRTA and
+  one another where scientifically meaningful, and report compute/capacity.
+- [x] Write the literature case study and reproduction-gap audit; synchronize
+  proposal, project status, report index, planning files, tests, hashes, Git,
+  workers, and GPU closure.
+- **Status:** complete — 12/12 registered
+  runs completed on the same 750 patients with zero lane stderr. Mean macro-F1
+  is TILA-CE 0.457693, B2 signed/absolute 0.417409, TILA-BiCE/TCL 0.395122,
+  and TAC-adapted 0.265752. Same-interface paired results show BiCE/TCL versus
+  CE at -6.257 pp (CI95 [-9.579,-2.786]) despite much higher reversal
+  consistency, and TAC-adapted versus B2 at -15.166 pp
+  (CI95 [-18.802,-11.635]). The dedicated report and active authority surfaces
+  are synchronized. Terminal validation passed: focused tests 11/11, full Ruff,
+  compileall, JSON/link/hash/diff audits, 878 full-suite tests passed with one
+  expected xfail and the sole known unrelated historical R6 failure; no R50
+  worker remains and both GPUs are at 0 MiB/0%.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| First R50 proposal inspection printed UTF-8 text through a GBK Python console and failed on a Unicode minus sign | 1 | Read the files with PowerShell `-Encoding utf8`; no document content changed |
+| First R50 caches stopped pre-output: TILA dataclass import lacked `sys.modules` registration and B2 incorrectly assumed R49 CheXpert IDs existed in the older MIMIC Block-8 cache | 1 | Register the official module before execution; re-encode the same 6,500 R49 images through the frozen BiomedCLIP for B2; roster/model/features unchanged |
+| First stable TILA `git lfs pull` returned LFS batch-endpoint EOF and left the 134-byte pointer while later shell checks masked the nonzero subcommand | 1 | Download the pinned resolve URL to a separate partial file, verify exact bytes/SHA, then replace only the pointer; make subsequent preflight fail closed |
+| First R50 focused verification found an unused cache-script import and pytest could not resolve the new namespace module during collection | 1 | Remove the unused import and explicitly prepend the workspace root in the new focused test; no protocol/runtime change |
+| First R50 R49-result hash loop piped directly from a `foreach` block and PowerShell parsed an empty pipe element | 1 | Build an explicit result array before `Format-List`; no artifact or runtime state changed |
+| Terminal R50 scalar audit first treated aggregate `patients` as an ID array, then guessed a nested `macro_f1.mean` field instead of the printed `macro_f1_mean` key | 2 | Bind only to the actual registered keys, rerun against `patients=750` and 12 unique result receipts; runtime and scientific artifacts were unchanged |
+| Terminal code-manifest command again piped a PowerShell `foreach` block directly | 1 | The command failed at parse time before reading files; generate the scalar size/line/hash manifest with Python instead |
+| First staged R50 diff check found two Markdown hard-break trailing spaces in the new report header | 1 | Remove the two spaces, restage the report and planning file, and require a clean cached diff check before commit |
 | R46 targeted Ruff command included the JSON discovery config and parsed `true`/`false`/`null` as Python names | 1 | Validate JSON with the JSON parser and run Ruff only on Python sources; no config, roster, or runtime state changed |
 | R46 authority hash inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate rows in an explicit array before formatting; no file or runtime state changed |
 | First R46 inspection guessed the R45 baseline checkpoint below `discovery/baseline_projector/seed_17` | 1 | Resolve the actual immutable layout `discovery/seed_17/baseline_projector/trainable_checkpoint.pt`; no runtime file was changed |
@@ -885,6 +924,8 @@ smokes during iteration.
 
 ## Next Step
 
-Implement and run the user-prioritized raw two-image frozen Qwen3-VL baseline
-on the already-read R48 qualification cohort; keep the pinned R48 confirmation
-generation paused until that baseline result is shown.
+Publish the complete R50 literature-method benchmark. The next scientific
+extension, if authorized as a new frozen study, should translate TILA and B2
+into the same exact-64/projector/frozen-Qwen interface on a new
+outcome-independent development cohort; it must not tune on the already-read
+R49/R50 evaluation patients.

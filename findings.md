@@ -2502,3 +2502,289 @@ preserving the encoder's static medical semantics.
   initialization SHA-256 `C8B61AF7...896BE2`, training-order SHA-256
   `99314669...2FEEC7`, 2,500 rows, 79 updates, frozen Qwen, exact-64/no-pixel,
   cache equivalence, schema 1.0, and finding echo 1.0 in both arms.
+
+## R50 literature-method reproduction audit
+
+- Primary-source search identifies three directly relevant method families.
+  (1) TILA / Temporal Inversion (CVPR 2026, arXiv 2604.04563) explicitly targets
+  interval-change/progression classification and adds inversion-aware training
+  and inference to temporal CXR encoders. (2) TempA-VLP (WACV 2025) uses a
+  cross-exam encoder and reports disease-progression classification plus
+  dynamic phrase grounding. (3) Libra (Findings ACL 2025) uses a radiology
+  encoder plus Temporal Alignment Connector and publishes code/weights with
+  Qwen-family backbone support. These are stronger and more task-relevant than
+  adding another generic single-image classifier.
+- Additional longitudinal report-generation methods are useful architectural
+  references but not automatically task-equivalent: MLRG (CVPR 2025) combines
+  multi-view longitudinal contrastive learning and absence tokens; TIM (CVPR
+  2026) temporally decouples pathology/progression and iteratively refines
+  reports; BiOTPrompt (CVPR 2026) uses bidirectional optimal transport. Their
+  published primary objective is free-text report generation, so any five-class
+  reproduction here must be labeled component-faithful or contract-adapted.
+- CheXTemporal (arXiv 2605.11304) independently uses the same five-class
+  taxonomy (new/worse/stable/improved/resolved) with finding-level temporal and
+  spatial supervision, and reports that current VLMs particularly struggle on
+  stable/resolved. This supports the relevance of R49's classwise audit, but it
+  is a dataset/evaluation resource rather than a baseline method by itself.
+- Reproducibility changes the ranking. TILA has an official Hugging Face model
+  (`lukeingawesome/TILA`), MIT license, custom code, a 0.2B BioViL-T-style
+  ResNet-50 + temporal ViT pooler, 128-d image/text embeddings, and a packaged
+  change head. The paper's fine-tuning principle is bidirectional CE under
+  reversal (improved↔worsened, stable fixed), making TILA the best candidate
+  for one paper-backed frozen-embedding baseline plus one inversion-aware
+  five-class adaptation.
+- Libra has official public code (`X-iZhang/Libra`) and Qwen-family support,
+  but its released objective/output is longitudinal free-text report generation
+  and the full checkpoint/connector stack may be substantially heavier. It is
+  a credible TAC architectural reference, but running its native report model
+  would not be an apples-to-apples five-class reproduction without a separately
+  declared adapter/evaluator.
+- Primary search did not locate an official TempA-VLP code/weight release or a
+  BiOTPrompt repository. These can support component-level reimplementations
+  from the papers, but cannot be presented as official-checkpoint reproduction.
+- The official TILA model card fixes the executable surface more precisely:
+  `lukeingawesome/TILA` is a 643 MB / approximately 0.2B-parameter custom
+  Transformers model with a 448x448 processor, 128-dimensional L2-normalized
+  pair embeddings, MIT license, and a packaged binary change classifier. Its
+  released binary head is not the local five-class target; the defensible R50
+  use is therefore frozen official pair embeddings followed by a newly trained
+  five-class head, with a second arm adding the paper's inversion constraint.
+- Libra's official repository confirms that TAC is trained in a report-
+  generation stack with RAD-DINO and an MLLM, not as a five-class progression
+  classifier. The documented native run is also infeasible for this benchmark:
+  about 385 hours of connector pretraining plus 213 hours of LoRA fine-tuning
+  on one 48 GB A6000. R50 may reproduce the TAC component at matched local
+  scale, but must not call that a native Libra reproduction.
+- A shallow checkout of the official Libra repository locates TAC in
+  `libra/model/multimodal_projector/builder.py` and confirms released 3B/7B
+  models plus standalone `mm_tac_projector.bin` files. This gives R50 an
+  auditable source-level component reference without requiring the full native
+  training run. The repository also already contains an unexecuted R40 B2
+  signed-plus-absolute Siamese implementation, so that baseline can be reused
+  after contract migration instead of reimplemented from scratch.
+- Official TAC is not a generic one-layer projector. It first collapses 12
+  RAD-DINO layer features with squeeze-excitation plus 1x1 convolutions, then
+  applies separate current/prior self-attention, current-to-prior cross-
+  attention, residual LayerNorm blocks, a transition MLP, and a four-layer
+  output MLP. A local Block-8 adaptation can faithfully reproduce the temporal
+  fusion block, but cannot reproduce the 12-layer LFE because the frozen cache
+  stores one encoder layer. R50 must name this `TAC-temporal-fusion adapted`,
+  not `Libra TAC exact`.
+- The existing R40 B2 representation is precisely normalized `[prior,
+  current, current-prior, abs(current-prior)]` CLS features followed by the
+  same finding-conditioned probe. It was frozen for a different 10,287/1,500
+  roster and 100-epoch probe, so R50 should reuse the implementation but refit
+  it under the new common 2,500/750 contract rather than mix its old authority
+  with R49 outcomes.
+- The official TILA Hub revision is now pinned to commit
+  `a9c6da4b07651de5469e54b5903a63d33f4dfc6a`; its repository has exactly the
+  model card, config, custom config/model/processor/preprocessing/inference
+  code, and one safetensors file. R50 must record this revision and verify the
+  downloaded cache rather than depend on mutable `main`.
+- R49's roster loader already provides the complete R50 data contract: 2,500
+  one-row-per-patient training rows and 750 disjoint qualification+confirmation
+  rows, each with prior/current JPG paths, finding, and one of the five labels.
+  This means TILA, B2, and TAC-adapted arms can share exactly the same row order
+  and targets without touching protected 483-test or gold outcomes.
+- The first `hf download` attempt for TILA code failed during Hub metadata HEAD
+  resolution despite `hf models info` working. A Git checkout with LFS smudge
+  disabled succeeded at the exact pinned revision, so the custom code can be
+  audited independently of the 642,508,642-byte weight transfer. The official
+  LFS object SHA-256 is
+  `b16b6bcf47ac6e4e79c4d9da2db88055b297adca22715935e4522184f87ce101`.
+- Source inspection confirms TILA concatenates current and prior ResNet-50
+  features through a three-block temporal ViT pooler with learned time-type
+  embeddings, concatenates current and temporal-fused maps, and projects them
+  to a normalized 128-d vector. `get_embeddings(current, previous)` is the
+  correct frozen transfer surface; its released classifier is only binary and
+  its calibrated thresholds are not valid for the local five-class task.
+- The CVPR 2026 paper specifies the supervised TILA recipe: BiCE averages
+  forward CE and reversed-order CE under the label inversion map; TCL is mean
+  squared distance between forward probabilities and inversion-adjusted
+  reversed probabilities; inference averages forward probabilities with the
+  adjusted reversed probabilities. The paper trains 20 epochs with BiCE then
+  adds TCL for 30 epochs (50 total), with `lambda=50`, and warns that applying
+  consistency too early can collapse predictions toward Stable.
+- The paper's native supervised labels are only Improved/Stable/Worsened.
+  Extending the involution to New<->Resolved is clinically logical and already
+  frozen in this repository, but it is an R50 five-class contract adaptation.
+  Any resulting arm must be named TILA-style BiCE+TCL rather than an exact
+  reproduction of the paper's three-class fine-tuning experiment.
+- R50 method selection is frozen in principle before outcomes: (A) official
+  TILA frozen pair embedding plus standard five-class CE linear probe; (B) the
+  same official embedding and probe trained/evaluated with TILA-style BiCE,
+  delayed TCL, and bidirectional scoring; (C) frozen BiomedCLIP Siamese
+  `[prior,current,signed,absolute]` plus the same probe family; (D) Libra's
+  self-/cross-attention temporal-fusion block adapted to the cached 30+30
+  Block-8 tokens plus the same finding-conditioned classifier. A/B are official
+  checkpoint transfer and contract-adapted reproduction; C is a strong classic
+  representation baseline; D is component-faithful except for Libra's omitted
+  12-layer RAD-DINO feature extractor.
+- The cached R49 naive tokens provide an outcome-free, hash-pinned 30-prior +
+  30-current + 4-zero tensor for all 3,250 rows. TAC-adapted can therefore use
+  the exact same selected Block-8 positions as the prior R49 comparison, while
+  B2 can reuse the full Block-8 cache and frozen Blocks 9-12 implementation.
+  Both GPUs are idle and the host has sufficient H/E disk space.
+- The CVPR PDF confirms 50 supervised epochs: first 20 BiCE, then 30 with TCL,
+  AdamW, and `lambda=50`; the paper does not state the supervised learning rate
+  in its main method paragraph. R50 will pin an explicit head/adapter learning
+  rate before outcomes and report it as a local adaptation rather than infer a
+  hidden value from results.
+- The reused 3,250-row roster is exactly balanced at 650 rows for each of the
+  five progression classes and spans 11 findings. Therefore class weighting or
+  resampling is unnecessary and would introduce avoidable post-hoc degrees of
+  freedom. All arms will use ordinary CE and the same fixed row order per seed.
+- The repository's `FindingConditionedLinearProbe` concatenates a one-hot
+  finding vector to each representation before one linear five-class layer.
+  Reusing it keeps the downstream classifier family identical across TILA and
+  B2; TAC-adapted additionally trains its published temporal-fusion component,
+  so parameter counts must be reported rather than described as capacity
+  matched.
+- R50 will pin the completed R49 aggregate as a historical comparison surface:
+  3,727 bytes, SHA-256
+  `AB1328DF6D90CF65DB0F21CCB2D3631B8DE8ED49159B6FB8A1A2F14D97AECFB4`.
+  The new runtime and stable TILA model directories are currently absent, so
+  the authority can require fresh creation and fail closed on accidental reuse.
+- R49 retains row-level 750-patient predictions for both exact-64 arms under
+  `exact64/seed_17/*/result.json` (PRTA 84,884 bytes; Naive 84,900 bytes).
+  R50 can therefore compute paired patient-bootstrap effects against the
+  existing PRTA system without reconstructing predictions from aggregate
+  metrics. This remains a cross-interface descriptive contrast because R50
+  methods are direct classifiers rather than frozen-Qwen JSON generators.
+- The new outcome-free R50 JSON freezes all four methods, official source
+  revisions/licenses, roster/cache/reference hashes, three seeds, 50 epochs,
+  TILA's epoch-21 TCL start and weight 50, probe LR 1e-3, TAC LR 1e-4,
+  AdamW, no weighting/resampling/early stopping, 2,000 patient bootstraps, and
+  a fresh runtime root. No method output exists at freeze time.
+- B2 can be cached efficiently by loading each full Block-8 tensor once,
+  running only frozen BiomedCLIP Blocks 9-12, and storing normalized forward
+  and reversed 3,072-d representations. This preserves the existing strong
+  baseline definition while moving only its roster/training contract to R50.
+- The R49 config itself is now pinned in R50 at 8,414 bytes and SHA-256
+  `A8C6CB998563AE49993952A6CD091FB13EF54D913570E2AA7D596EA3BA76615C`.
+  The shared validator also checks all historical result/token hashes, exact
+  five-class balance, patient disjointness, method registry, and row schema.
+- R49's compact cache used `prior_image_id/current_image_id` as the same keys
+  indexed by the formal Block-8 cache. R50 B2 can therefore retrieve full
+  tokens directly from the roster without a new image-to-cache mapping or any
+  label-bearing cache artifact.
+- First R50 static/test pass found only implementation-surface issues before
+  any runtime: one unused `os` import and pytest collection failing to resolve
+  the new namespace module `scripts.r50_common`, although direct Python import
+  from the workspace succeeds and existing tests use the same namespace form.
+  Remove the import and make the new test establish the workspace path
+  explicitly; no scientific contract or output changes are needed.
+- The corrected focused suite passes 11 tests, including the prior R49 tests;
+  the only remaining static message was Ruff E402 after the deliberate test
+  path bootstrap and is now explicitly scoped with a file-level noqa.
+- The pinned Hugging Face Git checkout succeeded, but `git lfs pull` ended with
+  an EOF from the LFS batch endpoint and left the 134-byte pointer in place.
+  The subsequent shell commands made the overall command exit zero, so file
+  size/SHA validation correctly catches the incomplete model. Retry the exact
+  immutable resolve URL into a separate partial file and replace the pointer
+  only after the 642,508,642-byte SHA-256 matches.
+- Direct immutable-URL retry succeeded and the stable TILA weight now exactly
+  matches 642,508,642 bytes and SHA-256
+  `B16B6BCF47AC6E4E79C4D9DA2DB88055B297ADCA22715935E4522184F87CE101`.
+  Focused Ruff and 11 tests pass; fail-closed preflight verifies all 6,500 image
+  paths, 2,500/750 rows, the weight hash, fresh runtime root, and two CUDA
+  devices without starting GPU work.
+- Two outcome-free cache workers are now live: TILA on PID 21904 / GPU0 and B2
+  on PID 26776 / GPU1. Both stdout/stderr logs are initially empty and no GPU
+  allocation was visible at the first snapshot, consistent with startup
+  imports/hash/manifest loading rather than a failed or duplicate launch.
+- Both first cache attempts stopped before writing a cache or observing any R50
+  outcome. TILA hit Python's dataclass dynamic-import requirement because its
+  module was not registered in `sys.modules` before execution. B2 revealed
+  that the R49 CheXpert image IDs are not in the older MIMIC formal Block-8
+  cache; R49 Naive had re-encoded the same 6,500 source images directly.
+- The outcome-free repair is fixed without changing patients, labels, model,
+  or feature definition: register TILA's module before execution, and make B2
+  reuse R49's frozen image loader/checkpoint to encode the same 6,500 images
+  through all 12 BiomedCLIP blocks before constructing CLS signed/absolute
+  features. Only four log files exist in the R50 runtime; no cache/result file
+  or worker remains.
+- Repaired code passes focused Ruff and 6 focused R50 tests. A strict one-pair
+  official TILA smoke loads the pinned safetensors into `TILAImageEncoder` with
+  `strict=True` and produces finite forward/reverse tensors of shape `[1,128]`.
+  The second cache attempts are live: TILA PID 28396/GPU0 (257 MiB at first
+  snapshot) and B2 PID 25324/GPU1 (637 MiB), with empty stderr logs.
+- Both repaired caches completed once with PASS receipts and exact roster row
+  order. TILA stores finite `[3250,128]` forward/reverse FP16 embeddings in
+  2,048,264 bytes, took 115.84 s, and peaked at 860,663,296 CUDA bytes. B2
+  stores finite `[3250,3072]` forward/reverse embeddings in 40,320,282 bytes,
+  took 81.68 s, and peaked at 478,247,936 CUDA bytes. Neither cache contains
+  labels, and both GPUs returned to 0 MiB.
+- Post-cache Ruff and six focused tests passed, then both frozen training lanes
+  launched. The first terminal method receipt is TILA-CE Seed17 macro-F1
+  0.453228; this is one seed only and cannot select or terminate a method.
+  Lane0 has advanced to TILA-CE Seed29, while lane1 is training TILA-BiCE/TCL
+  Seed17. Both lane stderr logs are empty.
+- Six of twelve registered method seeds are complete. TILA-CE Seeds 17/29/43
+  score 0.453228/0.458893/0.460959. TILA-style BiCE+TCL Seeds 17/29/43 score
+  0.396846/0.390419/0.398101. The inversion-aware arm is therefore lower on
+  standard macro-F1 in every seed, but its registered consistency and paired-CI
+  analysis remains pending. TAC Seed17 and B2 Seed17 are live; no stderr.
+- Ten of twelve seeds are complete. B2 signed/absolute Seeds 17/29/43 score
+  0.415895/0.414092/0.422242. TAC-adapted Seed17 scores 0.267522, substantially
+  below the other direct classifiers, while Seeds 29/43 remain live on the two
+  GPUs. The poor first TAC seed is retained under the no-selection contract;
+  no retry, tuning, or seed filtering is allowed.
+- Eleven of twelve seeds are complete. TAC-adapted Seed29 scores 0.246597 and
+  GPU1 lane completed cleanly. TAC Seed43 is the sole remaining run on GPU0;
+  both observed TAC seeds confirm that the local one-layer Block-8 adaptation
+  does not inherit native Libra performance, but the registered aggregate and
+  final seed remain mandatory before a formal verdict.
+- All 12 runs completed with zero lane stderr; TAC Seed43 is 0.283137 and both
+  GPUs returned to 0 MiB. The registered aggregate completed on the identical
+  750 patients: mean macro-F1 is TILA-CE 0.457693, B2 signed/absolute 0.417409,
+  TILA-style BiCE+TCL 0.395122, and TAC-adapted 0.265752. Inspect registered
+  paired CIs and reversal consistency next before writing the scientific
+  interpretation.
+- Paired bootstrap resolves the two same-interface method questions. TILA-style
+  BiCE+TCL minus TILA-CE is -6.257 pp with CI [-9.579,-2.786]: inversion
+  training greatly raises mapped reversal consistency (mean about 0.866 versus
+  0.360) but significantly reduces standard five-class F1 under the local
+  New/Resolved extension. TAC-adapted minus B2 is -15.166 pp with CI
+  [-18.802,-11.635], so the partial TAC transfer is decisively worse than the
+  simple signed/absolute representation.
+- Cross-interface descriptive comparisons against R49 PRTA exact-64 are:
+  TILA-CE +10.332 pp, CI [+6.599,+14.005]; B2 +6.304 pp, CI
+  [+2.695,+9.903]; TILA-BiCE/TCL +4.075 pp, CI [-0.234,+8.368]; TAC-adapted
+  -8.862 pp, CI [-12.764,-5.151]. Direct classifiers do not use Qwen JSON
+  generation, so these effects do not establish an equal-interface replacement
+  for PRTA, but they show strong frozen temporal representations remain a key
+  missing comparison in the paper story.
+- Parameter/compute receipts explain the practical tradeoff. TILA probes train
+  only 700 parameters and take roughly 4-14 s/seed after caching; B2 trains
+  15,420 parameters and takes 8-13 s/seed; TAC-adapted trains 10,645,308
+  parameters, takes 93-100 s/seed, yet performs worst. Aggregate is 11,101
+  bytes with SHA-256
+  `A011FBA55BB536CA89FB4F72EEBD86814E8EB0C256FA6C47EC1953AEA1C2E01E`.
+- Reader-facing R50 writeback must update the active proposal header and add a
+  section directly after R49, then update root README, project-status table and
+  claims, reports index, the R45-R49 case study, and the planning bundle. The
+  first Python attempt to print the proposal hit the Windows GBK console on a
+  Unicode minus sign; UTF-8 PowerShell reading succeeded and no file changed.
+- R50 documentation is now synchronized across all active surfaces. The
+  dedicated report records the literature-source taxonomy, exact four-method
+  protocol, per-seed and per-class results, paired confidence intervals,
+  compute/capacity receipts, failure history, and the key interface caveat:
+  TILA/B2 direct-head performance is not evidence of equal-interface superiority
+  over R49 exact-64 frozen-Qwen generation. The next legitimate scientific test
+  is a prospectively frozen TILA/B2-to-exact-64 translation study on new
+  outcome-independent development data, not post-hoc tuning on these 750 rows.
+- Full repository pytest adds six R50 tests relative to the prior terminal
+  suite: 878 pass and 1 is expected-xfail. The sole failure remains the known
+  historical R6 resolution/frozen-manifest gate in
+  `tests/test_query_anchor_r4_runner.py`; it is unrelated to R50 and must not
+  be repaired by rewriting the closed R6 registry.
+- Terminal artifact closure is internally consistent. The aggregate is 11,101
+  bytes with SHA-256
+  `A011FBA55BB536CA89FB4F72EEBD86814E8EB0C256FA6C47EC1953AEA1C2E01E`,
+  reports 750 matched patients and 12 unique receipts, and each method has
+  exactly three seeds. The immutable R50 config SHA-256 is
+  `56877CD2ACE9BC2D0325F58E98C106B73381A2F3F4B9928C4FAAFE6166ABC03A`;
+  the dedicated report SHA-256 is
+  `78A7CC879782BB654B033297A1B3FCFA860EF235E0EDDE2F9F090665C913438C`.
+  Both GPUs and the R50 process set are idle at closure.

@@ -1,4 +1,4 @@
-# PRTA-Gen R45–R49 Case Study 与统一三系统结果
+# PRTA-Gen R45–R50 Case Study、统一三系统与强方法结果
 
 ## 最终总体结论
 
@@ -34,6 +34,15 @@ PRTA−Raw 为 +16.146 pp，CI `[+12.090,+20.198]`；PRTA−Naive 为
 系统优于直接看双图，也能说在相同 64-token/projector/训练预算下，
 finding-guided 跨时间对齐优于简单 prior/current token 拼接。详细公平性审计
 与哈希见 `PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md`。
+
+R50 随后补齐强 temporal representation baselines。相同 2,500/750 roster
+与三 Seed 下，TILA-CE、B2 signed/absolute、TILA-BiCE/TCL 与 TAC-adapted
+mean F1 为 0.457693/0.417409/0.395122/0.265752。BiCE/TCL 相对 CE
+−6.257 pp、CI `[−9.579,−2.786]`，但 mapped reversal consistency 从约
+0.360 提高到 0.866；TAC-adapted 相对 B2 −15.166 pp、CI
+`[−18.802,−11.635]`。这些是直接 structured classification 结果，不能
+冒充相同 frozen-Qwen 接口。完整文献、复现性质和边界见
+`PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md`。
 
 Raw B3 的完整结果为：
 
