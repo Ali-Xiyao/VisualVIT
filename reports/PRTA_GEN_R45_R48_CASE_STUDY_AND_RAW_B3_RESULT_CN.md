@@ -1,6 +1,15 @@
 # PRTA-Gen R45–R48 Case Study 与 Raw Two-Image Qwen3-VL 结果
 
-## 直接结论
+## 最终总体结论
+
+最终项目判定为：
+
+`POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`
+
+Qualification 500 与 confirmation 250 合并后的 750 人 pooled held-out
+true F1 为 0.373614；true−shuffle +5.702 pp、CI `[+2.529,+9.101]`；
+true−current +7.860 pp、CI `[+4.629,+11.045]`。分拆结果作为 cohort
+heterogeneity 审计保留，不覆盖最终 pooled overall 判定。
 
 这条实验链已经把“为什么前面的修复失败”与“什么最小命题可以复现”分开：
 
@@ -104,9 +113,23 @@ R48 的优势更可能来自医学视觉 encoder 与固定 temporal token interf
 
 - Raw B3 与 R48 qualification 都是同一内部 development 数据源；
 - Raw B3 是 qualification 上的 development case study，不是独立确认；
-- R48 confirmation 已冻结并完成无标签 token cache，但按用户要求暂停在
-  generation/outcome read 之前；
+- R48 confirmation 随后按原冻结设置完成，但四个 gate 失败，终态为
+  `STOP_PRTA_GEN_R48_FPRR_CONFIRMATION`；
 - gold、external、开放式报告、临床效用和 ICLR 接收主张都未解锁。
+
+## R48 Confirmation 最终结果
+
+Raw B3 交付后，未改任何 R48 设置即运行 250 人 confirmation：
+
+- true/current/query/shuffle F1 =
+  0.318626/0.278350/0.114373/0.305379；
+- true−shuffle +1.325 pp，CI `[−3.709,+6.008]`；
+- true−current +4.028 pp，CI `[−1.213,+9.151]`；
+- true F1、true−shuffle 点效应及两个 CI 下界共四门失败。
+
+因此 qualification GO 不能升级为 split-specific independent replication；
+但 750 人 pooled internal 的总体结果为 positive。它仍不是 external/gold
+或临床 confirmation。
 
 ## 可复核证据
 
@@ -120,3 +143,5 @@ R48 的优势更可能来自医学视觉 encoder 与固定 temporal token interf
   `582EAE01BC3FBD5617ECA9E607732A460B6EFF7BC17975E4B34B72FA98ED14AD`
 - 冻结代码提交：`ad745ee`
 - smoke 修复与正式执行代码提交：`d4c9472`
+- R48 confirmation aggregate SHA-256：
+  `46EC22D90E0B662284116CE5DD24ED464857F60407D73B7596A5319BBFB3B6BB`

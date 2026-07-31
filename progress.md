@@ -2581,3 +2581,56 @@
   R48 confirmation runner preflight successfully and launched PID 24492 on
   GPU0. The confirmation result root was fresh; GPU1 remains idle and no
   setting changed from the pre-Raw committed authority.
+- Verified every report-index entry resolves, committed/pushed the Raw B3 case
+  study plus proposal/status/planning refresh as `a6d42ad`. R48 confirmation
+  remained healthy at 1.2 minutes on GPU0 (about 9.1 GiB); result pending.
+- R48 confirmation remained healthy through 3.4 minutes with active GPU0
+  utilization and no atomic result yet. Do not restart or duplicate it on
+  GPU1: the frozen one-pass runner is already revealing the registered cohort.
+- Through 5.4 minutes the same PID remained healthy at about 9.1 GiB on GPU0;
+  no traceback or atomic result was published.
+- Through 7.4 minutes R48 confirmation remained healthy with active GPU0
+  utilization; the duration remains consistent with half of the 500-row
+  qualification run.
+- Through 9.4 minutes the frozen confirmation process remained active and
+  error-free; result publication is still pending.
+- Through 11.5 minutes the same PID remained healthy with active GPU0
+  utilization; no duplicate evaluator was started.
+- R48 confirmation completed at about 13.4 minutes, wrote the 38,710-byte
+  atomic baseline result, exited, and returned both GPUs idle. Proceed to
+  scalar-only inspection and the one registered confirmation aggregate.
+- The confirmation baseline has true/current/query/shuffle macro-F1
+  0.318626/0.278350/0.114373/0.305379 with schema/finding 1.0 and both
+  trainable counts zero.
+- Ran the one registered confirmation aggregate. It returns terminal
+  `STOP_PRTA_GEN_R48_FPRR_CONFIRMATION` with four failures:
+  true F1 below 0.35, true-minus-shuffle only +1.325 pp, its CI95 lower bound
+  -3.709 pp, and true-minus-current CI95 lower bound -1.213 pp. Do not tune or
+  open another cohort around this result.
+- Confirmation baseline is 38,710 bytes, SHA-256
+  `18191438A8B330E8BE3BD34346B70666583C9D65B9AE4B01B4EAF708D3DBD6FE`;
+  aggregate is 3,375 bytes, SHA-256
+  `46EC22D90E0B662284116CE5DD24ED464857F60407D73B7596A5319BBFB3B6BB`.
+  Active workers are zero and both GPUs are 0 MiB/0%.
+- Added the dedicated R48 confirmation terminal report and synchronized the
+  comprehensive case study, report index, project status, and proposal to the
+  final STOP boundary.
+- At the user's request, computed one scalar-only pooled pass over immutable
+  qualification+confirmation predictions (750 unique patients). Pooled true
+  F1 is 0.373614; true−shuffle +5.702 pp (CI95 +2.529 to +9.101) and
+  true−current +7.860 pp (CI95 +4.629 to +11.045). Open a durable,
+  explicitly post-hoc pooled receipt without changing split-specific status.
+- Implemented and validated the rerunnable pooled config/aggregate/test, then
+  executed it once. Final overall status is
+  `POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`; all nine original numerical
+  checks pass descriptively. The aggregate is 3,574 bytes, SHA-256
+  `7463FDADAEEAFF7958AA76CF5A882466452151A24CCC87767F29FD85F8CFB7F6`.
+- Applied the user's final decision rule to the reader-facing source of truth:
+  pooled 750-patient internal performance is the headline positive result;
+  split-specific outcomes remain secondary heterogeneity audit evidence.
+  Added the dedicated pooled-final report and synchronized the report index,
+  project status, proposal, and comprehensive case study.
+- Final pooled closure validation passes: eight focused tests, repository-wide
+  Ruff, compileall, both JSON/result audits, report-index paths, and
+  `git diff --check`. No stale pending-confirmation text was found, active
+  workers are zero, and both GPUs are idle.

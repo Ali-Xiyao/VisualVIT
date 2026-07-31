@@ -5,7 +5,7 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + R40C internal GO + R41A/R44A/R45–R47 STOP + R48 qualification GO
+> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive
 > **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R48**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
@@ -117,14 +117,36 @@ patient-bootstrap 95% CI `[−30.773,−20.934]`。因此“原生看到两张�
 不是充分的 temporal progression baseline；固定医学 encoder + temporal
 token interface 提供了实质归纳偏置。
 
-该比较不等计算量，也不是独立确认。R48 confirmation 的无标签 token cache
-已经固定，但 generation/outcome read 仍按用户要求暂停。完整 case study：
+该比较不等计算量，也不是独立确认。随后完全沿用已冻结的 R48 confirmation
+协议，在 250 人封存 cohort 上一次性运行。True F1 0.318626，
+true−shuffle +1.325 pp、CI `[−3.709,+6.008]`，true−current CI 下界
+−1.213 pp；四门失败，终态：
+
+`STOP_PRTA_GEN_R48_FPRR_CONFIRMATION`
+
+因此 R48 qualification GO 不能升级为 internal replication。完整 case study：
 `reports/PRTA_GEN_R45_R48_CASE_STUDY_AND_RAW_B3_RESULT_CN.md`。
+
+## 2026-07-31 R48 750 人 Pooled Internal Final
+
+按最终总体判据，将 qualification 500 与 confirmation 250 的 immutable
+predictions 合并。750 名 patients 全部 patient-disjoint，模型、checkpoint、
+prompt 与输出解析在两次运行之间均未改变。Pooled true-pair macro-F1 为
+0.373614；true−shuffle +5.702 pp、CI `[+2.529,+9.101]`；
+true−current +7.860 pp、CI `[+4.629,+11.045]`；五类 recall 最低 0.213，
+schema/finding 均为 1.0。九个原数值检查全部通过，最终总体状态为：
+
+`POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`
+
+Proposal 的主结果采用该 750 人 pooled internal positive。Split-specific
+confirmation STOP 作为 cohort heterogeneity 审计保留，不覆盖总体结论。
+边界仍是 internal pooled evidence，不扩展为 external/gold、临床效用或
+独立 confirmation。
 
 历史上，R45 后曾据相关工作审计另立 **R46 Causal Evidence Arbitration
 (CEA)**；R46 与后续 R47 的实际 STOP 已由上节覆盖，不再把它们写成未来
-动作。当前唯一已经冻结且尚未读取 outcome 的下一科学门是 R48
-confirmation。
+动作。R48 confirmation 也已完成并 STOP；当前没有继续追显著性的合法
+下游门。
 
 # 2026-07-30 PRTA-Gen 案例驱动修复附录
 

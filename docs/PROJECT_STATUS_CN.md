@@ -2,6 +2,16 @@
 
 ## 直接结论
 
+最终总体判定为：
+
+`POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`
+
+Immutable R48 FPRR 在全部 750 名 patient-disjoint held-out patients 上
+true-pair macro-F1 0.373614；true−shuffle +5.702 pp、
+CI `[+2.529,+9.101]`；true−current +7.860 pp、
+CI `[+4.629,+11.045]`。所有原数值门在 pooled descriptive analysis 中
+通过。Split-specific qualification/confirmation 状态保留为异质性审计。
+
 TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 
 | 阶段 | 决策 | 核心证据 |
@@ -27,6 +37,8 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 | PRTA-Gen R46 | `STOP_PRTA_GEN_R46_CEA_DISCOVERY` | +1.06 pp 点增益但 paired bootstrap CI 跨零 |
 | PRTA-Gen R47 | `STOP_PRTA_GEN_R47_UCC_DISCOVERY` | true−shuffle 显著，但 UCC−baseline 仅 +0.44 pp 且 CI 跨零 |
 | PRTA-Gen R48 qualification | `GO_PRTA_GEN_R48_FPRR_QUALIFICATION` | 无训练/选择/router；true F1 0.4006，true−shuffle +7.98 pp，CI 下界 +3.87 |
+| PRTA-Gen R48 confirmation | `STOP_PRTA_GEN_R48_FPRR_CONFIRMATION` | true F1 0.3186；true−shuffle +1.32 pp，CI 跨零；四门失败 |
+| PRTA-Gen R48 pooled 750 | `POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL` | true F1 0.3736；true−shuffle +5.70 pp、true−current +7.86 pp，两个 CI 下界均 > 0 |
 | R48-B3 Raw two-image | `COMPLETE_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_QUALIFICATION` | 原生 prior/current 双图 F1 0.1417；比 FPRR 低 25.89 pp，CI [−30.77,−20.93] |
 
 R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
@@ -35,6 +47,12 @@ progression-only structured emission 的工程 overfit smoke。R41A 随后完整
 执行 progression-only Qwen SFT，但 attention-LoRA 未通过冻结 survival gate。
 Raw 双图 baseline 使用冻结 Qwen 的受约束两字段生成，不解锁开放式报告、
 其他字段、R42 G-CMCP/reversal 或 R43 gold/external。
+
+R48 confirmation 已按冻结协议一次性完成。虽然 schema/finding 均为 100%、
+Qwen/projector trainable parameters 为 0，但 true F1 0.318626 未达 0.35，
+true−shuffle +1.325 pp 且 CI `[-3.709,+6.008]`，true−current CI 下界
+−1.213 pp；共四门失败。Qualification GO 只保留为 development 结果，
+不得表述为 internal replication。
 
 R40C 已按冻结顺序完成 Seeds 17/29/43 和 2,000 次 patient-bootstrap
 aggregate，gate failures = 0。自动 launcher 与所有 Seed 进程均已退出，

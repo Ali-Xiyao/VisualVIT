@@ -1,0 +1,64 @@
+{
+  "schema": "visualvit.prta-gen.r48-fprr-pooled-heldout-register.v1",
+  "status": "REGISTERED_POST_HOC_PRTA_GEN_R48_FPRR_POOLED_HELDOUT",
+  "protocol_id": "prta-gen-r48-fprr-pooled-heldout-v1",
+  "analysis_class": "post_hoc_descriptive_pooled_internal",
+  "inputs": [
+    {
+      "partition": "qualification",
+      "rows": 500,
+      "baseline": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\qualification\\baseline\\result.json",
+      "baseline_bytes": 74091,
+      "baseline_sha256": "03AA9B67E273375BA0CB78091D53FB31F28B7EC4B0AE978D04DA03D774C3865F",
+      "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\qualification\\aggregate.json",
+      "aggregate_bytes": 2796,
+      "aggregate_sha256": "6EC0E6B616CB74034F5F6049D7ABCE8DF9A8D36D38A868376C6B03DC2B97EF1A",
+      "aggregate_status": "GO_PRTA_GEN_R48_FPRR_QUALIFICATION"
+    },
+    {
+      "partition": "confirmation",
+      "rows": 250,
+      "baseline": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\confirmation\\baseline\\result.json",
+      "baseline_bytes": 38710,
+      "baseline_sha256": "18191438A8B330E8BE3BD34346B70666583C9D65B9AE4B01B4EAF708D3DBD6FE",
+      "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\confirmation\\aggregate.json",
+      "aggregate_bytes": 3375,
+      "aggregate_sha256": "46EC22D90E0B662284116CE5DD24ED464857F60407D73B7596A5319BBFB3B6BB",
+      "aggregate_status": "STOP_PRTA_GEN_R48_FPRR_CONFIRMATION"
+    }
+  ],
+  "arms": [
+    "true_pair",
+    "current_only",
+    "query_only",
+    "prior_shuffle"
+  ],
+  "statistics": {
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 48401
+  },
+  "original_gate_for_descriptive_reference_only": {
+    "true_macro_f1_at_least": 0.35,
+    "all_class_recall_at_least": 0.12,
+    "true_minus_prior_shuffle_at_least_pp": 2.0,
+    "true_minus_prior_shuffle_ci95_lower_above_pp": 0.0,
+    "true_minus_current_only_at_least_pp": 2.0,
+    "true_minus_current_only_ci95_lower_above_pp": 0.0,
+    "true_minus_query_only_at_least_pp": 10.0,
+    "schema_validity": 1.0,
+    "finding_echo_accuracy": 1.0
+  },
+  "runtime": {
+    "output": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\pooled_heldout\\aggregate.json"
+  },
+  "result_statuses": {
+    "positive": "POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL",
+    "negative": "NEGATIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL"
+  },
+  "boundaries": {
+    "confirmation_status_overwrite_allowed": false,
+    "independent_confirmation_claim_allowed": false,
+    "external_or_gold_claim_allowed": false,
+    "scientific_claim_allowed": false
+  }
+}

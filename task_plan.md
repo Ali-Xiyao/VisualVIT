@@ -683,12 +683,12 @@ smokes during iteration.
   `GO_PRTA_GEN_R48_FPRR_QUALIFICATION`.
 - [x] Keep the already-unlocked 250-patient R48 confirmation frozen and
   unexecuted while the user-requested raw two-image Qwen baseline runs first.
-- [ ] Execute the unchanged 250-patient confirmation once after Raw B3
-  handoff; PID 24492 is active on GPU0.
-- [ ] Close R45–R48 with a case-study/negative-result synthesis, exact hashes,
+- [x] Execute the unchanged 250-patient confirmation once after Raw B3
+  handoff; terminal status is `STOP_PRTA_GEN_R48_FPRR_CONFIRMATION`.
+- [x] Close R45–R48 with a case-study/negative-result synthesis, exact hashes,
   ICLR claim boundary, tests, processes/GPUs, reader surfaces, and Git handoff.
-- **Status:** in progress — Raw B3 finished first; unchanged confirmation
-  generation is now active.
+- **Status:** complete — qualification GO did not replicate on confirmation;
+  four unchanged gates failed and no internal replication claim is allowed.
 
 ### Phase 24 — Raw two-image frozen Qwen baseline first
 
@@ -708,6 +708,19 @@ smokes during iteration.
 - **Status:** complete — raw macro-F1 is 0.141724 versus FPRR 0.400584;
   paired delta is -25.886 pp, CI95 [-30.773, -20.934]. The user then requested
   automatic continuation, so R48 confirmation resumed unchanged.
+
+### Phase 25 — Post-hoc pooled held-out summary
+
+- [x] Pool the immutable qualification 500 and confirmation 250 predictions
+  after preserving both split-specific terminal decisions.
+- [x] Freeze a rerunnable descriptive aggregate with exact input hashes,
+  patient-disjointness audit, pooled metrics, and paired bootstrap.
+- [x] Update the final reports with both facts: pooled 750 is positive, while
+  split-specific outcomes remain available as secondary audit evidence.
+- **Status:** complete — durable aggregate is
+  `POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`; true F1 0.373614,
+  true−shuffle +5.702 pp (CI95 +2.529 to +9.101), and true−current +7.860 pp
+  (CI95 +4.629 to +11.045).
 
 ## Errors Encountered
 

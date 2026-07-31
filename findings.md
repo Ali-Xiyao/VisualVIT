@@ -2413,3 +2413,29 @@ preserving the encoder's static medical semantics.
   Resolved 3, confirming a 74% `Worse` collapse rather than formatting failure.
   The 1,904-byte aggregate SHA-256 is
   `4D57F6AF0AD2B5D84A35566B643A512A51C3D8A31FD4631C73460ED2EC231BDF`.
+- R48 confirmation is terminal `STOP_PRTA_GEN_R48_FPRR_CONFIRMATION`.
+  True-pair macro-F1 is `0.318626`, below the unchanged `0.35` floor;
+  true-minus-shuffle is only `+1.325 pp`, CI95 `[-3.709,+6.008]`, and
+  true-minus-current is `+4.028 pp`, CI95 `[-1.213,+9.151]`.
+- Four confirmation gates fail: absolute F1, true-minus-shuffle point effect,
+  true-minus-shuffle CI lower bound, and true-minus-current CI lower bound.
+  The qualification GO therefore does not replicate on the separately sealed
+  confirmation cohort. No internal replication claim is allowed.
+- Confirmation baseline SHA-256 is
+  `18191438A8B330E8BE3BD34346B70666583C9D65B9AE4B01B4EAF708D3DBD6FE`;
+  terminal aggregate SHA-256 is
+  `46EC22D90E0B662284116CE5DD24ED464857F60407D73B7596A5319BBFB3B6BB`.
+  No R48/Raw worker remains and both GPUs are idle.
+- A post-hoc pooled view over all 750 patient-disjoint held-out predictions is
+  positive: true/current/query/shuffle F1 =
+  `0.373614/0.295017/0.113974/0.316599`. True-minus-shuffle is `+5.702 pp`,
+  CI95 `[+2.529,+9.101]`; true-minus-current is `+7.860 pp`,
+  CI95 `[+4.629,+11.045]`. All true-pair class recalls are at least `0.213`.
+- This supports cohort heterogeneity/randomness as a plausible explanation for
+  the split contrast, but it is a pooled descriptive analysis after both
+  outcomes were visible. It cannot erase the preregistered confirmation STOP
+  or be called independent replication.
+- The durable pooled receipt passes every original numerical gate
+  descriptively and is titled
+  `POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`. Its 3,574-byte SHA-256 is
+  `7463FDADAEEAFF7958AA76CF5A882466452151A24CCC87767F29FD85F8CFB7F6`.
