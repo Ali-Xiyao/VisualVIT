@@ -818,15 +818,16 @@ smokes during iteration.
   trainable adapter, early stopping, checkpoint selection, or seed selection.
 - [x] Pass focused tests, Ruff, compileall, JSON/hash/fresh-output and real token
   preflight; commit and push the frozen authority before any R52 model outcome.
-- [ ] Execute all nine arm/seed runs on the two authorized GPUs as soon as an
+- [x] Execute all nine arm/seed runs on the two authorized GPUs as soon as an
   R51 lane releases, aggregate patient-paired macro-F1 differences and CIs,
   and issue a strict yes/no PRTA-superiority verdict without post-hoc tuning.
-- [ ] Write the R52 case study and synchronize proposal/status/index/planning;
+- [x] Write the R52 case study and synchronize proposal/status/index/planning;
   close both R51 and R52 with terminal tests, process/GPU audit, commit and push.
-- **Status:** pre-outcome authority ready — real preflight returns
-  `PASS_PRTA_GEN_R52_RUNNER_PREFLIGHT`, six focused R51/R52 tests and static
-  gates pass, all three feature shapes are `[2,46080]`, and no R52 runtime
-  output exists. Commit/push before launching the authorized GPU lanes.
+- **Status:** scientific result complete — all 9/9 arms passed, aggregate is
+  `COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK`, and strict PRTA
+  superiority is supported: PRTA−TILA +8.747 pp CI [+4.481,+12.861],
+  PRTA−B2 +9.258 pp CI [+4.768,+13.199]. Finish terminal validation/commit
+  while the preserved R51 lanes continue automatically.
 
 ## Errors Encountered
 
@@ -986,6 +987,6 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze, validate, commit, and push R52 without reading any R52 model outcome;
-retain the live R51 lanes and enqueue R52 direct-head execution at the first
-safe GPU release, then complete and report both benchmarks.
+Validate and commit the terminal R52 case study, while preserving and monitoring
+the already-running R51 B2 Seed17/29 arms; then run the remaining R51 schedule,
+aggregate, report, validate, and push both terminal surfaces.

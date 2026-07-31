@@ -27,6 +27,15 @@ consistency 提高到 0.866，但相对 CE 为 −6.257 pp、CI
 `[−18.802,−11.635]`。R50 是直接分类、post-hoc internal benchmark，不能
 把其相对 frozen-Qwen PRTA 的数值写成等接口替代结论。
 
+R52 已补齐用户要求的统一直接分类头比较。沿用冻结的 2,500-train 与新鲜
+500-evaluation 患者，PRTA/TILA/B2 使用相同 exact-64 budget、相同
+5,991,173 参数头、初始化、训练顺序、优化器、三 Seed 和 2,000 updates。
+三者 mean macro-F1 为 **0.360519/0.273051/0.267938**；PRTA−TILA
++8.747 pp、CI `[+4.481,+12.861]`，PRTA−B2 +9.258 pp、CI
+`[+4.768,+13.199]`。两项预注册下界均大于零，故
+`prta_strict_superiority_supported=true`。该结论只适用于当前 exact-64
+适配和 fresh internal matched-head 接口。
+
 TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 
 | 阶段 | 决策 | 核心证据 |
@@ -57,6 +66,7 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 | R48-B3 Raw two-image | `COMPLETE_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_QUALIFICATION` | 原生 prior/current 双图 F1 0.1417；比 FPRR 低 25.89 pp，CI [−30.77,−20.93] |
 | PRTA-Gen R49 unified three-way | `COMPLETE_PRTA_GEN_R49_UNIFIED_THREE_WAY` | 同 750 人：Raw/Naive/PRTA F1 0.1929/0.2959/0.3544；PRTA−Naive +5.85 pp，CI [+2.61,+9.08] |
 | PRTA-Gen R50 method benchmark | `COMPLETE_PRTA_GEN_R50_METHOD_BENCHMARK` | TILA-CE/B2/TILA-BiCE-TCL/TAC mean F1 0.4577/0.4174/0.3951/0.2658；直接分类接口，post-hoc internal |
+| PRTA-Gen R52 matched direct head | `COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK` | 同 2,500/500、exact-64、共享头和三 Seed：PRTA/TILA/B2 0.3605/0.2731/0.2679；PRTA 对两者 CI 下界均 > 0 |
 
 R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
 qualification 修复了明确的 token-layout mismatch。R40B.4 只跑通
@@ -138,6 +148,8 @@ R39 还通过：
 - R49 的同预算对比支持 finding-guided alignment 优于 Naive concat；
 - R50 显示官方 TILA frozen embedding 与 B2 是必须报告的强 temporal
   representation baselines；
+- R52 在同一 fresh 500 人、exact-64 和完全相同直接头下支持 PRTA 显著优于
+  TILA-exact64 与 B2-exact64，两个 paired CI 下界均大于零；
 - R40A.2 semantic-layout 表示含有通过独立 qualification 的
   prior-specific progression 信息；
 - 受限结构化头可在全新 32-patient engineering cohort 上把该表示输出为
@@ -156,29 +168,35 @@ R39 还通过：
 - 把 R40C 结果视为独立科学确认、跨机构外部泛化或临床有效性；
 - 根据已揭示 483-test 再选择的新模型属于 confirmatory 结果。
 - TILA/B2 的直接分类优势等价于相同 exact-64 frozen-Qwen 接口优势；
+- R52 等价于官方 TILA 原生 global-embedding classifier 的端到端复现，或
+  证明 PRTA 普遍优于所有 TILA/B2 用法；
 - TAC component adaptation 等价于 native Libra 复现。
 
 ## 权威阅读顺序
 
-1. `reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md`
-2. `reports/PRTA_GEN_R45_R48_CASE_STUDY_AND_RAW_B3_RESULT_CN.md`
-3. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
-4. `reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md`
-5. `reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md`
-6. `docs/PRTA_GEN_R44A_FAILURE_CASE_STUDY_PROTOCOL_CN.md`
-7. `docs/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_PROTOCOL_CN.md`
-8. `reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
-9. `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`
-10. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
-11. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
-12. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
-13. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
-14. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
-15. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
-16. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
-17. `task_plan.md`、`findings.md`、`progress.md`
+1. `reports/PRTA_GEN_R52_MATCHED_DIRECT_HEAD_RESULT_CN.md`
+2. `reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md`
+3. `reports/PRTA_GEN_R45_R48_CASE_STUDY_AND_RAW_B3_RESULT_CN.md`
+4. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
+5. `reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md`
+6. `reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md`
+7. `docs/PRTA_GEN_R44A_FAILURE_CASE_STUDY_PROTOCOL_CN.md`
+8. `docs/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_PROTOCOL_CN.md`
+9. `reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
+10. `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`
+11. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
+12. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
+13. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
+14. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
+15. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
+16. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
+17. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
+18. `task_plan.md`、`findings.md`、`progress.md`
 
 ## Runtime 权威产物
+
+- PRTA-Gen R52 matched direct-head aggregate：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r52_matched_direct_head_v1\aggregate.json`
 
 - PRTA-Gen R50 method benchmark aggregate：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r50_method_benchmark_v1\aggregate.json`

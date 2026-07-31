@@ -3093,3 +3093,22 @@
   inspection shell itself, there are zero R52 processes and the runtime root is
   absent. Config is 4,751 bytes with SHA-256
   `3D514CDFF6DB9923AF26C4C482B3DFFA444D4D60BF644D90BEB599AADD89253E`.
+- Published the complete outcome-free R52 authority as commit `a3f00a9` and
+  pushed it before creating the runtime root. Launched lane0 PID 19212 with
+  PRTA Seed17 worker 18932 on GPU0 and lane1 PID 18008 with PRTA Seed29 worker
+  23760 on GPU1. Both stderr logs are zero; concurrent R51 plus R52 memory is
+  only 10.8/10.9 GiB of 24 GiB, leaving a wide safety margin. R52 is 0/9.
+- R52 advanced rapidly without errors. First four results: PRTA Seed17/29
+  macro-F1 0.354955/0.370107 versus TILA 0.268596/0.271473, with matched
+  5,991,173 parameters, 2,000 updates, and identical within-seed initialization
+  hashes. Both B2 Seed17/29 then completed, bringing the run to 6/9; lane0 is
+  now PRTA Seed43 and lane1 B2 Seed43. No selection or early conclusion is made.
+- All R52 lanes exited cleanly at 9/9 with zero stderr. Frozen aggregation
+  completed: PRTA/TILA/B2 mean macro-F1 0.360519/0.273051/0.267938;
+  PRTA−TILA +8.747 pp CI [+4.481,+12.861], PRTA−B2 +9.258 pp CI
+  [+4.768,+13.199], and strict superiority is true. Aggregate is 8,719 bytes,
+  SHA-256 `DDA3235C5517E8557A44E843B14B5D36916CF73C95FC89BB476990EF225F8ABB`.
+- Wrote the complete R52 result/case-study report and synchronized the active
+  proposal, root README, project status, reports index, result registry, gap
+  audit, findings, and plan. Meanwhile R51 was never interrupted: TILA Seed
+  17/29 completed and both lanes advanced to B2 Seed17/29, bringing R51 to 4/9.

@@ -5,8 +5,8 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution + R50 method benchmark
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R50**
+> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution + R50 method benchmark + R52 matched direct head
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R52**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -207,6 +207,34 @@ projector 和 frozen-Qwen 合同，而不是继续堆叠 router。
 post-hoc internal benchmark，不覆盖 R48 confirmation STOP，也不解锁
 gold/external 或临床主张。完整报告：
 `reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md`。
+
+## 2026-07-31 R52 统一 exact-64 直接分类头终态
+
+R40C 与 R50 的历史点估计暗示 PRTA structured representation 可能超过 TILA
+和 B2，但两者患者、样本量与读出接口不同，不能正式比较。R52 因此沿用 R51
+冻结的 2,500-train / 500-fresh-evaluation 患者及 label-free exact-64 cache，
+对 PRTA、TILA-exact64 与 B2-exact64 使用同一 46,080 维 flatten、同一
+5,991,173 参数 `LayerNorm–MLP` 头、同一初始化、batch 顺序、AdamW、三 Seed
+与每臂 2,000 updates。
+
+| 方法 | Seed 17 | Seed 29 | Seed 43 | Mean macro-F1 |
+|---|---:|---:|---:|---:|
+| **PRTA exact-64** | 0.354955 | 0.370107 | 0.356495 | **0.360519** |
+| TILA exact-64 | 0.268596 | 0.271473 | 0.279085 | 0.273051 |
+| B2 exact-64 | 0.297222 | 0.241118 | 0.265473 | 0.267938 |
+
+PRTA−TILA 为 **+8.747 pp**、patient-paired 95% CI
+`[+4.481,+12.861]`；PRTA−B2 为 **+9.258 pp**、CI
+`[+4.768,+13.199]`。两项预注册 CI 下界均严格大于 0，因此终态为
+`COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK`，且
+`prta_strict_superiority_supported=true`。
+
+这个结果正式坐实的是：**在同一 fresh internal cohort 和统一 exact-64
+直接分类接口下，PRTA 表征显著优于当前 TILA/B2 exact-64 适配。** TILA 的
+encoder/checkpoint 是官方现成方法，但 patch-to-exact64 与五类头是本项目
+适配；B2 是本地 classic Siamese control。R52 不是官方 TILA 原生 global
+classifier 的反证，也不是 frozen-Qwen、gold/external 或临床结论。完整报告：
+`reports/PRTA_GEN_R52_MATCHED_DIRECT_HEAD_RESULT_CN.md`。
 
 历史上，R45 后曾据相关工作审计另立 **R46 Causal Evidence Arbitration
 (CEA)**；R46 与后续 R47 的实际 STOP 已由上节覆盖，不再把它们写成未来

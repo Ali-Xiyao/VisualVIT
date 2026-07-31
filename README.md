@@ -23,6 +23,13 @@ TILA-CE、Siamese signed/absolute、TILA-BiCE/TCL、TAC-adapted mean F1 为
 0.4577/0.4174/0.3951/0.2658。TILA/B2 与 PRTA 的读出接口不同，因此只作
 post-hoc cross-interface 描述；完整边界见 R50 报告。
 
+R52 随后在新的 500 人、相同 2,500-train、相同 exact-64 cache 与完全相同
+5,991,173 参数直接分类头下完成三 Seed matched comparison。PRTA/TILA/B2
+mean Macro-F1 为 **0.3605/0.2731/0.2679**；PRTA−TILA +8.75 pp、CI
+`[+4.48,+12.86]`，PRTA−B2 +9.26 pp、CI `[+4.77,+13.20]`。因此可在该
+fresh internal matched-head 边界内正式写 PRTA 显著优于两个 exact-64
+适配；这不等于原生 TILA 系统或 frozen-Qwen 接口结论。
+
 后续 PRTA-Gen 案例驱动修复已经跑通一个严格限定的结构化路径：
 
 ```text
@@ -76,21 +83,22 @@ patients 上预注册和验证。
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
-2. [R50 文献方法复现与强基线结果](reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md)
-3. [R49 统一三系统结果](reports/PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md)
-4. [R45 CDEB discovery 终局报告](reports/PRTA_GEN_R45_CDEB_DISCOVERY_RESULT_CN.md)
-5. [R44A 跨来源 silver SFT 终态报告](reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md)
-6. [R44A failure case study 与 R45 方向选择](reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md)
-7. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
-8. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
-9. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
-10. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
-11. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
-12. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
-13. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-14. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-15. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-16. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+2. [R52 统一 exact-64 直接分类头结果](reports/PRTA_GEN_R52_MATCHED_DIRECT_HEAD_RESULT_CN.md)
+3. [R50 文献方法复现与强基线结果](reports/PRTA_GEN_R50_LITERATURE_METHOD_REPRODUCTION_RESULT_CN.md)
+4. [R49 统一三系统结果](reports/PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md)
+5. [R45 CDEB discovery 终局报告](reports/PRTA_GEN_R45_CDEB_DISCOVERY_RESULT_CN.md)
+6. [R44A 跨来源 silver SFT 终态报告](reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md)
+7. [R44A failure case study 与 R45 方向选择](reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md)
+8. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
+9. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
+10. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
+11. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
+12. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
+13. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
+14. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+15. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+16. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+17. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 
@@ -98,7 +106,7 @@ patients 上预注册和验证。
 - `configs/r38/`：exact-64 survival 配置；
 - `configs/r39/`：frozen-VLM transfer 配置；
 - `configs/prta_gen/`：PRTA-Gen R40A–R40C probe、structured generation、
-  internal-generalization、R44A cross-source silver 与 R49/R50 对比配置；
+  internal-generalization、R44A cross-source silver 与 R49–R52 对比配置；
 - `src/visualvit/prta.py`：PRTA-CXR adapter、loss 与等变投影；
 - `src/visualvit/prta_gen.py`、`qwen_adapter.py`：生成目标/probe 与
   exact-64 generative adapter 工程面；

@@ -2890,3 +2890,18 @@ preserving the encoder's static medical semantics.
   Seeds 17/29 had completed before the user's reprioritization. It remains
   outcome-blind with respect to every R52 direct-head prediction; freeze and
   publish all R52 choices before launching its first classifier.
+- R52 completed all nine registered runs. Mean macro-F1 is PRTA 0.360519,
+  TILA-exact64 0.273051, and B2-exact64 0.267938. Patient-paired three-seed
+  bootstrap gives PRTA−TILA +8.747 pp, CI [+4.481,+12.861], and PRTA−B2
+  +9.258 pp, CI [+4.768,+13.199]. Both preregistered lower bounds are positive,
+  so `prta_strict_superiority_supported=true`. TILA−B2 is only +0.511 pp with
+  CI [−3.100,+4.069].
+- The class pattern is informative: PRTA's strongest separation is Resolved
+  recall 0.547 mean versus 0.247 TILA and 0.300 B2; PRTA does not dominate every
+  class (TILA is slightly higher on New and B2 on Worse). The aggregate gain is
+  broad enough to survive patient bootstrap, not a single-seed artifact.
+- R52 does not invalidate R50's strong official TILA global-embedding result.
+  The TILA exact64 arm is an adapted 60-patch representation; its much lower
+  0.273 mean shows that the current parameter-free translation loses native
+  global-interface readability. The valid claim is PRTA superiority under the
+  registered matched exact64 direct head, not universal superiority over TILA.
