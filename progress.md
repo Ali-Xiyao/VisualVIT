@@ -1975,3 +1975,26 @@
 - Edited-document Markdown local-link audit passed (5 authority documents).
 - Terminal integrity audit passed: exact STOP status and four registered hashes, six arm receipts, nine gate failures, all protected/unlock flags false, zero R44A workers, and both GPUs at 0 MiB/0%.
 - Final diff review confirmed consistent R44A STOP and R42/R43 lock markers across all authority documents.
+
+# 2026-07-31 R45 case-study and new-direction authorization
+
+- Recovered the complete planning state and confirmed clean commit `44a48d4`.
+- Added Phases 16–18 for a read-only R44A case study, an independently frozen
+  R45 discovery program, and sealed qualification/confirmation.
+- Recorded current official ICLR rigor/reproducibility expectations and kept
+  them separate from the scientific protocol. No new roster, model, runtime
+  root, or GPU process has been created.
+- Audited the R44A result/roster schemas without printing identities. The six
+  aligned prediction payloads are sufficient for a self-contained,
+  identity-free mechanism analysis; no image/token/checkpoint read is needed.
+- Reused only stable analytical primitives from the R41A analyzer design
+  (metric recomputation, alignment/firewall checks, anonymized cases). R44A
+  will receive a separately named analyzer/schema rather than mutating the
+  closed R41A output.
+- Implemented the separately named R44A identity-free analyzer and five
+  fail-closed tests. The output contract includes true-vs-control agreement,
+  correctness-changing flips, G0→G1 migrations, cross-Seed sensitivity, and
+  anonymized mechanism cases while excluding identity-bearing keys.
+- New and legacy analyzer tests pass together (10 passed); focused Ruff and
+  compileall pass. Frozen the case-study protocol with exact hashes for all
+  six R44A results and the roster before any row-level prediction analysis.

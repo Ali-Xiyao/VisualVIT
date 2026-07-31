@@ -1885,3 +1885,45 @@ preserving the encoder's static medical semantics.
 - Query-only separation was large (+24.4157/+21.1441/+18.0435 pp), and schema validity plus finding echo were 1.0, but those properties are insufficient for the intended prior-sensitive scientific claim.
 - R44A aggregate SHA-256 is `8860C6A7AF52665148713271B98B89592411FE57BEA70644E1B6E65E9F5DF335`; sequence-status SHA-256 is `9C075CD28192509C0F19C2F748059301E3459F2E38278FCA31F30D0675960A3B`.
 - All protected outcome flags remained false, and R42/R43 remained locked. This terminal result is a STOP, not a tuning invitation.
+
+# R45 direction-selection evidence (2026-07-31)
+
+- The new user authorization broadens scope only to a separately named,
+  outcome-independent follow-on direction. It does not authorize tuning or
+  relabeling the closed R44A 250-patient development result.
+- Official ICLR 2026 reviewer guidance evaluates whether the work asks a
+  specific question, is well motivated and placed in literature, supports its
+  claims with technically correct and rigorous evidence, and contributes
+  significant new knowledge; state of the art is not itself required.
+- The official author guide strongly encourages reproducibility and ethics
+  statements plus code/data-processing details. For this project, that maps to
+  immutable rosters/configs, multiseed controls, patient-cluster intervals,
+  exact hashes, outcome firewalls, license/DUA boundaries, and a narrow
+  clinical-claim boundary.
+- A credible follow-on must address the shared R41A/R44A mechanism: schema and
+  finding echo are solved, query-only separation is strong, but correct prior
+  does not reliably beat shuffled prior. Simply scaling data, changing a
+  threshold, adding Seeds, or teaching an explicit “shuffled” output would not
+  constitute the required scientific contribution.
+- Candidate direction for case-study testing: counterfactual prior-grounded
+  generation, where training adds a representation-level hard-negative
+  objective for correct versus shuffled/current-only evidence while retaining
+  the same legal five-class free-generation target. The case study must first
+  show that prediction invariance or migration supports this mechanism rather
+  than class imbalance alone.
+- R44A preserves the same row-level result contract as R41A but with explicit
+  R44A schema/protocol/status, 250 development patients, 1,000 training
+  patients, and 94 updates. All six results expose aligned targets and
+  true/current/query/shuffle predictions, so a new identity-free analyzer can
+  recompute every scalar without loading tokens, checkpoints, or images.
+- The case-study authority will predeclare three mechanism discriminators:
+  true-vs-shuffle prediction agreement and beneficial/harmful flip rates;
+  G0-to-G1 correction/regression migrations by class; and cross-Seed
+  consistency. High shuffle agreement across classes supports prior
+  under-use, whereas failures confined to one class would instead support a
+  class-emission explanation.
+- R44A's frozen config explicitly disallows outcome-driven tuning, checkpoint
+  selection, class reweighting, and downstream unlock. Its result payloads
+  retain the four legal five-class prediction arms, so the new analyzer can
+  measure correct-prior sensitivity without inventing a new output class or
+  modifying the closed experiment.

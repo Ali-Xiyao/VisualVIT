@@ -551,6 +551,59 @@ smokes during iteration.
   gate failures. R42A/R43 were not started; protected/gold/external outcome
   flags remained false.
 
+### Phase 16 — R44A read-only case study and ICLR-standard hypothesis selection
+
+- [x] Preserve R44A as a terminal STOP and authorize only a separately named
+  follow-on direction; do not tune its 250-patient development roster,
+  checkpoint, Seed, decoding, threshold, or gate.
+- [x] Freeze an identity-free R44A case-study analyzer before inspecting
+  row-level prediction behavior. Quantify true-vs-shuffle invariance,
+  per-class migrations, cross-Seed stability, G0/G1 transfer, and representative
+  de-identified failure mechanisms.
+- [ ] Review primary related work and current official ICLR evaluation
+  expectations. Require a specific question, technically motivated novelty,
+  strong baselines/ablations, claim-matched statistics, reproducibility,
+  ethics/data boundaries, and explicit negative-result handling.
+- [ ] Select one new mechanism-level hypothesis only if the case study
+  discriminates it from simpler explanations. Write the case study and
+  proposal addendum before implementing the new experiment.
+- **Status:** in progress — R44A is frozen; case-study authority and
+  literature/novelty audit are next.
+
+### Phase 17 — R45 counterfactual prior-grounding discovery
+
+- [ ] Audit unused CheXpert silver support after excluding every R44A patient
+  and all historical gold/protected patients. Freeze mutually disjoint
+  discovery-train, discovery-development, sealed qualification, and optional
+  confirmation partitions before model work.
+- [ ] Implement a separately named R45 method plus an inherited Qwen baseline
+  and mechanism ablations. The new method must explicitly optimize
+  progression-relevant correct-prior use without teaching an artificial
+  invalid/shuffle output class or changing the five-class evaluation target.
+- [ ] Use only discovery-train/development for engineering iteration. Register
+  model, loss, Seeds, compute, controls, decoding, primary endpoint,
+  per-class floors, bootstrap gates, and fail-closed receipts before reading
+  sealed qualification outcomes.
+- [ ] Commit and push the complete R45 pre-qualification authority, then run
+  discovery automatically until one registered candidate passes or the
+  discovery budget reaches its frozen STOP.
+- **Status:** pending.
+
+### Phase 18 — R45 sealed qualification, confirmation, and paper-ready closure
+
+- [ ] Execute the frozen selected candidate and strong baseline on the sealed
+  patient-disjoint qualification cohort with multiseed true/current/query/
+  shuffle controls and patient-cluster confidence intervals.
+- [ ] If and only if every registered qualification gate passes, execute one
+  frozen confirmation on a second untouched cohort. A failed qualification or
+  confirmation is terminal for R45 and cannot be tuned around.
+- [ ] Produce the terminal case study, method/ablation/statistics tables,
+  reproducibility and ethics statements, limitations, artifact hashes, and
+  ICLR-style claim boundary; synchronize Proposal/status/index/planning files.
+- [ ] Validate code, artifacts, links, firewalls, processes, and GPUs; commit
+  and push the terminal package.
+- **Status:** pending.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -663,7 +716,6 @@ smokes during iteration.
 
 ## Next Step
 
-Preserve the R44A terminal STOP. Do not tune on its 250-patient development
-outcome and do not launch R42A/R43. Permissible follow-up is read-only
-reproduction/paper material, or a separately authorized outcome-independent
-protocol for a genuinely new hypothesis and untouched evidence source.
+Freeze and validate the identity-free R44A case-study analyzer, then use only
+that analysis plus primary literature to select the separately named R45
+mechanism hypothesis before any new roster, model, or GPU execution.
