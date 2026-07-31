@@ -831,6 +831,21 @@ smokes during iteration.
   PRTA−B2 +9.258 pp CI [+4.768,+13.199]. Both matched reports and authority
   surfaces are synchronized, validated, committed and pushed as `a28852d`.
 
+### Phase 30 — R51/R52 dual-deployment methodology report
+
+- [x] Reopen the frozen R51/R52 configs, terminal reports, implementation, and
+  aggregate receipts as the sole numerical and methodological authorities.
+- [x] Write one standalone, from-zero Chinese Markdown report that distinguishes
+  the shared exact-64 representations from R52 direct-head deployment and R51
+  frozen-Qwen VLM deployment.
+- [x] Include complete per-seed, mean, per-class, paired-bootstrap, parameter,
+  data-split, training, inference, and reproducibility tables without recounting
+  earlier failed attempts.
+- [x] Validate every reported number and artifact link against the terminal
+  aggregates/configs, check Markdown structure and repository diff, then update
+  the planning bundle and publish the document.
+- **Status:** completed
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -990,10 +1005,12 @@ smokes during iteration.
 | First combined R51 terminal-report/planning patch matched PowerShell's earlier mojibake rendering of the live Phase-28 status | 1 | Create the report independently, then patch the UTF-8 status text and append findings/progress against exact live content; aggregate and runtime artifacts were unchanged |
 | First terminal R51/R52 document audit required the full R51 machine status in every index-like file, and a sequential shell masked the Python assertion exit | 1 | Replace the blanket assertion with file-specific link/value/status markers and run the Python audit as a standalone fail-fast gate before any commit |
 | Corrected standalone document audit found the active proposal stated the R51 conclusion but omitted its exact terminal status token | 1 | Add `COMPLETE_PRTA_GEN_R51_MATCHED_INTERFACE_BENCHMARK` beside the proposal conclusion and rerun the same standalone audit |
+| First dual-deployment report audit embedded a Unicode minus sign through a PowerShell here-string and compared a mojibake literal | 1 | Construct U+2212 inside Python, rerun the same aggregate/hash/link assertions, and retain the correctly encoded report text unchanged |
+| First staged dual-deployment diff check found four Markdown hard-break spaces in the report metadata block | 1 | Remove the four trailing spaces, rerun the standalone staged diff gate, and leave all scientific text and values unchanged |
 | The next standalone audit embedded a Chinese sentence marker through the PowerShell here-string and compared a mojibake literal | 1 | Keep UTF-8 document content unchanged and use stable ASCII numeric/status markers for the gap-audit assertion; the full link/hash/value gate then passed |
 
 ## Next Step
 
-R51 and R52 are terminally closed and pushed. No automatic continuation remains
-inside these authorities; preserve the 500-patient outcomes against retuning and
-await a separately scoped next objective.
+The standalone R51/R52 dual-deployment methodology report is complete and
+validated against both terminal aggregates. Preserve the 500-patient outcomes
+against retuning; no automatic experiment continuation remains inside R51/R52.

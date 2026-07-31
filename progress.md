@@ -1,5 +1,27 @@
 # Progress: PRTA-CXR R37
 
+## 2026-07-31 — R51/R52 双部署方法学详解启动
+
+- 用户要求新增一份从零开始的详细中文 Markdown，只解释 R51 冻结-Qwen
+  VLM 部署与 R52 独立直接分类头部署，并完整列入两组匹配对比结果；不回顾
+  此前失败尝试。
+- 已重新打开 R51/R52 冻结配置、终局报告、运行器与聚合权威；报告将明确区分
+  PRTA/TILA/B2 表征来源、parameter-free exact-64 翻译，以及两种下游读出接口。
+- Phase 30 已加入 `task_plan.md`，当前进入正文撰写与逐项数值核验。
+
+## 2026-07-31 — R51/R52 双部署方法学详解完成
+
+- 新增 `reports/PRTA_GEN_R51_R52_DUAL_DEPLOYMENT_METHODOLOGY_DETAILED_CN.md`：
+  44,058 bytes、1,029 行，完整解释 shared exact-64 表征、PRTA/TILA/B2
+  来源与转换、R52 direct-head 部署、R51 frozen-Qwen 部署及两项全部结果。
+- 文档包含 9+9 arm/seed 的 Macro-F1、accuracy、耗时、逐 seed/逐类 recall、
+  三组患者配对 bootstrap、参数量公式、prompt/JSON/SFT 合同、部署伪代码、
+  复现入口和结论边界；正文未写此前失败尝试。
+- 数值/链接/hash 自动审计返回
+  `DUAL_DEPLOYMENT_REPORT_NUMERIC_LINK_HASH_AUDIT_PASS`：两个 terminal
+  aggregate 的状态、字节数、SHA、18 个结果 receipt 的核心指标，以及 11 个
+  Markdown 链接均通过；报告索引已把该文档列为当前首要阅读入口。
+
 ## 2026-07-27 — Scientific pivot opened
 
 - Read the user-provided R37/PRTA-CXR execution handoff.

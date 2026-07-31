@@ -1,5 +1,22 @@
 # Findings: PRTA-CXR R37
 
+## 2026-07-31 — R51/R52 报告的术语与叙事边界
+
+- 用户口述中的“两个 251 和 52”按当前项目权威解释为 R51 与 R52；“单独
+  ViT/表征部署”对应 R52 的统一 direct head，“作为 VLM 部署”对应 R51 的
+  exact-64→shared projector→frozen Qwen 系统接口。
+- 两项实验共享三种 `[64,768]` 表征、2,500 名训练患者和 500 名评估患者；
+  主要变化是下游读出接口，因此报告必须先讲共享表征，再讲部署分支，不能把
+  R51/R52 误写成两套独立的视觉编码方法。
+- TILA 的预训练图像编码器和 temporal projected patches 来自官方实现，但
+  60-patch exact-64 翻译及本地五分类部署是项目适配；B2 是基于冻结
+  BiomedCLIP 的本地透明 Siamese 对照，不是官方命名的完整论文系统；PRTA 是
+  本项目提出的 finding-guided cross-time alignment 表征。
+- 最终报告采用“共享表征层 + 两种读出部署层”的统一解释：R52 训练 5,991,173
+  参数共同分类头，R51 训练 9,873,920 参数共同 projector 且 Qwen 为 0
+  trainable parameters。两者均显示 PRTA 对 TILA/B2 的患者配对 CI 下界大于
+  0；TILA 对 B2 仅在 R51 显著，说明不同读出器会改变控制方法的相对可读性。
+
 ## Frozen predecessor conclusion
 
 - R31 remains valid discovery evidence but its routing gain is not a stable
