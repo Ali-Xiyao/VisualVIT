@@ -2022,3 +2022,78 @@ preserving the encoder's static medical semantics.
 - Qualification and confirmation are assigned before discovery partitions.
   This protects rare-class support for the sealed cohorts and prevents later
   discovery behavior from influencing their membership.
+- The exact image-complete preflight passed with 21,372 available patients and
+  per-label support Stable 17,116, Improved 9,123, Worse 12,066, New 9,928,
+  Resolved 1,075. It filled all four frozen partitions and left 224 unused
+  Resolved patients, above the frozen reserve of 200.
+- The one-time roster contains 3,750 mutually disjoint, one-row-per-patient,
+  image-complete rows: train 2,500, development 500, qualification 500, and
+  confirmation 250. Its byte size is 2,898,864 and SHA-256 is
+  `0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8`.
+- Both sealed outcome-read flags remain false. Building the roster necessarily
+  used silver labels for stratified membership, but no qualification or
+  confirmation prediction, model output, or metric was computed.
+
+# 2026-07-31 R45 method-interface audit
+
+- The qualified structured path pools the five registered exact64 semantic
+  regions independently and concatenates their means into 3,840 features
+  (`5 x 768`). This is the correct interface for an auxiliary delta head; it
+  does not mix semantic token types or consume the four reserve positions.
+- The existing free-generation path applies a fresh `TierTokenProjector` to all
+  64 input-width-768 tokens and injects the resulting hidden-size-2560 block
+  into Qwen exactly once. Its adapter already enforces assistant-only loss,
+  exact placeholder count, frozen-base/LoRA boundaries, greedy decoding, and
+  first-step cache equivalence.
+- A minimal CDEB implementation can therefore remain compatible with the
+  established adapter: compute `mean(true_pair) - mean(current_only)`, predict
+  five-class logits with the existing small progression head, and transform
+  the soft five-class distribution into an additive fixed-budget token-space
+  evidence block before the unchanged Tier projector. The exact token
+  placement and trainable boundary still need to be frozen after inspecting
+  token-type metadata and projector internals.
+- Positions 60-63 are physically present and attended but are currently mapped
+  to one shared neutral embedding because they use the reserved token type and
+  `valid_mask=false`. They are the only four positions that can carry a new
+  evidence block without overwriting the qualified query/state/transition/
+  relation regions at positions 0-59.
+- R45 should therefore preserve the base Tier projector for positions 0-59,
+  map the five-way soft delta distribution to four hidden-size evidence
+  embeddings, replace only positions 60-63 in the projected bundle, and mark
+  those four positions logically valid in the R45 audit. This keeps exactly 64
+  physical injections while making the bottleneck explicit and ablatable.
+- The full method's auxiliary head will use 3,840-wide
+  `semantic_mean(true_pair) - semantic_mean(current_only)` features. The
+  no-delta ablation will use true-pair semantic means; the delta-no-bridge
+  ablation will optimize the auxiliary loss but leave reserve embeddings
+  neutral. None introduces a sixth label or trains on shuffled-control labels.
+- The existing cache compiler already materializes true/current/shuffled
+  exact64 variants with zeroed reserve positions, no labels/sentences, and a
+  one-pass compact image feature map. It can be generalized through an
+  explicit R45 stage contract and a thin R45 entrypoint; duplicating the full
+  cache implementation would create avoidable drift.
+- The cache must include only train and development during discovery. Sealed
+  qualification/confirmation tokens should be materialized only after the
+  candidate and qualification protocol are frozen; this makes an accidental
+  early sealed evaluation structurally impossible.
+- The implemented `CausalDeltaEvidenceBottleneck` preserves the registered
+  3,840-wide structured feature interface, uses a five-way softmax only, and
+  replaces exactly positions 60-63 after Tier projection. Its injection helper
+  preserves embeddings 0-59 byte-for-byte and records the four positions in
+  the projected-bundle audit.
+- The frozen discovery config limits the token cache to the 2,500 train and
+  500 development patients, uses one Seed (17) for the four preregistered
+  mechanism arms, and keeps Qwen fully frozen in every arm. This isolates the
+  evidence bottleneck from the R44A LoRA-instability mechanism.
+- Discovery compares projector-only baseline, true-pair/no-delta evidence,
+  delta auxiliary loss without bridge, and full CDEB under the same one-epoch,
+  79-update budget. The full candidate alone can unlock qualification, and
+  the selection gate is already specified in the config rather than chosen
+  after observing outcomes.
+- The discovery runner keeps Qwen at zero trainable parameters, trains only
+  the registered projector/CDEB modules, evaluates the same four control arms,
+  and stores alignment arrays only inside protected runtime results. Its CLI
+  receipt removes patients, example IDs, targets, and predictions.
+- The aggregator uses paired patient-cluster macro-F1 bootstrap comparisons
+  and enforces the predeclared accuracy, per-class, schema, specificity,
+  baseline, no-delta, auxiliary-head, and true/shuffle-agreement gates.

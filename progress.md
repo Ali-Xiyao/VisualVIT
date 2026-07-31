@@ -2045,3 +2045,43 @@
 - R45 plus inherited R44A roster regressions pass (12 tests); focused Ruff,
   compileall, JSON parsing, and `git diff --check` pass. No R45 runtime roster
   or GPU process has been created yet.
+- Committed and pushed the pre-roster authority as `df75aca`, then ran the
+  single exact image-complete preflight. It passed with 224 Resolved patients
+  left in reserve and both sealed-outcome flags false.
+- Wrote the formal R45 roster once: 3,750 balanced, patient-disjoint,
+  image-complete rows across the four frozen partitions; SHA-256
+  `0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8`.
+  No GPU process or model output exists yet.
+- Began the outcome-free method-interface audit. The existing structured
+  3,840-wide semantic feature path and exact64 Qwen adapter can support CDEB
+  without changing the five-class target or the single-injection contract.
+- Froze the architectural placement decision: CDEB uses only the four formerly
+  neutral reserve positions 60-63 after Tier projection. The qualified
+  positions 0-59 and exact-64 physical interface remain unchanged.
+- Audited the R44A cache compiler for reuse. R45 will extend it with a
+  stage-specific authority/partition contract and initially cache only the
+  3,000 discovery patients, keeping both sealed partitions outside the token
+  index until the full method/gate freeze.
+- Implemented and validated the core CDEB module plus five focused tests.
+  Delta/no-delta feature modes, five-class probability normalization,
+  reserve-only injection, qualified-position preservation, and the
+  delta-no-bridge neutral path all pass; focused Ruff/compileall/diff checks
+  also pass.
+- Added the full frozen discovery config and a separately named discovery-only
+  cache compiler. It structurally excludes qualification/confirmation
+  partitions and records both sealed-token flags as false. Combined new and
+  inherited regressions pass (18 tests), with focused Ruff/compileall/JSON/diff
+  checks also passing.
+- Implemented the separately named discovery runner with frozen-Qwen SFT,
+  auxiliary five-class loss, reserve-only bridge injection, all four controls,
+  cache-equivalence checks, and identity-hidden CLI receipts. Its nine core
+  runner/CDEB tests pass; the first lint pass found one unused import, now
+  removed before the full validation rerun.
+- Implemented the discovery aggregator and synchronized the protocol with all
+  exact architecture, optimizer, budget, controls, gate, qualification, and
+  confirmation settings. The combined focused suite now passes 24 tests;
+  focused Ruff, compileall, and diff validation pass.
+- Pre-outcome authority validation passes: 29 focused new/inherited tests,
+  repository-wide Ruff, full `src/scripts/tests` compileall, and
+  `git diff --check`. The complete method/cache/runner/aggregate authority is
+  ready for staged review, commit, and push before any GPU execution.

@@ -573,23 +573,25 @@ smokes during iteration.
 
 ### Phase 17 — R45 causal delta evidence-bottleneck discovery
 
-- [ ] Audit unused CheXpert silver support after excluding every R44A patient
+- [x] Audit unused CheXpert silver support after excluding every R44A patient
   and all historical gold/protected patients. Freeze mutually disjoint
   discovery-train, discovery-development, sealed qualification, and optional
   confirmation partitions before model work.
-- [ ] Implement a separately named R45 method plus an inherited Qwen baseline
+- [x] Implement a separately named R45 method plus an inherited Qwen baseline
   and mechanism ablations. The new method must explicitly optimize
   progression-relevant correct-prior use without teaching an artificial
   invalid/shuffle output class or changing the five-class evaluation target.
-- [ ] Use only discovery-train/development for engineering iteration. Register
+- [x] Use only discovery-train/development for engineering iteration. Register
   model, loss, Seeds, compute, controls, decoding, primary endpoint,
   per-class floors, bootstrap gates, and fail-closed receipts before reading
   sealed qualification outcomes.
 - [ ] Commit and push the complete R45 pre-qualification authority, then run
   discovery automatically until one registered candidate passes or the
   discovery budget reaches its frozen STOP.
-- **Status:** in progress — audit untouched patient/class support and freeze
-  the four-way R45 roster before method implementation.
+- **Status:** in progress — the committed four-way roster passed its
+  image-complete preflight and was written once with immutable hash
+  `0387FCF0...1F7F4D8`; inspect the exact64/model interfaces and freeze the
+  discovery method/gates before any GPU work.
 
 ### Phase 18 — R45 sealed qualification, confirmation, and paper-ready closure
 
@@ -720,6 +722,8 @@ smokes during iteration.
 | Phase-16 Git push failed twice through Git for Windows OpenSSL with `SSL_ERROR_SYSCALL` while GitHub HTTPS remained reachable through the local proxy | 2 | Keep the repository and proxy configuration unchanged; use command-scoped `http.sslBackend=schannel` after resolving the exact registered remote URL |
 | The first command-scoped Schannel connectivity probe guessed a public repository URL and returned `Repository not found` | 1 | Read the configured remote URL and retry only that exact endpoint; Schannel reached GitHub successfully, so this was a target error rather than another TLS failure |
 | R45 roster inspection guessed a standalone `tests/test_build_prta_gen_r44a_roster.py` | 1 | Use the actual combined R44A regression surface `tests/test_prta_gen_r44a.py`; no source or runtime artifact changed |
+| First post-roster planning patch matched PowerShell's mojibake rendering of an em dash instead of the UTF-8 file text | 1 | Re-read the bounded section explicitly as UTF-8 and apply the same documentation-only update against the actual text |
+| First focused R45 discovery-runner Ruff pass found an unused `math` import | 1 | Remove the unused import and the unused synthetic helper, then rerun the same focused validation before preflight |
 
 ## Next Step
 

@@ -1,0 +1,297 @@
+{
+  "schema": "visualvit.prta-gen.r45-cdeb-discovery-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R45_CDEB_DISCOVERY",
+  "stage_tag": "R45",
+  "protocol_id": "prta-gen-r45-cdeb-v1",
+  "study_tier": "cross_source_silver_causal_delta_evidence_discovery",
+  "authorization": {
+    "user_authorized_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "outcome_driven_tuning_allowed": false,
+    "discovery_budget_is_terminal": true
+  },
+  "authority": {
+    "roster_config": "configs\\prta_gen\\prta_gen_r45_cdeb_roster_v1.json",
+    "roster_config_bytes": 4450,
+    "roster_config_sha256": "6BA86F97FBC2884DA10FBD14F61FE934B442F9E6E8F881827888BAB24F0AAF96",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json",
+    "roster_bytes": 2898864,
+    "roster_sha256": "0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8",
+    "roster_status": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT",
+    "qualification_outcomes_must_remain_unread": true,
+    "confirmation_outcomes_must_remain_unread": true
+  },
+  "cache": {
+    "partitions": [
+      "train",
+      "development"
+    ],
+    "expected_rows": 3000,
+    "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+    "source_candidate_sha256": "8D4437572245199213133AE17E13F8F5E7E3AAC7472D8B2E683A630EA7F3DEF0",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "frozen_prta_seed": 17,
+    "prior_shuffle_seed": 45001,
+    "prior_shuffle_namespace": "prta-gen-r45-cdeb-discovery-prior-shuffle-v1",
+    "batch_size": 16,
+    "shard_size": 128,
+    "workers": 4,
+    "token_shape": [
+      64,
+      768
+    ],
+    "token_dtype": "torch.float16",
+    "variants": [
+      "true_tokens",
+      "current_tokens",
+      "shuffled_tokens"
+    ],
+    "labels_in_cache": false,
+    "sentences_in_cache": false
+  },
+  "source": {
+    "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\tokens\\discovery\\index.json",
+    "required_token_status": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_TOKEN_CACHE",
+    "token_variants": {
+      "true_pair": "true_tokens",
+      "current_only": "current_tokens",
+      "prior_shuffle": "shuffled_tokens"
+    },
+    "query_only_representation": "all_zero_exact64_tokens"
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "local_files_only": true,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "qualified_active_positions": [
+      0,
+      60
+    ],
+    "cdeb_evidence_positions": [
+      60,
+      61,
+      62,
+      63
+    ],
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "pixel_image_video_inputs_used": false,
+    "qwen_base_frozen": true,
+    "qwen_lora_used": false,
+    "projector_initialization": "fresh_per_seed_and_method"
+  },
+  "methods": {
+    "order": [
+      "baseline_projector",
+      "no_delta_evidence",
+      "delta_no_bridge",
+      "full_cdeb"
+    ],
+    "baseline_projector": {
+      "decision_feature_mode": null,
+      "auxiliary_loss_enabled": false,
+      "evidence_bridge_enabled": false
+    },
+    "no_delta_evidence": {
+      "decision_feature_mode": "true_pair",
+      "auxiliary_loss_enabled": true,
+      "evidence_bridge_enabled": true
+    },
+    "delta_no_bridge": {
+      "decision_feature_mode": "delta",
+      "auxiliary_loss_enabled": true,
+      "evidence_bridge_enabled": false
+    },
+    "full_cdeb": {
+      "decision_feature_mode": "delta",
+      "auxiliary_loss_enabled": true,
+      "evidence_bridge_enabled": true
+    }
+  },
+  "cdeb": {
+    "semantic_feature_function": "exact64_semantic_mean_features",
+    "feature_width": 3840,
+    "semantic_regions": [
+      [0, 4],
+      [4, 16],
+      [16, 32],
+      [32, 48],
+      [48, 60]
+    ],
+    "normalization": "training_partition_mean_std_clamp_1e-6",
+    "head_hidden_width": 128,
+    "class_count": 5,
+    "temperature": 1.0,
+    "bridge_hidden_width": 128,
+    "evidence_token_count": 4,
+    "reserved_positions_repurposed": [
+      60,
+      64
+    ],
+    "qualified_positions_preserved": [
+      0,
+      60
+    ],
+    "artificial_invalid_class_used": false
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "finding_values": [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Enlarged Cardiomediastinum",
+      "Fracture",
+      "Lung Lesion",
+      "Lung Opacity",
+      "Pleural Effusion",
+      "Pleural Other",
+      "Pneumonia",
+      "Pneumothorax"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "all_other_fields_omitted": true,
+    "compact_json": true,
+    "append_eos": true,
+    "max_target_tokens": 64,
+    "assistant_only_loss": true
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_prefix": "Compare the current chest radiograph with its prior study for the finding {finding}. The next 64 physical positions contain fixed visual tokens. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field. Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "training": {
+    "discovery_seeds": [
+      17
+    ],
+    "epochs": 1,
+    "batch_size": 1,
+    "gradient_accumulation": 32,
+    "effective_batch_size": 32,
+    "projector_learning_rate": 0.0001,
+    "cdeb_learning_rate": 0.001,
+    "optimizer": "AdamW",
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "sft_loss_weight": 1.0,
+    "auxiliary_ce_weight": 0.5,
+    "expected_optimizer_updates": 79,
+    "early_stopping": false,
+    "checkpoint_selection": false
+  },
+  "evaluation": {
+    "partition": "development",
+    "decoding": "free_greedy",
+    "arms": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "prior_shuffle"
+    ],
+    "required_primary_control": "prior_shuffle",
+    "descriptive_controls": [
+      "current_only",
+      "query_only"
+    ],
+    "primary_metric": "macro_f1",
+    "per_class_metric": "recall",
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 45002,
+    "structured_delta_head_is_diagnostic_only": true
+  },
+  "discovery_gate": {
+    "selected_method": "full_cdeb",
+    "full_true_macro_f1_at_least": 0.3,
+    "full_all_class_recall_at_least": 0.12,
+    "full_schema_validity_at_least": 0.99,
+    "full_finding_echo_accuracy_at_least": 0.99,
+    "full_true_minus_prior_shuffle_macro_f1_at_least_pp": 1.0,
+    "full_true_minus_baseline_true_macro_f1_at_least_pp": 1.0,
+    "full_true_minus_no_delta_true_macro_f1_at_least_pp": 0.0,
+    "full_auxiliary_true_macro_f1_at_least": 0.35,
+    "full_true_prior_shuffle_same_prediction_at_most": 0.75,
+    "qualification_unlock_requires_all": true
+  },
+  "qualification_preregistered_gate": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "methods": [
+      "baseline_projector",
+      "full_cdeb"
+    ],
+    "all_seed_full_true_macro_f1_at_least": 0.3,
+    "all_seed_full_all_class_recall_at_least": 0.12,
+    "all_seed_full_schema_validity_at_least": 0.99,
+    "all_seed_full_finding_echo_accuracy_at_least": 0.99,
+    "all_seed_full_true_minus_prior_shuffle_at_least_pp": 2.0,
+    "pooled_full_true_minus_prior_shuffle_ci95_lower_above_pp": 0.0,
+    "all_seed_full_minus_baseline_at_least_pp": 2.0,
+    "pooled_full_minus_baseline_ci95_lower_above_pp": 0.0
+  },
+  "confirmation_preregistered_gate": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "methods": [
+      "baseline_projector",
+      "full_cdeb"
+    ],
+    "all_seed_full_true_macro_f1_at_least": 0.3,
+    "all_seed_full_all_class_recall_at_least": 0.12,
+    "all_seed_full_schema_validity_at_least": 0.99,
+    "all_seed_full_finding_echo_accuracy_at_least": 0.99,
+    "all_seed_full_true_minus_prior_shuffle_at_least_pp": 2.0,
+    "pooled_full_true_minus_prior_shuffle_ci95_lower_above_pp": 0.0,
+    "all_seed_full_minus_baseline_at_least_pp": 2.0,
+    "pooled_full_minus_baseline_ci95_lower_above_pp": 0.0
+  },
+  "result_statuses": {
+    "cache_preflight_pass": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_CACHE_PREFLIGHT",
+    "cache_pass": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_TOKEN_CACHE",
+    "arm_complete": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_ARM",
+    "aggregate_go": "GO_PRTA_GEN_R45_CDEB_DISCOVERY",
+    "aggregate_stop": "STOP_PRTA_GEN_R45_CDEB_DISCOVERY",
+    "engineering_stop": "STOP_PRTA_GEN_R45_CDEB_ENGINEERING_CONTRACT"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1",
+    "token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\tokens\\discovery",
+    "discovery_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\discovery"
+  },
+  "firewall": {
+    "r44a_results_closed": true,
+    "discovery_uses_train_and_development_only": true,
+    "qualification_tokens_materialized": false,
+    "confirmation_tokens_materialized": false,
+    "qualification_outcomes_read": false,
+    "confirmation_outcomes_read": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "r42_unlocked": false,
+    "r43_unlocked": false,
+    "scientific_claim_allowed": false
+  }
+}
