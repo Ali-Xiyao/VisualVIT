@@ -2634,3 +2634,37 @@
   Ruff, compileall, both JSON/result audits, report-index paths, and
   `git diff --check`. No stale pending-confirmation text was found, active
   workers are zero, and both GPUs are idle.
+- User authorized R49 unified three-way attribution after confirming the
+  existing R48 package does not include a same-cohort Naive exact-64 result.
+  Restored planning context and opened Phase 26; no R49 runtime or GPU work has
+  started before the fairness authority is frozen.
+- The first R49 inspection guessed a shortened R45 config filename and stopped
+  read-only. Logged it and will resolve the exact tracked config path before
+  inspecting training/cache contracts.
+- A second read-only finder used a Windows-incompatible anchored path pattern,
+  returned no config, and then attempted to read a null path. Switched to a
+  validated `Get-ChildItem -Filter '*r45*.json'` lookup; the first logging patch
+  was also rejected as an empty hunk and changed no file.
+- Resolved the two R45 authorities explicitly and inspected the discovery
+  freeze. R49 will match its frozen Qwen/projector/training settings and use a
+  common task/output instruction; only the necessary raw-image versus exact-64
+  modality wrapper may differ. No R49 GPU process has started yet.
+- Audited the complete R48 raw runner. Its frozen-model and two-GPU sharding
+  machinery can be adapted, but its qualification-only upstream binding cannot
+  be reused as the R49 authority. The R49 implementation will read the same
+  750-row union from the frozen roster and preserve zero trainable Qwen weights.
+- Recovered the formal B1 definition and exact PRTA cache paths. The R49 Naive
+  cache will pin 30 evenly spaced non-CLS Block-8 patch positions per image,
+  concatenate prior then current, and append four exact-zero positions. This
+  decision is being frozen before any R49 outcomes or training are produced.
+- Added the frozen R49 authority plus dedicated Naive-cache, matched exact-64
+  training/evaluation, raw two-image, and three-way aggregate entrypoints. The
+  design enforces identical 750-example order/targets, identical exact-64
+  initialization/capacity/training order, frozen Qwen, and paired patient
+  bootstrap contrasts. Static and preflight validation are next; GPUs remain
+  unstarted until those gates pass.
+- R49 prelaunch validation passes: JSON parse, compileall, focused Ruff, nine
+  focused tests, Naive cache preflight (3,250 patients / 6,500 images), and Raw
+  preflight (750 rows, two disjoint 375-row shards). Freeze/commit the prelaunch
+  package next, then launch Naive caching on one GPU and Raw shard 0 on the
+  other without changing their runners.

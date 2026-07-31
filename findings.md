@@ -2439,3 +2439,42 @@ preserving the encoder's static medical semantics.
   descriptively and is titled
   `POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL`. Its 3,574-byte SHA-256 is
   `7463FDADAEEAFF7958AA76CF5A882466452151A24CCC87767F29FD85F8CFB7F6`.
+- The strict three-way alignment attribution is not yet complete. Raw and PRTA
+  share the R48 qualification 500 patients, but Raw has no confirmation arm,
+  the two user prompts are not identical, and Naive exact-64 exists only as an
+  R40 protocol declaration with no R48/R49 runtime result.
+- R49 must therefore rerun all three through one common harness. The fair
+  token comparison fixes Naive to 30 prior + 30 current + 4 reserved tokens
+  and matches PRTA on encoder, projector capacity, training rows/steps/seed,
+  frozen Qwen, prompt task/output contract, and the 750-patient evaluation set.
+- R45 supplies the matched training template for R49: frozen Qwen3-VL-4B,
+  fresh `TierTokenProjector`, Seed 17, one epoch over 2,500 training rows,
+  effective batch size 32, projector LR 1e-4, and exact 64x768 FP16 inputs.
+  Its existing prompt is token-specific, so R49 must freeze a shared task/output
+  instruction plus arm-only modality wrapper instead of falsely claiming the
+  complete serialized multimodal prompts are byte-identical.
+- The R45 PRTA cache is produced from frozen Block-8 features through the R37
+  model and `pack_fixed64`; positions 60:64 are verified zero. This confirms
+  that Naive exact-64 can use the same 768-wide frozen image-token source and
+  reserve the same four zero positions without changing the Qwen or projector.
+- The existing raw runner already freezes the exact local Qwen weights and
+  supports modulo sharding across both GPUs, but it is qualification-only and
+  binds upstream R48 results. R49 therefore needs a new authority/runner that
+  selects qualification plus confirmation (750 unique patients) directly from
+  the frozen roster and uses the new common task contract.
+- Raw inference consumes two full images through Qwen's vision processor; the
+  exact-64 arms replace only the modality content with 64 projected positions.
+  Comparable scientific claims must therefore report raw vision-token compute
+  separately and define prompt parity at the semantic task/output-contract
+  level, not as identical serialized token IDs.
+- R40 is the still-relevant B1 authority: 30 deterministic prior Block-8
+  visual tokens + 30 current tokens + four shared zero-reserved positions,
+  using one projector with the same one-epoch, accumulation-32, LR-1e-4,
+  weight-decay-0.01 schedule. It did not freeze the 30 indices, so R49 must pin
+  an outcome-independent rule before execution; evenly spaced non-CLS patch
+  indices across the 14x14 grid are the least arbitrary deterministic choice.
+- The live PRTA indices are exactly the R45 train/development index plus the
+  R48 qualification and confirmation indices under their respective
+  `tokens/qualification` and `tokens/confirmation` roots. The earlier scalar
+  inventory queried two incorrect nested paths; configs now provide the exact
+  hash-pinned locations.

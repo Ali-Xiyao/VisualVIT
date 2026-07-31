@@ -722,6 +722,29 @@ smokes during iteration.
   true−shuffle +5.702 pp (CI95 +2.529 to +9.101), and true−current +7.860 pp
   (CI95 +4.629 to +11.045).
 
+### Phase 26 — R49 unified three-way alignment attribution
+
+- [x] Freeze one shared 2,500-train / 750-evaluation patient roster and a
+  common task/output prompt contract for Raw two-image, Naive exact-64, and
+  PRTA exact-64. Permit only the unavoidable modality serialization wrapper.
+- [x] Implement Naive exact-64 as 30 deterministic prior image tokens + 30
+  deterministic current image tokens + 4 reserved zeros, with the same frozen
+  visual encoder, Qwen, projector capacity, optimizer budget, and Seed 17 as
+  the PRTA exact-64 arm.
+- [x] Implement one matched Naive/PRTA projector runner; refitting remains to
+  execute after static, cache, and preflight gates pass. The runner will
+  verify frozen-Qwen, no-pixel token-path, exact-64, schema, and finding gates.
+- [ ] Evaluate all three systems on the identical 750-patient union using the
+  same task instruction/JSON contract; use both GPUs for disjoint shards where
+  the frozen execution contract permits.
+- [ ] Run paired patient-bootstrap for PRTA−Raw and PRTA−Naive, report compute
+  separately, and update the proposal/case study with an alignment-attribution
+  verdict regardless of sign.
+- [ ] Validate tests, hashes, active workers/GPUs, commit, and push the complete
+  R49 authority/result package.
+- **Status:** in progress — authority and implementation inventory only; no
+  R49 GPU job or outcome aggregate exists.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -843,6 +866,12 @@ smokes during iteration.
 | First post-roster planning patch matched PowerShell's mojibake rendering of an em dash instead of the UTF-8 file text | 1 | Re-read the bounded section explicitly as UTF-8 and apply the same documentation-only update against the actual text |
 | First focused R45 discovery-runner Ruff pass found an unused `math` import | 1 | Remove the unused import and the unused synthetic helper, then rerun the same focused validation before preflight |
 | First R48 confirmation runner preflight was invoked before its one-time cache index could be pinned | 1 | Cache preflight, tests, Ruff, compileall, and JSON validation passed; commit/push the frozen authority, materialize only confirmation tokens, pin their exact receipt, then run the model preflight |
+| First R49 inventory guessed `configs/prta_gen/prta_gen_r45_cdeb_v1.json` | 1 | Resolve the tracked R45 config with `rg --files` before inspecting training/cache contracts; no file, runtime, or GPU state changed |
+| The next R49 config finder used an anchored Unix-style path regex that returned no match on Windows, then attempted to read a null path | 2 | Use `Get-ChildItem -Filter '*r45*.json'` and validate a single resolved file before reading; no artifact or runtime state changed |
+| The first attempt to record the R49 inspection errors submitted an empty `apply_patch` hunk | 1 | Re-read the planning tail and apply a concrete context-bound patch; no repository content changed in the rejected edit |
+| The corrected R45 lookup assumed `*r45*.json` would resolve one file, but correctly found both the roster and discovery authorities | 3 | Bind explicitly to `prta_gen_r45_cdeb_discovery_v1.json` after listing candidates; the command stopped before reading either file |
+| The first combined R40/cache inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate scalar receipts in an explicit array before piping to JSON; the parse error occurred before any read or write |
+| First Phase-26 implementation writeback matched an ASCII colon heading instead of the live em-dash heading | 1 | Locate the exact Phase-26 checklist and patch its individual task lines; the rejected combined patch changed no file |
 | First raw two-image preflight summary treated its scalar row count as a result-record list | 1 | Restrict row compaction to list-valued formal results, add a regression test, and rerun the unchanged preflight before any GPU/model load |
 | First two-card raw smoke completed generation but both shard summaries rejected two-row samples for lacking all five target classes | 1 | Permit `null` recall only for unsupported smoke classes, retain an explicit complete-class-support gate for each 250-row formal shard, archive the failed smoke receipts/logs, and rerun unchanged |
 
