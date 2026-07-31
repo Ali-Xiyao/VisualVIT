@@ -2318,3 +2318,7 @@ preserving the encoder's static medical semantics.
   current-disagreement UCC rule with no threshold or quantile selection. Five
   focused tests, Ruff, compileall, JSON parsing, and the 500-row cache
   preflight pass before any R47 token or outcome read.
+- R47 development cache completed in 45.9 seconds: 500 patients, 1,000 images,
+  four shards, exact reproducibility, no labels/sentences, and no sealed
+  tokens. Its 2,342-byte index SHA-256 is
+  `2786C4037807B563935E7908E694E3B7AF2513F3410CAD670F02147CC3B252C9`.

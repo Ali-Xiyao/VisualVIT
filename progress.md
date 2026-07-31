@@ -2378,3 +2378,14 @@
   aggregate, gates, protocol, and tests. All targeted checks pass and cache
   preflight returns `PASS_PRTA_GEN_R47_UCC_CACHE_PREFLIGHT` for 500 rows with
   a fresh token root.
+- Repository-wide validation passed and the complete R47 pre-outcome authority
+  was committed/pushed as `ece7112`. Started the 500-row development-only
+  cache on GPU0 as PID 29880; it is active and no outcome has been read.
+- R47 cache exited cleanly after 45.9 seconds with
+  `PASS_PRTA_GEN_R47_UCC_DEVELOPMENT_TOKEN_CACHE`: 500 rows, 1,000 images,
+  four shards, exact reproducibility, no labels/sentences, and all sealed
+  flags false. Pinned index SHA-256 `2786C403...52C9`.
+- Post-pin runner preflight returns `PASS_PRTA_GEN_R47_UCC_RUNNER_PREFLIGHT`
+  with 2,500 fit rows, 500 fresh development rows, four shards, inherited
+  checkpoint/local-Qwen validation, fresh outputs, and sealed flags false.
+  Repository-wide Ruff/compileall and five focused tests also pass.
