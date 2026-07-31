@@ -3015,3 +3015,81 @@
   fresh outputs, placeholder 151662, and seed-specific shared projector hashes;
   it reports Qwen unloaded, GPU training not started, and all protected/gold/
   external/outcome flags false. Publish runner code before launching lanes.
+- Published runner/aggregator as commit `3a24486`. Launched the two formal lanes:
+  lane0 PID 11060 with PRTA Seed17 worker PID 26880 on GPU0, and lane1 PID 15500
+  with PRTA Seed29 worker PID 25808 on GPU1. Both lane stderr logs are zero and
+  startup stdout identifies the registered first arm; GPU allocation had not
+  begun at the first snapshot. Monitor without duplicate launches.
+- Both first PRTA seeds loaded frozen Qwen successfully and entered GPU work at
+  roughly 9.8-10.0 GiB per card. Each lane stderr contains only a 139-byte
+  Transformers weight-loading progress bar, not a traceback or warning; both
+  Python workers and parent lanes remain live and no result exists yet.
+- First-arm monitor remains healthy: PRTA Seeds 17/29 workers and both parent
+  lanes are live, GPUs hold about 10.5/10.7 GiB at 34-36%, stderr is unchanged
+  at the load-progress bar, and no partial result directory exists. The runner
+  intentionally emits no batch progress and writes only after 79 updates plus
+  the full 500-patient greedy evaluation.
+- Several-minute monitor remains unchanged and healthy: 0/9 terminal results,
+  both first-arm workers live, stable 10.5/10.7 GiB allocations with ongoing
+  utilization, and no stderr growth beyond model-loading progress. Continue
+  waiting on the same processes; absence of intermediate stdout is expected.
+- Continued monitor shows both PRTA workers still active with stable allocations
+  and roughly 36-44% utilization; lane logs remain error-free and no partial
+  output was created. Check the historical R49 exact64 elapsed receipt only to
+  calibrate expected duration, without changing or interrupting R51.
+- Historical R49 receipts show the same exact64 runner took 1,447-1,462 seconds
+  per arm, with about 900 seconds for training. Nine frozen R51 runs over two
+  sequential GPU lanes therefore reasonably require about 1.8-2 hours. Replace
+  ad-hoc polling with one 30-second compact monitor tied to the existing lane
+  PIDs; do not alter the registered schedule.
+- The long-lived monitor's stdout was buffered, so it was terminated without
+  touching lane PIDs. Immediate audit confirms both parent lanes and PRTA
+  workers remain live with the same GPU allocations/utilization and 0/9
+  results. Resume bounded snapshots; scientific execution was uninterrupted.
+- Bounded monitor snapshots remain healthy at 0/9: both lanes live, GPU
+  utilization ranges 33-55% with stable memory, and stderr remains exactly the
+  139-byte weight-loading progress bar. This is still within the historical
+  ~15-minute training portion of the first arms; continue unchanged.
+- Additional snapshots remain at 0/9 with both GPUs steadily near 50-54%
+  utilization, unchanged memory and stderr, and both lane PIDs live. No
+  engineering intervention is warranted before the historical 900-second
+  training baseline is reached.
+- At 22:05 both registered PRTA Seed 17/29 workers and lane parents remain live;
+  GPUs hold 10.5/10.7 GiB with 45-49% utilization, lane stderr is still only the
+  unchanged 139-byte weight-loading bar, and no result has been published yet.
+  The run is transitioning through the historical training-duration baseline;
+  retain both processes for the full 500-patient greedy evaluation.
+- At 22:07 each stderr grew to 292 bytes only because generation began and
+  Transformers reported that sampling flags are ignored under greedy decoding.
+  Shared-handle inspection confirms no traceback, error, or exception. Both
+  PRTA workers remain live with stable memory and 45-48% utilization; this is
+  expected evidence that the first evaluation pass has started.
+- First terminal pair completed at 2/9 and both lanes advanced automatically to
+  TILA Seed 17/29. PRTA Seed17 macro-F1/accuracy are 0.382583/0.384 and Seed29
+  0.369964/0.374; both have 1.0 schema/finding validity, 500 evaluation rows,
+  status `PASS_PRTA_GEN_R51_MATCHED_INTERFACE_ARM`, and elapsed 1,069.8/1,076.7
+  seconds. No seed selection or protocol change is permitted from these values.
+- TILA Seed17/29 remained healthy through 22:15 with 2/9 terminal results,
+  stable 10.5/10.7 GiB allocations, and active utilization. A bounded read-only
+  monitor reports only counts, arm/seed process labels, and GPU scalars; it does
+  not read outcomes, alter scheduling, or touch either training process.
+- User prioritized the stricter matched direct-head comparison described in
+  Annotation 1. Opened R52 while preserving the already-running R51 TILA
+  Seed17/29 workers. R52 will reuse the same R51 patients and label-free caches,
+  but replace frozen-Qwen generation with one identical representation-neutral
+  classifier for all arms. No R52 output root or model outcome exists.
+- Added the outcome-free R52 config, neutral 46,080-feature shared-head runner,
+  paired aggregator, two-lane launcher, and three focused tests. The first test
+  pass exposed only a synthetic aggregate field-name mismatch (`ci95_lower_pp`);
+  Ruff, compileall, and JSON parsing already pass and no runtime root exists.
+- Corrected the synthetic-only CI field and reran: six R51/R52 tests and focused
+  Ruff pass. Real token preflight returns `PASS_PRTA_GEN_R52_RUNNER_PREFLIGHT`:
+  2,500/500 rows, all three `[2,46080]` audit shapes, 5,991,173 shared head
+  parameters, zero arm-specific parameters, frozen initialization hashes for
+  Seeds 17/29/43, and no runtime/model outcome. Added the Chinese pre-outcome
+  protocol before publication and launch.
+- Prepublication closure passes 11 focused R40C/R51/R52 tests, repository-wide
+  Ruff, compileall, JSON parsing, and diff validation. After excluding the
+  inspection shell itself, there are zero R52 processes and the runtime root is
+  absent. Config is 4,751 bytes with SHA-256
+  `3D514CDFF6DB9923AF26C4C482B3DFFA444D4D60BF644D90BEB599AADD89253E`.

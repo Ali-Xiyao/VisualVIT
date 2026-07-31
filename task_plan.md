@@ -804,6 +804,30 @@ smokes during iteration.
   and real preflight. Qwen remains unloaded and no R51 outcome exists. Publish
   the runner, then execute all nine frozen arms without tuning or selection.
 
+### Phase 29 — R52 matched exact-64 direct-head comparison
+
+- [x] Accept the user's annotated priority and preserve the already-running R51
+  workers; do not discard completed/in-flight formal results or tune from them.
+- [x] Freeze a separate R52 authority using the identical R51 2,500-train / 500
+  fresh-evaluation patients, exact-64 caches, method translations, seeds, and
+  patient-paired bootstrap, while explicitly recording that historical R40C,
+  R50, and the first R51 PRTA-Qwen pair were visible before this design.
+- [x] Implement one representation-neutral direct head shared byte-for-byte by
+  PRTA, TILA, and B2: flatten only positions 0-59, training-only standardize,
+  identical seeded initialization/order/optimizer/updates, and no arm-specific
+  trainable adapter, early stopping, checkpoint selection, or seed selection.
+- [x] Pass focused tests, Ruff, compileall, JSON/hash/fresh-output and real token
+  preflight; commit and push the frozen authority before any R52 model outcome.
+- [ ] Execute all nine arm/seed runs on the two authorized GPUs as soon as an
+  R51 lane releases, aggregate patient-paired macro-F1 differences and CIs,
+  and issue a strict yes/no PRTA-superiority verdict without post-hoc tuning.
+- [ ] Write the R52 case study and synchronize proposal/status/index/planning;
+  close both R51 and R52 with terminal tests, process/GPU audit, commit and push.
+- **Status:** pre-outcome authority ready — real preflight returns
+  `PASS_PRTA_GEN_R52_RUNNER_PREFLIGHT`, six focused R51/R52 tests and static
+  gates pass, all three feature shapes are `[2,46080]`, and no R52 runtime
+  output exists. Commit/push before launching the authorized GPU lanes.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -823,6 +847,7 @@ smokes during iteration.
 | First R51 cache static gate found one unused `read_json` import, while later commands masked Ruff's nonzero native exit | 1 | Remove the import and rerun Ruff as an independent gate before treating preflight as launch-ready; cache roots remained fresh and no GPU work started |
 | First post-cache R51 shard audit did not add the repository `src` directory to Python's import path | 1 | Add the explicit workspace/src bootstrap and rerun the read-only tensor audit; no cache tensor or receipt was modified |
 | First R51 loader unit fixture randomized the four contractually reserved zero positions | 1 | Zero fixture positions 60-63 and rerun; the production loader correctly failed closed and required no change |
+| A long-lived 30-second R51 monitor loop had its stdout buffered by the shell host | 1 | Terminate only the monitor cell, verify both experiment lanes and workers remain live, and return to bounded explicit snapshots; no experiment process was interrupted |
 | R46 targeted Ruff command included the JSON discovery config and parsed `true`/`false`/`null` as Python names | 1 | Validate JSON with the JSON parser and run Ruff only on Python sources; no config, roster, or runtime state changed |
 | R46 authority hash inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate rows in an explicit array before formatting; no file or runtime state changed |
 | First R46 inspection guessed the R45 baseline checkpoint below `discovery/baseline_projector/seed_17` | 1 | Resolve the actual immutable layout `discovery/seed_17/baseline_projector/trainable_checkpoint.pt`; no runtime file was changed |
@@ -954,8 +979,13 @@ smokes during iteration.
 | Final full pytest retained the known R6 resolution/frozen-manifest failure after 872 passes | 1 | This is the same historical closed-registry drift previously reproduced outside R49; retain it as the sole unrelated failure and do not rewrite frozen R6 hashes |
 | First raw two-image preflight summary treated its scalar row count as a result-record list | 1 | Restrict row compaction to list-valued formal results, add a regression test, and rerun the unchanged preflight before any GPU/model load |
 | First two-card raw smoke completed generation but both shard summaries rejected two-row samples for lacking all five target classes | 1 | Permit `null` recall only for unsupported smoke classes, retain an explicit complete-class-support gate for each 250-row formal shard, archive the failed smoke receipts/logs, and rerun unchanged |
+| First live R51 stderr audit used `ReadAllText` while the launcher held an exclusive writer handle | 1 | Reopen each log with `FileShare.ReadWrite`; confirm only the Transformers greedy-generation ignored-sampling-flags warning and no traceback/error, without touching either worker |
+| First combined R52 planning patch matched PowerShell's mojibake rendering of the live R51 status paragraph | 1 | Insert the new phase against the stable `Errors Encountered` boundary and patch each planning file independently; no runtime or source artifact changed |
+| First R52 synthetic aggregate test guessed a nested `ci95.lower` field, and its follow-up search used Windows-incompatible wildcard paths | 1 | Bind the strict rule to the bootstrap helper's real `ci95_lower_pp` field and search resolved files/directories rather than shell wildcards; no R52 runtime or outcome existed |
+| First R52 process audit counted its own PowerShell inspection command | 1 | Exclude the current shell PID and require a Python-runner or lane-launcher command shape; confirmed zero R52 processes and absent runtime root before publication |
 
 ## Next Step
 
-Commit and push the validated R51 runner/aggregator, then launch lane0 on GPU0
-and lane1 on GPU1 and monitor all nine registered arm/seed results to terminal.
+Freeze, validate, commit, and push R52 without reading any R52 model outcome;
+retain the live R51 lanes and enqueue R52 direct-head execution at the first
+safe GPU release, then complete and report both benchmarks.

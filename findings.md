@@ -2876,3 +2876,17 @@ preserving the encoder's static medical semantics.
   `8EBA5E1B112F3591FF4C4276673523D78B0B9305F725CC364601CF78EC0D9DE0`.
   This is the sole R51 evaluation roster; resplitting after model outcomes is
   forbidden.
+- R52 priority/design boundary: the user specifically requested the direct-head
+  comparison suggested by the prior R40C-vs-R50 observation. Reusing R51's
+  frozen 2,500/500 patient split and exact64 caches removes the earlier cohort,
+  sample-size, and interface confounds. A neutral shared readout should flatten
+  the same 60 active `[60,768]` positions to 46,080 features; applying PRTA's
+  five semantic-region pooling to TILA spatial patches or B2 component groups
+  would silently privilege PRTA's layout. The same `ProgressionDecisionHead`,
+  training-only per-feature normalization, seeded initialization, epoch order,
+  AdamW schedule, and patient-paired evaluation must be used for every arm.
+- R52 cannot be described as globally outcome-blind: the hypothesis and design
+  were motivated by observed historical R40C/R50 results, and PRTA-Qwen R51
+  Seeds 17/29 had completed before the user's reprioritization. It remains
+  outcome-blind with respect to every R52 direct-head prediction; freeze and
+  publish all R52 choices before launching its first classifier.

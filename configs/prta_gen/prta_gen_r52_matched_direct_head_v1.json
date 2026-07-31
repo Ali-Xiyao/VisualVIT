@@ -1,0 +1,125 @@
+{
+  "schema": "visualvit.prta-gen.r52-matched-direct-head-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R52_MATCHED_DIRECT_HEAD",
+  "protocol_id": "prta-gen-r52-matched-direct-head-v1",
+  "study_tier": "fresh_internal_matched_direct_head_benchmark",
+  "authorization": {
+    "user_authorized_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "method_or_hyperparameter_change_after_outcome_allowed": false,
+    "seed_selection_allowed": false,
+    "concurrent_with_r51_allowed_if_memory_preflight_passes": true
+  },
+  "source": {
+    "r51_config": "configs\\prta_gen\\prta_gen_r51_matched_interface_v1.json",
+    "r51_config_bytes": 11950,
+    "r51_config_sha256": "60F3AE24B630085211A5B3F8E02004A78FD3164AA3C5107092352229CECFDB1C",
+    "required_r51_status": "FROZEN_PRTA_GEN_R51_MATCHED_INTERFACE",
+    "required_r51_protocol_id": "prta-gen-r51-matched-interface-v1",
+    "training_rows": 2500,
+    "evaluation_rows": 500,
+    "same_training_and_evaluation_patients_as_r51": true,
+    "same_label_free_exact64_caches_as_r51": true
+  },
+  "methods": {
+    "order": ["prta_exact64", "tila_exact64", "b2_exact64"],
+    "prta_exact64": {
+      "provenance": "local_proposed_method",
+      "representation": "frozen_R37_PRTA_finding_guided_cross_time_alignment"
+    },
+    "tila_exact64": {
+      "provenance": "official_pretrained_representation_adapted_to_exact64",
+      "representation": "official_TILA_temporal_projected_patch_embeddings"
+    },
+    "b2_exact64": {
+      "provenance": "locally_implemented_classic_siamese_control",
+      "representation": "frozen_BiomedCLIP_patchwise_prior_current_signed_absolute"
+    }
+  },
+  "head": {
+    "class": "ProgressionDecisionHead",
+    "shared_identical_implementation": true,
+    "input_features": "flatten_exact64_active_positions_0_to_59",
+    "active_positions": [0, 60],
+    "reserved_positions_ignored": [60, 64],
+    "input_width": 46080,
+    "hidden_width": 128,
+    "class_count": 5,
+    "parameter_count": 5991173,
+    "feature_standardization": "training_arm_mean_std_clamp_1e-6",
+    "arm_specific_trainable_adapter_allowed": false,
+    "fresh_initialization_per_seed_and_arm": true,
+    "shared_initialization_hash_required_within_seed": true
+  },
+  "training": {
+    "seeds": [17, 29, 43],
+    "epochs": 100,
+    "batch_size": 128,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "gradient_clip_norm": 1.0,
+    "expected_updates_per_arm": 2000,
+    "same_minibatch_order_within_seed": true,
+    "early_stopping": false,
+    "checkpoint_selection": false
+  },
+  "evaluation": {
+    "arms": ["prta_exact64", "tila_exact64", "b2_exact64"],
+    "primary_metric": "macro_f1",
+    "secondary_metric": "accuracy",
+    "paired_patient_bootstrap_replicates": 2000,
+    "paired_patient_bootstrap_seed": 52001,
+    "primary_contrasts": [
+      "prta_exact64_minus_tila_exact64",
+      "prta_exact64_minus_b2_exact64"
+    ],
+    "descriptive_contrast": "tila_exact64_minus_b2_exact64",
+    "strict_prta_superiority_rule": "both_primary_ci95_lower_above_zero",
+    "report_per_seed_and_mean_seed": true,
+    "no_posthoc_threshold_tuning": true
+  },
+  "execution": {
+    "devices": ["cuda:0", "cuda:1"],
+    "lane0": [
+      "prta_exact64_seed17",
+      "tila_exact64_seed17",
+      "b2_exact64_seed17",
+      "prta_exact64_seed43",
+      "tila_exact64_seed43"
+    ],
+    "lane1": [
+      "prta_exact64_seed29",
+      "tila_exact64_seed29",
+      "b2_exact64_seed29",
+      "b2_exact64_seed43"
+    ]
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r52_matched_direct_head_v1",
+    "runs": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r52_matched_direct_head_v1\\runs",
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r52_matched_direct_head_v1\\aggregate.json"
+  },
+  "result_statuses": {
+    "preflight_pass": "PASS_PRTA_GEN_R52_RUNNER_PREFLIGHT",
+    "arm_complete": "PASS_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_ARM",
+    "aggregate_complete": "COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK"
+  },
+  "disclosure": {
+    "historical_r40c_outcomes_visible_before_design": true,
+    "historical_r50_outcomes_visible_before_design": true,
+    "r51_prta_qwen_seed17_seed29_outcomes_visible_before_design": true,
+    "any_r52_direct_head_outcome_visible_before_freeze": false,
+    "hypothesis_is_prior_result_informed": true
+  },
+  "firewall": {
+    "resplit_allowed": false,
+    "r52_outcome_based_tuning_allowed": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "clinical_claim_allowed": false,
+    "independent_external_confirmation_claim_allowed": false
+  }
+}
