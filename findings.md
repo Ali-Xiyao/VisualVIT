@@ -2322,3 +2322,32 @@ preserving the encoder's static medical semantics.
   four shards, exact reproducibility, no labels/sentences, and no sealed
   tokens. Its 2,342-byte index SHA-256 is
   `2786C4037807B563935E7908E694E3B7AF2513F3410CAD670F02147CC3B252C9`.
+- R47 inherited baseline completed with true/current/query/shuffle macro-F1
+  0.39292 / 0.30953 / 0.13471 / 0.35399. True-minus-shuffle is +3.89 pp,
+  materially larger than R46's +0.99 pp. Schema/finding/cache checks pass and
+  both trainable counts remain zero.
+- R47 Seeds 17/29 complete 2,000 updates with structured true F1
+  0.39660/0.39422 and shuffle F1 0.34659/0.37204. Unlike R46, both observed
+  Seeds show positive true-minus-shuffle direction; UCC still requires Seed 43
+  and the frozen 3/3 rule.
+- Seed 43 also completes 2,000 updates with structured true/current/shuffle F1
+  0.40276/0.39257/0.37761. All three Seeds therefore show positive
+  true-minus-shuffle direction on R47; execute the fixed UCC aggregate next.
+- R47 is terminal `STOP_PRTA_GEN_R47_UCC_DISCOVERY`. UCC true F1 is 0.39731
+  versus baseline 0.39292: only +0.440 pp, CI95 [-1.984, +2.921]. It also
+  misses the absolute 0.40 floor.
+- UCC does show robust true-minus-shuffle specificity: +5.921 pp, CI95
+  [+1.423, +10.786], with 61/500 true overrides, 19 recoveries, 17 regressions,
+  and net recovery +2. Thus strict consensus identifies temporal signal but
+  does not add reliable predictive value over the frozen generator.
+- Aggregate SHA-256 is
+  `94003D276C376E32A46223E63C563CC3F15B841324C0599DE81F19348CC0D719`;
+  no worker remains and both GPUs are idle.
+- The next defensible question is therefore selection-free replication, not a
+  third router: test the immutable frozen baseline on the still-unread R45
+  qualification/confirmation cohorts with true/current/shuffle bootstrap
+  gates and no training, threshold, or checkpoint selection.
+- R48 freezes that narrower question on the original 500-patient R45
+  qualification cohort. Its cache preflight passes with a fresh token root,
+  qualification outcomes unread, confirmation tokens/outcomes absent, and
+  training disabled.

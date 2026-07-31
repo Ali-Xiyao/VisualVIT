@@ -665,10 +665,23 @@ smokes during iteration.
 - [x] Select a separately named R47 hypothesis only from the case-study
   mechanism, freeze a new development roster outside all R45 and R46 patients,
   and preserve the original sealed cohorts.
-- [ ] Implement, preregister, commit, push, and execute R47 once; accept either
+- [x] Implement, preregister, commit, push, and execute R47 once; accept either
   the frozen GO or STOP and do not tune around its outcome.
-- **Status:** in progress — case study selects R47 Unanimous Counterfactual
-  Consensus (UCC); freeze its new 500-patient development authority next.
+- **Status:** complete — terminal `STOP_PRTA_GEN_R47_UCC_DISCOVERY`; UCC has
+  robust true/shuffle separation but does not significantly beat baseline.
+
+### Phase 23 — R48 selection-free frozen prior-responsiveness replication
+
+- [x] Freeze a separately named, no-training/no-selection R48 protocol on the
+  still-unread R45 qualification cohort. Primary question: does the immutable
+  frozen baseline outperform prior-shuffle and current-only with positive
+  patient-bootstrap lower bounds?
+- [ ] Commit/push authority before caching qualification. If every gate passes,
+  freeze and run the still-unread R45 confirmation cohort once.
+- [ ] Close R45–R48 with a case-study/negative-result synthesis, exact hashes,
+  ICLR claim boundary, tests, processes/GPUs, reader surfaces, and Git handoff.
+- **Status:** in progress — qualification authority/code/preflight pass; commit
+  and push before caching the still-unread 500-patient cohort.
 
 ## Errors Encountered
 

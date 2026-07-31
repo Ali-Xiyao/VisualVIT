@@ -2389,3 +2389,52 @@
   with 2,500 fit rows, 500 fresh development rows, four shards, inherited
   checkpoint/local-Qwen validation, fresh outputs, and sealed flags false.
   Repository-wide Ruff/compileall and five focused tests also pass.
+- Committed/pushed the cache pin as `f7b6835` and launched R47 inherited
+  baseline as PID 21924 on GPU0. It loaded into the expected 9.1 GiB footprint,
+  is active at sampled 52%, and has only the known loader/sampling notices.
+- Through 2.7 minutes R47 baseline remains healthy at sampled 54-55%
+  utilization, stable memory, increasing CPU time, and no result/error
+  transition.
+- Through 4.8 minutes baseline generation remains active at sampled 48-57%
+  utilization with stable memory/logs and increasing CPU time.
+- Through 6.8 minutes R47 baseline remains healthy at sampled 47-56%
+  utilization; no output/error transition.
+- Through 8.8 minutes baseline remains active at sampled 47-55% utilization,
+  stable memory, and steadily increasing CPU time.
+- Through 10.9 minutes R47 baseline remains healthy at sampled 49-55%
+  utilization with no result/error transition.
+- Through 13.1 minutes baseline generation remains active at sampled 42-51%
+  utilization, stable memory/logs, and increasing CPU time.
+- Through 15.1 minutes the baseline remains alive with continuing CPU-time
+  growth; one instantaneous 22% GPU sample is not treated as a stall because
+  memory/log state remains stable.
+- Through 17.2 minutes R47 baseline remains active with continuing CPU growth
+  and sampled 31-41% utilization; no error or partial result.
+- Through 19.3 minutes baseline remains alive with continuing CPU growth; the
+  latest 19% GPU sample is again treated as transient because memory and logs
+  are unchanged.
+- Through 21.4 minutes baseline is strongly active again at sampled 43-54%
+  utilization with stable memory and no error/result transition.
+- Through 23.4 minutes R47 baseline remains active at sampled 38-40%
+  utilization and continuing CPU-time growth.
+- R47 baseline completed and released GPU0 after about 25 minutes. Its atomic
+  result exists; inspect the receipt before launching head Seeds.
+- Baseline receipt passes: true F1 0.39292, current 0.30953, query 0.13471,
+  shuffle 0.35399, schema/finding 1.0, cache-equivalence PASS, and zero
+  trainable Qwen/projector parameters.
+- Launched Seeds 17/29 in parallel on GPUs 0/1; both completed within 15
+  seconds and wrote atomic results. Inspect receipts before Seed 43.
+- Seeds 17/29 pass with 2,000 updates and structured true F1
+  0.39660/0.39422. Launched Seed 43 on GPU0 with all frozen settings unchanged.
+- Seed 43 exited cleanly with 2,000 updates and structured true F1 0.40276.
+  All baseline/Seed artifacts are present; run the frozen UCC aggregate once.
+- Frozen R47 aggregation returned `STOP_PRTA_GEN_R47_UCC_DISCOVERY`: robust
+  true-minus-shuffle +5.921 pp with positive CI, but only +0.440 pp over
+  baseline with CI crossing zero and absolute F1 0.39731. Three gates fail.
+- Audited aggregate SHA-256 `94003D27...D719`, zero workers, and idle GPUs.
+  Opened R48 selection-free frozen baseline replication on the still-sealed
+  R45 qualification/confirmation cohorts; no router may be tuned further.
+- Implemented the R48 qualification config, cache, immutable-baseline runner,
+  bootstrap aggregate, protocol, and tests. Static checks pass and the
+  preflight returns `PASS_PRTA_GEN_R48_FPRR_CACHE_PREFLIGHT` for the still-
+  unread 500-patient qualification cohort.

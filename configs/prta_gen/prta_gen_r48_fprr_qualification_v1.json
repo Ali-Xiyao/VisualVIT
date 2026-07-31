@@ -1,0 +1,143 @@
+{
+  "schema": "visualvit.prta-gen.r48-fprr-qualification-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R48_FPRR_QUALIFICATION",
+  "protocol_id": "prta-gen-r48-fprr-v1",
+  "stage_tag": "R48",
+  "study_tier": "selection_free_frozen_prior_responsiveness_qualification",
+  "authority": {
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json",
+    "roster_bytes": 2898864,
+    "roster_sha256": "0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8",
+    "roster_status": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT",
+    "closed_aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\discovery\\aggregate.json",
+    "closed_aggregate_bytes": 13840,
+    "closed_aggregate_sha256": "9FC9DCEC7471DD169B63555B4BA395817ACB5187B3EA1B351F8D12C742BEE75E",
+    "closed_aggregate_status": "STOP_PRTA_GEN_R45_CDEB_DISCOVERY",
+    "evaluation_partition": "qualification",
+    "expected_rows": 500
+  },
+  "closed_r45": {
+    "training_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\tokens\\discovery\\index.json",
+    "training_token_index_bytes": 5992,
+    "training_token_index_sha256": "2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6",
+    "training_token_status": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_TOKEN_CACHE",
+    "baseline_projector_checkpoint": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\discovery\\seed_17\\baseline_projector\\trainable_checkpoint.pt",
+    "baseline_projector_checkpoint_bytes": 39500802,
+    "baseline_projector_checkpoint_sha256": "41A0A3D16E5B3F4286013F9EE76C6A3B7B035DD33880260033C183108965C966",
+    "fit_partition": "train",
+    "fit_rows": 2500,
+    "fit_patients": 2500
+  },
+  "cache": {
+    "partitions": [
+      "qualification"
+    ],
+    "expected_rows": 500,
+    "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+    "source_candidate_sha256": "8D4437572245199213133AE17E13F8F5E7E3AAC7472D8B2E683A630EA7F3DEF0",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "frozen_prta_seed": 17,
+    "prior_shuffle_seed": 48001,
+    "prior_shuffle_namespace": "prta-gen-r48-fprr-qualification-prior-shuffle-v1",
+    "batch_size": 16,
+    "shard_size": 128,
+    "workers": 4,
+    "token_shape": [
+      64,
+      768
+    ],
+    "token_dtype": "torch.float16",
+    "variants": [
+      "true_tokens",
+      "current_tokens",
+      "shuffled_tokens"
+    ]
+  },
+  "source": {
+    "development_token_index": null,
+    "development_token_index_bytes": null,
+    "development_token_index_sha256": null,
+    "required_development_token_status": "PASS_PRTA_GEN_R48_FPRR_QUALIFICATION_TOKEN_CACHE",
+    "token_variants": {
+      "true_pair": "true_tokens",
+      "current_only": "current_tokens",
+      "prior_shuffle": "shuffled_tokens"
+    }
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662
+  },
+  "training": {
+    "seeds": []
+  },
+  "evaluation": {
+    "generator_arms": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "prior_shuffle"
+    ],
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 48002
+  },
+  "qualification_gate": {
+    "true_macro_f1_at_least": 0.35,
+    "all_class_recall_at_least": 0.12,
+    "true_minus_prior_shuffle_at_least_pp": 2.0,
+    "true_minus_prior_shuffle_ci95_lower_above_pp": 0.0,
+    "true_minus_current_only_at_least_pp": 2.0,
+    "true_minus_current_only_ci95_lower_above_pp": 0.0,
+    "true_minus_query_only_at_least_pp": 10.0,
+    "schema_validity": 1.0,
+    "finding_echo_accuracy": 1.0,
+    "confirmation_unlock_requires_all": true
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "max_target_tokens": 64
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_prefix": "Compare the current chest radiograph with its prior study for the finding {finding}. The next 64 physical positions contain fixed visual tokens. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field. Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "result_statuses": {
+    "cache_preflight_pass": "PASS_PRTA_GEN_R48_FPRR_CACHE_PREFLIGHT",
+    "cache_pass": "PASS_PRTA_GEN_R48_FPRR_QUALIFICATION_TOKEN_CACHE",
+    "baseline_complete": "PASS_PRTA_GEN_R48_FPRR_QUALIFICATION_BASELINE",
+    "qualification_go": "GO_PRTA_GEN_R48_FPRR_QUALIFICATION",
+    "qualification_stop": "STOP_PRTA_GEN_R48_FPRR_QUALIFICATION"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1",
+    "token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\tokens\\qualification",
+    "discovery_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\qualification"
+  },
+  "firewall": {
+    "training_allowed": false,
+    "threshold_selection_allowed": false,
+    "qualification_outcomes_read": false,
+    "confirmation_tokens_materialized": false,
+    "confirmation_outcomes_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "scientific_claim_allowed": false
+  }
+}
