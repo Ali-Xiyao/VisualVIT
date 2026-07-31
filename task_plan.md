@@ -619,21 +619,49 @@ smokes during iteration.
   temporal heads, and product-of-experts fusion. Select a separately named
   R46 hypothesis only if it is distinguishable from generic reranking and does
   not reuse the observed R45 development outcomes as its evaluation set.
-- [ ] Freeze an untouched R46 development cohort from patients outside the
+- [x] Freeze an untouched R46 development cohort from patients outside the
   entire R45 roster, while reusing only R45 train for fitting. Keep the already
   untouched R45 qualification/confirmation cohorts sealed for a later,
   independently frozen R46 gate.
 - [ ] Implement, preregister, commit, and push R46 before any new outcome read;
   execute discovery and only proceed to sealed qualification/confirmation if
   every newly frozen gate passes.
-- **Status:** in progress — R45 terminal writeback and novelty audit complete;
-  next freeze and validate an independently named R46 CEA authority without
-  tuning CDEB around its failed gate.
+- **Status:** in progress — R46's balanced 250-patient development roster is
+  frozen outside all R45 patients; next freeze and validate the CEA
+  cache/method authority before reading its outcomes.
+
+### Phase 20 — R46 CEA discovery execution
+
+- [x] Freeze the cache, inherited generator baseline, multiseed structured
+  head, Jensen-Shannon causal score, train-quantile arbitration, fallback
+  contract, bootstrap comparisons, discovery gates, and runtime firewalls.
+- [ ] Commit and push the complete pre-cache authority, then cache only the
+  250 new development patients and pin the cache index without reading model
+  outcomes.
+- [ ] Run the inherited frozen baseline once, train/evaluate Seeds 17/29/43,
+  select the shared registered train-score quantile, and aggregate exactly
+  once.
+- [ ] Treat the registered discovery GO or STOP as terminal; do not retune
+  score, coverage, thresholds, training, or gates around the result.
+- **Status:** in progress — implementation/tests pass; pre-cache authority
+  awaits full validation and Git handoff.
+
+### Phase 21 — R46 sealed qualification and confirmation
+
+- [ ] If and only if discovery GO, freeze the selected quantile and a complete
+  qualification authority before materializing tokens or reading outcomes for
+  the existing R45 qualification cohort.
+- [ ] Execute multiseed qualification once; if and only if every registered
+  gate passes, execute the separately frozen confirmation once.
+- [ ] Close with an ICLR-style result/case-study report, exact hashes,
+  limitations, process/GPU audit, and synchronized reader surfaces.
+- **Status:** locked behind R46 discovery GO.
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| R46 targeted Ruff command included the JSON discovery config and parsed `true`/`false`/`null` as Python names | 1 | Validate JSON with the JSON parser and run Ruff only on Python sources; no config, roster, or runtime state changed |
 | R46 authority hash inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate rows in an explicit array before formatting; no file or runtime state changed |
 | First R46 inspection guessed the R45 baseline checkpoint below `discovery/baseline_projector/seed_17` | 1 | Resolve the actual immutable layout `discovery/seed_17/baseline_projector/trainable_checkpoint.pt`; no runtime file was changed |
 | R45 terminal report contained two Markdown hard-break spaces, and the sequential PowerShell command continued to commit after `git diff --check` failed | 1 | Keep the commit local and unpushed, remove the two spaces with an exact patch, rerun the checks independently, then amend before push |

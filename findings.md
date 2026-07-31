@@ -2237,3 +2237,25 @@ preserving the encoder's static medical semantics.
   registered reserve floor of 150.
 - The preflight writes no real roster, starts no GPU process, and preserves all
   R45 qualification/confirmation token and outcome flags as false.
+- After commit `57eebc3` was pushed, the R46 roster was written exactly once:
+  250 development patients, 50 per progression class, no overlap with any
+  R45 partition, 2,500 R45 train rows referenced for fit, and 170 unselected
+  Resolved patients remaining. All protected and sealed flags remain false.
+- The frozen R46 roster is 195,166 bytes with SHA-256
+  `C5D22B38D88A26610FA69E093AFE234D22EF34266D3D47C94A3C8267245F1C91`.
+- The R46 cache preflight passes for exactly the new 250-patient development
+  partition, with the frozen PRTA checkpoint/text cache present and a fresh
+  token root. It does not touch the immutable R45 training cache or either
+  sealed R45 cohort.
+- R46 can reuse the audited R45 free-greedy evaluation path by loading the
+  frozen projector checkpoint instead of training it. The lightweight head
+  path can reuse R40C's fixed-epoch train-only normalization and counterfactual
+  logic, while the new code is limited to Jensen-Shannon causal scoring,
+  coverage-quantile arbitration, and baseline fallback receipts.
+- The frozen CEA authority uses Seeds 17/29/43, 100 epochs and 2,000 updates
+  per lightweight head. Thresholds are derived only from R45-train score
+  quantiles; one shared quantile is selected on the new R46 development cohort.
+  Low-evidence predictions must equal the inherited baseline exactly.
+- Seven focused CEA/cache/roster tests, targeted Ruff, compileall, JSON parsing,
+  and both runner/aggregator CLI imports pass before any R46 token cache or
+  model outcome exists.

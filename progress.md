@@ -2284,3 +2284,24 @@
   170-patient Resolved reserve; no real roster or GPU work has started.
 - Pre-commit R46 roster-authority validation also passes repository-wide Ruff,
   repository compileall, the seven focused tests, and `git diff --check`.
+- Committed and pushed R46 roster authority as `57eebc3`, verified the runtime
+  root was absent and both GPUs idle, then wrote the real roster exactly once.
+  It returns `PASS_PRTA_GEN_R46_CEA_ROSTER_SUPPORT` with 250 balanced,
+  all-R45-disjoint development patients; no model outcome has been read.
+- Audited the one-time roster receipt and pinned its 195,166-byte size and
+  SHA-256 before constructing the cache/method authority.
+- The first targeted cache-authority check mistakenly passed the JSON config
+  to Ruff, which treated JSON booleans/null as Python names. No runtime work
+  started; split JSON parsing from Python linting and rerun.
+- Corrected validation passes: three focused tests, Python Ruff, JSON parsing,
+  and compileall are clean. The cache preflight returns
+  `PASS_PRTA_GEN_R46_CEA_CACHE_PREFLIGHT`; implement the frozen baseline,
+  multiseed head/arbitration, aggregate, and protocol before any GPU cache.
+- Implemented the complete R46 discovery authority: confidence-weighted
+  Jensen-Shannon temporal score, train-quantile baseline arbitration,
+  inherited frozen-Qwen/projector baseline, three structured-head Seeds,
+  bootstrap aggregate/gates, protocol, tests, and fail-closed receipts. Seven
+  focused tests and all targeted static/CLI checks pass; cache remains absent.
+- Final pre-cache validation passes 12 focused tests, repository-wide Ruff,
+  repository compileall, `git diff --check`, and an explicit absent-token-root
+  check. The authority is ready to commit and push.
