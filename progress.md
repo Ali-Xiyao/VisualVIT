@@ -2668,3 +2668,17 @@
   preflight (750 rows, two disjoint 375-row shards). Freeze/commit the prelaunch
   package next, then launch Naive caching on one GPU and Raw shard 0 on the
   other without changing their runners.
+- Committed and pushed the outcome-free R49 authority as `d21a121`. Launched
+  Naive exact-64 caching on GPU0 (PID 5536) and Raw shard 0/2 on GPU1 (PID
+  17052). Both processes are live with zero-byte stderr logs at startup; the
+  first launch guard self-matched its PowerShell wrapper and was corrected
+  before either worker started.
+- Added a synthetic end-to-end aggregate regression while the frozen workers
+  run. Its first four-patient fixture correctly did not yield a positive CI
+  lower bound; the test now checks the positive point effect and preserves the
+  production CI-support rule instead of weakening it.
+- Naive caching completed successfully in 83.35 seconds: 3,250 patients,
+  6,500 images, 26 shards, exact 64x768 FP16 layout, four zero positions, and
+  bit-identical repeated Block-8 extraction. Pinned index bytes 6,731 and
+  SHA-256 `0B18B112FE81EDF484DB0E7F77BDDECEC10AA4D09EFFC7766F9A3643FF93264F`
+  into the R49 authority before exact-64 training.

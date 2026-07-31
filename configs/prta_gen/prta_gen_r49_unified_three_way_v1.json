@@ -88,8 +88,8 @@
     "workers": 4,
     "shard_size": 128,
     "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r49_unified_three_way_v1\\tokens\\naive_exact64\\index.json",
-    "token_index_bytes": null,
-    "token_index_sha256": null,
+    "token_index_bytes": 6731,
+    "token_index_sha256": "0B18B112FE81EDF484DB0E7F77BDDECEC10AA4D09EFFC7766F9A3643FF93264F",
     "required_token_status": "PASS_PRTA_GEN_R49_NAIVE_EXACT64_TOKEN_CACHE",
     "token_key": "naive_tokens"
   },
