@@ -1562,3 +1562,41 @@
   G0/G1 migration, control sensitivity, finding/class concentration, and
   cross-Seed patterns. The analyzer and tests will be committed before the
   one-time real read.
+- Committed and pushed the analyzer/tests/planning boundary as `0445a6d`, then
+  ran it once against the six closed result files and roster SHA-256
+  `2BA53C...F77C0`. It returned
+  `DESCRIPTIVE_PRTA_GEN_R41A_FAILURE_CASE_STUDY`, 125 rows/patients, 14
+  de-identified representative cases, zero identity-bearing keys, and no new
+  training.
+- Rendered and visually inspected the static two-panel performance figure.
+  Labels, zero baselines, Seed grouping, G0/G1 non-color distinction, and the
+  explicit frozen-development/descriptive-only subtitle are all readable.
+- The read-only diagnostics confirm three linked failure modes: near-absence
+  of G1 `Worse` emission, net-negative G0-to-G1 migration in Seeds 29/43, and
+  weak cross-Seed stability (31 unanimous correct, 49 wrong in all Seeds).
+  Prior-shuffle sensitivity is present in Seeds 29/43 but insufficient under
+  the frozen conjunction and cannot override the terminal STOP.
+- Wrote the technical failure case study with the inspected figure, exact
+  confusion/migration/control/cross-Seed tables, de-identified counterexamples,
+  methods, limitations, and an outcome-independent next-step boundary.
+  Updated the active Proposal, root/project status, report index, and terminal
+  R41A report without changing the frozen STOP.
+- Focused validation currently passes 27 tests across the new analyzer, R41A
+  protocol/aggregate path, and Qwen adapter; repository-wide Ruff also passes.
+- Python compileall, `git diff --check`, and a six-file local Markdown/image
+  link audit pass. The figure path resolves from the report and the report is
+  promoted consistently from the root, Proposal, project status, result
+  report, and reports index.
+- The scalar-only terminal audit passes: derived JSON SHA-256 is
+  `59C64E...EA37A`, all 125 rows reconcile, 14 de-identified cases are present,
+  identity-key hits are zero, scientific/training/reuse flags are false, and
+  R42A/R43 runtime roots remain absent. No matching R41–R43 Python worker or
+  GPU compute process is active.
+- Full pytest completed with 814 passed, 1 expected xfailed, and the same
+  single historical R6 frozen-manifest failure previously reproduced at clean
+  commit `24f57c3`. No Phase-14/R41A test failed, and this task does not rewrite
+  the closed R6 registry to manufacture a green suite.
+- Final repository identity-text audit finds no patient/example identifier
+  values in the report or promoted authority surfaces. The tracked asset
+  directory contains only the inspected 81,511-byte R41A performance figure;
+  final `git diff --check` passes.

@@ -511,18 +511,18 @@ smokes during iteration.
   use only the already-completed R41A 125-patient development outputs; do not
   train, tune, resplit, select a checkpoint, or read protected/gold/external
   outcomes.
-- [ ] Audit all six result/prediction payloads and their alignment with the
+- [x] Audit all six result/prediction payloads and their alignment with the
   immutable roster without printing patient identifiers.
-- [ ] Quantify G0/G1 class confusion, prediction migration, control-arm
+- [x] Quantify G0/G1 class confusion, prediction migration, control-arm
   sensitivity, cross-Seed consistency, and representative de-identified
   failure categories, with special attention to `Worse` collapse.
-- [ ] Write `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md` and update the
+- [x] Write `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md` and update the
   active Proposal/status/index surfaces. Separate observed evidence from
   hypotheses and require any future experiment to use a separately frozen,
   outcome-independent protocol.
 - [ ] Validate hashes/firewalls, Markdown links, tests, Ruff, compileall, and
-  `git diff --check`; commit and push the document-only terminal package.
-- **Status:** in progress — read-only failure analysis authorized; no new
+  `git diff --check`; commit and push the analysis/report terminal package.
+- **Status:** terminal analysis complete; final commit/push pending — no new
   experiment or downstream stage is unlocked.
 
 ## Errors Encountered
@@ -625,6 +625,7 @@ smokes during iteration.
 | The corrected field-shape audit assumed a top-level development array, but the roster stores it under `partitions` | 1 | No identity value was printed; inspect only nested property names/counts, then bind the analyzer to the actual registered schema |
 | A Phase-14 scalar metric audit again left an empty pipeline after a `foreach` block | 1 | The command failed at parse time before reading payloads; collect objects into `$items`, then serialize the completed array |
 | First focused R41A case-study validation found one unused test import | 1 | Remove the unused `copy` import and rerun tests, Ruff, compileall, and diff validation as independent gates |
+| Phase-14 full pytest retained one R6 frozen-manifest failure after 814 passes | 1 | This is the same closed R6 registry drift already reproduced on clean commit `24f57c3`; record it as preexisting and do not rewrite historical hashes |
 
 ## Next Step
 

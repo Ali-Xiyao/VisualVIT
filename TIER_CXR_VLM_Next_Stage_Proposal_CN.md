@@ -67,6 +67,34 @@ G1 true macro-F1 为 0.3474/0.3632/0.4304，但 `Worse` recall 为
 终态报告：
 `reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
 
+## 2026-07-31 R41A 失败案例研究结论
+
+在不启动新训练、不改变 roster/Seed/checkpoint/gate、也不读取任何
+protected/gold/external outcome 的前提下，预先提交的只读分析器进一步
+定位了 R41A STOP：
+
+- G1 在每 Seed 各 25 个真实 `Worse` 样本上只输出 0/7/9 次 `Worse`，
+  recall 为 0.00/0.08/0.08；错误类别还会随 Seed 改变；
+- G0 正确但 G1 错误的样本为 20/24/25，G1 修复 G0 的样本为
+  22/11/20，因此 attention-LoRA 在 Seed 29/43 为净负迁移；
+- 三个 G1 Seed 只有 31/125 样本全部正确，49/125 样本全部错误；
+- true pair 相对 prior shuffle 有局部正向响应，但 Seed 17 只有
+  11 个 true-sensitive 对 9 个 control-favored 样本，不能覆盖冻结
+  bootstrap、类别支持与 G0 对照门失败。
+
+因此失败的精确表述是：**当前 Qwen attention-LoRA free-greedy
+progression readout 未形成跨类别、跨 Seed、优于 projector-only 的稳定
+绑定**。这不是“Qwen 不是 LLM”，也不是输入完全无信号。Proposal 当前
+保留 R40C structured head 的有限内部开发 GO，同时把 R41A 作为终态负
+结果；不得在同一 125-patient development 上针对已观察错误调参后重跑。
+
+案例研究：
+`reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`
+
+任何未来 readout 尝试必须另立 outcome-independent protocol，并在新
+patient cohort 的 outcome 可见前冻结类别支持、G0/G1、Seed 和控制门。
+本案例研究不解锁 R42A/R43。
+
 ## R40C 终态：内部开发泛化 GO
 
 R40B.4 只证明 32-row overfit。下一阶段不继续调 Qwen，而是冻结

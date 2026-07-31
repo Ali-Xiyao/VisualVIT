@@ -39,6 +39,12 @@ R41A 六个 arm 均完成 36 次 updates，schema/finding 均为 100%，cache au
 最大差均为 0；三 Seed 聚合 gate failures = 8。主链在 R41A STOP 后正常结束，
 R42A/R43 runtime root 均未创建。所有进程已退出，两张 GPU 回到 0 MiB/0%。
 
+只读失败案例研究进一步确认：G1 每 Seed 对 25 个真实 `Worse` 仅输出
+0/7/9 次该类；G0-correct/G1-wrong 为 20/24/25，而
+G0-wrong/G1-correct 为 22/11/20。跨三个 G1 Seed 只有 31/125 样本
+全部正确，49/125 样本全部错误。该结果解释 STOP，但没有新训练、模型选择
+或 downstream 解锁。
+
 R39 还通过：
 
 - A6−current-only：+3.22 pp，95% CI [+2.47,+4.02]；
@@ -78,15 +84,16 @@ R39 还通过：
 ## 权威阅读顺序
 
 1. `reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
-2. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
-3. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
-4. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
-5. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
-6. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
-7. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
-8. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
-9. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
-9. `task_plan.md`、`findings.md`、`progress.md`
+2. `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`
+3. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
+4. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
+5. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
+6. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
+7. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
+8. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
+9. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
+10. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
+11. `task_plan.md`、`findings.md`、`progress.md`
 
 ## Runtime 权威产物
 
@@ -110,6 +117,8 @@ R39 还通过：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r40c_structured_generalization_v1\sequence_status.json`
 - PRTA-Gen R41A aggregate：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r41a_progression_sft_v1\aggregate.json`
+- PRTA-Gen R41A descriptive failure case study：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r41a_failure_case_study_v1\case_study.json`
 - PRTA-Gen R41–R43 master-chain status：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r41_r43_authorized_chain_v1\sequence_status.json`
 
@@ -124,6 +133,8 @@ generalization 和 R41A progression SFT 均已终止。
 
 - 仓库整理、复现审计和论文材料准备；
 - 使用现有聚合结果生成表格或图；
+- 使用已提交的 identity-free analyzer 审阅 R41A failure modes，但不得
+  把 development 错误用于模型/超参数选择；
 - 对 R40B.4 做只读复现审计或独立冻结的后续开发实验；
 - 审阅已冻结 R40C/R41A aggregate，或先写新的独立确认协议；
 - 独立注册的 gold/external descriptive confirmation。

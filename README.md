@@ -39,19 +39,23 @@ R41A Qwen SFT case study 完成六个 arm 和三 Seed 聚合；G1 true-pair
 macro-F1 为 0.3474/0.3632/0.4304，但 `Worse` recall 为
 0.00/0.08/0.08，且 G1−G0 为 -0.46/-13.40/-6.85 pp，共 8 个门失败。
 因此 R41A 科学 STOP，R42A/R43 未启动；gold/external 与临床主张仍锁定。
+只读 failure case study 进一步显示：G1 每 Seed 对 25 个真实 `Worse`
+只输出 0/7/9 次该类，且 49/125 个样本在三个 G1 Seed 中全部答错。
+这是对 STOP 的机制性描述，不是新实验或重启依据。
 
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
 2. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
-3. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
-4. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
-5. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
-6. [PRTA-Gen 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
-7. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-8. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-9. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-10. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+3. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
+4. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
+5. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
+6. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
+7. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
+8. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+9. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+10. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+11. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 

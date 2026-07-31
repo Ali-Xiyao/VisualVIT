@@ -1666,3 +1666,49 @@ preserving the encoder's static medical semantics.
   outcome-independent next steps. A static tracked figure is appropriate
   because the selected source-of-truth surface is the repository Markdown
   report, not a dashboard.
+- The pre-analysis analyzer was committed and pushed as `0445a6d` before its
+  one-time real run. The derived case-study artifact has SHA-256
+  `59C64E21B1520F439CB41F729E4720137D2A6803BEFA4E25A9D51684B86EA37A`,
+  contains 125 rows/125 patients, emits zero `example_id`/`patient_id` keys,
+  and records `new_training_started=false`.
+- The dominant G1 failure is not merely a small average-score miss. G1 emits
+  `Worse` 0, 7, and 9 times out of 125 predictions across Seeds 17/29/43,
+  despite 25 true `Worse` targets per Seed; its corresponding recall is
+  0.00/0.08/0.08. Error destinations are unstable: Seed 17 spreads `Worse`
+  mainly into Stable/Improved, Seed 29 mainly into Resolved, and Seed 43
+  mainly into New/Improved.
+- Adding attention LoRA does not supply a stable improvement over G0. At the
+  row level, G0-correct/G1-wrong cases number 20/24/25, versus G0-wrong/
+  G1-correct cases 22/11/20 for Seeds 17/29/43. This is nearly balanced only
+  for Seed 17 and net harmful for Seeds 29/43, matching the registered
+  macro-F1 deltas of -0.46/-13.40/-6.85 pp.
+- Across G1 Seeds, only 31/125 development rows are unanimously correct.
+  Another 45 have at least one correct Seed, while 49/125 are wrong in every
+  Seed (12 with the same wrong label, 37 with differing wrong labels). This
+  supports seed-instability and persistent-error descriptions, not causal
+  explanations.
+- Controls show some real-pair signal but not a stable binding solution. For
+  true pair versus prior shuffle, G1 has true-sensitive/control-favored counts
+  of 11/9, 15/4, and 20/7. Seed 17's two-row net is weak and its registered
+  bootstrap gate still fails; the other Seeds' positive point differences do
+  not rescue the failed class-support and G0-comparison conjunction.
+- Finding slices are descriptive and often small. The strongest visible
+  contrast is that G1 is consistently better on Cardiomegaly and Enlarged
+  Cardiomediastinum but worse on Pleural Effusion, Atelectasis, and Lung
+  Opacity; Lung Lesion has zero G1 accuracy but too little support for a
+  standalone claim. These slices must not become post-hoc tuning targets on
+  the same cohort.
+- Finding denominators are materially uneven: 28 Edema, 28 Lung Opacity, 27
+  Pleural Effusion, 17 Atelectasis, 11 Cardiomegaly, 6 Enlarged
+  Cardiomediastinum, 5 Pneumothorax, 2 Pneumonia, and 1 Lung Lesion. The report
+  will foreground class-level and cross-Seed evidence; low-support finding
+  slices remain illustrative only.
+- The active Proposal already states the R41A STOP and no-retry boundary, so
+  Phase 14 should add a dated read-only diagnosis subsection rather than
+  rewrite the broader historical proposal. Project status and both indexes
+  should promote the new case-study report immediately after the terminal
+  R41A result.
+- Phase-14 validation introduces no new full-suite regression: 814 tests pass
+  and one is expected xfail. The sole failure remains the documented R6
+  closed-manifest hash drift, which is outside the R41A analysis surface and
+  already reproduces on clean commit `24f57c3`.

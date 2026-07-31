@@ -103,3 +103,8 @@ Python 进程已退出。
 Seed、checkpoint、roster 或门槛，也不要绕过 R41A STOP 启动 R42A/R43。
 若未来继续，必须先提出与本次 outcome 无关、具有新数据或新机制依据的
 独立预注册方案；现有结果适合用于失败案例研究和 proposal 收束。
+
+只读失败案例研究已经完成：
+`reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`。它使用预先提交的
+identity-free analyzer 重算 confusion、G0/G1 migration、controls 与
+cross-Seed consistency，没有启动新训练，也不改变本报告的终态。
