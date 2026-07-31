@@ -2995,3 +2995,23 @@
   source indexes verified; 11 focused tests, Ruff, and diff check pass. Only
   the derived cache receipts changed after commit `5a7b3a4`; stage and publish
   them before implementing or launching the Qwen runner.
+- Published final cache pins as commit `c0082b4`. Added the common R51 runner,
+  which reuses R49 prompt/SFT/evaluation/cache-equivalence functions while
+  loading and common-normalizing the three frozen token sources; added the
+  three-seed paired aggregator and deterministic two-GPU lane launcher. No
+  model run has started. Add synthetic loader/aggregate tests, then run the
+  real runner preflight before publication and launch.
+- Added R51 runner tests for the frozen provenance/parameter contract, merging
+  PRTA train/evaluation indexes with common RMS normalization, label-free token
+  shape, and a synthetic three-arm/two-seed paired aggregate with shared
+  initialization enforcement. Run tests/Ruff first; only then run the real
+  no-Qwen preflight over pinned token sources.
+- First runner suite produced 13 passes and one expected fail-closed fixture
+  rejection: the synthetic PRTA shard randomized reserved positions 60-63.
+  Corrected only the fixture to keep those positions zero; production loading,
+  normalization, and scientific contracts are unchanged.
+- Corrected suite passes 14/14. Focused Ruff, compileall, and diff check pass.
+  Real runner preflight verifies all three arms, three seeds, 2,500/500 rows,
+  fresh outputs, placeholder 151662, and seed-specific shared projector hashes;
+  it reports Qwen unloaded, GPU training not started, and all protected/gold/
+  external/outcome flags false. Publish runner code before launching lanes.
