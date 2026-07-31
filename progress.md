@@ -2682,3 +2682,47 @@
   bit-identical repeated Block-8 extraction. Pinned index bytes 6,731 and
   SHA-256 `0B18B112FE81EDF484DB0E7F77BDDECEC10AA4D09EFFC7766F9A3643FF93264F`
   into the R49 authority before exact-64 training.
+- Raw shard 0/2 completed all 375 rows at macro-F1 0.196221 with schema/finding
+  1.0; result bytes 125,585 and SHA-256
+  `050E785297FD6CB45B8C8ECA0D5CF90BE254F5B01DCF844DFB0B02728816BAF0`.
+  GPU1 was immediately reassigned to matched PRTA exact-64 Seed-17 training
+  while Raw shard 1/2 continues on GPU0.
+- Raw shard 1/2 completed all 375 rows at macro-F1 0.188608 with schema/finding
+  1.0; result bytes 125,508 and SHA-256
+  `CCEDDFD5276A318740143CB94F3A18BFA0ADFA77BE1822A3C5688969374510EC`.
+  GPU0 immediately started the Naive exact-64 arm (PID 8880); PRTA exact-64
+  remains live on GPU1 (PID 24848). Both matched arms are now running.
+- Located and reserved the active R49 result writeback surfaces: proposal,
+  project status, reports index, and the comprehensive R45-R48 case study.
+  No conclusion has been prewritten; the final wording will be generated only
+  from the aggregate's order/target parity checks and paired bootstrap CIs.
+- Added `docs/PRTA_GEN_R49_UNIFIED_THREE_WAY_PROTOCOL_CN.md` while the matched
+  arms run. It freezes the three systems, prompt-parity interpretation,
+  30+30+4 layout, paired-CI rule, and internal post-hoc claim boundary. Focused
+  tests and `git diff --check` remain clean after the documentation addition.
+- Both exact-64 arms completed once without retry. PRTA F1 is 0.354372 and
+  Naive F1 is 0.295921; initialization/order/capacity receipts match exactly.
+  The unified 750-patient aggregate completed with PRTA−Raw +16.146 pp (CI95
+  +12.090 to +20.198) and PRTA−Naive +5.845 pp (CI95 +2.610 to +9.081).
+  All three registered answer fields are true. Proceed to reader-facing case
+  study/proposal writeback, artifact hashing, full validation, commit, and push.
+- Reader-facing R49 report, proposal, project status, report index, R45-R49
+  case study, and R48 final cross-reference are synchronized. Focused tests
+  (10), repository-wide Ruff, compileall, JSON parsing, artifact/parity checks,
+  and `git diff --check` passed. The first report-index path loop falsely
+  prefixed a root-relative `docs/` entry with `reports/`; rerun with correct
+  root-versus-report resolution before the full pytest gate.
+- The corrected artifact/report-index audit passed. The combined shell then
+  hit its 120-second timeout before full pytest reached a terminal summary;
+  treat this only as an orchestration timeout, verify the worker is gone, and
+  rerun the unchanged suite with adequate wall-time.
+- Final full pytest completed: 872 passed, 1 xfailed, and the sole failure is
+  the same historical R6 resolution/frozen-manifest registry drift in
+  `test_query_anchor_r4_runner.py`. R49 focused tests, full Ruff, compileall,
+  JSON, result hashes/parity, report paths, and diff checks all pass. Complete
+  the final zero-worker/GPU audit, commit, and push.
+- Terminal R49 audit passes: aggregate answer fields and all reader-facing
+  metrics agree, every report-index path resolves, active R49/pytest workers
+  are zero, both RTX 3090 GPUs are 0 MiB/0%, and `git diff --check` is clean.
+  Stage only the R49 protocol/result/planning/documentation scope, commit, and
+  push the completed package.

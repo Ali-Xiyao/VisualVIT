@@ -1,4 +1,4 @@
-# PRTA-Gen R45–R48 Case Study 与 Raw Two-Image Qwen3-VL 结果
+# PRTA-Gen R45–R49 Case Study 与统一三系统结果
 
 ## 最终总体结论
 
@@ -17,6 +17,23 @@ heterogeneity 审计保留，不覆盖最终 pooled overall 判定。
 - R48 不再训练或选择，复现了 frozen generator 对正确 prior 的响应；
 - 用户优先要求的 Raw two-image Qwen3-VL 已在同一 500 人 qualification
   cohort 跑完，但显著弱于 R48 frozen-token baseline。
+
+R49 随后补上此前缺失的同预算 Naive exact-64 归因。它不复用旧 Raw 500 人
+比较，而在同一 750 人 evaluation union、相同语义任务与 frozen Qwen 下
+重新运行 Raw、Naive exact-64 和 PRTA exact-64。Naive 与 PRTA 的 64-token
+预算、projector 容量和初始化、训练顺序、Seed、优化器和 updates 完全匹配。
+
+| R49 系统 | macro-F1 |
+|---|---:|
+| Raw two-image Qwen | 0.192915 |
+| Naive exact-64 | 0.295921 |
+| PRTA exact-64 | **0.354372** |
+
+PRTA−Raw 为 +16.146 pp，CI `[+12.090,+20.198]`；PRTA−Naive 为
++5.845 pp，CI `[+2.610,+9.081]`。因此 case study 现在不仅能说 PRTA
+系统优于直接看双图，也能说在相同 64-token/projector/训练预算下，
+finding-guided 跨时间对齐优于简单 prior/current token 拼接。详细公平性审计
+与哈希见 `PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md`。
 
 Raw B3 的完整结果为：
 

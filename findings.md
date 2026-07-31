@@ -2478,3 +2478,27 @@ preserving the encoder's static medical semantics.
   `tokens/qualification` and `tokens/confirmation` roots. The earlier scalar
   inventory queried two incorrect nested paths; configs now provide the exact
   hash-pinned locations.
+- R49 Raw shard 0/2 completed 375/375 rows with frozen Qwen, full schema and
+  finding validity, macro-F1 0.196221, and 8.48 minutes of generation. Its
+  small stderr is limited to Transformers weight-loading progress and ignored
+  sampling-flag warnings; no traceback or contract failure occurred.
+- R49 Raw shard 1/2 also completed 375/375 with schema/finding 1.0 and
+  macro-F1 0.188608. Both raw shards are therefore formally complete; their
+  unified 750-row metric remains intentionally deferred to the final aggregate
+  so example order and targets are checked against both exact-64 arms first.
+- The reader-facing R49 writeback must update four live surfaces together:
+  the proposal, `docs/PROJECT_STATUS_CN.md`, `reports/README.md`, and the
+  R45-R48 case study (or a dedicated R49 report linked from it). Existing text
+  explicitly says the Naive same-budget attribution was still missing, so a
+  result-only JSON without these synchronized edits would leave the proposal
+  scientifically stale.
+- R49 formally answers the missing attribution comparison on the same 750
+  patients. Macro-F1 is Raw 0.192915, Naive exact-64 0.295921, and PRTA
+  exact-64 0.354372. Paired effects are PRTA−Raw +16.146 pp (CI95 +12.090 to
+  +20.198) and PRTA−Naive +5.845 pp (CI95 +2.610 to +9.081). Both lower bounds
+  are positive, so the frozen support rule answers both questions positively
+  and specifically supports a cross-time-alignment gain over naive concat.
+- Exact-64 fairness receipts pass: identical 9,873,920-parameter projector,
+  initialization SHA-256 `C8B61AF7...896BE2`, training-order SHA-256
+  `99314669...2FEEC7`, 2,500 rows, 79 updates, frozen Qwen, exact-64/no-pixel,
+  cache equivalence, schema 1.0, and finding echo 1.0 in both arms.

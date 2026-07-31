@@ -12,6 +12,13 @@ CI `[+2.529,+9.101]`；true−current +7.860 pp、
 CI `[+4.629,+11.045]`。所有原数值门在 pooled descriptive analysis 中
 通过。Split-specific qualification/confirmation 状态保留为异质性审计。
 
+R49 随后完成缺失的统一归因：同一 750 人、相同 frozen Qwen 和语义任务下，
+Raw/Naive exact-64/PRTA exact-64 macro-F1 为
+0.192915/0.295921/0.354372。PRTA−Raw +16.146 pp，CI
+`[+12.090,+20.198]`；PRTA−Naive +5.845 pp，CI
+`[+2.610,+9.081]`。因此内部证据支持 PRTA 优于直接双图和同预算简单拼接，
+并支持跨时间对齐带来独立增益；该结论仍是 post-hoc internal case study。
+
 TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 
 | 阶段 | 决策 | 核心证据 |
@@ -40,6 +47,7 @@ TIER-CXR-VLM 的核心冻结链已经跑完，不需要重跑 R38 或 R39：
 | PRTA-Gen R48 confirmation | `STOP_PRTA_GEN_R48_FPRR_CONFIRMATION` | true F1 0.3186；true−shuffle +1.32 pp，CI 跨零；四门失败 |
 | PRTA-Gen R48 pooled 750 | `POSITIVE_PRTA_GEN_R48_FPRR_POOLED_INTERNAL` | true F1 0.3736；true−shuffle +5.70 pp、true−current +7.86 pp，两个 CI 下界均 > 0 |
 | R48-B3 Raw two-image | `COMPLETE_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_QUALIFICATION` | 原生 prior/current 双图 F1 0.1417；比 FPRR 低 25.89 pp，CI [−30.77,−20.93] |
+| PRTA-Gen R49 unified three-way | `COMPLETE_PRTA_GEN_R49_UNIFIED_THREE_WAY` | 同 750 人：Raw/Naive/PRTA F1 0.1929/0.2959/0.3544；PRTA−Naive +5.85 pp，CI [+2.61,+9.08] |
 
 R40A 历史 STOP 不撤销 R39 GO；R40A.2 使用新的 discovery2 和原封未读
 qualification 修复了明确的 token-layout mismatch。R40B.4 只跑通
@@ -47,6 +55,11 @@ progression-only structured emission 的工程 overfit smoke。R41A 随后完整
 执行 progression-only Qwen SFT，但 attention-LoRA 未通过冻结 survival gate。
 Raw 双图 baseline 使用冻结 Qwen 的受约束两字段生成，不解锁开放式报告、
 其他字段、R42 G-CMCP/reversal 或 R43 gold/external。
+
+R49 的 Naive 与 PRTA 两臂均完成 2,500 rows、79 updates，projector 参数量、
+初始化 SHA-256 和训练顺序 SHA-256 完全一致；Qwen trainable parameters 为 0，
+exact-64/no-pixel、cache-equivalence、schema 和 finding gates 全通过。Raw 的
+原生 vision compute 不等于 exact-64，完整多模态序列也不声称逐字节一致。
 
 R48 confirmation 已按冻结协议一次性完成。虽然 schema/finding 均为 100%、
 Qwen/projector trainable parameters 为 0，但 true F1 0.318626 未达 0.35，

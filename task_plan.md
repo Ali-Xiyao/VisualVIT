@@ -731,19 +731,21 @@ smokes during iteration.
   deterministic current image tokens + 4 reserved zeros, with the same frozen
   visual encoder, Qwen, projector capacity, optimizer budget, and Seed 17 as
   the PRTA exact-64 arm.
-- [x] Implement one matched Naive/PRTA projector runner; refitting remains to
-  execute after static, cache, and preflight gates pass. The runner will
-  verify frozen-Qwen, no-pixel token-path, exact-64, schema, and finding gates.
-- [ ] Evaluate all three systems on the identical 750-patient union using the
+- [x] Refit Naive and PRTA with one matched projector runner; both completed
+  2,500 rows / 79 updates and passed frozen-Qwen, no-pixel, exact-64, cache,
+  schema, finding, capacity, initialization, and training-order audits.
+- [x] Evaluate all three systems on the identical 750-patient union using the
   same task instruction/JSON contract; use both GPUs for disjoint shards where
   the frozen execution contract permits.
-- [ ] Run paired patient-bootstrap for PRTA−Raw and PRTA−Naive, report compute
+- [x] Run paired patient-bootstrap for PRTA−Raw and PRTA−Naive, report compute
   separately, and update the proposal/case study with an alignment-attribution
   verdict regardless of sign.
-- [ ] Validate tests, hashes, active workers/GPUs, commit, and push the complete
+- [x] Validate tests, hashes, active workers/GPUs, commit, and push the complete
   R49 authority/result package.
-- **Status:** in progress — authority and implementation inventory only; no
-  R49 GPU job or outcome aggregate exists.
+- **Status:** complete — Raw/Naive/PRTA F1 = 0.192915/0.295921/0.354372;
+  PRTA−Raw +16.146 pp (CI95 +12.090 to +20.198) and PRTA−Naive +5.845 pp
+  (CI95 +2.610 to +9.081). Both registered superiority questions and the
+  cross-time-alignment attribution are supported on this internal case study.
 
 ## Errors Encountered
 
@@ -874,6 +876,10 @@ smokes during iteration.
 | First Phase-26 implementation writeback matched an ASCII colon heading instead of the live em-dash heading | 1 | Locate the exact Phase-26 checklist and patch its individual task lines; the rejected combined patch changed no file |
 | First R49 launcher preflight matched its own PowerShell command line as an active R49 process | 1 | Exclude the current shell PID and match only Python cache/run entrypoints; no worker had started in the rejected attempt |
 | The first synthetic R49 aggregate test demanded CI-supported superiority from only four patients and 20 bootstrap replicates | 1 | Assert the deterministic positive point effect and boolean verdict typing; retain the production rule that support additionally requires CI95 lower above zero |
+| First post-aggregate planning patch matched PowerShell's earlier mojibake rendering of the PRTA-minus labels | 1 | Re-read the checklist explicitly as UTF-8 and patch the real Unicode text; the rejected combined patch changed no file |
+| First final report-index audit treated every Markdown reference as relative to `reports/`, including `docs/PROJECT_STATUS_CN.md` | 1 | Resolve `docs/` and other repository-root paths from the workspace while resolving bare report names under `reports/`; artifact assertions, focused tests, Ruff, compileall, and diff check had already passed |
+| The first final full-pytest shell used a 120-second command timeout and was terminated before the 800+ test suite produced its terminal summary | 1 | Verify no pytest worker survived, then rerun the unchanged full suite with a bounded long command timeout and short incremental waits; no test result was inferred from the timeout |
+| Final full pytest retained the known R6 resolution/frozen-manifest failure after 872 passes | 1 | This is the same historical closed-registry drift previously reproduced outside R49; retain it as the sole unrelated failure and do not rewrite frozen R6 hashes |
 | First raw two-image preflight summary treated its scalar row count as a result-record list | 1 | Restrict row compaction to list-valued formal results, add a regression test, and rerun the unchanged preflight before any GPU/model load |
 | First two-card raw smoke completed generation but both shard summaries rejected two-row samples for lacking all five target classes | 1 | Permit `null` recall only for unsupported smoke classes, retain an explicit complete-class-support gate for each 250-row formal shard, archive the failed smoke receipts/logs, and rerun unchanged |
 

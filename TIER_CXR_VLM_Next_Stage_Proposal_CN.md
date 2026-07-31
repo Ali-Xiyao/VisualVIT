@@ -5,8 +5,8 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R48**
+> **当前结果提交：** R39 frozen lineage + R40C internal GO + R48 pooled internal positive + R49 alignment attribution
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R49**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -142,6 +142,34 @@ Proposal 的主结果采用该 750 人 pooled internal positive。Split-specific
 confirmation STOP 作为 cohort heterogeneity 审计保留，不覆盖总体结论。
 边界仍是 internal pooled evidence，不扩展为 external/gold、临床效用或
 独立 confirmation。
+
+## 2026-07-31 R49 统一三系统 Alignment Attribution
+
+R48 仍未回答 64-token 方法的增益究竟来自跨时间对齐，还是只来自 frozen
+medical visual tokens。R49 因而在同一固定 750 人 evaluation union 上重新运行
+三个系统：Raw two-image frozen Qwen、30 prior + 30 current + 4 zero 的 Naive
+exact-64，以及 finding-guided PRTA exact-64。三者使用相同语义任务和 JSON
+输出合同；Naive/PRTA 进一步严格匹配 64-token 预算、9,873,920 参数 projector、
+初始化哈希、2,500 人训练顺序、Seed 17、79 updates 和优化器设置。
+
+| 系统 | macro-F1 |
+|---|---:|
+| Raw two-image Qwen | 0.192915 |
+| Naive exact-64 | 0.295921 |
+| PRTA exact-64 | **0.354372** |
+
+PRTA−Raw 为 **+16.146 pp**，paired 95% CI `[+12.090,+20.198]`；
+PRTA−Naive 为 **+5.845 pp**，paired 95% CI `[+2.610,+9.081]`。两项 CI
+下界均大于零。因此当前 proposal 获得内部机制证据：PRTA 优于直接双图
+VLM，也优于同 token 预算的简单拼接；后一项支持增益的一部分确实来自
+finding-guided 跨时间对齐，而不是输入 token 或 projector 容量更多。
+
+终态为 `COMPLETE_PRTA_GEN_R49_UNIFIED_THREE_WAY`。Raw 的原生视觉算力不与
+exact-64 相等；完整 multimodal serialization 也因图像与 placeholder 模态
+不同而不可能逐字节一致，只有语义任务与输出合同相同。R49 仍是内部 post-hoc
+case study，不覆盖 R48 confirmation STOP，不扩展为 gold/external、临床或
+独立确认。完整报告：
+`reports/PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md`。
 
 历史上，R45 后曾据相关工作审计另立 **R46 Causal Evidence Arbitration
 (CEA)**；R46 与后续 R47 的实际 STOP 已由上节覆盖，不再把它们写成未来

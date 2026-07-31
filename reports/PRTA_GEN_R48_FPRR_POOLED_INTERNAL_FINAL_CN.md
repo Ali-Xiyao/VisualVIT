@@ -46,6 +46,12 @@ Qualification/confirmation 的分拆差异保留为异质性审计，不作为�
 完整胸片交给 Qwen 就会成功”，而更符合 temporal token interface 提供有效
 归纳偏置的解释。
 
+该解释随后由 R49 严格化：在同一 750 人上，Raw/Naive exact-64/PRTA
+exact-64 F1 为 0.192915/0.295921/0.354372；PRTA−Naive +5.845 pp，
+CI `[+2.610,+9.081]`。因此同预算对比也支持跨时间对齐贡献。详见
+`PRTA_GEN_R49_UNIFIED_THREE_WAY_RESULT_CN.md`；R48 本身的 pooled 状态和
+confirmation STOP 均不被改写。
+
 ## 可复核证据
 
 - pooled aggregate：
