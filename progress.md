@@ -2869,3 +2869,94 @@
   `0414779` (`feat: add R50 longitudinal method benchmark`) and pushed it to
   `origin/codex/r37-prior-responsive-temporal-adapter`. This final planning-only
   writeback removes the now-stale pre-publication wording.
+- User authorized the next matched-interface experiment and asked whether TILA
+  and B2 are existing methods. Recorded the exact provenance boundary: TILA's
+  encoder/checkpoint is official, but the five-class readout/inversion mapping
+  is adapted; B2 signed/absolute is a locally implemented classic Siamese
+  baseline. Opened Phase 28 as R51. Before any outcome, inventory unused
+  patients and freeze an exact-64/projector/frozen-Qwen comparison that changes
+  only the temporal representation source.
+- Restored the planning bundle and confirmed a clean working tree at published
+  commit `ce59e91`. The first interface search resolved the real R49/R41A
+  entrypoints after three guessed filenames were absent. R49 authority confirms
+  2,500 train / 750 qualification+confirmation rows, a 64-token budget, frozen
+  local Qwen3-VL-4B, common prompt surface, and shared projector initialization.
+  Inspect the real runner/token schemas and unused roster pool next.
+- R49 exact-64 contract inspection confirms both token arms supply `[64,768]`
+  tensors, positions 0-59 active and 60-63 exactly zero, into the same
+  768-to-2560 projector and frozen Qwen3-VL-4B. Training is one epoch, seed 17,
+  2,500 train patients, 79 optimizer updates, with shared order and projector
+  initialization; evaluation uses the 750 already-read qualification plus
+  confirmation rows. R51 must create a fresh evaluation cohort rather than
+  reusing those outcomes for a new tuning claim.
+- The real runner confirms Qwen has zero trainable parameters and each R49 arm
+  trains only the identical `TierTokenProjector`; cache-equivalence, one visual
+  injection, no pixels, assistant-only loss, and exactly 64 placeholders are
+  audited. R51 will not give TILA/B2 an arm-specific trainable bridge. The
+  first roster summary guessed a nonexistent `class_counts` key and stopped
+  read-only; rebind to the actual roster schema next.
+- Unused-support audit completed without printing identities: after all R45
+  partitions, 17,622 image-complete patients remain; per-class unique support
+  is Stable 13,833, Improved 6,702, Worse 9,266, New 7,374, Resolved 224.
+  This supports a fresh balanced 500-patient evaluation set with 100 per class
+  while retaining a Resolved reserve. The existing R48 cache wrapper confirms
+  the PRTA token generator can be rebound to a newly frozen roster. TILA's
+  cache exposes the official normalized 128-d pair embedding only; a search
+  for `modeling_tila.py` was a filename guess, with `model.py` being canonical.
+- Exact token translation is now specified outcome-free. TILA uses the official
+  temporal projected patch map `[B,128,14,14]`, selects 60 preregistered uniform
+  patches, tiles width 128 exactly six times to 768, then applies the common
+  per-token RMS rule. B2 encodes frozen BiomedCLIP Block-8 prior/current grids,
+  selects 15 preregistered non-CLS patches, and concatenates prior/current/
+  signed/absolute groups to 60 tokens before the same RMS rule. PRTA receives
+  the same RMS rule on its 60 active tokens. All keep positions 60-63 zero and
+  train only the same projector.
+- Added the frozen R51 roster authority, a fail-closed builder that reuses R45
+  source validation while excluding all 3,750 R45 patients, and focused tests
+  for balanced/excluded selection and scalar-only receipts. No roster has been
+  materialized yet; validate JSON, Ruff, tests, and the real-data preflight
+  before the one-time write.
+- R51 roster JSON, focused Ruff, and seven roster tests pass. Real-data
+  preflight selected exactly 500 in-memory rows with 100 per class, excluded
+  all R45 patients, left a 121-patient Resolved reserve, and reported every
+  protected/gold/external/model-outcome flag false. The unique roster write is
+  now authorized by the frozen namespace; pin its bytes/SHA immediately after.
+- Materialized the one-time R51 fresh evaluation roster. It is 388,228 bytes,
+  SHA-256 `8EBA5E1B112F3591FF4C4276673523D78B0B9305F725CC364601CF78EC0D9DE0`,
+  contains 500 unique patients and 500 unique example IDs, is exactly 100 per
+  class, has zero overlap with all 3,750 R45 patients, and all 1,000 referenced
+  images exist. No model outcome was read. Pin this roster in the benchmark
+  authority and implement the three token-cache arms next.
+- Added the R51 precache benchmark authority with all three methods, translation
+  positions, common RMS rule, three seeds, identical prompt/target/training/
+  projector/Qwen contract, paired contrasts, fresh runtime paths, and null
+  derived cache receipts. Added parameter-free TILA/B2 exact64 translation
+  primitives, a fail-closed common authority validator, and three focused
+  translation tests. Validate this layer before implementing cache execution.
+- Precache authority validation passes with 2,500/500 rows; focused Ruff,
+  10 tests, JSON parsing, and diff check pass. Audited the reusable cache
+  internals: the R45 engine can materialize PRTA evaluation variants unchanged,
+  and `FrozenBiomedCLIPDifference.encode` returns the full post-Block12
+  `[B,197,768]` grid needed for B2. Add the compatibility cache keys and the
+  three-command cache runner next.
+- Added the R51 cache runner with four commands: preflight, PRTA evaluation,
+  TILA exact64, and B2 exact64. PRTA delegates to the frozen R45 alignment
+  engine; TILA reads official projected temporal patches; B2 streams paired
+  images through frozen BiomedCLIP without retaining all patch grids in RAM.
+  All cache writers shard label-free `[64,768]` FP16 tensors, audit four zero
+  slots and finite values, and record no-Qwen/no-outcome firewalls. Static and
+  real-data preflight validation is next.
+- Real-data precache preflight passed on 6,000 image references, 2,500/500 rows,
+  two GPUs, three fresh token roots, zero translation parameters, and no Qwen or
+  outcome read. The combined validation command nevertheless contained one
+  Ruff failure for an unused `read_json` import; later commands masked its exit
+  code. Removed that import and will rerun Ruff independently before commit.
+- Independent Ruff now passes. Added a label-free shard-writer regression test
+  and pinned the source-candidate byte count as well as its SHA-256, removing
+  the last dynamically inferred authority field. Run the combined R49-R51
+  focused suite and cached diff gate before publishing the precache authority.
+- Precache publication gates pass: 22 combined R49-R51 tests, focused Ruff,
+  compileall, real-data authority/preflight, and `git diff --check`. Method,
+  roster, translation, prompt, target, training, three seeds, paired statistics,
+  and runtime paths are frozen before any R51 cache or model outcome. Stage and
+  push this authority, then begin the authorized two-GPU label-free caches.

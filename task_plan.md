@@ -778,6 +778,32 @@ smokes during iteration.
   expected xfail and the sole known unrelated historical R6 failure; no R50
   worker remains and both GPUs are at 0 MiB/0%.
 
+### Phase 28 — R51 TILA/B2 exact-64 frozen-Qwen matched-interface benchmark
+
+- [x] Record method provenance precisely: TILA image/pair encoder and checkpoint
+  are official existing work, while the local five-class head and inversion
+  mapping are adaptations; B2 signed/absolute is a locally implemented classic
+  Siamese control, not a downloadable paper-complete system.
+- [x] Audit unused outcome-independent patients, frozen R49 exact-64/Qwen
+  interface, projector contract, token dimensions, and available TILA/B2
+  caches without reading any new protected/gold/external outcomes.
+- [x] Freeze an R51 authority before outcomes: same patients, prompt, JSON
+  parser, frozen Qwen, exact 64-token budget, projector capacity/training budget,
+  seeds, controls, and paired statistics for PRTA, TILA-exact64, and B2-exact64.
+- [ ] Implement deterministic TILA/B2-to-64 tokenizers and a common runner;
+  verify shape, label blindness, patient disjointness, cache hashes, parameter
+  parity, frozen-Qwen state, and synthetic/focused tests.
+- [ ] Execute all registered seeds across both RTX 3090s without result-based
+  tuning or seed selection; retain failed scientific arms and retry only
+  pre-outcome engineering failures under the frozen authority.
+- [ ] Aggregate patient-paired results, write the R51 case study and update the
+  proposal/status/index/planning bundle, then run terminal tests, hashes,
+  process/GPU closure, commit, and push.
+- **Status:** in progress — fresh 500-patient roster is materialized and pinned;
+  the precache benchmark authority and parameter-free translations pass 22
+  focused tests, Ruff, compileall, real-data preflight, and diff validation.
+  Publish this no-outcome authority before starting the three GPU caches.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -790,6 +816,11 @@ smokes during iteration.
 | Terminal R50 scalar audit first treated aggregate `patients` as an ID array, then guessed a nested `macro_f1.mean` field instead of the printed `macro_f1_mean` key | 2 | Bind only to the actual registered keys, rerun against `patients=750` and 12 unique result receipts; runtime and scientific artifacts were unchanged |
 | Terminal code-manifest command again piped a PowerShell `foreach` block directly | 1 | The command failed at parse time before reading files; generate the scalar size/line/hash manifest with Python instead |
 | First staged R50 diff check found two Markdown hard-break trailing spaces in the new report header | 1 | Remove the two spaces, restage the report and planning file, and require a clean cached diff check before commit |
+| First R51 interface search included guessed `run_prta_gen_r49_system.py`, `r49_common.py`, and `run_prta_gen_r41a_arm.py` paths | 1 | Use the resolved tracked entrypoints `run_prta_gen_r49_exact64.py`, `run_prta_gen_r41a_progression_sft.py`, and their real shared modules; the read-only search changed no file or runtime artifact |
+| First R51 roster scalar audit guessed a `class_counts` partition key | 1 | Print only partition property names, then bind to the actual scalar count field; no patient payload or artifact was written |
+| R51 TILA source inspection guessed `modeling_tila.py` although the pinned official repository uses `model.py` | 1 | Inspect the already hash-pinned `model.py`; feature caching and all runtime artifacts were untouched |
+| First R51 precache planning writeback matched a wrapped `progress.md` sentence incorrectly | 1 | Read the exact UTF-8 tail and reapply against the live sentence; the rejected patch was atomic and changed no planning file |
+| First R51 cache static gate found one unused `read_json` import, while later commands masked Ruff's nonzero native exit | 1 | Remove the import and rerun Ruff as an independent gate before treating preflight as launch-ready; cache roots remained fresh and no GPU work started |
 | R46 targeted Ruff command included the JSON discovery config and parsed `true`/`false`/`null` as Python names | 1 | Validate JSON with the JSON parser and run Ruff only on Python sources; no config, roster, or runtime state changed |
 | R46 authority hash inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate rows in an explicit array before formatting; no file or runtime state changed |
 | First R46 inspection guessed the R45 baseline checkpoint below `discovery/baseline_projector/seed_17` | 1 | Resolve the actual immutable layout `discovery/seed_17/baseline_projector/trainable_checkpoint.pt`; no runtime file was changed |
@@ -924,8 +955,6 @@ smokes during iteration.
 
 ## Next Step
 
-R50 is published in commit `0414779`. The next scientific extension, if
-authorized as a new frozen study, should translate TILA and B2 into the same
-exact-64/projector/frozen-Qwen interface on a new outcome-independent
-development cohort; it must not tune on the already-read R49/R50 evaluation
-patients.
+Commit and push the frozen R51 precache authority and implementation, then
+launch PRTA evaluation and B2 caches concurrently on GPUs 0/1; run TILA after
+the first lane frees, without loading Qwen or reading an R51 model outcome.

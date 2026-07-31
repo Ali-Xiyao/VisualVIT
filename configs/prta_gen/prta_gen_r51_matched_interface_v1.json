@@ -1,0 +1,246 @@
+{
+  "schema": "visualvit.prta-gen.r51-matched-interface-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R51_MATCHED_INTERFACE_PRECACHE",
+  "protocol_id": "prta-gen-r51-matched-interface-v1",
+  "study_tier": "fresh_internal_matched_interface_benchmark",
+  "authorization": {
+    "user_authorized_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "method_or_hyperparameter_change_after_outcome_allowed": false,
+    "seed_selection_allowed": false
+  },
+  "authority": {
+    "roster_config": "configs\\prta_gen\\prta_gen_r51_matched_interface_roster_v1.json",
+    "roster_config_bytes": 2645,
+    "roster_config_sha256": "4F07651616248B4D207D29478B856FB019A639408D3D83C75824D3ECAF8E5995",
+    "evaluation_roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\roster.json",
+    "evaluation_roster_bytes": 388228,
+    "evaluation_roster_sha256": "8EBA5E1B112F3591FF4C4276673523D78B0B9305F725CC364601CF78EC0D9DE0",
+    "evaluation_roster_status": "PASS_PRTA_GEN_R51_FRESH_EVALUATION_ROSTER",
+    "roster_sha256": "8EBA5E1B112F3591FF4C4276673523D78B0B9305F725CC364601CF78EC0D9DE0",
+    "training_roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json",
+    "training_roster_bytes": 2898864,
+    "training_roster_sha256": "0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8",
+    "training_roster_status": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT",
+    "training_partition": "train",
+    "training_rows": 2500,
+    "evaluation_partition": "evaluation",
+    "evaluation_rows": 500,
+    "r49_config": "configs\\prta_gen\\prta_gen_r49_unified_three_way_v1.json",
+    "r49_config_bytes": 8414,
+    "r49_config_sha256": "A8C6CB998563AE49993952A6CD091FB13EF54D913570E2AA7D596EA3BA76615C",
+    "r50_config": "configs\\prta_gen\\prta_gen_r50_method_benchmark_v1.json",
+    "r50_config_bytes": 8565,
+    "r50_config_sha256": "56877CD2ACE9BC2D0325F58E98C106B73381A2F3F4B9928C4FAAFE6166ABC03A"
+  },
+  "methods": {
+    "order": [
+      "prta_exact64",
+      "tila_exact64",
+      "b2_exact64"
+    ],
+    "prta_exact64": {
+      "representation": "frozen_R37_PRTA_finding_guided_cross_time_alignment",
+      "translation": "existing_exact64_true_tokens_then_common_per_token_RMS",
+      "provenance": "local_proposed_method"
+    },
+    "tila_exact64": {
+      "representation": "official_TILA_temporal_projected_patch_embeddings",
+      "translation": "uniform_60_of_196_projected_patches_tile_128_to_768_then_common_per_token_RMS",
+      "provenance": "official_pretrained_representation_adapted_to_matched_interface"
+    },
+    "b2_exact64": {
+      "representation": "frozen_BiomedCLIP_patchwise_prior_current_signed_absolute",
+      "translation": "uniform_15_of_196_nonCLS_patches_per_four_components_then_common_per_token_RMS",
+      "provenance": "locally_implemented_classic_siamese_control"
+    }
+  },
+  "translation": {
+    "trainable_parameters": 0,
+    "token_shape": [64, 768],
+    "active_positions": [0, 60],
+    "reserved_zero_positions": [60, 64],
+    "common_normalization": "per_example_per_token_RMS_on_active_positions",
+    "normalization_epsilon": 0.000001,
+    "tila_patch_positions_zero_based": [0, 3, 7, 10, 13, 17, 20, 23, 26, 30, 33, 36, 40, 43, 46, 50, 53, 56, 59, 63, 66, 69, 73, 76, 79, 83, 86, 89, 93, 96, 99, 102, 106, 109, 112, 116, 119, 122, 126, 129, 132, 136, 139, 142, 145, 149, 152, 155, 159, 162, 165, 169, 172, 175, 178, 182, 185, 188, 192, 195],
+    "tila_native_patch_shape": [128, 14, 14],
+    "tila_width_expansion": "repeat_interleave_each_feature_6_times",
+    "b2_patch_positions_with_cls_offset": [1, 15, 29, 43, 57, 71, 85, 99, 112, 126, 140, 154, 168, 182, 196],
+    "b2_component_order": ["prior", "current", "current_minus_prior", "absolute_difference"]
+  },
+  "external_methods": {
+    "tila": {
+      "paper": "https://openaccess.thecvf.com/content/CVPR2026/html/Ko_Temporal_Inversion_for_Learning_Interval_Change_in_Chest_X-Rays_CVPR_2026_paper.html",
+      "model_repo": "lukeingawesome/TILA",
+      "license": "MIT",
+      "revision": "a9c6da4b07651de5469e54b5903a63d33f4dfc6a",
+      "weights_filename": "model.safetensors",
+      "weights_bytes": 642508642,
+      "weights_sha256": "B16B6BCF47AC6E4E79C4D9DA2DB88055B297ADCA22715935E4522184F87CE101",
+      "local_model_root": "H:\\Xiyao_Wang\\001_models\\TILA-a9c6da4b07651de5469e54b5903a63d33f4dfc6a",
+      "processor": {
+        "raw_preprocess": true,
+        "max_size": 512,
+        "crop_size": 448,
+        "dtype": "torch.bfloat16"
+      }
+    }
+  },
+  "cache": {
+    "partitions": ["evaluation"],
+    "expected_rows": 500,
+    "expected_eval_rows": 500,
+    "expected_all_rows": 3000,
+    "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+    "source_candidate_bytes": 4574,
+    "source_candidate_sha256": "8D4437572245199213133AE17E13F8F5E7E3AAC7472D8B2E683A630EA7F3DEF0",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "text_cache_bytes": 152162,
+    "text_cache_sha256": "5A99828D66802245BB3AB9C59B1C0EF183106499368F3DBBAD91E09583C47DBF",
+    "frozen_prta_seed": 17,
+    "prior_shuffle_seed": 51001,
+    "prior_shuffle_namespace": "prta-gen-r51-evaluation-prior-shuffle-v1",
+    "batch_size": 16,
+    "shard_size": 128,
+    "workers": 4,
+    "tila_batch_size": 8,
+    "b2_batch_size": 16,
+    "b2_workers": 4,
+    "token_shape": [64, 768],
+    "token_dtype": "torch.float16",
+    "labels_in_cache": false,
+    "sentences_in_cache": false,
+    "variants": ["true_tokens", "current_tokens", "shuffled_tokens"]
+  },
+  "token_sources": {
+    "prta_training": {
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\tokens\\discovery\\index.json",
+      "bytes": 5992,
+      "sha256": "2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6",
+      "status": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_TOKEN_CACHE",
+      "token_key": "true_tokens"
+    },
+    "prta_evaluation": {
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\prta_evaluation\\index.json",
+      "bytes": null,
+      "sha256": null,
+      "status": "PASS_PRTA_GEN_R51_PRTA_EVALUATION_TOKEN_CACHE",
+      "token_key": "true_tokens"
+    },
+    "tila_exact64": {
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\tila_exact64\\index.json",
+      "bytes": null,
+      "sha256": null,
+      "status": "PASS_PRTA_GEN_R51_TILA_EXACT64_TOKEN_CACHE",
+      "token_key": "exact64_tokens"
+    },
+    "b2_exact64": {
+      "path": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\b2_exact64\\index.json",
+      "bytes": null,
+      "sha256": null,
+      "status": "PASS_PRTA_GEN_R51_B2_EXACT64_TOKEN_CACHE",
+      "token_key": "exact64_tokens"
+    }
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "config_bytes": 1505,
+    "config_sha256": "EDAC7703329133EDFC53E46AC0081835144C99D7EEBF28B71C732694D435224D",
+    "preprocessor_config_bytes": 390,
+    "preprocessor_config_sha256": "27225450AC9C6529872EE1924FCB0962FF5634834F817040F444118116F4E516",
+    "weight_index_bytes": 64742,
+    "weight_index_sha256": "58A7841D7BFF2548DD91577D216274A83CF1B500BC6A534B809D6C1B1707CF2B",
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "do_sample": false,
+    "qwen_frozen": true
+  },
+  "target": {
+    "schema_keys_in_order": ["finding", "progression"],
+    "progression_values": ["Stable", "Improved", "Worse", "New", "Resolved"],
+    "compact_json": true,
+    "append_eos": true,
+    "max_target_tokens": 64,
+    "assistant_only_loss": true
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "shared_task": "Compare the PRIOR and CURRENT chest radiographs for the finding {finding}. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field.",
+    "exact64_modality_prefix": "The next 64 physical positions encode the PRIOR and CURRENT chest radiographs. ",
+    "exact64_modality_suffix": " Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "training": {
+    "seeds": [17, 29, 43],
+    "epochs": 1,
+    "batch_size": 1,
+    "gradient_accumulation": 32,
+    "effective_batch_size": 32,
+    "projector_learning_rate": 0.0001,
+    "optimizer": "AdamW",
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "expected_optimizer_updates": 79,
+    "early_stopping": false,
+    "checkpoint_selection": false,
+    "shared_epoch_order_namespace": "prta-gen-r51-matched-interface-training-order-v1",
+    "shared_projector_initialization": true
+  },
+  "evaluation": {
+    "arms": ["prta_exact64", "tila_exact64", "b2_exact64"],
+    "decoding": "free_greedy",
+    "primary_metric": "macro_f1",
+    "paired_patient_bootstrap_replicates": 2000,
+    "paired_patient_bootstrap_seed": 51002,
+    "primary_contrasts": [
+      "tila_exact64_minus_prta_exact64",
+      "b2_exact64_minus_prta_exact64",
+      "tila_exact64_minus_b2_exact64"
+    ],
+    "report_per_seed_and_mean_seed": true,
+    "no_posthoc_threshold_tuning": true
+  },
+  "execution": {
+    "devices": ["cuda:0", "cuda:1"],
+    "offline_only": true,
+    "lane0": ["prta_exact64_seed17", "tila_exact64_seed17", "b2_exact64_seed17", "prta_exact64_seed43", "tila_exact64_seed43"],
+    "lane1": ["prta_exact64_seed29", "tila_exact64_seed29", "b2_exact64_seed29", "b2_exact64_seed43"]
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1",
+    "token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\prta_evaluation",
+    "prta_evaluation_token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\prta_evaluation",
+    "tila_token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\tila_exact64",
+    "b2_token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\tokens\\b2_exact64",
+    "runs": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\runs",
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r51_matched_interface_v1\\aggregate.json"
+  },
+  "result_statuses": {
+    "preflight_pass": "PASS_PRTA_GEN_R51_PRECACHE_PREFLIGHT",
+    "prta_cache_pass": "PASS_PRTA_GEN_R51_PRTA_EVALUATION_TOKEN_CACHE",
+    "cache_pass": "PASS_PRTA_GEN_R51_PRTA_EVALUATION_TOKEN_CACHE",
+    "tila_cache_pass": "PASS_PRTA_GEN_R51_TILA_EXACT64_TOKEN_CACHE",
+    "b2_cache_pass": "PASS_PRTA_GEN_R51_B2_EXACT64_TOKEN_CACHE",
+    "runner_preflight_pass": "PASS_PRTA_GEN_R51_RUNNER_PREFLIGHT",
+    "arm_complete": "PASS_PRTA_GEN_R51_MATCHED_INTERFACE_ARM",
+    "aggregate_complete": "COMPLETE_PRTA_GEN_R51_MATCHED_INTERFACE_BENCHMARK"
+  },
+  "firewall": {
+    "fit_uses_r45_train_only": true,
+    "evaluation_uses_fresh_r51_roster_once": true,
+    "r45_development_qualification_confirmation_outcomes_used": false,
+    "r51_outcome_visible_before_method_freeze": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "clinical_claim_allowed": false,
+    "independent_external_confirmation_claim_allowed": false
+  }
+}

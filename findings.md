@@ -2788,3 +2788,82 @@ preserving the encoder's static medical semantics.
   the dedicated report SHA-256 is
   `78A7CC879782BB654B033297A1B3FCFA860EF235E0EDDE2F9F090665C913438C`.
   Both GPUs and the R50 process set are idle at closure.
+- R51 provenance boundary: official TILA supplies the pretrained image encoder,
+  interval module, 128-dimensional pair embedding, checkpoint, and published
+  BiCE/TCL formulation. The repository's five-class finding-conditioned CE
+  probe and New/Resolved inversion are task adaptations. B2 is not an official
+  named end-to-end system: it is a transparent classic Siamese feature
+  construction `[prior, current, current-prior, abs(current-prior)]` using the
+  already frozen BiomedCLIP encoder. The proposed R51 system translation will
+  therefore be labelled `official representation adapted to matched interface`
+  for TILA and `locally implemented classic control` for B2.
+- Prior R41A evidence cautions against adding Qwen LoRA to this comparison:
+  exact-64 attention-LoRA completed technically but failed the registered
+  scientific survival gate. R51 should first freeze Qwen and equalize the
+  projector/readout so representation source is the sole intended difference.
+- R49's frozen authority already contains most of the desired R51 parity
+  surface: 64 physical visual positions, local Qwen3-VL-4B-Instruct, common
+  training order and projector initialization, and the same serialized task
+  prompt/JSON parser for Naive and PRTA. R51 should extend that runner contract
+  rather than invent a second evaluation stack. The actual entrypoints are
+  `scripts/run_prta_gen_r49_exact64.py` and
+  `scripts/run_prta_gen_r41a_progression_sft.py`.
+- Concrete R49 system parity surface: each exact-64 arm yields a float16
+  `[64,768]` tensor with 60 active positions and four reserved zeros;
+  `TierTokenProjector` maps 768 to Qwen hidden size 2560; Qwen3-VL-4B is frozen;
+  target schema, prompt, greedy decoding, one-epoch 2,500-patient training,
+  seed 17, AdamW settings, and 79 updates are shared. This is the correct base
+  for R51. TILA's native 128-d pair vector and B2's 3,072-d vector therefore
+  cannot simply be repeated 64 times without confounding capacity; R51 needs a
+  deterministic, equally parameterized representation-to-64 adapter followed
+  by the same Qwen projector and training contract.
+- Fairness decision refined after reading the runner: keep representation
+  translation deterministic and parameter-free, then train exactly the same
+  `TierTokenProjector` for every arm from the same seeded initialization. A
+  TILA/B2-only learned bridge would increase trainable capacity relative to
+  PRTA and invalidate the attribution. The translation may differ in fixed
+  layout because native representation shapes differ, but its algorithm and
+  absence of trainable parameters must be preregistered and disclosed.
+- A genuinely fresh R51 evaluation cohort is feasible. After excluding R44A,
+  the gold patient registry, and all 3,750 R45 patients, the image-complete
+  unused pool has 17,622 patients. The bottleneck is Resolved with 224 unique
+  patients; allocating 100 Resolved plus 100 in each other class yields a
+  balanced 500-patient evaluation and leaves at least 124 Resolved candidates
+  before cross-label patient competition. Reuse the existing 2,500 R45 train
+  patients and exclude development/qualification/confirmation plus all new
+  evaluation patients from each other.
+- PRTA cache generation is reusable through the established R45 cache engine:
+  R48 already wraps its config/roster validator for new partitions, while
+  retaining the same frozen PRTA checkpoint, finding text cache, 64-token
+  bundle, label-free cache receipt, and no protected/gold/external outcome
+  reads. R51 should implement the same narrow wrapper for its fresh evaluation
+  roster instead of duplicating alignment code.
+- Final outcome-free R51 representation contract: TILA exact-64 is an adapted
+  use of official temporal projected patches, not the official global-embedding
+  classifier; uniformly select 60 of the 196 grid positions and tile each
+  128-d patch six times to 768. B2 exact-64 is a patchwise extension of the
+  locally implemented signed/absolute baseline: uniformly select 15 non-CLS
+  positions and concatenate prior, current, signed difference, and absolute
+  difference groups. Apply identical per-token RMS normalization to every
+  arm's active positions, retain four exact-zero reserved slots, and train only
+  the same TierTokenProjector from a shared seed-specific initialization.
+- Cache implementation can remain source-faithful. TILA's official
+  `TILAImageEncoder` returns `projected_patch_embeddings` directly. B2 can
+  reuse the frozen BiomedCLIP encoder through Block 8 and then
+  `FrozenBiomedCLIPDifference.encode` for all 197 final tokens, not merely CLS.
+  PRTA evaluation can reuse the R45 engine via the already established narrow
+  validator-wrapper pattern. All three cache receipts can therefore remain
+  label-free and no Qwen model needs to load during cache generation.
+- R51 roster authority should reuse the R45 source validation and exact hashes,
+  exclude every patient in all four R45 partitions, use stable rare-class-first
+  selection with class order Resolved/New/Improved/Worse/Stable, allocate 100
+  per class to a single fresh evaluation partition, and leave training fixed
+  to R45's 2,500 balanced patients. This avoids both outcome-dependent resplit
+  and unnecessary new training-label selection.
+- The frozen selection instantiated cleanly: 500/500 unique patients/examples,
+  100 per progression class, zero R45 overlap, all image paths present, and 121
+  unused Resolved patients still reserved. Roster authority is 388,228 bytes
+  with SHA-256
+  `8EBA5E1B112F3591FF4C4276673523D78B0B9305F725CC364601CF78EC0D9DE0`.
+  This is the sole R51 evaluation roster; resplitting after model outcomes is
+  forbidden.
