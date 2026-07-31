@@ -846,6 +846,21 @@ smokes during iteration.
   the planning bundle and publish the document.
 - **Status:** completed
 
+### Phase 31 — Paper-method architecture and pipeline explainer
+
+- [x] Interpret the new request as a paper-facing explanation of the active
+  PRTA-CXR method, rather than another R51/R52 result-only case study.
+- [x] Reconcile the active proposal, core PRTA implementation, frozen exact-64
+  interface, and terminal R51/R52 contracts into one accurate end-to-end
+  methodology narrative.
+- [x] Write a standalone Chinese Markdown document covering motivation,
+  notation, architecture modules, training stages, inference pipeline,
+  deployment variants, experimental design, and claim boundaries.
+- [x] Validate all code/config links, architectural dimensions, and Markdown
+  structure; update the planning bundle and relevant documentation index, then
+  commit and push the completed document.
+- **Status:** completed
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -1007,10 +1022,12 @@ smokes during iteration.
 | Corrected standalone document audit found the active proposal stated the R51 conclusion but omitted its exact terminal status token | 1 | Add `COMPLETE_PRTA_GEN_R51_MATCHED_INTERFACE_BENCHMARK` beside the proposal conclusion and rerun the same standalone audit |
 | First dual-deployment report audit embedded a Unicode minus sign through a PowerShell here-string and compared a mojibake literal | 1 | Construct U+2212 inside Python, rerun the same aggregate/hash/link assertions, and retain the correctly encoded report text unchanged |
 | First staged dual-deployment diff check found four Markdown hard-break spaces in the report metadata block | 1 | Remove the four trailing spaces, rerun the standalone staged diff gate, and leave all scientific text and values unchanged |
+| First paper-method index probe assumed a `docs/README.md` file that this repository does not contain | 1 | Resolve the actual documentation index with `rg --files` before adding the new paper-method entry |
+| First three paper-method document audits used Unicode or overly specific marker literals through a PowerShell here-string | 3 | Switch to source-constant, relative-link, fence-count, file-size, and ASCII-only structural assertions; the document itself was never modified by these read-only checks |
 | The next standalone audit embedded a Chinese sentence marker through the PowerShell here-string and compared a mojibake literal | 1 | Keep UTF-8 document content unchanged and use stable ASCII numeric/status markers for the gap-audit assertion; the full link/hash/value gate then passed |
 
 ## Next Step
 
-The standalone R51/R52 dual-deployment methodology report is complete and
-validated against both terminal aggregates. Preserve the 500-patient outcomes
-against retuning; no automatic experiment continuation remains inside R51/R52.
+The PRTA-CXR paper-method architecture and pipeline explainer is complete and
+validated. Preserve the frozen methods and evaluation boundaries; await a new,
+separately scoped research or writing objective.

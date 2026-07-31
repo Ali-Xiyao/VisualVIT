@@ -1,5 +1,27 @@
 # Progress: PRTA-CXR R37
 
+## 2026-08-01 — 论文方法、架构与 pipeline 说明启动
+
+- 用户要求新增一份论文级中文 Markdown，详细说明 PRTA-CXR 的方法学、
+  架构搭建与端到端 pipeline；目标是完整方法叙事，而不是重复 R51/R52 的
+  结果表。
+- 已启用 `planning-with-files`，新增 Phase 31；将以 active proposal、核心
+  implementation、frozen exact-64 合同与 R51/R52 终态配置为唯一技术权威。
+
+## 2026-08-01 — 论文方法、架构与 pipeline 说明完成
+
+- 新增 `docs/PRTA_CXR_PAPER_METHOD_ARCHITECTURE_PIPELINE_CN.md`：32,909
+  bytes、841 行，从任务定义、符号、监督构造、Block-8 cache、rank-32 adapters、
+  finding-conditioned cross-time attention、state/transition resampler、A6
+  losses、Z2 logit projection、fixed-64 packer 到 R51/R52 部署完整展开。
+- 文档把训练期的 20 state / 20 transition token 与部署期的
+  4/12/16/16/12/4 fixed-64 layout 明确分开，并解释 60 个有效位置、4 个
+  reserved slot、logical validity、physical attention 和 Qwen placeholder
+  injection 的不同角色。
+- `PRTA_PAPER_METHOD_DOCUMENT_AUDIT_PASS` 已验证文档结构、13 个相对链接、
+  核心源码常量与 README / PROJECT_STATUS 的索引入口；文档 SHA-256 为
+  `E0690F8CAC2C2C1B5853C69F7B24D551968A3F091AB3B4764DD0B43BF9C0E6DA`。
+
 ## 2026-07-31 — R51/R52 双部署方法学详解启动
 
 - 用户要求新增一份从零开始的详细中文 Markdown，只解释 R51 冻结-Qwen

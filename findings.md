@@ -1,5 +1,22 @@
 # Findings: PRTA-CXR R37
 
+## 2026-08-01 — 论文方法文档的范围
+
+- 新文档应把 PRTA-CXR 讲成一个完整的分层方法：双时相影像与 finding query
+  输入、BiomedCLIP intermediate patch features、finding-guided cross-time
+  alignment、层次化 64-token bundle，以及两种可选读出部署。
+- R52 的独立 direct head 与 R51 的 frozen-Qwen 结构化生成是同一核心
+  representation 的两种 downstream interfaces；文档应以共同方法为主、以
+  两者为部署分支，不将它们误写成两篇不同的主方法。
+- 最终文档确认核心 pipeline 的准确粒度：Block-8 `[197,768]` token 经
+  共享 frozen tail 与 rank-32 adapters、finding query 条件化 cross-time
+  attention 后，产生 20 state tokens、20 transition tokens 和 aligned-prior
+  tokens；`r38_fixed64.py` 再以无参数 mean-preserving reduction 形成
+  `4/12/16/16/12/4` 的 fixed-64 bundle。
+- A6 的最终时间方向性不是笼统的“数据增强反转”，而是五类标签置换上的
+  Z2 logit projection；这与 classification、transition-text alignment、CMCP
+  margin 和 state-preservation 共同构成方法叙事。
+
 ## 2026-07-31 — R51/R52 报告的术语与叙事边界
 
 - 用户口述中的“两个 251 和 52”按当前项目权威解释为 R51 与 R52；“单独
