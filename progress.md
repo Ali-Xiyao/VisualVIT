@@ -2448,3 +2448,55 @@
   qualification rows, four token shards, zero Seeds/training, fresh output,
   and confirmation still absent. Repository-wide static checks and the
   focused aggregate test pass.
+- Committed/pushed the qualification cache pin as `7ca6995` and launched the
+  sole R48 qualification baseline as PID 17016 on GPU0. It is active at the
+  latest 2026-07-31 monitor (4.1 minutes elapsed, about 9,454 MiB GPU0 memory,
+  30% utilization); the result file is not yet present, stderr contains only
+  model-load progress plus the known ignored generation-flag warning, and no
+  gate or protocol setting has changed.
+- R48 qualification remained healthy through 6.3 minutes: PID 17016 was alive,
+  GPU0 held about 9.1 GB with active utilization, GPU1 remained idle, and no
+  result had yet been atomically published. Continue bounded monitoring of this
+  single frozen run.
+- At 8.3 minutes the same R48 PID remained active (GPU0 about 9.1 GB and 44%
+  utilization), GPU1 was still idle, and the atomic result was still pending;
+  no duplicate evaluator was started.
+- At 10.3 minutes PID 17016 remained healthy with active GPU0 utilization and
+  no result/error publication. The run is still within the expected duration
+  for 500 deterministic generations.
+- At 12.4 minutes the same evaluator remained active; stderr was unchanged
+  except for the already-known ignored sampling-flag warning, with no traceback
+  or partial result. Continue the single frozen evaluation.
+- At 14.4 minutes PID 17016 and active GPU0 utilization still showed forward
+  progress; GPU1 remained idle and the result file was not yet published.
+- At 16.5 minutes the evaluator remained healthy (GPU0 about 9.1 GB and 52%
+  utilization); no duplicate process or partial result was created.
+- Through 18.6 minutes R48 continued normally on GPU0. The duration is
+  consistent with the four frozen prior conditions over 500 examples; there is
+  still no traceback or atomic result.
+- Through 20.6 minutes PID 17016 stayed alive with ongoing GPU work and no
+  error/result publication. No intervention was made.
+- Through 22.6 minutes the same process remained active on GPU0 with stable
+  memory and no traceback. Continue bounded monitoring; do not infer a result
+  before the atomic receipt exists.
+- Through 24.7 minutes R48 remained active and error-free on GPU0; the atomic
+  result remained pending.
+- R48 qualification completed at approximately 26.8 minutes: PID 17016 exited,
+  both GPUs returned idle, and the atomic baseline result appeared at
+  `qualification/baseline/result.json` (74,091 bytes). Proceed to scalar-only
+  inspection and the one registered aggregate invocation.
+- Ran the registered R48 qualification aggregate exactly once. It returned
+  `GO_PRTA_GEN_R48_FPRR_QUALIFICATION`, zero failures, and unlocked
+  confirmation while preserving confirmation-token/outcome reads as false.
+  True-minus-shuffle is +7.982 pp (CI95 +3.873 to +11.991), and
+  true-minus-current is +9.733 pp (CI95 +5.818 to +13.706). The aggregate is
+  2,796 bytes, SHA-256
+  `6EC0E6B616CB74034F5F6049D7ABCE8DF9A8D36D38A868376C6B03DC2B97EF1A`.
+- Froze the R48 confirmation config/protocol and separate cache, runner, and
+  aggregate entrypoints. The stage fixes the same checkpoint, prompt, four
+  arms, 2,000 bootstrap replicates/seed, and all qualification thresholds on
+  the untouched 250-patient cohort.
+- Confirmation JSON validation, two focused tests, Ruff, compileall, and cache
+  preflight pass. The first runner preflight correctly stopped because the
+  confirmation cache receipt is not yet pinned; commit/push authority first,
+  then cache and pin before repeating model preflight.

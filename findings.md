@@ -2355,3 +2355,20 @@ preserving the encoder's static medical semantics.
   images, four shards, exact reproducibility, confirmation still absent.
   Index SHA-256 is
   `CE1D58AA4F54A452AA6228562B84572EE8814F06F0D1192252565B0AB1D124B2`.
+- The immutable R48 qualification baseline completed on all 500
+  patient-disjoint examples: true-pair macro-F1 `0.400584`, current-only
+  `0.303250`, query-only `0.113459`, and shuffled-prior `0.320763`. Every
+  true-pair class recall exceeds `0.12` (minimum `New=0.23`); Qwen remains
+  frozen with zero trainable parameters and cache equivalence is exact. The
+  registered bootstrap aggregate, rather than these point estimates alone,
+  decides whether confirmation unlocks.
+- The one registered R48 qualification aggregate is
+  `GO_PRTA_GEN_R48_FPRR_QUALIFICATION` with zero gate failures. True-minus-
+  shuffled-prior is `+7.982 pp`, bootstrap 95% CI `[+3.873,+11.991]`;
+  true-minus-current-only is `+9.733 pp`, CI `[+5.818,+13.706]`. Its 2,796-byte
+  SHA-256 is
+  `6EC0E6B616CB74034F5F6049D7ABCE8DF9A8D36D38A868376C6B03DC2B97EF1A`.
+- The still-unmaterialized R45 confirmation partition contains 250 unique
+  patients. R48 confirmation must reuse the identical immutable checkpoint,
+  four arms, bootstrap design, and gate thresholds; only the partition and
+  stage-specific receipt names may change.

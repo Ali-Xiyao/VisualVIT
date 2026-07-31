@@ -676,12 +676,17 @@ smokes during iteration.
   still-unread R45 qualification cohort. Primary question: does the immutable
   frozen baseline outperform prior-shuffle and current-only with positive
   patient-bootstrap lower bounds?
-- [ ] Commit/push authority before caching qualification. If every gate passes,
-  freeze and run the still-unread R45 confirmation cohort once.
+- [x] Commit/push qualification authority before caching; its registered GO
+  unlocked the still-unread R45 confirmation cohort.
+- [x] Run the frozen 500-patient R48 qualification and apply its registered
+  bootstrap gate exactly once; status is
+  `GO_PRTA_GEN_R48_FPRR_QUALIFICATION`.
+- [ ] Freeze and execute the already-unlocked 250-patient R48 confirmation
+  with identical model, arms, bootstrap design, and thresholds.
 - [ ] Close R45–R48 with a case-study/negative-result synthesis, exact hashes,
   ICLR claim boundary, tests, processes/GPUs, reader surfaces, and Git handoff.
-- **Status:** in progress — qualification authority/code/preflight pass; commit
-  and push before caching the still-unread 500-patient cohort.
+- **Status:** in progress — qualification is GO; confirmation authority and
+  code pass static/focused/cache preflight and await pre-cache commit/push.
 
 ## Errors Encountered
 
@@ -803,9 +808,10 @@ smokes during iteration.
 | R45 roster inspection guessed a standalone `tests/test_build_prta_gen_r44a_roster.py` | 1 | Use the actual combined R44A regression surface `tests/test_prta_gen_r44a.py`; no source or runtime artifact changed |
 | First post-roster planning patch matched PowerShell's mojibake rendering of an em dash instead of the UTF-8 file text | 1 | Re-read the bounded section explicitly as UTF-8 and apply the same documentation-only update against the actual text |
 | First focused R45 discovery-runner Ruff pass found an unused `math` import | 1 | Remove the unused import and the unused synthetic helper, then rerun the same focused validation before preflight |
+| First R48 confirmation runner preflight was invoked before its one-time cache index could be pinned | 1 | Cache preflight, tests, Ruff, compileall, and JSON validation passed; commit/push the frozen authority, materialize only confirmation tokens, pin their exact receipt, then run the model preflight |
 
 ## Next Step
 
-Audit CheXTemporal support after excluding all R44A and gold patients, then
-freeze a deterministic four-part R45 roster rule and sealed-outcome firewall
-before implementing CDEB or starting any GPU work.
+Commit/push the frozen R48 confirmation authority, materialize only its
+250-patient token cache, pin that exact receipt, then run the immutable model
+and apply the unchanged confirmation gate once.
