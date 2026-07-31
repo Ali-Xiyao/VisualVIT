@@ -1969,3 +1969,56 @@ preserving the encoder's static medical semantics.
   Qwen generator on those tokens. It retains the legal five-class JSON target,
   does not label shuffled priors as an artificial sixth class, and can be
   ablated into no-delta, no-evidence-token, and structured-head-only variants.
+# 2026-07-31 Git transport diagnosis
+
+- The process environment and user Git config both route HTTP(S) through the
+  local Clash/Mihomo proxy at `127.0.0.1:7897`; the running `verge-mihomo`
+  process is present.
+- Proxied `curl.exe -I https://github.com` returns HTTP 200, while an explicit
+  no-proxy request times out. Direct transport is therefore not a valid
+  fallback on this host.
+- Git for Windows is system-configured for OpenSSL and reproduces
+  `SSL_ERROR_SYSCALL`; a command-scoped Schannel `ls-remote` reaches GitHub and
+  gets a repository-level response. Use Schannel only for the exact registered
+  remote and avoid persistent proxy/config changes.
+- The exact configured origin succeeds with command-scoped Schannel. This is a
+  delivery workaround only and does not change experiment authority.
+
+# 2026-07-31 R45 roster design reuse boundary
+
+- `build_prta_gen_r44a_roster.py` validates the frozen silver source and gold
+  registry by hash, excludes gold patients, enforces the five-class registry,
+  assigns one row per patient by stable SHA-256, and verifies both parent
+  images. Those mechanics can be reused, but the closed R44A builder and roster
+  must not be modified.
+- R45 requires a separately named builder/schema with four partitions and an
+  explicit exclusion of every patient in both R44A train and development.
+  Qualification and confirmation assignment must be frozen before any model
+  implementation or outcome read.
+- After excluding the 1,250 R44A patients and the 77 registered CheXTemporal
+  gold patients, the silver table contains 169,853 candidate rows from 21,388
+  patients. Unique per-label patient support is Stable 17,131, Improved 9,137,
+  Worse 12,081, New 9,935, and Resolved 1,084 before the final image-complete
+  filter.
+- A deterministic sealed-first simulation can fill 600/100/100/50 patients per
+  class for train/development/qualification/confirmation, but leaves only 143
+  unassigned Resolved patients after cross-label exclusivity. The more
+  conservative 500/100/100/50 design fills all 3,750 rows and leaves 231
+  Resolved patients, so it is the provisional R45 roster size pending the exact
+  image-complete builder audit.
+- The R44A roster writer serializes only stable example/image identifiers,
+  paths, finding, progression, and study/patient keys into the protected
+  runtime roster, while its CLI summary strips row payloads. R45 can preserve
+  this identity-safe console behavior and extend the explicit pairwise
+  disjointness check across all four partitions.
+- The existing R44A unit coverage is consolidated in
+  `tests/test_prta_gen_r44a.py`, not a builder-specific test file. R45 will
+  receive its own test module so the new partition order and historical
+  exclusions remain independently reviewable.
+- The R45 builder now computes image completeness before deterministic
+  assignment, rather than selecting a patient and only then discovering a
+  missing image. This makes the frozen selection rule fail-closed and
+  reproducible from the pinned source plus image-root inventory.
+- Qualification and confirmation are assigned before discovery partitions.
+  This protects rare-class support for the sealed cohorts and prevents later
+  discovery behavior from influencing their membership.

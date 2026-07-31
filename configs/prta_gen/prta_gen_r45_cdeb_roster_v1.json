@@ -1,0 +1,125 @@
+{
+  "schema": "visualvit.prta-gen.r45-cdeb-roster-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R45_CDEB_ROSTER",
+  "protocol_id": "prta-gen-r45-cdeb-v1",
+  "stage_tag": "R45",
+  "authorization": {
+    "user_authorized_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "outcome_driven_resplit_allowed": false,
+    "sealed_outcome_read_before_method_freeze_allowed": false
+  },
+  "closed_r44a": {
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_cross_source_silver_sft_v1\\aggregate.json",
+    "aggregate_bytes": 18557,
+    "aggregate_sha256": "8860C6A7AF52665148713271B98B89592411FE57BEA70644E1B6E65E9F5DF335",
+    "aggregate_status": "STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_cross_source_silver_sft_v1\\roster.json",
+    "roster_bytes": 967619,
+    "roster_sha256": "60FE40D3483B85C9B462D69BF631D82DE68620BA722606862D263F095271C292",
+    "roster_status": "PASS_PRTA_GEN_R44A_ROSTER_SUPPORT",
+    "required_excluded_patients": 1250,
+    "case_study": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_failure_case_study_v1\\case_study.json",
+    "case_study_bytes": 172643,
+    "case_study_sha256": "06CF579923BA8C061DA0D3017BE5305DDE6B1C3F4505F48B6195D55EDD3EC483",
+    "case_study_status": "DESCRIPTIVE_PRTA_GEN_R44A_FAILURE_CASE_STUDY"
+  },
+  "source": {
+    "repo_id": "anonaccount107240/CheXTemporal",
+    "revision": "81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79",
+    "license": "CC-BY-NC-4.0",
+    "silver_file": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44_independent_support_v1\\source\\chextemporal\\silver_findings.parquet",
+    "silver_file_bytes": 29502280,
+    "silver_file_sha256": "31237F859D940D6B03748C845EC7C1C791B1837BA6E46E88E69BCA7F45E3C807",
+    "gold_registry": "data\\official\\chextemporal_81fd9cdd\\gold_progression_pairs.parquet",
+    "gold_registry_bytes": 51915,
+    "gold_registry_sha256": "22CDA4E85C01C1D67D905FBBA0C8A1A9169E2E5B99F754B93782B5C67DFED14B",
+    "dataset_filter": "chexpert",
+    "parent_image_root": "H:\\Xiyao_Wang\\000_Public Dataset\\CheXpert-v1.0-small",
+    "allowed_findings": [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Enlarged Cardiomediastinum",
+      "Fracture",
+      "Lung Lesion",
+      "Lung Opacity",
+      "Pleural Effusion",
+      "Pleural Other",
+      "Pneumonia",
+      "Pneumothorax"
+    ]
+  },
+  "roster": {
+    "namespace": "prta-gen-r45-cdeb-v1",
+    "assignment": "rare-class-first stable SHA-256 without replacement; confirmation then qualification then discovery-development then discovery-train",
+    "partition_order": [
+      "confirmation",
+      "qualification",
+      "development",
+      "train"
+    ],
+    "class_order": [
+      "Resolved",
+      "New",
+      "Improved",
+      "Worse",
+      "Stable"
+    ],
+    "one_row_per_patient": true,
+    "train_patients": 2500,
+    "development_patients": 500,
+    "qualification_patients": 500,
+    "confirmation_patients": 250,
+    "train_class_counts": {
+      "Stable": 500,
+      "Improved": 500,
+      "Worse": 500,
+      "New": 500,
+      "Resolved": 500
+    },
+    "development_class_counts": {
+      "Stable": 100,
+      "Improved": 100,
+      "Worse": 100,
+      "New": 100,
+      "Resolved": 100
+    },
+    "qualification_class_counts": {
+      "Stable": 100,
+      "Improved": 100,
+      "Worse": 100,
+      "New": 100,
+      "Resolved": 100
+    },
+    "confirmation_class_counts": {
+      "Stable": 50,
+      "Improved": 50,
+      "Worse": 50,
+      "New": 50,
+      "Resolved": 50
+    },
+    "minimum_unselected_resolved_patient_reserve": 200,
+    "resplit_allowed": false
+  },
+  "result_statuses": {
+    "preflight_pass": "PASS_PRTA_GEN_R45_CDEB_ROSTER_PREFLIGHT",
+    "roster_pass": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json"
+  },
+  "firewall": {
+    "r44a_patients_excluded": true,
+    "gold_patients_excluded": true,
+    "qualification_outcomes_read": false,
+    "confirmation_outcomes_read": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "scientific_claim_allowed": false
+  }
+}

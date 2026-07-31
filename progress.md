@@ -2014,3 +2014,34 @@
   support/roster audit, not model code.
 - Phase-16 terminal validation passes: 10 analyzer regressions, repository-wide
   Ruff, compileall, edited-document link audit, and `git diff --check`.
+- Committed the Phase-16 report/proposal package as `7e73e0d`. Its first push
+  hit a transient GitHub TLS `SSL_ERROR_SYSCALL`; the local commit and runtime
+  artifacts remain intact and no experiment was restarted.
+- Reproduced the Git OpenSSL failure a second time and isolated it to the
+  command path: GitHub HTTPS succeeds through the configured local
+  `127.0.0.1:7897` proxy, while direct no-proxy HTTPS times out.
+- A command-scoped Git Schannel probe reached GitHub and returned a normal
+  repository-level response. The first probe used a guessed repository name;
+  the next attempt will use the exact configured remote without changing
+  global Git or Clash settings.
+- Retried the exact registered origin with command-scoped Schannel and pushed
+  Phase-16 commit `7e73e0d` successfully. Global Git and Clash settings remain
+  unchanged.
+- Phase 17 is now active. The R44A builder already contains the needed
+  authority validation, identity-safe source loading, gold exclusion,
+  image-completeness contract, rare-class-first deterministic assignment, and
+  one-row-per-patient mechanics; R45 needs a separately named four-part
+  extension that also excludes the complete R44A roster.
+- Completed an identity-free residual-support simulation. The provisional
+  balanced design is 2,500 discovery-train, 500 discovery-development, 500
+  sealed qualification, and 250 sealed confirmation patients; all partitions
+  are patient-disjoint and assigned sealed-first. Exact image-complete support
+  remains a fail-closed builder gate.
+- Implemented the separately named R45 roster freeze, builder, five focused
+  regressions, and Chinese preregistration protocol. The builder pins all
+  R44A terminal/case/roster hashes, excludes R44A and gold patients, filters
+  image-complete rows, assigns sealed cohorts first, requires a 200-patient
+  Resolved reserve, and hides identity rows from CLI receipts.
+- R45 plus inherited R44A roster regressions pass (12 tests); focused Ruff,
+  compileall, JSON parsing, and `git diff --check` pass. No R45 runtime roster
+  or GPU process has been created yet.

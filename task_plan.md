@@ -610,6 +610,7 @@ smokes during iteration.
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| First Phase-16 report push failed with `OpenSSL SSL_connect: SSL_ERROR_SYSCALL` to GitHub | 1 | Preserve local commit `7e73e0d`, verify HTTPS reachability, then retry the existing branch without regenerating artifacts |
 | R40B.4 implementation inspection guessed `scripts/run_prta_gen_r40b4_structured_head.py` | 1 | Resolve the actual tracked `scripts/run_prta_gen_r40b4_structured_head_smoke.py`; no runtime or result changed |
 | R44A terminal authority search guessed nonexistent root `Proposal.md` and `PROJECT_STATUS.md` | 1 | Use the authoritative `TIER_CXR_VLM_Next_Stage_Proposal_CN.md` and `docs/PROJECT_STATUS_CN.md`; no experiment state was affected |
 | Pure move-only planning-file patch was rejected as an empty hunk | 1 | Move each file with an explicit archived heading change, then create the new active bundle |
@@ -716,6 +717,9 @@ smokes during iteration.
 | First R41A/R44A stage-contract validation exposed three unused imports and two legacy unit fixtures without the new optional keys | 1 | Remove obsolete imports and use historical defaults for `arm_complete` and `downstream_unlock_allowed`; rerun both R41A and R44A suites to preserve backward compatibility |
 | First direct R44A runner alias preflight lacked the standalone workspace import bootstrap | 1 | No model, roster, token, or GPU process started; add the standard workspace/src bootstrap to all three R44A alias entrypoints and rerun static validation before retrying |
 | First post-bootstrap alias validation reported E402 and the runner preflight still emitted inherited R41A schema/status | 1 | Add scoped E402 declarations to the three thin aliases and bind runner-preflight schema/status through the same optional stage contract; the actual R44A tokenizer/model contract had passed |
+| Phase-16 Git push failed twice through Git for Windows OpenSSL with `SSL_ERROR_SYSCALL` while GitHub HTTPS remained reachable through the local proxy | 2 | Keep the repository and proxy configuration unchanged; use command-scoped `http.sslBackend=schannel` after resolving the exact registered remote URL |
+| The first command-scoped Schannel connectivity probe guessed a public repository URL and returned `Repository not found` | 1 | Read the configured remote URL and retry only that exact endpoint; Schannel reached GitHub successfully, so this was a target error rather than another TLS failure |
+| R45 roster inspection guessed a standalone `tests/test_build_prta_gen_r44a_roster.py` | 1 | Use the actual combined R44A regression surface `tests/test_prta_gen_r44a.py`; no source or runtime artifact changed |
 
 ## Next Step
 
