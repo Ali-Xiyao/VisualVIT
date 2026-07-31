@@ -2261,3 +2261,26 @@
   but continued after the failed diff check. The commit remains local and
   unpushed; remove the spaces, rerun checks independently, and amend it before
   any network handoff.
+- Removed the two spaces, reran both worktree and staged diff checks, amended
+  the unpushed closeout as commit `10668d1`, and pushed it to
+  `origin/codex/r37-prior-responsive-temporal-adapter` using command-scoped
+  Schannel. R45 is now formally closed; R46 authority work may begin.
+- Inspected the frozen R45 roster/cache and the audited R40C structured-head
+  primitives. R46 will use a 250-patient balanced fresh development roster,
+  immutable R45 train tokens, newly cached development tokens, multiseed
+  structured heads, and causal evidence arbitration with a baseline fallback.
+- Confirmed the R45 baseline artifact is a projector-only checkpoint with
+  frozen Qwen, and identified the reusable cache, generation, head-training,
+  counterfactual, JSON, and receipt primitives needed for R46.
+- A read-only R46 hash inventory repeated the known PowerShell direct-`foreach`
+  pipeline parse error. No state changed; rerun with an explicit result array.
+- Completed the corrected immutable-authority inventory for the R45 roster,
+  aggregate, token index, and inherited baseline checkpoint. Begin the
+  separately named R46 roster config, builder, tests, and protocol.
+- Implemented the R46 CEA roster config, deterministic builder, focused tests,
+  and pre-outcome protocol. Seven focused tests, targeted Ruff, and compileall
+  pass. The in-memory-only preflight returns
+  `PASS_PRTA_GEN_R46_CEA_ROSTER_PREFLIGHT` with 250 balanced patients and a
+  170-patient Resolved reserve; no real roster or GPU work has started.
+- Pre-commit R46 roster-authority validation also passes repository-wide Ruff,
+  repository compileall, the seven focused tests, and `git diff --check`.

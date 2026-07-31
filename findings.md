@@ -2184,3 +2184,56 @@ preserving the encoder's static medical semantics.
   compileall, diff checking, and local Markdown-link resolution. The aggregate
   still reports every qualification/confirmation token, outcome, and unlock
   flag false; no R45 worker exists and both RTX 3090 GPUs are at 0 MiB / 0%.
+
+# 2026-07-31 R46 authority design
+
+- R45's frozen roster already separated 2,500 train, 500 observed development,
+  500 sealed qualification, and 250 sealed confirmation patients. R46 may
+  reuse only the 2,500 train patients for fitting; its discovery-development
+  cohort must exclude every patient in all four R45 partitions.
+- The R45 freeze retained 224 unselected image-complete `Resolved` patients.
+  A balanced R46 development target of 50 patients per class is therefore
+  feasible in principle and leaves at least 174 `Resolved` patients, subject
+  to a fresh exact exclusion/support preflight.
+- The existing exact64 cache contains only R45 train/development. R46 can reuse
+  the immutable R45 train shards and must cache only its new 250-patient
+  development cohort under a separately named runtime root; it must not
+  materialize R45 qualification or confirmation tokens.
+- R46 should train only the structured progression head, not Qwen or the failed
+  CDEB bridge. The causal arbitration score must compare the head's true-pair
+  and current-only distributions, and a registered fallback rule must preserve
+  a separately frozen generator baseline on low-evidence cases.
+- The existing `ProgressionDecisionHead` is a 3,840→128→5 LayerNorm MLP, and
+  the R40C runner already provides train-only normalization, deterministic
+  fixed-epoch training, counterfactual evaluation, legal JSON emission, and
+  checkpoint receipts. R46 can reuse these audited primitives without
+  inheriting R40C outcomes or altering the head architecture.
+- The R45 source inventory has 1,075 image-complete `Resolved` patients before
+  its four-way selection and 224 afterward; the other four classes have much
+  larger support. A 50-per-class R46 development cohort is the largest
+  conservative balanced choice that preserves a substantial rare-class
+  reserve.
+- The inherited R45 baseline checkpoint contains only the 12 projector tensors
+  plus immutable method/Seed metadata; Qwen remained fully frozen. R46 can
+  evaluate this exact checkpoint on the new development cache without
+  retraining or selecting a new generator checkpoint.
+- The R45 cache implementation can be adapted to cache only R46 development,
+  while its loader can join immutable R45 train shards and new R46 development
+  shards by example ID. This avoids rereading 5,000 training images and keeps
+  every R45 sealed partition absent.
+- Baseline controls should be generated once for true-pair, current-only,
+  query-only, and prior-shuffle. Multiseed CEA then changes only the lightweight
+  structured head and arbitration; it must never re-fit Qwen or the inherited
+  projector.
+- The immutable R45 inputs required by R46 are now pinned: roster SHA-256
+  `0387FCF...F4D8`, aggregate `9FC9DCEC...75E`, train/development token index
+  `2ECC1350...5B6`, and baseline projector checkpoint
+  `41A0A3D1...C966`. The new authority must validate full hashes and byte
+  lengths before any roster or GPU work.
+- R46 roster preflight passes with 17,622 eligible patients after excluding
+  every R45 patient. Exact remaining per-class support is
+  Stable 13,833 / Improved 6,702 / Worse 9,266 / New 7,374 / Resolved 224.
+  The frozen 50-per-class selection leaves 170 Resolved patients, above the
+  registered reserve floor of 150.
+- The preflight writes no real roster, starts no GPU process, and preserves all
+  R45 qualification/confirmation token and outcome flags as false.

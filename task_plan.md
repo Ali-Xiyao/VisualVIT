@@ -634,6 +634,8 @@ smokes during iteration.
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| R46 authority hash inventory again piped a PowerShell `foreach` block directly | 1 | Accumulate rows in an explicit array before formatting; no file or runtime state changed |
+| First R46 inspection guessed the R45 baseline checkpoint below `discovery/baseline_projector/seed_17` | 1 | Resolve the actual immutable layout `discovery/seed_17/baseline_projector/trainable_checkpoint.pt`; no runtime file was changed |
 | R45 terminal report contained two Markdown hard-break spaces, and the sequential PowerShell command continued to commit after `git diff --check` failed | 1 | Keep the commit local and unpushed, remove the two spaces with an exact patch, rerun the checks independently, then amend before push |
 | First Phase-16 report push failed with `OpenSSL SSL_connect: SSL_ERROR_SYSCALL` to GitHub | 1 | Preserve local commit `7e73e0d`, verify HTTPS reachability, then retry the existing branch without regenerating artifacts |
 | R40B.4 implementation inspection guessed `scripts/run_prta_gen_r40b4_structured_head.py` | 1 | Resolve the actual tracked `scripts/run_prta_gen_r40b4_structured_head_smoke.py`; no runtime or result changed |

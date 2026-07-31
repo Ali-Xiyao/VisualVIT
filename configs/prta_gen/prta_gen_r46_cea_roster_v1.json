@@ -1,0 +1,74 @@
+{
+  "schema": "visualvit.prta-gen.r46-cea-roster-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R46_CEA_ROSTER",
+  "protocol_id": "prta-gen-r46-cea-v1",
+  "stage_tag": "R46",
+  "authorization": {
+    "user_authorized_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "outcome_driven_resplit_allowed": false,
+    "sealed_r45_outcome_read_allowed": false
+  },
+  "closed_r45": {
+    "roster_config": "configs\\prta_gen\\prta_gen_r45_cdeb_roster_v1.json",
+    "roster_config_bytes": 4450,
+    "roster_config_sha256": "6BA86F97FBC2884DA10FBD14F61FE934B442F9E6E8F881827888BAB24F0AAF96",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json",
+    "roster_bytes": 2898864,
+    "roster_sha256": "0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8",
+    "roster_status": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT",
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\discovery\\aggregate.json",
+    "aggregate_bytes": 13840,
+    "aggregate_sha256": "9FC9DCEC7471DD169B63555B4BA395817ACB5187B3EA1B351F8D12C742BEE75E",
+    "aggregate_status": "STOP_PRTA_GEN_R45_CDEB_DISCOVERY",
+    "required_excluded_patients": 3750,
+    "reused_fit_partition": "train",
+    "reused_fit_patients": 2500,
+    "sealed_qualification_patients": 500,
+    "sealed_confirmation_patients": 250
+  },
+  "roster": {
+    "namespace": "prta-gen-r46-cea-development-v1",
+    "assignment": "stable SHA-256 per progression class after excluding every R45 patient",
+    "class_order": [
+      "Resolved",
+      "New",
+      "Improved",
+      "Worse",
+      "Stable"
+    ],
+    "one_row_per_patient": true,
+    "development_patients": 250,
+    "development_class_counts": {
+      "Stable": 50,
+      "Improved": 50,
+      "Worse": 50,
+      "New": 50,
+      "Resolved": 50
+    },
+    "minimum_unselected_resolved_patient_reserve": 150,
+    "resplit_allowed": false
+  },
+  "result_statuses": {
+    "preflight_pass": "PASS_PRTA_GEN_R46_CEA_ROSTER_PREFLIGHT",
+    "roster_pass": "PASS_PRTA_GEN_R46_CEA_ROSTER_SUPPORT"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r46_cea_v1",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r46_cea_v1\\roster.json"
+  },
+  "firewall": {
+    "all_r45_patients_excluded_from_development": true,
+    "r45_train_reused_for_fit_only": true,
+    "r45_development_outcomes_used": false,
+    "r45_qualification_outcomes_read": false,
+    "r45_confirmation_outcomes_read": false,
+    "r45_qualification_tokens_materialized": false,
+    "r45_confirmation_tokens_materialized": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "scientific_claim_allowed": false
+  }
+}
