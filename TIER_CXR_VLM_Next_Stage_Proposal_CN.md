@@ -43,6 +43,36 @@ prior grounding。** R44A 不撤销 R40C progression-only structured-head 的
 outcome 可见前冻结的新假设；不得针对 R44A 的 250 名 development 患者
 调整 roster、Seed、checkpoint、LoRA、学习率、prompt、类别权重或门。
 
+## 2026-07-31 R44A Failure Case Study 与 R45 新方向
+
+在 identity-free analyzer、输入 hashes 和判别规则先提交后，R44A 六个
+arm 的一次性只读 case study 显示：
+
+- G1 true-vs-prior-shuffle prediction agreement 为
+  0.732/0.700/0.836；
+- true-only/shuffle-only correct 为 17/19、22/19、6/6；
+- 250 名患者中 135 名在三个 Seed 下都不因 shuffle 改变输出；
+- G0→G1 recovery/regression 为 35/28、22/19、19/35。
+
+因此 R44A 的主要机制不是 schema、finding echo 或单纯 class imbalance，
+而是 **correct-prior under-use + attention-LoRA optimization
+instability**；Seed 43 `Worse` emission collapse 是叠加的局部问题。
+完整报告见：
+`reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md`。
+
+结合相关工作审计，generic hard-negative image-swap grounding 与
+prior/current temporal inversion 已有直接先例。Proposal 因此选择一个更
+窄、可证伪的新问题：**R45 Causal Delta Evidence Bottleneck (CDEB)**。
+它从 `true_pair - current_only` exact64 delta 学习五类 auxiliary evidence，
+把 soft class distribution 映射为固定 64-token budget 内的 evidence
+tokens，再条件化冻结 Qwen 生成原两字段 JSON。它不增加 shuffled/invalid
+第六类，且必须与 inherited Qwen baseline、structured delta-head、
+no-delta 与 no-bridge ablations 比较。
+
+R45 必须使用排除全部 R44A patients 的新 roster，只允许 discovery
+train/development 选方法；sealed qualification 与 confirmation 在完整
+authority 提交后各揭示一次。R42/R43、gold/external 与开放式报告仍锁定。
+
 # 2026-07-30 PRTA-Gen 案例驱动修复附录
 
 ## 终态更新

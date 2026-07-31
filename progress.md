@@ -1998,3 +1998,19 @@
 - New and legacy analyzer tests pass together (10 passed); focused Ruff and
   compileall pass. Frozen the case-study protocol with exact hashes for all
   six R44A results and the roster before any row-level prediction analysis.
+- Committed/pushed the frozen analyzer authority as `4f1e40d`, then executed
+  the single identity-free analysis. It completed with 250 rows, 12 anonymous
+  cases, no identity fields, and no training.
+- Visually checked the generated sensitivity figure. It faithfully shows
+  70.0–83.6% true/shuffle prediction agreement and nearly balanced
+  true-only/shuffle-only correctness flips; labels and scales are legible.
+- Completed the first related-work novelty pass. Generic counterfactual
+  swap-loss and temporal-inversion ideas are already occupied by recent
+  primary work, so the R45 hypothesis was narrowed to a causal delta evidence
+  bottleneck that bridges the existing qualified exact64 representation to
+  free generation.
+- Wrote the full R44A case-study report and synchronized the Proposal before
+  R45 implementation. Phase 16 is complete; Phase 17 begins with an untouched
+  support/roster audit, not model code.
+- Phase-16 terminal validation passes: 10 analyzer regressions, repository-wide
+  Ruff, compileall, edited-document link audit, and `git diff --check`.

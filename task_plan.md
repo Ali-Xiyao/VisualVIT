@@ -560,17 +560,18 @@ smokes during iteration.
   row-level prediction behavior. Quantify true-vs-shuffle invariance,
   per-class migrations, cross-Seed stability, G0/G1 transfer, and representative
   de-identified failure mechanisms.
-- [ ] Review primary related work and current official ICLR evaluation
+- [x] Review primary related work and current official ICLR evaluation
   expectations. Require a specific question, technically motivated novelty,
   strong baselines/ablations, claim-matched statistics, reproducibility,
   ethics/data boundaries, and explicit negative-result handling.
-- [ ] Select one new mechanism-level hypothesis only if the case study
+- [x] Select one new mechanism-level hypothesis only if the case study
   discriminates it from simpler explanations. Write the case study and
   proposal addendum before implementing the new experiment.
-- **Status:** in progress — R44A is frozen; case-study authority and
-  literature/novelty audit are next.
+- **Status:** complete — the committed case study identifies correct-prior
+  under-use plus adapter instability, the primary-work audit rejects generic
+  swap-loss/inversion novelty, and the Proposal now selects R45 CDEB.
 
-### Phase 17 — R45 counterfactual prior-grounding discovery
+### Phase 17 — R45 causal delta evidence-bottleneck discovery
 
 - [ ] Audit unused CheXpert silver support after excluding every R44A patient
   and all historical gold/protected patients. Freeze mutually disjoint
@@ -587,7 +588,8 @@ smokes during iteration.
 - [ ] Commit and push the complete R45 pre-qualification authority, then run
   discovery automatically until one registered candidate passes or the
   discovery budget reaches its frozen STOP.
-- **Status:** pending.
+- **Status:** in progress — audit untouched patient/class support and freeze
+  the four-way R45 roster before method implementation.
 
 ### Phase 18 — R45 sealed qualification, confirmation, and paper-ready closure
 
@@ -608,6 +610,7 @@ smokes during iteration.
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| R40B.4 implementation inspection guessed `scripts/run_prta_gen_r40b4_structured_head.py` | 1 | Resolve the actual tracked `scripts/run_prta_gen_r40b4_structured_head_smoke.py`; no runtime or result changed |
 | R44A terminal authority search guessed nonexistent root `Proposal.md` and `PROJECT_STATUS.md` | 1 | Use the authoritative `TIER_CXR_VLM_Next_Stage_Proposal_CN.md` and `docs/PROJECT_STATUS_CN.md`; no experiment state was affected |
 | Pure move-only planning-file patch was rejected as an empty hunk | 1 | Move each file with an explicit archived heading change, then create the new active bundle |
 | Combined archive patch used the wrong findings heading | 1 | Inspect exact headings, then archive with matching context |
@@ -716,6 +719,6 @@ smokes during iteration.
 
 ## Next Step
 
-Freeze and validate the identity-free R44A case-study analyzer, then use only
-that analysis plus primary literature to select the separately named R45
-mechanism hypothesis before any new roster, model, or GPU execution.
+Audit CheXTemporal support after excluding all R44A and gold patients, then
+freeze a deterministic four-part R45 roster rule and sealed-outcome firewall
+before implementing CDEB or starting any GPU work.

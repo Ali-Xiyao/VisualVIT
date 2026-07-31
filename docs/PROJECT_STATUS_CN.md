@@ -49,6 +49,12 @@ cohort 支持 1,000 train / 250 patient-disjoint development，五类均衡。
 `Worse` recall 为 0.02、G1−G0 为 -7.25 pp。九个门失败，R44A 正常 STOP，
 R42/R43 仍未启动；全部 protected/gold/external outcome flags 保持 false。
 
+在分析协议与代码先提交后，R44A identity-free case study 显示：
+true/shuffle 同预测率为 0.732/0.700/0.836，正确性净变化为 -2/+3/0 名患者；
+G0→G1 净迁移为 +7/+3/-16。当前机制判断是 correct-prior under-use 与
+adapter instability 并存，不能只用 class reweighting 解释。Proposal 已
+另立 R45 CDEB 方向，但尚未创建 R45 roster、模型或 GPU runtime。
+
 只读失败案例研究进一步确认：G1 每 Seed 对 25 个真实 `Worse` 仅输出
 0/7/9 次该类；G0-correct/G1-wrong 为 20/24/25，而
 G0-wrong/G1-correct 为 22/11/20。跨三个 G1 Seed 只有 31/125 样本
@@ -95,18 +101,20 @@ R39 还通过：
 ## 权威阅读顺序
 
 1. `reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md`
-2. `docs/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_PROTOCOL_CN.md`
-3. `reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
-4. `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`
-5. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
-6. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
-7. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
-8. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
-9. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
-10. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
-11. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
-12. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
-13. `task_plan.md`、`findings.md`、`progress.md`
+2. `reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md`
+3. `docs/PRTA_GEN_R44A_FAILURE_CASE_STUDY_PROTOCOL_CN.md`
+4. `docs/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_PROTOCOL_CN.md`
+5. `reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md`
+6. `reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md`
+7. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md`
+8. `reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md`
+9. `reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md`
+10. `reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md`
+11. `reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md`
+12. `TIER_CXR_VLM_Next_Stage_Proposal_CN.md`
+13. `TIER_CXR_VLM_Empty_Result_Tables_CN.md`
+14. `docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md`
+15. `task_plan.md`、`findings.md`、`progress.md`
 
 ## Runtime 权威产物
 
@@ -140,6 +148,8 @@ R39 还通过：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r44a_cross_source_silver_sft_v1\aggregate.json`
 - PRTA-Gen R44A automatic sequence status：
   `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r44a_cross_source_silver_sft_v1\sequence_status.json`
+- PRTA-Gen R44A identity-free failure case study：
+  `H:\VisualVIT_runtime\050_routeD\r37_prta_cxr\prta_gen_r44a_failure_case_study_v1\case_study.json`
 
 这些 runtime 产物不进入 Git。不要为了整理仓库重复计算 source、
 per-shard 或 checkpoint hashes。

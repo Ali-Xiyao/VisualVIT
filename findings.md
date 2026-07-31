@@ -1927,3 +1927,45 @@ preserving the encoder's static medical semantics.
   retain the four legal five-class prediction arms, so the new analyzer can
   measure correct-prior sensitivity without inventing a new output class or
   modifying the closed experiment.
+- The committed one-time case study shows high G1 true-vs-prior-shuffle
+  prediction agreement: 0.732/0.700/0.836 for Seeds 17/29/43. Of 250
+  patients, 135 never change their predicted class under prior shuffling in
+  any Seed; only 11 change in all three Seeds.
+- Correctness-changing prior sensitivity is weak and nearly symmetric:
+  true-only versus shuffle-only correct rows are 17/19, 22/19, and 6/6,
+  producing net rows -2/+3/0. Thus the observed shuffle intervention changes
+  outputs, but not reliably in the correct direction.
+- G0→G1 migration is also unstable: recovery/regression rows are 35/28,
+  22/19, and 19/35 (net +7/+3/-16). This directly supports an adapter
+  optimization-instability mechanism alongside correct-prior under-use.
+- The failure is not only a single-class emission problem. True/shuffle
+  invariance appears across all five balanced classes, although Seed 43
+  `Worse` remains especially severe (zero both-correct rows, 36/50 both-wrong
+  with the same prediction). The case study therefore selects a
+  representation-level counterfactual prior-grounding hypothesis rather than
+  class reweighting.
+- Identity-free case-study artifact:
+  `DESCRIPTIVE_PRTA_GEN_R44A_FAILURE_CASE_STUDY`, 172,643 bytes, SHA-256
+  `06CF579923BA8C061DA0D3017BE5305DDE6B1C3F4505F48B6195D55EDD3EC483`;
+  12 anonymized cases, no identity fields, no new training.
+- Novelty audit changes the candidate design. CORAL (arXiv:2607.03647, July
+  2026) already penalizes answer invariance under generic hard-negative image
+  swaps for medical VQA, so a generic contrastive swap loss would not be a
+  defensible standalone contribution.
+- TILA (ICLR 2026 submission) already uses temporal pair inversion, a
+  change-aware contrastive loss, bidirectional CE, and temporal-consistency
+  loss for three-class progression. Therefore R45 should not claim novelty
+  from merely reversing prior/current order or enforcing an inverse label.
+- Existing longitudinal report methods (longitudinal anatomical-token fusion
+  and Libra's temporal alignment connector) establish multi-image fusion, and
+  LUNGUAGE establishes structured longitudinal evaluation. The remaining
+  project-specific gap is narrower: converting an already-qualified
+  prior-sensitive delta representation into stable five-class free generation
+  while proving correct-prior specificity against same-finding shuffled priors.
+- The differentiated R45 candidate is a **Causal Delta Evidence Bottleneck
+  (CDEB)**: learn a five-class auxiliary head from the explicit
+  `true_pair - current_only` exact64 delta, convert its predicted distribution
+  into a small fixed-budget soft evidence token block, and condition a frozen
+  Qwen generator on those tokens. It retains the legal five-class JSON target,
+  does not label shuffled priors as an artificial sixth class, and can be
+  ablated into no-delta, no-evidence-token, and structured-head-only variants.
