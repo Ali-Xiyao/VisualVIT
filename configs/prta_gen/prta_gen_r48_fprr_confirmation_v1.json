@@ -58,9 +58,9 @@
     ]
   },
   "source": {
-    "development_token_index": null,
-    "development_token_index_bytes": null,
-    "development_token_index_sha256": null,
+    "development_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\tokens\\confirmation\\index.json",
+    "development_token_index_bytes": 1774,
+    "development_token_index_sha256": "5740A3762BF51AF82E36616B2ECF2D907591A4E9F4E6E335806311BBE15ADA83",
     "required_development_token_status": "PASS_PRTA_GEN_R48_FPRR_CONFIRMATION_TOKEN_CACHE",
     "token_variants": {
       "true_pair": "true_tokens",
@@ -138,7 +138,7 @@
     "training_allowed": false,
     "threshold_selection_allowed": false,
     "qualification_outcomes_read": true,
-    "confirmation_tokens_materialized": false,
+    "confirmation_tokens_materialized": true,
     "confirmation_outcomes_read": false,
     "gold_outcomes_read": false,
     "external_outcomes_read": false,

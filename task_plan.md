@@ -681,12 +681,28 @@ smokes during iteration.
 - [x] Run the frozen 500-patient R48 qualification and apply its registered
   bootstrap gate exactly once; status is
   `GO_PRTA_GEN_R48_FPRR_QUALIFICATION`.
-- [ ] Freeze and execute the already-unlocked 250-patient R48 confirmation
-  with identical model, arms, bootstrap design, and thresholds.
+- [ ] Keep the already-unlocked 250-patient R48 confirmation frozen and
+  unexecuted while the user-requested raw two-image Qwen baseline runs first.
 - [ ] Close R45–R48 with a case-study/negative-result synthesis, exact hashes,
   ICLR claim boundary, tests, processes/GPUs, reader surfaces, and Git handoff.
-- **Status:** in progress — qualification is GO; confirmation authority and
-  code pass static/focused/cache preflight and await pre-cache commit/push.
+- **Status:** paused before confirmation generation at the user's requested
+  ordering boundary; its cache is pinned and runner preflight passes.
+
+### Phase 24 — Raw two-image frozen Qwen baseline first
+
+- [ ] Reuse the previously declared R40 B3 definition and implement native
+  prior/current full-image Qwen3-VL inference with the same five-label JSON
+  target and frozen model.
+- [ ] Run a fixed engineering smoke without changing the prompt from outcomes,
+  then evaluate once on the already-read 500-patient R48 qualification cohort
+  so its result is directly comparable to the R48 frozen-token baseline.
+- [ ] Report macro-F1, per-class recall, schema/finding validity, runtime,
+  peak VRAM, and exact cohort/model pins. Treat this as a development case
+  study, not independent confirmation.
+- [ ] Show the user the raw two-image result before resuming the already-frozen
+  250-patient R48 confirmation.
+- **Status:** in progress — repository has an older two-image Qwen2-VL smoke
+  and R40 predeclares B3, but no formal Qwen3-VL raw-pixel baseline yet.
 
 ## Errors Encountered
 
@@ -809,9 +825,10 @@ smokes during iteration.
 | First post-roster planning patch matched PowerShell's mojibake rendering of an em dash instead of the UTF-8 file text | 1 | Re-read the bounded section explicitly as UTF-8 and apply the same documentation-only update against the actual text |
 | First focused R45 discovery-runner Ruff pass found an unused `math` import | 1 | Remove the unused import and the unused synthetic helper, then rerun the same focused validation before preflight |
 | First R48 confirmation runner preflight was invoked before its one-time cache index could be pinned | 1 | Cache preflight, tests, Ruff, compileall, and JSON validation passed; commit/push the frozen authority, materialize only confirmation tokens, pin their exact receipt, then run the model preflight |
+| First raw two-image preflight summary treated its scalar row count as a result-record list | 1 | Restrict row compaction to list-valued formal results, add a regression test, and rerun the unchanged preflight before any GPU/model load |
 
 ## Next Step
 
-Commit/push the frozen R48 confirmation authority, materialize only its
-250-patient token cache, pin that exact receipt, then run the immutable model
-and apply the unchanged confirmation gate once.
+Implement and run the user-prioritized raw two-image frozen Qwen3-VL baseline
+on the already-read R48 qualification cohort; keep the pinned R48 confirmation
+generation paused until that baseline result is shown.

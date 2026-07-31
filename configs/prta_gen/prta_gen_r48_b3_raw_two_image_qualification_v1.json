@@ -1,0 +1,97 @@
+{
+  "schema": "visualvit.prta-gen.r48-b3-raw-two-image-qualification-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_QUALIFICATION",
+  "protocol_id": "prta-gen-r48-b3-raw-two-image-v1",
+  "study_tier": "development_strong_baseline",
+  "authority": {
+    "r40_b3_config": "configs/r40/r40_component_and_baseline_v1.json",
+    "r40_b3_config_bytes": 6240,
+    "r40_b3_config_sha256": "A97EA29E33408F175A10EDB43508C717EC9EDB84281CACBF3440A566071F8AB5",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\roster.json",
+    "roster_bytes": 2898864,
+    "roster_sha256": "0387FCF0B3DA09BE4CC99727EE1278C676BD2D946A87D4377E7F0088F1F7F4D8",
+    "roster_status": "PASS_PRTA_GEN_R45_CDEB_ROSTER_SUPPORT",
+    "partition": "qualification",
+    "expected_rows": 500,
+    "fprr_baseline_result": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\qualification\\baseline\\result.json",
+    "fprr_baseline_result_bytes": 74091,
+    "fprr_baseline_result_sha256": "03AA9B67E273375BA0CB78091D53FB31F28B7EC4B0AE978D04DA03D774C3865F",
+    "fprr_aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\qualification\\aggregate.json",
+    "fprr_aggregate_bytes": 2796,
+    "fprr_aggregate_sha256": "6EC0E6B616CB74034F5F6049D7ABCE8DF9A8D36D38A868376C6B03DC2B97EF1A",
+    "fprr_aggregate_status": "GO_PRTA_GEN_R48_FPRR_QUALIFICATION"
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "config_bytes": 1505,
+    "config_sha256": "EDAC7703329133EDFC53E46AC0081835144C99D7EEBF28B71C732694D435224D",
+    "preprocessor_config_bytes": 390,
+    "preprocessor_config_sha256": "27225450AC9C6529872EE1924FCB0962FF5634834F817040F444118116F4E516",
+    "weight_index_bytes": 64742,
+    "weight_index_sha256": "58A7841D7BFF2548DD91577D216274A83CF1B500BC6A534B809D6C1B1707CF2B",
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "min_pixels": 200704,
+    "max_pixels": 802816,
+    "do_sample": false
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "max_new_tokens": 64
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_text": "Image 1 is the PRIOR complete chest radiograph. Image 2 is the CURRENT complete chest radiograph. Compare them for the finding {finding}. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field.",
+    "image_order": [
+      "prior",
+      "current"
+    ],
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "execution": {
+    "formal_shard_count": 2,
+    "shard_rule": "roster_row_index_modulo_shard_count",
+    "devices": [
+      "cuda:0",
+      "cuda:1"
+    ],
+    "smoke_rows_per_shard": 2,
+    "offline_only": true
+  },
+  "statistics": {
+    "paired_patient_bootstrap_replicates": 2000,
+    "paired_patient_bootstrap_seed": 48301,
+    "comparison": "raw_two_image_minus_fprr_true_pair"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_b3_raw_two_image_v1",
+    "smoke_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_b3_raw_two_image_v1\\smoke",
+    "formal_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_b3_raw_two_image_v1\\formal"
+  },
+  "result_statuses": {
+    "preflight_pass": "PASS_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_PREFLIGHT",
+    "smoke_complete": "PASS_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_SMOKE",
+    "formal_shard_complete": "PASS_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_FORMAL_SHARD",
+    "aggregate_complete": "COMPLETE_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_QUALIFICATION"
+  },
+  "firewall": {
+    "training_allowed": false,
+    "threshold_selection_allowed": false,
+    "confirmation_tokens_materialized_by_this_stage": false,
+    "confirmation_outcomes_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "scientific_claim_allowed": false
+  }
+}

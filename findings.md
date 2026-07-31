@@ -2372,3 +2372,22 @@ preserving the encoder's static medical semantics.
   patients. R48 confirmation must reuse the identical immutable checkpoint,
   four arms, bootstrap design, and gate thresholds; only the partition and
   stage-specific receipt names may change.
+- R48 confirmation caching completed before any confirmation outcome read:
+  250 patients, 500 images, two shards, exact repeated-batch reproducibility,
+  and no labels or sentences in cache. The 1,774-byte index SHA-256 is
+  `5740A3762BF51AF82E36616B2ECF2D907591A4E9F4E6E335806311BBE15ADA83`.
+- Raw two-image implementation support exists locally: Transformers `5.5.3`
+  exposes `Qwen3VLForConditionalGeneration`, `qwen_vl_utils` is installed, and
+  the local model config declares `model_type=qwen3_vl` with that architecture.
+  The older `run_qwen2vl_smoke.py` already demonstrates the native two-image
+  message schema and `process_vision_info` flow, but is Qwen2-specific and only
+  a two-image smoke.
+- Every row in the 500-patient R48 qualification partition has existing
+  `prior_path` and `current_path` JPEGs. This permits a direct raw-pixel
+  Qwen3-VL baseline without DICOM conversion or any new data acquisition.
+- The raw baseline can be tied to the predeclared R40 B3 authority SHA
+  `A97EA29E...F8AB5`, the local Qwen3-VL config SHA
+  `EDAC7703...5224D`, preprocessor SHA `27225450...E516`, model-index SHA
+  `58A7841D...CF2B`, and the exact R48 qualification baseline/aggregate hashes.
+  These pins permit a fresh two-shard runtime without altering the existing
+  frozen-token result.

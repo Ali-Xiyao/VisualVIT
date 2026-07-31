@@ -2500,3 +2500,29 @@
   preflight pass. The first runner preflight correctly stopped because the
   confirmation cache receipt is not yet pinned; commit/push authority first,
   then cache and pin before repeating model preflight.
+- Committed/pushed the untouched confirmation authority as `58319c3`, then
+  cached only the 250-patient confirmation partition on GPU0 in 56.1 seconds.
+  The cache has 250 rows, 500 images, two shards, exact reproducibility, no
+  labels/sentences, and confirmation outcomes remain unread.
+- Pinned the confirmation cache index (1,774 bytes, SHA-256
+  `5740A3762BF51AF82E36616B2ECF2D907591A4E9F4E6E335806311BBE15ADA83`)
+  into the confirmation config. Both GPUs were idle after caching.
+- User reordered the next work item to raw two-image Qwen. Paused before any
+  R48 confirmation generation/outcome read; its 250-patient cache is pinned
+  and the runner preflight passes. Opened a raw Qwen3-VL prior/current
+  full-image baseline on the already-read 500-patient qualification cohort so
+  the first result is directly comparable without consuming the sealed
+  confirmation outcome.
+- User authorized both GPUs simultaneously. Plan the formal raw baseline as
+  two deterministic, patient-disjoint shards (GPU0/GPU1), then merge once.
+- Verified local native support: Transformers 5.5.3 has Qwen3-VL, the local
+  4B config names `Qwen3VLForConditionalGeneration`, `qwen_vl_utils` is
+  installed, and all 1,000 qualification JPEG paths exist.
+- Collected exact R40 B3, Qwen config/preprocessor/model-index, and R48
+  qualification receipt hashes for a fresh raw-two-image authority. No GPU
+  process or raw baseline output has started yet.
+- Implemented the R48-B3 raw two-image config/protocol, native Qwen3-VL
+  two-shard runner, paired aggregate, and focused tests. JSON, four original
+  focused assertions, Ruff, and compileall pass. The first preflight print
+  exposed only a scalar/list receipt-summary bug before model/GPU work; fixed
+  it with a regression test without changing the frozen protocol.
