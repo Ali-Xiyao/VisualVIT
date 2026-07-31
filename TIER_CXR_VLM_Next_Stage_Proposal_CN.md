@@ -5,8 +5,8 @@
 > **当前状态更新：** 2026-07-31
 > **项目：** VisualVIT  
 > **当前分支：** `codex/r37-prior-responsive-temporal-adapter`
-> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO + R41A/R44A terminal STOP
-> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R44A**
+> **当前结果提交：** R39 frozen lineage + PRTA-Gen R40C internal GO + R41A/R44A/R45 terminal STOP
+> **当前方法版本：** **PRTA-CXR R37.1 / TIER-CXR-VLM R39 / PRTA-Gen R45**
 > **暂定方法名：** **TIER-CXR-VLM**  
 > **英文全称：** *Perturbation-Consistent Hierarchical Temporal Visual Token Routing for Longitudinal Chest X-ray VLMs*
 
@@ -72,6 +72,35 @@ no-delta 与 no-bridge ablations 比较。
 R45 必须使用排除全部 R44A patients 的新 roster，只允许 discovery
 train/development 选方法；sealed qualification 与 confirmation 在完整
 authority 提交后各揭示一次。R42/R43、gold/external 与开放式报告仍锁定。
+
+## 2026-07-31 R45 CDEB Discovery 终态与 R46 边界
+
+R45 authority 在任何 R45 outcome 可见前完成提交。冻结 roster 为
+2,500 train / 500 development / 500 sealed qualification /
+250 sealed confirmation，五类均衡、patient-disjoint。四个 discovery
+arms 均完成 Seed 17、79 次 optimizer updates；schema、finding echo 与
+cache-equivalence 工程门全部通过。
+
+科学门没有通过。Full CDEB true-pair macro-F1 为 0.342023，低于
+inherited baseline 0.380648；相对 prior-shuffle 为 -1.258606 pp，
+95% CI `[-5.7205, +3.0018] pp`；auxiliary true-pair macro-F1 为
+0.312258。三个核心 gate failure 使终态冻结为：
+
+`STOP_PRTA_GEN_R45_CDEB_DISCOVERY`
+
+这说明把低质量 delta soft evidence 直接桥接进 frozen Qwen，不能自动
+建立稳定的正确 prior grounding。Qualification / confirmation outcome
+与 token 均未物化，R45 不得根据 development outcome 调整 bridge、loss、
+checkpoint、Seed 或 gate 后重跑。完整报告：
+`reports/PRTA_GEN_R45_CDEB_DISCOVERY_RESULT_CN.md`。
+
+相关工作审计还显示，generic expert-guided decoding、constrained decoding
+和 product-of-experts 都已有先例。因此下一步如继续，只能另立更窄的
+**R46 Causal Evidence Arbitration (CEA)**：在排除整个 R45 roster 的
+新 development patients 上，预注册 true-pair 相对 current-only 的因果
+证据分数；证据充分时才允许 structured progression expert 覆盖 frozen
+generator，否则回退 baseline。该方向的主张边界是选择性、progression-only
+结构化生成，不是自由文本生成或临床泛化。
 
 # 2026-07-30 PRTA-Gen 案例驱动修复附录
 

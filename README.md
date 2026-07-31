@@ -57,23 +57,31 @@ R42/R43 继续锁定。
 70.0%–83.6% 的患者上对 true/shuffled prior 输出同一类别，且正确性改变
 几乎对称；attention-LoRA 的 G0→G1 净迁移为 +7/+3/-16 名患者。后续新
 方向因此被限定为另立 untouched roster 的 R45 causal delta evidence
-bottleneck，而不是 R44A 调参重跑。
+bottleneck，而不是 R44A 调参重跑。R45 四臂 discovery 随后完整执行，
+但 full CDEB 的 true-pair macro-F1 仅 0.3420，低于 inherited baseline
+0.3806；相对 prior-shuffle 为 -1.26 pp，auxiliary head macro-F1 为
+0.3123。三个核心门失败，终态为
+`STOP_PRTA_GEN_R45_CDEB_DISCOVERY`。R45 qualification / confirmation
+未读取、未物化，不能根据本次 outcome 调参重跑。下一步只允许另立 R46
+causal evidence arbitration，在排除整个 R45 roster 的新 development
+patients 上预注册和验证。
 
 ## 从这里开始
 
 1. [当前项目状态](docs/PROJECT_STATUS_CN.md)
-2. [R44A 跨来源 silver SFT 终态报告](reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md)
-3. [R44A failure case study 与 R45 方向选择](reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md)
-4. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
-5. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
-6. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
-7. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
-8. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
-9. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
-10. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
-11. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
-12. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
-13. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
+2. [R45 CDEB discovery 终局报告](reports/PRTA_GEN_R45_CDEB_DISCOVERY_RESULT_CN.md)
+3. [R44A 跨来源 silver SFT 终态报告](reports/PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_RESULT_CN.md)
+4. [R44A failure case study 与 R45 方向选择](reports/PRTA_GEN_R44A_FAILURE_CASE_STUDY_CN.md)
+5. [R41A Qwen SFT 终态报告](reports/PRTA_GEN_R41A_PROGRESSION_SFT_RESULT_CN.md)
+6. [R41A 失败案例研究](reports/PRTA_GEN_R41A_FAILURE_CASE_STUDY_CN.md)
+7. [R40C 内部泛化终态报告](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_RESULT_CN.md)
+8. [PRTA-Gen R40A.2/R40B.4 结构化路线终态报告](reports/PRTA_GEN_R40A2_R40B4_STRUCTURED_ROUTE_RESULT_CN.md)
+9. [R40C preflight 与 roster receipt](reports/PRTA_GEN_R40C_STRUCTURED_GENERALIZATION_PREFLIGHT_CN.md)
+10. [PRTA-Gen R40A 失败案例研究](reports/PRTA_GEN_R40A_FAILURE_CASE_STUDY_CN.md)
+11. [R39 终局报告](reports/R39_FROZEN_VLM_TRANSFER_FINAL_CN.md)
+12. [TIER-CXR-VLM 当前 Proposal](TIER_CXR_VLM_Next_Stage_Proposal_CN.md)
+13. [结果表与实验登记](TIER_CXR_VLM_Empty_Result_Tables_CN.md)
+14. [消融与对比实验缺口审计](docs/TIER_CXR_VLM_EXPERIMENT_GAP_AUDIT_CN.md)
 
 ## 代码与复现入口
 

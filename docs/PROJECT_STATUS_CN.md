@@ -52,8 +52,18 @@ R42/R43 仍未启动；全部 protected/gold/external outcome flags 保持 false
 在分析协议与代码先提交后，R44A identity-free case study 显示：
 true/shuffle 同预测率为 0.732/0.700/0.836，正确性净变化为 -2/+3/0 名患者；
 G0→G1 净迁移为 +7/+3/-16。当前机制判断是 correct-prior under-use 与
-adapter instability 并存，不能只用 class reweighting 解释。Proposal 已
-另立 R45 CDEB 方向，但尚未创建 R45 roster、模型或 GPU runtime。
+adapter instability 并存，不能只用 class reweighting 解释。
+
+随后另立的 R45 CDEB 使用 2,500 train / 500 development /
+500 sealed qualification / 250 sealed confirmation 的五类均衡、
+patient-disjoint roster。Discovery 四臂均完成 Seed 17 的 79 次 updates。
+Full CDEB true-pair macro-F1 为 0.3420，低于 inherited baseline 的
+0.3806；相对 prior-shuffle 为 -1.26 pp，auxiliary head 为 0.3123。
+三个核心门失败，终态为 `STOP_PRTA_GEN_R45_CDEB_DISCOVERY`。
+Qualification / confirmation outcome 和 token 均未物化，所有 worker
+已退出、两张 GPU 空闲。R45 不得调参续跑；当前只允许另立 R46
+causal evidence arbitration，并使用排除整个 R45 roster 的新 development
+patients。
 
 只读失败案例研究进一步确认：G1 每 Seed 对 25 个真实 `Worse` 仅输出
 0/7/9 次该类；G0-correct/G1-wrong 为 20/24/25，而

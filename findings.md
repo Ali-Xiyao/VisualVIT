@@ -2109,3 +2109,78 @@ preserving the encoder's static medical semantics.
   rows, 24 token shards, sampled shard shape 128 x 64 x 768 for all three
   variants, local Qwen present, sentinel ID 151662 exact, and all four method
   outputs fresh. Both GPUs were idle before method launch.
+- First-pair arm receipts are structurally valid with 79 updates,
+  cache-equivalence PASS, 100% schema/finding validity, checkpoints, and clean
+  exits. Baseline true macro-F1 is 0.38065 versus prior-shuffle 0.34441;
+  full-CDEB true macro-F1 is 0.34202 versus prior-shuffle 0.35461.
+- Full CDEB's auxiliary true macro-F1 is 0.31226 and its true/shuffle same-
+  prediction rate is 0.628. These preliminary values fail some registered
+  discovery thresholds, but no terminal verdict is allowed until both
+  mechanism ablations and the frozen aggregate are complete.
+- Both ablations completed their 79 updates, cache-equivalence checks, 100%
+  schema/finding validity, checkpoints, and clean exits. No-delta evidence
+  reaches true macro-F1 0.31398 versus shuffle 0.27873, auxiliary macro-F1
+  0.38697, and same-prediction rate 0.546. Delta-no-bridge reaches true
+  macro-F1 0.26453 versus shuffle 0.27793, auxiliary macro-F1 0.30622, and
+  same-prediction rate 0.822.
+- Mechanistically, the no-delta bridge is more shuffle-sensitive and has a
+  stronger auxiliary head than the delta variants, while the full bridge raises
+  free-generation performance over delta-no-bridge but not over baseline.
+  The frozen aggregate must quantify these comparisons and set the terminal
+  unlock.
+- R45 aggregate is terminal `STOP_PRTA_GEN_R45_CDEB_DISCOVERY`, SHA-256
+  `9FC9DCEC7471DD169B63555B4BA395817ACB5187B3EA1B351F8D12C742BEE75E`.
+  Exactly three registered gates fail: auxiliary true macro-F1 0.31226 <
+  0.35; true-minus-shuffle -1.25861 pp < +1 pp; full-minus-baseline
+  -3.86250 pp < +1 pp.
+- The paired bootstrap intervals reinforce the same boundary:
+  full-minus-shuffle CI95 [-5.72, +3.00] pp and full-minus-baseline
+  [-7.84, +0.27] pp. Full CDEB does beat the no-delta generator by +2.80 pp,
+  but this does not rescue correct-prior specificity or the strong-baseline
+  comparison.
+- Qualification and confirmation are not unlocked, no sealed tokens were
+  materialized, no sealed outcomes were read, zero R45 workers remain, and both
+  GPUs are idle.
+- R45 must not be tuned around these failures. A further attempt requires a
+  separately named hypothesis and an untouched development cohort. One
+  promising mechanism to audit is constrained causal-evidence
+  product-of-experts scoring: combine five legal JSON sequence scores from the
+  frozen generator with a structured temporal head, rather than teaching Qwen
+  arbitrary reserve embeddings.
+
+# 2026-07-31 post-R45 novelty audit
+
+- Generic expert-guided medical decoding is already occupied: LEAD injects
+  pathology-classifier expert signals into every decoder layer and explicitly
+  ablates auxiliary classification without injection. R46 cannot claim
+  "structured expert guides Qwen" as its novelty.
+- Generic structured/contrastive medical decoding is also occupied: CWCD uses
+  category-specific structured generation and masked-image contrastive
+  decoding. R46 cannot claim structured decoding or contrastive controls alone
+  as new.
+- Generic constrained decoding is mature (for example, DOMINO addresses
+  subword-aligned formal constraints), and product-of-experts sequence fusion
+  is also established in general-domain LLM work. A simple five-candidate
+  reranker would not meet the intended novelty bar.
+- The defensible new question is narrower: **can an explicit current-only
+  causal margin arbitrate when a structured temporal expert is allowed to
+  override a strong frozen generator, while preserving the generator on
+  low-evidence cases?** This selective, head-safe temporal arbitration and its
+  true/current/shuffle causal evaluation—not constrained JSON or PoE by
+  themselves—would be the contribution.
+- A likely R46 formulation is therefore Causal Evidence Arbitration (CEA):
+  train a multiseed structured head on R45 train only; compare its true-pair
+  confidence/margin against the current-only counterfactual; use a
+  preregistered development-selected threshold to choose between the structured
+  class and the frozen baseline class. Output remains the same legal two-field
+  JSON, but the claim changes from free generation to selective
+  progression-only structured generation.
+- R45 terminal writeback now records the exact three gate failures, roster,
+  cache and aggregate hashes, sealed-cohort firewall, mechanism interpretation,
+  and R46 boundary in the dedicated report, Proposal, project status, root
+  README, and report index. This documentation does not alter any runtime
+  result or unlock a sealed stage.
+- Fresh terminal validation passed 17 focused R45 tests, repository-wide Ruff,
+  compileall, diff checking, and local Markdown-link resolution. The aggregate
+  still reports every qualification/confirmation token, outcome, and unlock
+  flag false; no R45 worker exists and both RTX 3090 GPUs are at 0 MiB / 0%.

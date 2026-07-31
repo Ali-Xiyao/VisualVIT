@@ -2108,3 +2108,156 @@
   JSON/diff checks) and the formal preflight returns
   `PASS_PRTA_GEN_R45_CDEB_RUNNER_PREFLIGHT`. Commit/push this final integrity
   pin before launching any discovery method.
+- Committed/pushed the final cache pin as `d774672`, then launched the first
+  discovery pair: baseline PID 9780 on GPU0 and full-CDEB PID 23524 on GPU1.
+  Both runtime logs are fresh and empty at startup; sealed partitions remain
+  unavailable to the runner.
+- Both first-pair workers loaded all 713 Qwen weight shards and entered active
+  training at roughly 9.7-10.2 GiB per GPU with observed utilization. The only
+  stderr content is the normal weight-loading progress display; no error,
+  checkpoint, or partial result exists.
+- First-pair training remains healthy: both PIDs continue accumulating CPU
+  time, GPU utilization was observed around 32-35%, memory remains stable near
+  10 GiB per device, and stderr byte counts have not changed from the normal
+  loader display.
+- At six elapsed minutes, both first-pair methods remain active with stable
+  roughly 10 GiB allocations and unchanged stderr. No result directory is
+  exposed before the runner's atomic terminal write.
+- Both lanes continue active beyond eight minutes with repeated 24-30% sampled
+  utilization, steadily increasing CPU time, stable memory, and unchanged
+  loader-only stderr.
+- At 10.3 elapsed minutes, baseline and full CDEB remain synchronized and
+  active at sampled 23-26% utilization; neither has written a partial terminal
+  artifact.
+- The next two bounded checks continue to show healthy synchronized training,
+  stable memory, 20-34% sampled utilization, increasing CPU time, and no
+  stderr growth.
+- At 14.9 elapsed minutes, both workers remain active and continue accumulating
+  CPU time; instantaneous utilization is asynchronous (0%/49% in one sample)
+  while allocations remain stable, with no terminal result or new stderr.
+- Subsequent samples return to balanced 26-40% utilization on both GPUs; CPU
+  time exceeds 1,000 seconds per worker, memory remains stable, and stderr is
+  still unchanged.
+- At 19.4 minutes, both methods remain active with repeated 18-50% sampled GPU
+  utilization and no output/error state change.
+- Around 21 minutes, both stderr files grew by the same 153 bytes while both
+  lanes remained active with stable memory/utilization. Inspect the identical
+  new message before classifying it; no result or process failure occurred.
+- The new stderr line is the same harmless Transformers notice that stale
+  sampling flags are ignored under greedy generation. Both methods have
+  therefore completed training/cache-equivalence and entered the registered
+  four-arm free-greedy evaluation; utilization remains active.
+- At 24.8 total minutes, both evaluation lanes remain active at sampled
+  35-43% utilization, with unchanged warning-only stderr and no premature
+  result file.
+- Evaluation continues in lockstep with repeated 35-43% utilization and
+  steadily increasing CPU time on both lanes; output and error state remain
+  unchanged.
+- At 29.1 total minutes, both four-arm evaluations remain healthy at sampled
+  36-39% utilization, with stable allocations and no terminal artifact yet.
+- First-pair evaluation continues with 26-48% sampled utilization and no
+  output/error state change; both workers remain closely synchronized.
+- At 33.2 minutes, both evaluation workers remain healthy at 36-38% sampled
+  utilization; stderr is unchanged at the single greedy-generation notice.
+- The next two evaluation checks remain active at 20-36% utilization with
+  steadily increasing CPU time and no result/error transition.
+- At 37.4 total minutes, both methods remain active in evaluation with stable
+  allocations and sampled 20-32% utilization; no terminal result yet.
+- Evaluation remains healthy across the next checks at sampled 26-42%
+  utilization, with unchanged warning-only stderr and increasing CPU time.
+- At 41.5 total minutes, both 2,000-generation matrices remain active at
+  roughly 33-34% sampled utilization, still synchronized and error-free.
+- The next two evaluation checks remain healthy at sampled 24-42%
+  utilization, with no result/error transition.
+- At 45.6 total minutes, both evaluations remain active around 29-31%
+  utilization; stderr is still fixed at the single generation notice.
+- Evaluation remains strongly active in the next samples (32-52% utilization)
+  with stable memory and no output/error transition.
+- At 49.9 total minutes, both first-pair processes exited and released their
+  GPUs. Verify atomic result/checkpoint/status receipts before classifying
+  either lane or launching ablations.
+- Baseline and full-CDEB arm receipts both pass engineering contracts. Their
+  scalar outcomes show baseline ahead of full CDEB and full true-pair below its
+  prior-shuffle control; keep this preliminary only and run the two frozen
+  ablations before aggregation.
+- Launched the second pair: no-delta-evidence PID 20316 on GPU0 and
+  delta-no-bridge PID 10792 on GPU1. Both logs and output roots are fresh at
+  startup.
+- Both ablation workers entered active training at roughly 10.4-11.1 GiB with
+  23-41% sampled utilization and synchronized CPU-time growth. Their identical
+  139-byte stderr entries require a bounded check but neither process or
+  output contract has failed.
+- The ablation stderr entries are only complete Qwen weight-loading progress.
+  Both lanes continue healthy training at sampled 21-27% utilization with no
+  result/error transition.
+- Ablation training remains synchronized and healthy with sampled 30-42%
+  utilization, stable memory, increasing CPU time, and unchanged loader-only
+  stderr.
+- At 7.8 ablation-pair minutes, both workers remain active with sampled 28-44%
+  utilization, stable allocations, and no output/error transition.
+- Ablation training continues with synchronized CPU-time growth and unchanged
+  stderr; one instantaneous GPU1 sample was 0% while its worker CPU time still
+  advanced, so no stall is inferred.
+- At 12.2 ablation-pair minutes, both workers remain healthy with repeated
+  26-55% sampled utilization, stable memory, and no output/error change.
+- Ablation training remains synchronized at 38%/38% in the latest sample with
+  unchanged loader-only stderr and steadily increasing CPU time.
+- At 16.5 minutes, both ablations remain strongly active at sampled 43-51%
+  utilization, stable memory, and no partial result.
+- Near 19 minutes, both ablation stderr logs grew by the same 153 bytes while
+  utilization remained 43-47%; inspect the identical message to confirm the
+  expected transition into greedy evaluation.
+- The identical message is again only the greedy-generation flag notice.
+  Both ablations completed training/cache-equivalence and entered their
+  registered four-arm evaluations, currently active at 42-47%.
+- At 22 ablation-pair minutes, both evaluations remain strongly active at
+  sampled 44-50% utilization, synchronized and error-free.
+- Subsequent evaluation checks remain balanced at 40-45% utilization with
+  stable memory and unchanged warning-only stderr.
+- At 26.2 ablation-pair minutes, both evaluations remain active with sampled
+  39-52% utilization and no result/error transition.
+- The next checks remain synchronized at 38-49% utilization, stable memory,
+  and unchanged output/error state.
+- At 30.3 ablation-pair minutes, both evaluations remain active at sampled
+  31-35% utilization, with no terminal artifact yet.
+- Subsequent samples show strong 45-53% evaluation utilization on both GPUs,
+  stable memory, and unchanged warning-only stderr.
+- At 34.6 ablation-pair minutes, both evaluations remain synchronized at
+  sampled 46-47% utilization, with no output/error transition.
+- No-delta-evidence completed and released GPU0 first; delta-no-bridge remains
+  strongly active on GPU1 at 48% with unchanged stderr. Do not inspect or
+  aggregate until the final arm exits.
+- Delta-no-bridge then completed and released GPU1. Both ablation arm receipts
+  pass all engineering contracts; all four discovery results are now present
+  and both GPUs are idle. Execute the frozen aggregate next.
+- Frozen aggregation completed with terminal
+  `STOP_PRTA_GEN_R45_CDEB_DISCOVERY` and three gate failures. Aggregate
+  SHA-256 is
+  `9FC9DCEC7471DD169B63555B4BA395817ACB5187B3EA1B351F8D12C742BEE75E`.
+- Qualification/confirmation remain locked, unmaterialized, and unread; zero
+  R45 workers remain and both GPUs are idle. Phase 17 is complete at its
+  preregistered STOP; Phase 18 cannot execute.
+- Opened Phase 19 for a separately named post-R45 direction. It must use an
+  untouched development cohort and cannot modify or reinterpret the failed
+  CDEB gate.
+- Completed the first primary-work novelty audit for the post-R45 direction.
+  Expert injection, medical contrastive decoding, generic constrained decoding,
+  and generic product-of-experts fusion are already occupied. Narrowed R46 to
+  current-only causal-margin arbitration between a structured temporal head
+  and the frozen generator, with head-safety as an explicit gate.
+- Added the R45 terminal discovery report and synchronized the Proposal,
+  project status, root README, report index, and planning bundle. Qualification
+  and confirmation are explicitly recorded as skipped and still unread after
+  the discovery STOP; validation and Git handoff remain before R46 authority
+  construction.
+- Corrected the Phase-18 checklist so sealed qualification and confirmation
+  are recorded as deliberately unexecuted after discovery STOP, rather than
+  as pending scientific work.
+- Revalidated R45 closure: 17 focused tests passed, repository-wide Ruff and
+  compileall passed, all local Markdown links resolve, `git diff --check`
+  passed, runtime hashes match the terminal report, every sealed firewall
+  remains false, no worker remains, and both GPUs are idle.
+- The first closeout commit command exposed two report-header trailing spaces
+  but continued after the failed diff check. The commit remains local and
+  unpushed; remove the spaces, rerun checks independently, and amend it before
+  any network handoff.

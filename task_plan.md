@@ -585,33 +585,56 @@ smokes during iteration.
   model, loss, Seeds, compute, controls, decoding, primary endpoint,
   per-class floors, bootstrap gates, and fail-closed receipts before reading
   sealed qualification outcomes.
-- [ ] Commit and push the complete R45 pre-qualification authority, then run
+- [x] Commit and push the complete R45 pre-qualification authority, then run
   discovery automatically until one registered candidate passes or the
   discovery budget reaches its frozen STOP.
-- **Status:** in progress — the committed four-way roster passed its
-  image-complete preflight and was written once with immutable hash
-  `0387FCF0...1F7F4D8`; inspect the exact64/model interfaces and freeze the
-  discovery method/gates before any GPU work.
+- **Status:** complete — terminal
+  `STOP_PRTA_GEN_R45_CDEB_DISCOVERY`; the frozen budget completed, three gates
+  failed, and qualification/confirmation remain unmaterialized and unread.
 
 ### Phase 18 — R45 sealed qualification, confirmation, and paper-ready closure
 
-- [ ] Execute the frozen selected candidate and strong baseline on the sealed
+- [x] Do not execute the frozen selected candidate and strong baseline on the sealed
   patient-disjoint qualification cohort with multiseed true/current/query/
-  shuffle controls and patient-cluster confidence intervals.
-- [ ] If and only if every registered qualification gate passes, execute one
-  frozen confirmation on a second untouched cohort. A failed qualification or
-  confirmation is terminal for R45 and cannot be tuned around.
-- [ ] Produce the terminal case study, method/ablation/statistics tables,
+  shuffle controls and patient-cluster confidence intervals because discovery
+  did not unlock qualification.
+- [x] Do not execute confirmation: only if every registered qualification gate
+  had passed could one frozen confirmation on a second untouched cohort have
+  been revealed. A failed qualification or confirmation is terminal for R45
+  and cannot be tuned around.
+- [x] Produce the terminal case study, method/ablation/statistics tables,
   reproducibility and ethics statements, limitations, artifact hashes, and
   ICLR-style claim boundary; synchronize Proposal/status/index/planning files.
-- [ ] Validate code, artifacts, links, firewalls, processes, and GPUs; commit
+- [x] Validate code, artifacts, links, firewalls, processes, and GPUs; commit
   and push the terminal package.
-- **Status:** pending.
+- **Status:** complete — sealed stages were formally skipped after discovery
+  STOP; terminal documentation and validation are complete, with Git handoff
+  recorded in the progress log.
+
+### Phase 19 — post-R45 independent constrained-evidence direction
+
+- [x] Close R45 in the Proposal/status/report surfaces with exact failure
+  mechanisms, hashes, process/GPU state, and the qualification firewall.
+- [x] Review primary work on constrained candidate scoring, structured
+  temporal heads, and product-of-experts fusion. Select a separately named
+  R46 hypothesis only if it is distinguishable from generic reranking and does
+  not reuse the observed R45 development outcomes as its evaluation set.
+- [ ] Freeze an untouched R46 development cohort from patients outside the
+  entire R45 roster, while reusing only R45 train for fitting. Keep the already
+  untouched R45 qualification/confirmation cohorts sealed for a later,
+  independently frozen R46 gate.
+- [ ] Implement, preregister, commit, and push R46 before any new outcome read;
+  execute discovery and only proceed to sealed qualification/confirmation if
+  every newly frozen gate passes.
+- **Status:** in progress — R45 terminal writeback and novelty audit complete;
+  next freeze and validate an independently named R46 CEA authority without
+  tuning CDEB around its failed gate.
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| R45 terminal report contained two Markdown hard-break spaces, and the sequential PowerShell command continued to commit after `git diff --check` failed | 1 | Keep the commit local and unpushed, remove the two spaces with an exact patch, rerun the checks independently, then amend before push |
 | First Phase-16 report push failed with `OpenSSL SSL_connect: SSL_ERROR_SYSCALL` to GitHub | 1 | Preserve local commit `7e73e0d`, verify HTTPS reachability, then retry the existing branch without regenerating artifacts |
 | R40B.4 implementation inspection guessed `scripts/run_prta_gen_r40b4_structured_head.py` | 1 | Resolve the actual tracked `scripts/run_prta_gen_r40b4_structured_head_smoke.py`; no runtime or result changed |
 | R44A terminal authority search guessed nonexistent root `Proposal.md` and `PROJECT_STATUS.md` | 1 | Use the authoritative `TIER_CXR_VLM_Next_Stage_Proposal_CN.md` and `docs/PROJECT_STATUS_CN.md`; no experiment state was affected |
