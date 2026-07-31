@@ -1604,3 +1604,64 @@
   project status, indexes, terminal report link, and planning evidence as
   `6ce4d41`. Phase 14 is formally closed; the earlier pre-analysis analyzer
   remains independently frozen at pushed commit `0445a6d`.
+
+## 2026-07-31 Phase 15 independent continuation
+
+- User asked to continue after the Phase-14 handoff. Opened a new R44
+  feasibility phase rather than bypassing the R41A STOP or launching the
+  still-locked R42A/R43 chain.
+- The first action is inventory-only: identify genuinely unused patients and
+  five-class support after excluding all observed R40/R41 cohorts. No roster,
+  outcome read, model process, or GPU command is authorized before this
+  feasibility gate is recorded.
+- Completed the first scalar-only inventory over the R40A.2 fit lineage. After
+  excluding 2,160 observed/used patients, 2,127 patients and 4,153 rows remain,
+  but only one remaining patient supports `Resolved`. No identity was printed
+  and protected 300-dev, revealed 483-test, gold, and external outcomes were
+  not read. This partition cannot support an independent five-class R44 run.
+- Audited the frozen source authority: the R40 registry has only the already
+  assigned 8,787 training and 1,500 development patients, and R43's protected
+  gold/external surfaces are confirmation-only rather than a legal development
+  fallback. A fresh readiness check remains to confirm that no external
+  images/labels have appeared since the prior audit.
+- Ran the fresh R43 outcome-free preflight. It again returns the registered
+  readiness STOP: 16 image-complete untouched gold patients, zero external
+  patients, absent external root, no independent labels, and 70 ReXGradient
+  annotations with 238 missing image references. No outcome or prediction was
+  read and no artifact was written.
+- Checked the official ReXGradient paper and Hugging Face repository. The
+  downsampled images are publicly distributed as ten archive parts with
+  train/validation/test metadata, so acquisition may be feasible. Began a
+  download-size/selectivity audit only; no dataset file has been downloaded.
+- Confirmed the repository is gated and the local HF client is unauthenticated.
+  Its configured endpoint is `hf-mirror.com`, which caused the failed dry-run
+  metadata lookup. No credential or dataset agreement was assumed; acquisition
+  remains behind explicit account access and terms acceptance.
+- Read the official gated-use terms and audited the local CheXTemporal
+  checkout. The terms require account-holder acceptance and minimum-necessary
+  download; the local checkout has no silver files. No agreement was accepted,
+  credential created, or image/annotation file downloaded.
+- The open CheXTemporal Hub repository supplies silver annotations separately.
+  A dry run at the official endpoint shows that only 57.6 MB of findings and
+  studies parquet is needed for support/image-path auditing; the 207.2 MB masks
+  and sentence parquet are unnecessary. No silver file has been downloaded
+  yet because the scalar-only audit contract must be committed first.
+- Pinned the open annotation source to revision
+  `81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79`. Confirmed both registered
+  CheXpert/MIMIC roots and 524.84 GiB free on H:. Reduced the planned download
+  further to the 29.5 MB `silver_findings.parquet` only.
+- Froze the pre-outcome R44 support-audit config, Chinese protocol, scalar-only
+  implementation, and three synthetic regression tests. The initial focused
+  validation passes: 3 tests, Ruff, Python compilation, and `git diff --check`.
+  No CheXTemporal silver file, patient roster, model process, or GPU job has
+  been created.
+- The missing-source preflight reproduces the frozen R40 remainder exactly and
+  returns the expected formal `STOP_PRTA_GEN_R44_INDEPENDENT_SUPPORT` with
+  `chextemporal_silver_file_missing`; all outcome-read, roster, training, and
+  scientific-claim flags remain false.
+- Before the first real silver read, corrected the implementation to enforce
+  image completeness on selected rows rather than requiring every source row
+  to have local images. Insufficient patient-disjoint class support now returns
+  a scalar support failure that the top-level audit converts to formal STOP.
+  The same 3 tests, Ruff, compilation, missing-source preflight, and whitespace
+  checks pass after the correction.

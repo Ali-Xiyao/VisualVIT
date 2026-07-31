@@ -525,6 +525,29 @@ smokes during iteration.
 - **Status:** complete — analyzer commit `0445a6d` and report commit `6ce4d41`
   are pushed; no new experiment or downstream stage is unlocked.
 
+### Phase 15 — Independent post-R41A readout feasibility and R44 authority
+
+- [x] Build a scalar-only inventory of patients not used for R40 discovery,
+  qualification, R40B–R40B.4, R40C, or R41A train/development. Do not read
+  protected 300-dev, revealed 483-test, gold, or external outcomes.
+- [ ] Require a genuinely patient-disjoint five-class cohort with a
+  predeclared minimum per-class train/development support. If the rare-class
+  floor is not available, record a feasibility STOP rather than reusing R41A
+  development or weakening the claim after inspection.
+- [ ] If support exists, freeze a separately named R44A class-support survival
+  protocol before any new result: fixed roster rule, G0/G1 comparison,
+  true/current/query/shuffle controls, Seeds, decoding, class-support gates,
+  and no checkpoint/threshold selection.
+- [ ] Implement fail-closed roster/preflight/runner tests and commit/push the
+  complete pre-outcome authority before any roster write or GPU launch.
+- [ ] Execute automatically only while the new registered gates pass; stop at
+  the first feasibility, engineering, or scientific STOP. R42A/R43 remain
+  locked regardless of R44A.
+- [ ] Update the Proposal, reports, status, and planning bundle; validate and
+  push the terminal evidence package.
+- **Status:** in progress — inventory and feasibility only; no new outcome or
+  GPU command has run.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -626,10 +649,12 @@ smokes during iteration.
 | A Phase-14 scalar metric audit again left an empty pipeline after a `foreach` block | 1 | The command failed at parse time before reading payloads; collect objects into `$items`, then serialize the completed array |
 | First focused R41A case-study validation found one unused test import | 1 | Remove the unused `copy` import and rerun tests, Ruff, compileall, and diff validation as independent gates |
 | Phase-14 full pytest retained one R6 frozen-manifest failure after 814 passes | 1 | This is the same closed R6 registry drift already reproduced on clean commit `24f57c3`; record it as preexisting and do not rewrite historical hashes |
+| First ReXGradient `hf download --dry-run` failed during remote file metadata resolution | 1 | `hf datasets info` still resolves the official repository; inspect `hf env`, query official Hub file metadata directly, and retry only with an explicit verified endpoint |
 
 ## Next Step
 
-Phase 14 is closed. Preserve the R41A STOP, the identity-free derived JSON, and
-the published report/Proposal boundary. Any future readout study requires a
-new outcome-independent protocol and genuinely independent patient cohort;
-do not reuse this development analysis for selection.
+Run the frozen R44 audit in missing-source preflight mode, inspect only its
+scalar STOP receipt, and commit/push the pre-outcome authority. Only after that
+commit may the single pinned CheXTemporal `silver_findings.parquet` be
+downloaded and hashed for the one-time scalar support audit. Do not create a
+roster or launch a GPU job.

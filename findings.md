@@ -1712,3 +1712,116 @@ preserving the encoder's static medical semantics.
   and one is expected xfail. The sole failure remains the documented R6
   closed-manifest hash drift, which is outside the R41A analysis surface and
   already reproduces on clean commit `24f57c3`.
+- Phase 15 is a distinct post-R41A development authority, not a retry of the
+  failed gate. It must first prove genuinely unused five-class patient support;
+  otherwise the correct terminal result is a feasibility STOP. The observed
+  R41A error pattern may motivate a hypothesis but may not select patients,
+  thresholds, checkpoints, Seeds, or class weights on the same cohort.
+- The first scalar-only R44 inventory finds 2,127 unused patients and 4,153
+  eligible rows inside the remaining R40A.2 fit partition, but unique-patient
+  class support is 1,584 Stable / 451 Improved / 580 Worse / 272 New /
+  **1 Resolved** after excluding all five R40B cohorts, the 1,500-patient R40C
+  roster, and all 500 R41A patients. A five-class R44 cohort is therefore
+  impossible from this partition without reusing an observed patient.
+- The earlier R41A preflight's six-patient `Resolved` reserve cannot be treated
+  as six currently eligible patients. Five reserve patients were selected for
+  R41A through another label and are excluded at the patient level; the
+  post-R41A inventory correctly leaves only one patient with any Resolved row.
+- The R40 target registry already exhausts the available outcome-independent
+  source roster into 8,787 training and 1,500 development patients. The
+  development outcomes were used by the closed R40A information audit, while
+  the training patients were partitioned across R40A.1/R40A.2 and downstream
+  cohorts. There is no undeclared third split in the frozen target authority.
+- The only separately registered confirmation sources are not a usable R44
+  development cohort: R43 requires 4,906 gold patients for the frozen worst-
+  case +2 pp target, while the last readiness audit found only 16 untouched
+  image-complete official-gold patients, no executable external patients, and
+  no independent labels. Gold/external also remain protected and cannot be
+  repurposed for post-R41A method development.
+- A fresh 2026-07-31 outcome-free readiness preflight reproduces exactly 16
+  untouched image-complete official-gold patients (7 CheXpert, 9 MIMIC), zero
+  executable external patients, absent `data/external`, and no independent
+  labels. ReXGradient contributes 70 untouched annotations but all 238 image
+  references are locally missing. The conservative MDE remains 35.02 pp.
+- Taken together, both candidate sources fail before modeling: the unused R40
+  fit remainder lacks five-class support (`Resolved` n=1), while the protected
+  confirmation surfaces lack scale/images/labels and cannot be converted into
+  a development set. No GPU experiment is currently protocol-valid.
+- Official ReXGradient sources change the acquisition assessment: the
+  `rajpurkarlab/ReXGradient-160K` Hub repository publicly lists 273,004
+  downsampled PNG images from 160,000 studies / 109,487 patients, split into
+  train/validation/public test, with ten `deid_png.part00`–`part09` archive
+  parts and per-split metadata. The dataset images are therefore obtainable in
+  principle, although CheXTemporal itself redistributes annotations only.
+- R44 must not use ReXGradient public test images for development. A viable
+  acquisition would have to map the 70 CheXTemporal patients to the official
+  ReXGradient split metadata, prove they belong to an allowed split, and
+  download the containing archive safely. The repository exposes only ten
+  monolithic archive parts, not patient-addressable image files.
+- The first `hf download --dry-run` for metadata and image parts failed during
+  remote file metadata resolution despite `hf datasets info` succeeding. This
+  is a client/endpoint or proxy metadata issue, not evidence that the files are
+  absent; inspect the active HF endpoint and use the Hub API for size metadata
+  before retrying.
+- Deeper official Hub inspection shows `rajpurkarlab/ReXGradient-160K` is a
+  **gated** dataset with `license: other`, despite being publicly discoverable.
+  The local HF client has no saved token and is not logged in, so image
+  acquisition requires the user/account holder to review and accept the
+  dataset terms and authorize access.
+- The local HF client is also configured to `https://hf-mirror.com`. That
+  explains why repository listing could work while `hf download --dry-run`
+  metadata resolution failed. Any authorized retry must use an explicit
+  `HF_ENDPOINT=https://huggingface.co` process-local override, not mutate the
+  user's global HF configuration.
+- The official ReXGradient agreement is a hard authorization boundary. It
+  requires the account holder to share contact information and accept a
+  non-commercial/non-clinical research agreement, maintain safeguards, and
+  download only the portion necessary for the research. The repository's ten
+  concatenated tar parts do not expose patient-addressable files, so blindly
+  downloading the full image archive for a small R44 cohort would conflict
+  with the minimum-necessary clause unless separately justified by the user/
+  institution.
+- The local CheXTemporal checkout contains only README/DATASHEET/LICENSE plus
+  the two gold parquet files; no silver annotations are present. Therefore the
+  larger CheXTemporal silver pool cannot be used locally without a separate
+  annotation acquisition and parent-image access plan.
+- The open CheXTemporal repository does expose four silver artifacts. An
+  official-endpoint dry run succeeds without authentication: 29.5 MB
+  `silver_findings.parquet`, 28.1 MB `silver_studies.parquet`, 15.2 MB
+  `silver_sentences.parquet`, and a 207.2 MB mask ZIP. R44 support auditing
+  needs only the first two parquet files; masks and sentence text are not
+  needed and should not be downloaded.
+- CheXTemporal silver is the first plausible independent path: its card reports
+  22,638 CheXpert and 8,497 MIMIC silver patients. The local machine already
+  has the registered CheXpert/MIMIC parent roots. A CheXpert-only cohort could
+  avoid the MIMIC-derived R40/R41 lineage, but this must be proven from
+  patient/source metadata and on-disk image coverage before any label outcome
+  or model run is inspected.
+- The acquisition must remain two-stage and outcome-blind: first freeze a
+  script that downloads only the necessary open parquet metadata and emits
+  scalar source/class/image coverage; only if that support gate passes may a
+  deterministic patient roster be frozen. Silver annotations are development
+  labels, not independent expert confirmation.
+- CheXTemporal `silver_findings.parquet` is sufficient by itself for the
+  support audit: it contains dataset, patient, finding, five-way progression,
+  and both parent-image relative paths. `silver_studies`, sentences, and masks
+  are unnecessary for R44 progression-only feasibility.
+- The exact open annotation revision is
+  `81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79`; the local gold checkout already
+  pins that same revision. The Hub reports `gated=false`, and the official-
+  endpoint dry run works unauthenticated.
+- Local prerequisites are plausible: the registered CheXpert and MIMIC image
+  roots both exist and H: has 524.84 GiB free. Phase 15 should start with
+  CheXpert-only support because it is cross-source relative to the MIMIC-based
+  R40/R41 lineage and avoids the gated ReXGradient acquisition entirely.
+- The frozen R44 audit code reads only the eight required silver finding
+  columns and only `dataset`/`patient_id` from the gold registry. Its synthetic
+  tests cover patient-disjoint rare-first selection, gold-patient exclusion,
+  missing-image failure, and progression-registry drift. Focused tests, Ruff,
+  compilation, and whitespace validation pass before any real silver outcome
+  is acquired.
+- The correct image gate is selection-scoped: every chosen train/development
+  row must have both prior and current images, but unusable rows elsewhere in
+  the source pool may be excluded. Requiring zero missing references across
+  all CheXpert silver rows would be stricter than the frozen protocol and could
+  create a false STOP despite adequate image-complete support.
