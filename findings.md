@@ -2097,3 +2097,15 @@ preserving the encoder's static medical semantics.
 - The aggregator uses paired patient-cluster macro-F1 bootstrap comparisons
   and enforces the predeclared accuracy, per-class, schema, specificity,
   baseline, no-delta, auxiliary-head, and true/shuffle-agreement gates.
+- The discovery-only exact64 cache completed in 159.4 seconds: 3,000 rows,
+  3,000 patients, 6,000 images, 24 shards, and 885,120,680 shard bytes.
+  Repeated first-batch features were bit-identical, peak CUDA allocation was
+  0.49 GiB, and stderr remained empty.
+- Cache index SHA-256 is
+  `2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6`.
+  It contains neither labels nor sentences; qualification/confirmation token
+  and outcome-read flags all remain false.
+- The post-cache runner preflight passed: 2,500 training rows, 500 development
+  rows, 24 token shards, sampled shard shape 128 x 64 x 768 for all three
+  variants, local Qwen present, sentinel ID 151662 exact, and all four method
+  outputs fresh. Both GPUs were idle before method launch.

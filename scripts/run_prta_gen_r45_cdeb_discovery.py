@@ -91,8 +91,13 @@ def validate_authority(
     ):
         raise PermissionError("R45 discovery roster receipt drift")
     index_path = Path(config["source"]["token_index"])
-    if not index_path.is_file():
-        raise FileNotFoundError("R45 discovery token index is absent")
+    if (
+        not index_path.is_file()
+        or index_path.stat().st_size
+        != int(config["source"]["token_index_bytes"])
+        or sha256_file(index_path) != config["source"]["token_index_sha256"]
+    ):
+        raise PermissionError("R45 discovery token-index authority drift")
     index = read_json(index_path)
     if (
         index.get("status") != config["source"]["required_token_status"]
@@ -111,6 +116,100 @@ def validate_authority(
     ):
         raise PermissionError("R45 discovery token-cache receipt drift")
     return roster, index
+
+
+def preflight(config_path: Path) -> dict[str, Any]:
+    config = read_json(config_path)
+    roster, index = validate_authority(config)
+    seeds = [int(value) for value in config["training"]["discovery_seeds"]]
+    methods = [str(value) for value in config["methods"]["order"]]
+    output_root = Path(config["runtime"]["discovery_root"])
+    existing = [
+        str(output_root / f"seed_{seed}" / method)
+        for seed in seeds
+        for method in methods
+        if (output_root / f"seed_{seed}" / method).exists()
+    ]
+    if existing:
+        raise FileExistsError("R45 discovery method output is not fresh")
+    if not index["shards"]:
+        raise ValueError("R45 discovery token index has no shards")
+    sampled = torch.load(
+        index["shards"][0]["path"],
+        map_location="cpu",
+        weights_only=True,
+    )
+    required = {
+        "example_ids",
+        "patient_ids",
+        "findings",
+        "true_tokens",
+        "current_tokens",
+        "shuffled_tokens",
+    }
+    if not required.issubset(sampled):
+        raise ValueError("R45 discovery token shard schema drift")
+    sampled_rows = len(sampled["example_ids"])
+    if (
+        sampled_rows == 0
+        or len(sampled["patient_ids"]) != sampled_rows
+        or len(sampled["findings"]) != sampled_rows
+        or any(
+            tuple(sampled[key].shape)
+            != (sampled_rows, 64, 768)
+            for key in (
+                "true_tokens",
+                "current_tokens",
+                "shuffled_tokens",
+            )
+        )
+    ):
+        raise ValueError("R45 discovery sampled token-shard shape drift")
+    model_path = Path(config["model"]["path"])
+    if not model_path.is_dir():
+        raise FileNotFoundError("R45 local Qwen model path is absent")
+    from transformers import AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_path,
+        local_files_only=True,
+        trust_remote_code=False,
+    )
+    placeholder_id = int(
+        tokenizer.convert_tokens_to_ids(config["model"]["sentinel_token"])
+    )
+    if (
+        placeholder_id != int(config["model"]["placeholder_token_id"])
+        or tokenizer(
+            config["model"]["sentinel_token"], add_special_tokens=False
+        )["input_ids"]
+        != [placeholder_id]
+    ):
+        raise ValueError("R45 preflight sentinel token drift")
+    return {
+        "schema": "visualvit.prta-gen.r45-cdeb-runner-preflight.v1",
+        "status": "PASS_PRTA_GEN_R45_CDEB_RUNNER_PREFLIGHT",
+        "protocol_id": config["protocol_id"],
+        "seeds": seeds,
+        "methods": methods,
+        "training_rows": roster["partitions"]["train"]["row_count"],
+        "development_rows": roster["partitions"]["development"]["row_count"],
+        "token_index_sha256": config["source"]["token_index_sha256"],
+        "token_rows": index["rows"],
+        "token_shards": index["shard_count"],
+        "sampled_shard_rows": sampled_rows,
+        "local_qwen_present": True,
+        "placeholder_token_id": placeholder_id,
+        "all_method_outputs_fresh": True,
+        "gpu_training_started": False,
+        "qualification_tokens_materialized": False,
+        "confirmation_tokens_materialized": False,
+        "qualification_outcomes_read": False,
+        "confirmation_outcomes_read": False,
+        "gold_outcomes_read": False,
+        "external_outcomes_read": False,
+        "scientific_claim_allowed": False,
+    }
 
 
 def _features_for_mode(
@@ -714,14 +813,26 @@ def parse_args() -> argparse.Namespace:
         description="Run one frozen R45 CDEB discovery method"
     )
     parser.add_argument("--config", type=Path, required=True)
-    parser.add_argument("--seed", type=int, required=True)
-    parser.add_argument("--method", required=True)
-    parser.add_argument("--device", required=True)
+    parser.add_argument("--seed", type=int)
+    parser.add_argument("--method")
+    parser.add_argument("--device")
+    parser.add_argument("--preflight-only", action="store_true")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if args.preflight_only:
+        if any(
+            value is not None
+            for value in (args.seed, args.method, args.device)
+        ):
+            raise ValueError("R45 runner preflight accepts only --config")
+        result = preflight(args.config)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
+    if args.seed is None or args.method is None or args.device is None:
+        raise ValueError("R45 method run requires seed, method, and device")
     result = run_method(
         config_path=args.config,
         seed=args.seed,

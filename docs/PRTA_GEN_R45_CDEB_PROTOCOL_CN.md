@@ -91,6 +91,11 @@ gradient clip `1.0`，无 early stopping、无 checkpoint selection。解码为 
 greedy；同一 500-patient development 上固定评估 true pair、current-only、
 query-only、same-finding cross-patient prior shuffle。
 
+Discovery token index 固定为 5,992 bytes、SHA-256
+`2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6`。
+Runner 在加载任何 Qwen 权重前必须复核该 hash、roster hash、sample shard
+shape、四个 method output freshness 与 sentinel token ID。
+
 ## 5. Discovery gate
 
 唯一可选方法预先指定为 `full_cdeb`。只有以下全部通过才能 materialize

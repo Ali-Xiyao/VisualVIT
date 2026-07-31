@@ -51,6 +51,8 @@
   },
   "source": {
     "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r45_cdeb_v1\\tokens\\discovery\\index.json",
+    "token_index_bytes": 5992,
+    "token_index_sha256": "2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6",
     "required_token_status": "PASS_PRTA_GEN_R45_CDEB_DISCOVERY_TOKEN_CACHE",
     "token_variants": {
       "true_pair": "true_tokens",

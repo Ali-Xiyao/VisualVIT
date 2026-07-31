@@ -2085,3 +2085,26 @@
   repository-wide Ruff, full `src/scripts/tests` compileall, and
   `git diff --check`. The complete method/cache/runner/aggregate authority is
   ready for staged review, commit, and push before any GPU execution.
+- Committed and pushed the complete pre-outcome discovery authority as
+  `9483ae0`; the worktree was clean at launch.
+- The formal discovery-cache preflight passed for exactly 3,000 train/
+  development rows, with both sealed-token and sealed-outcome flags false.
+  Started the authorized GPU0 cache worker with runtime-owned stdout/stderr
+  logs; no training process has started.
+- Cache PID 7512 remains healthy in the one-pass image-materialization stage:
+  GPU0 memory rose from 637 to roughly 987 MiB with observed utilization, the
+  worker accumulates CPU time, stderr is empty, and no premature index or shard
+  receipt exists.
+- Discovery cache completed successfully after 159.4 seconds with the expected
+  3,000 rows and 24 shards. Index SHA-256 is
+  `2ECC1350A71C885CCF10BE4665CD1BDC1F532E1B309586FF5879294890A955B6`;
+  reproducibility passed exactly and all sealed-token/outcome flags remain
+  false. GPU0 released the cache model before training.
+- Added a post-cache, pre-training integrity pin for the 5,992-byte token index
+  and a formal runner preflight covering the roster/index hashes, sampled shard
+  schema, local Qwen path, exact sentinel ID, and fresh output roots. This is
+  outcome-free hardening; no method has started.
+- Post-cache runner validation passes (11 focused tests, Ruff, compileall,
+  JSON/diff checks) and the formal preflight returns
+  `PASS_PRTA_GEN_R45_CDEB_RUNNER_PREFLIGHT`. Commit/push this final integrity
+  pin before launching any discovery method.
