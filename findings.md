@@ -2259,3 +2259,14 @@ preserving the encoder's static medical semantics.
 - Seven focused CEA/cache/roster tests, targeted Ruff, compileall, JSON parsing,
   and both runner/aggregator CLI imports pass before any R46 token cache or
   model outcome exists.
+- The R46 development-only cache completed in 37.7 seconds: 250 patients,
+  500 images, two shards, 73,759,854 shard bytes, exact repeated-batch
+  reproducibility, and 0.481 GiB peak CUDA allocation. It contains no labels
+  or sentences and no sealed tokens.
+- Its 1,954-byte index SHA-256 is
+  `3296E5EA438537430D131293824A89CBB1851BBA837814C9063DE02BAC0272AE`;
+  the config now pins this immutable receipt before outcome execution.
+- Post-pin runner preflight passes: immutable 2,500-row R45 train cache plus
+  250-row R46 development cache align, the inherited checkpoint has exactly
+  12 projector tensors, local Qwen and sentinel 151662 are valid, all baseline
+  and Seed outputs are fresh, and every sealed flag remains false.

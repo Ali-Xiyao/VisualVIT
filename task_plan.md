@@ -635,16 +635,17 @@ smokes during iteration.
 - [x] Freeze the cache, inherited generator baseline, multiseed structured
   head, Jensen-Shannon causal score, train-quantile arbitration, fallback
   contract, bootstrap comparisons, discovery gates, and runtime firewalls.
-- [ ] Commit and push the complete pre-cache authority, then cache only the
+- [x] Commit and push the complete pre-cache authority, then cache only the
   250 new development patients and pin the cache index without reading model
-  outcomes.
+  outcomes. The authority is pushed and the cache is complete; its immutable
+  index is now pinned and awaits validation/commit/push.
 - [ ] Run the inherited frozen baseline once, train/evaluate Seeds 17/29/43,
   select the shared registered train-score quantile, and aggregate exactly
   once.
 - [ ] Treat the registered discovery GO or STOP as terminal; do not retune
   score, coverage, thresholds, training, or gates around the result.
-- **Status:** in progress — implementation/tests pass; pre-cache authority
-  awaits full validation and Git handoff.
+- **Status:** in progress — authority commit `20d1708` is pushed; development
+  cache passed and its index pin awaits validation/Git handoff.
 
 ### Phase 21 — R46 sealed qualification and confirmation
 

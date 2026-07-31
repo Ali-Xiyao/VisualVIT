@@ -70,9 +70,9 @@
     "sentences_in_cache": false
   },
   "source": {
-    "development_token_index": null,
-    "development_token_index_bytes": null,
-    "development_token_index_sha256": null,
+    "development_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r46_cea_v1\\tokens\\development\\index.json",
+    "development_token_index_bytes": 1954,
+    "development_token_index_sha256": "3296E5EA438537430D131293824A89CBB1851BBA837814C9063DE02BAC0272AE",
     "required_development_token_status": "PASS_PRTA_GEN_R46_CEA_DEVELOPMENT_TOKEN_CACHE",
     "token_variants": {
       "true_pair": "true_tokens",

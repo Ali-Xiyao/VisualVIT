@@ -2305,3 +2305,17 @@
 - Final pre-cache validation passes 12 focused tests, repository-wide Ruff,
   repository compileall, `git diff --check`, and an explicit absent-token-root
   check. The authority is ready to commit and push.
+- Committed and pushed the complete R46 discovery authority as `20d1708`.
+  Started the authorized 250-row development-only cache on GPU0 as PID 18820;
+  stderr is empty, GPU1 remains idle, and no model outcome is being read.
+- The cache exited cleanly after 37.7 seconds and returned
+  `PASS_PRTA_GEN_R46_CEA_DEVELOPMENT_TOKEN_CACHE`: 250 rows, 500 images, two
+  shards, reproducibility exact, no labels/sentences, all sealed flags false.
+  Pinned index SHA-256 `3296E5EA...72AE` into the discovery config.
+- The pinned runner preflight returns
+  `PASS_PRTA_GEN_R46_CEA_RUNNER_PREFLIGHT` with 2,500 training rows, 250 new
+  development rows, local Qwen/sentinel/checkpoint validation, fresh outputs,
+  and no protected or sealed read.
+- Post-pin validation again passes 12 focused tests, repository-wide Ruff,
+  compileall, JSON parsing, and `git diff --check`; commit/push the immutable
+  cache receipt before baseline generation.
