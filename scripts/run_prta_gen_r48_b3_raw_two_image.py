@@ -22,7 +22,6 @@ from scripts.run_prta_gen_r40b_overfit_smoke import parse_generated_object
 from scripts.run_prta_gen_r41a_progression_sft import (
     PROGRESSION_CLASSES,
     macro_f1,
-    per_class_recall,
 )
 
 
@@ -142,9 +141,24 @@ def preflight(config_path: Path) -> dict[str, Any]:
 
 
 def _metrics(targets: list[int], predictions: list[int]) -> dict[str, Any]:
-    recalls = per_class_recall(
-        targets, predictions, class_count=len(PROGRESSION_CLASSES)
-    )
+    recalls: list[float | None] = []
+    supports: list[int] = []
+    for class_index in range(len(PROGRESSION_CLASSES)):
+        support = sum(target == class_index for target in targets)
+        supports.append(support)
+        recalls.append(
+            (
+                sum(
+                    target == class_index and prediction == class_index
+                    for target, prediction in zip(
+                        targets, predictions, strict=True
+                    )
+                )
+                / support
+            )
+            if support
+            else None
+        )
     count = len(targets)
     return {
         "row_count": count,
@@ -158,6 +172,10 @@ def _metrics(targets: list[int], predictions: list[int]) -> dict[str, Any]:
         ),
         "per_class_recall": {
             label: recalls[index]
+            for index, label in enumerate(PROGRESSION_CLASSES)
+        },
+        "per_class_support": {
+            label: supports[index]
             for index, label in enumerate(PROGRESSION_CLASSES)
         },
         "invalid_or_wrong_finding_predictions": sum(
@@ -178,6 +196,10 @@ def run_shard(
     selected = select_shard(rows, shard_index, shard_count)
     if smoke:
         selected = selected[: int(config["execution"]["smoke_rows_per_shard"])]
+    elif len(
+        {str(row["progression"]) for _, row in selected}
+    ) != len(PROGRESSION_CLASSES):
+        raise PermissionError("formal raw shard lacks complete class support")
     root_key = "smoke_root" if smoke else "formal_root"
     output_dir = (
         Path(config["runtime"][root_key])

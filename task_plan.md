@@ -690,19 +690,21 @@ smokes during iteration.
 
 ### Phase 24 — Raw two-image frozen Qwen baseline first
 
-- [ ] Reuse the previously declared R40 B3 definition and implement native
+- [x] Reuse the previously declared R40 B3 definition and implement native
   prior/current full-image Qwen3-VL inference with the same five-label JSON
   target and frozen model.
-- [ ] Run a fixed engineering smoke without changing the prompt from outcomes,
-  then evaluate once on the already-read 500-patient R48 qualification cohort
-  so its result is directly comparable to the R48 frozen-token baseline.
+- [x] Run a fixed engineering smoke without changing the prompt from outcomes;
+  both GPUs pass with strict JSON/finding echo and about 8.55 GiB peak VRAM.
+- [ ] Evaluate once on the already-read 500-patient R48 qualification cohort
+  using two fixed 250-row shards so its result is directly comparable to the
+  R48 frozen-token baseline.
 - [ ] Report macro-F1, per-class recall, schema/finding validity, runtime,
   peak VRAM, and exact cohort/model pins. Treat this as a development case
   study, not independent confirmation.
 - [ ] Show the user the raw two-image result before resuming the already-frozen
   250-patient R48 confirmation.
-- **Status:** in progress — repository has an older two-image Qwen2-VL smoke
-  and R40 predeclares B3, but no formal Qwen3-VL raw-pixel baseline yet.
+- **Status:** in progress — two-card Qwen3-VL smoke passes; commit the
+  smoke-summary fix, then launch the two frozen 250-row formal shards.
 
 ## Errors Encountered
 
@@ -826,6 +828,7 @@ smokes during iteration.
 | First focused R45 discovery-runner Ruff pass found an unused `math` import | 1 | Remove the unused import and the unused synthetic helper, then rerun the same focused validation before preflight |
 | First R48 confirmation runner preflight was invoked before its one-time cache index could be pinned | 1 | Cache preflight, tests, Ruff, compileall, and JSON validation passed; commit/push the frozen authority, materialize only confirmation tokens, pin their exact receipt, then run the model preflight |
 | First raw two-image preflight summary treated its scalar row count as a result-record list | 1 | Restrict row compaction to list-valued formal results, add a regression test, and rerun the unchanged preflight before any GPU/model load |
+| First two-card raw smoke completed generation but both shard summaries rejected two-row samples for lacking all five target classes | 1 | Permit `null` recall only for unsupported smoke classes, retain an explicit complete-class-support gate for each 250-row formal shard, archive the failed smoke receipts/logs, and rerun unchanged |
 
 ## Next Step
 

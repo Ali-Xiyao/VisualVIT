@@ -29,5 +29,12 @@ def test_metrics_counts_invalid_prediction() -> None:
     assert metrics["row_count"] == 5
 
 
+def test_metrics_supports_partial_smoke_classes() -> None:
+    metrics = _metrics([0, 1], [0, -1])
+    assert metrics["per_class_recall"]["Stable"] == 1.0
+    assert metrics["per_class_recall"]["Improved"] == 0.0
+    assert metrics["per_class_recall"]["Worse"] is None
+
+
 def test_receipt_summary_preserves_preflight_row_count() -> None:
     assert receipt_summary({"rows": 500})["rows"] == 500

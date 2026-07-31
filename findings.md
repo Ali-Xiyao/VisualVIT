@@ -2391,3 +2391,9 @@ preserving the encoder's static medical semantics.
   `58A7841D...CF2B`, and the exact R48 qualification baseline/aggregate hashes.
   These pins permit a fresh two-shard runtime without altering the existing
   frozen-token result.
+- Two-GPU raw-Qwen smoke passes after the partial-class summary fix: all four
+  outputs are strict two-key JSON and all four echo the requested finding.
+  Two of four progression labels match, but that sample is engineering-only.
+  Each GPU peaks at about 8.55 GiB; two generations take 3.16–3.47 seconds
+  after a 14.27-second model load. The full frozen setup is therefore feasible
+  without reducing pixels or changing the prompt.

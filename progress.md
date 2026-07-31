@@ -2526,3 +2526,28 @@
   focused assertions, Ruff, and compileall pass. The first preflight print
   exposed only a scalar/list receipt-summary bug before model/GPU work; fixed
   it with a regression test without changing the frozen protocol.
+- Revalidated with four focused tests, Ruff, fresh-root preflight, and
+  `git diff --check`; preflight reports exactly two 250-row formal shards.
+  Committed/pushed the raw authority and confirmation-cache pin as `ad745ee`.
+- Started two simultaneous raw-Qwen engineering smokes: PID 29816 on GPU0 and
+  PID 31344 on GPU1, two deterministic rows per shard. Both processes are
+  alive and initially loading the same local frozen model on separate cards.
+- Both raw smoke processes completed model load/generation but stopped before
+  writing results because the inherited recall helper requires all five target
+  classes and each engineering shard intentionally has only two rows. This is
+  a post-generation smoke-summary defect, not a Qwen, VRAM, or image-grid
+  failure. Added nullable recall for unsupported smoke classes while retaining
+  a five-class support gate for every formal shard.
+- Five focused tests and Ruff pass after the partial-class fix. Archived the
+  first failed smoke directory and four logs intact under
+  `history/smoke_failed_20260731T1839`, restored a fresh smoke root, and
+  relaunched the unchanged two-card smoke.
+- The rerun two-card smoke completed successfully on both GPUs and wrote both
+  atomic shard results. Stderr contains only model-loading progress and the
+  known ignored sampling-flag warning; both GPUs returned idle. Inspect the
+  bounded smoke scalars/text next, without changing the frozen formal setup.
+- Smoke scalars: both shards report
+  `PASS_PRTA_GEN_R48_B3_RAW_TWO_IMAGE_SMOKE`; schema and finding accuracy are
+  1.0 on 4/4 combined, progression is correct on 2/4, peak VRAM is
+  8.54–8.55 GiB, and two-row generation is 3.16–3.47 seconds per card.
+  Do not tune from these four engineering rows.
