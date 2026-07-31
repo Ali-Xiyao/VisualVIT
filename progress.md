@@ -2438,3 +2438,13 @@
   bootstrap aggregate, protocol, and tests. Static checks pass and the
   preflight returns `PASS_PRTA_GEN_R48_FPRR_CACHE_PREFLIGHT` for the still-
   unread 500-patient qualification cohort.
+- Committed/pushed R48 qualification authority as `5f07e76` and started the
+  one-time qualification-only cache on GPU0 as PID 9768. Confirmation remains
+  unmaterialized and no qualification generation outcome is being read.
+- Qualification cache exited cleanly after 62.3 seconds with 500 rows, 1,000
+  images, four shards, exact reproducibility, and confirmation flags false.
+  Pinned index SHA-256 `CE1D58AA...24B2` before any generation.
+- Post-pin runner preflight passes with the immutable checkpoint, 500
+  qualification rows, four token shards, zero Seeds/training, fresh output,
+  and confirmation still absent. Repository-wide static checks and the
+  focused aggregate test pass.

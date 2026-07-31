@@ -54,9 +54,9 @@
     ]
   },
   "source": {
-    "development_token_index": null,
-    "development_token_index_bytes": null,
-    "development_token_index_sha256": null,
+    "development_token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r48_fprr_v1\\tokens\\qualification\\index.json",
+    "development_token_index_bytes": 2175,
+    "development_token_index_sha256": "CE1D58AA4F54A452AA6228562B84572EE8814F06F0D1192252565B0AB1D124B2",
     "required_development_token_status": "PASS_PRTA_GEN_R48_FPRR_QUALIFICATION_TOKEN_CACHE",
     "token_variants": {
       "true_pair": "true_tokens",

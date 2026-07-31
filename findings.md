@@ -2351,3 +2351,7 @@ preserving the encoder's static medical semantics.
   qualification cohort. Its cache preflight passes with a fresh token root,
   qualification outcomes unread, confirmation tokens/outcomes absent, and
   training disabled.
+- R48 qualification cache completed in 62.3 seconds: 500 patients, 1,000
+  images, four shards, exact reproducibility, confirmation still absent.
+  Index SHA-256 is
+  `CE1D58AA4F54A452AA6228562B84572EE8814F06F0D1192252565B0AB1D124B2`.
