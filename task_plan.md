@@ -924,8 +924,8 @@ smokes during iteration.
 
 ## Next Step
 
-Publish the complete R50 literature-method benchmark. The next scientific
-extension, if authorized as a new frozen study, should translate TILA and B2
-into the same exact-64/projector/frozen-Qwen interface on a new
-outcome-independent development cohort; it must not tune on the already-read
-R49/R50 evaluation patients.
+R50 is published in commit `0414779`. The next scientific extension, if
+authorized as a new frozen study, should translate TILA and B2 into the same
+exact-64/projector/frozen-Qwen interface on a new outcome-independent
+development cohort; it must not tune on the already-read R49/R50 evaluation
+patients.

@@ -2863,3 +2863,9 @@
   are retained evidence for the documented pre-output failures. No R50 process
   remains, and GPUs 0/1 are both at 0 MiB and 0% utilization. Ready to stage,
   commit, and push the complete package.
+- Staged exactly the R50 code/config/report and synchronized authority surfaces.
+  The first cached diff gate caught two report-header hard-break spaces; after
+  removing them, cached diff, six focused tests, and Ruff passed. Created commit
+  `0414779` (`feat: add R50 longitudinal method benchmark`) and pushed it to
+  `origin/codex/r37-prior-responsive-temporal-adapter`. This final planning-only
+  writeback removes the now-stale pre-publication wording.
