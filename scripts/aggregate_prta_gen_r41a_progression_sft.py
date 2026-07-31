@@ -16,12 +16,17 @@ sys.path.insert(0, str(WORKSPACE / "src"))
 import numpy as np
 
 from scripts.build_prta_gen_r40b_smoke_cohort import read_json, write_json
-from scripts.build_prta_gen_r41a_roster import CONFIG_STATUS, ROSTER_STATUS
+from scripts.build_prta_gen_r41a_roster import CONFIG_STATUS
 from scripts.run_prta_gen_r41a_progression_sft import (
-    ARM_STATUS,
     EVALUATION_ARMS,
     MODEL_ARMS,
 )
+
+
+def _expected_config_status(config: dict[str, Any]) -> str:
+    if config.get("stage_tag") == "R44A":
+        return "FROZEN_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT"
+    return CONFIG_STATUS
 
 
 def _patient_confusions(
@@ -124,7 +129,7 @@ def _validate_result(
     model_arm: str,
 ) -> None:
     if (
-        result.get("status") != ARM_STATUS
+        result.get("status") != config["result_statuses"]["arm_complete"]
         or result.get("protocol_id") != config["protocol_id"]
         or result.get("study_tier") != config["study_tier"]
         or int(result.get("seed", -1)) != seed
@@ -279,11 +284,11 @@ def aggregate(
     *, config_path: Path, roster_path: Path
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") != _expected_config_status(config):
         raise PermissionError("R41A config is not frozen")
     roster = read_json(roster_path)
     if (
-        roster.get("status") != ROSTER_STATUS
+        roster.get("status") != config["result_statuses"]["roster_pass"]
         or roster.get("protocol_id") != config["protocol_id"]
         or roster.get("patient_sets_disjoint") is not True
         or roster.get("development_outcomes_read") is not False
@@ -366,8 +371,14 @@ def aggregate(
         }
         for seed, seed_results in results.items()
     }
+    downstream_unlock_allowed = bool(
+        config["gate"].get("downstream_unlock_allowed", True)
+    )
     result = {
-        "schema": "visualvit.prta-gen.r41a-aggregate.v1",
+        "schema": config.get("runtime_contract", {}).get(
+            "aggregate_schema",
+            "visualvit.prta-gen.r41a-aggregate.v1",
+        ),
         "status": (
             config["result_statuses"]["aggregate_go"]
             if passed
@@ -386,8 +397,10 @@ def aggregate(
         "comparisons": comparisons,
         "gate_passed": passed,
         "gate_failures": failures,
-        "qwen_free_generation_survival_unlocked": passed,
-        "r42_unlocked": passed,
+        "qwen_free_generation_survival_unlocked": (
+            passed and downstream_unlock_allowed
+        ),
+        "r42_unlocked": passed and downstream_unlock_allowed,
         "r43_unlocked": False,
         "laterality_generation_unlocked": False,
         "anatomy_generation_unlocked": False,
@@ -400,6 +413,8 @@ def aggregate(
         "gold_outcomes_read": False,
         "external_outcomes_read": False,
     }
+    if config.get("stage_tag") == "R44A":
+        result["cross_source_silver_survival_supported"] = passed
     write_json(output_path, result)
     return result
 

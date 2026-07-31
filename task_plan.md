@@ -530,23 +530,25 @@ smokes during iteration.
 - [x] Build a scalar-only inventory of patients not used for R40 discovery,
   qualification, R40B–R40B.4, R40C, or R41A train/development. Do not read
   protected 300-dev, revealed 483-test, gold, or external outcomes.
-- [ ] Require a genuinely patient-disjoint five-class cohort with a
+- [x] Require a genuinely patient-disjoint five-class cohort with a
   predeclared minimum per-class train/development support. If the rare-class
   floor is not available, record a feasibility STOP rather than reusing R41A
   development or weakening the claim after inspection.
-- [ ] If support exists, freeze a separately named R44A class-support survival
+- [x] If support exists, freeze a separately named R44A class-support survival
   protocol before any new result: fixed roster rule, G0/G1 comparison,
   true/current/query/shuffle controls, Seeds, decoding, class-support gates,
   and no checkpoint/threshold selection.
-- [ ] Implement fail-closed roster/preflight/runner tests and commit/push the
+- [x] Implement fail-closed roster/preflight/runner tests and commit/push the
   complete pre-outcome authority before any roster write or GPU launch.
 - [ ] Execute automatically only while the new registered gates pass; stop at
   the first feasibility, engineering, or scientific STOP. R42A/R43 remain
   locked regardless of R44A.
 - [ ] Update the Proposal, reports, status, and planning bundle; validate and
   push the terminal evidence package.
-- **Status:** in progress — inventory and feasibility only; no new outcome or
-  GPU command has run.
+- **Status:** in progress — the scalar support authority passed and the complete
+  R44A pre-outcome code/protocol now passes roster, cache, and runner
+  preflights; commit/push remains before the one-time roster write. No roster
+  has been written and no GPU command has run.
 
 ## Errors Encountered
 
@@ -651,11 +653,15 @@ smokes during iteration.
 | Phase-14 full pytest retained one R6 frozen-manifest failure after 814 passes | 1 | This is the same closed R6 registry drift already reproduced on clean commit `24f57c3`; record it as preexisting and do not rewrite historical hashes |
 | First ReXGradient `hf download --dry-run` failed during remote file metadata resolution | 1 | `hf datasets info` still resolves the official repository; inspect `hf env`, query official Hub file metadata directly, and retry only with an explicit verified endpoint |
 | First R44 formal support audit exceeded the 120-second shell command yield during local image-existence scanning | 1 | Do not infer a gate result or create a second audit; verify the original worker/output state with bounded waits, then either accept its atomic result or stop only that worker and optimize the path scan without changing data, selection, or gates |
+| First R44A authority-hash inventory piped a PowerShell `foreach` block directly | 1 | The command failed at parse time before reading files; accumulate scalar hash receipts in an explicit array and rerun without printing identity-level data |
+| R44A token-loader search used a Windows-incompatible escaped regex | 1 | Read the exact `load_token_variants` function and cache-index tail directly; no source or runtime artifact changed |
+| First R41A/R44A stage-contract validation exposed three unused imports and two legacy unit fixtures without the new optional keys | 1 | Remove obsolete imports and use historical defaults for `arm_complete` and `downstream_unlock_allowed`; rerun both R41A and R44A suites to preserve backward compatibility |
+| First direct R44A runner alias preflight lacked the standalone workspace import bootstrap | 1 | No model, roster, token, or GPU process started; add the standard workspace/src bootstrap to all three R44A alias entrypoints and rerun static validation before retrying |
+| First post-bootstrap alias validation reported E402 and the runner preflight still emitted inherited R41A schema/status | 1 | Add scoped E402 declarations to the three thin aliases and bind runner-preflight schema/status through the same optional stage contract; the actual R44A tokenizer/model contract had passed |
 
 ## Next Step
 
-Run the frozen R44 audit in missing-source preflight mode, inspect only its
-scalar STOP receipt, and commit/push the pre-outcome authority. Only after that
-commit may the single pinned CheXTemporal `silver_findings.parquet` be
-downloaded and hashed for the one-time scalar support audit. Do not create a
-roster or launch a GPU job.
+Run the final combined R41A/R44A/support regression suite, static validation,
+and pre-outcome consistency audit; commit/push the complete R44A authority.
+Only then write and hash the one-time roster, rerun cache/sequence preflights,
+and start the registered exact64 GPU cache if every gate remains green.

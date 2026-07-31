@@ -1685,3 +1685,60 @@
 - Post-optimization validation passes 29 focused tests across R44 support,
   R41A authority, R40 support utilities, and the closed case-study path, plus
   Ruff, Python compilation, and whitespace checks.
+- The single formal audit completed in 31.7 seconds and returned
+  `PASS_PRTA_GEN_R44_INDEPENDENT_SUPPORT`. After excluding 77 CheXpert gold
+  patients, all 197,449 source rows / 22,638 patients are image-complete.
+  Unique-patient support is Stable 18,260; Improved 10,037; Worse 13,076;
+  New 10,826; Resolved 1,439. The in-memory deterministic check fills 1,000
+  train and 250 development patients at exactly 200/50 per class with zero
+  overlap. No roster or GPU job was created.
+- The immutable audit is 2,231 bytes with SHA-256
+  `8DE158995C983F7295F68545AE7A65007B98DBB819ACBD33327AA70EC78A5777`.
+  It keeps R42/R43 locked and every protected/gold/external outcome-read and
+  scientific-claim flag false.
+- Began the pre-roster R44A protocol freeze. The inherited 12-finding registry
+  leaves 196,616 eligible rows and retains at least 1,430 patients in every
+  progression class after gold exclusion. The planned experimental contrast
+  keeps R41A's G0/G1 arms, Seeds, target, decoding, controls, optimizer, and
+  gates fixed; only the independently sourced cohort size and required
+  CheXpert image-to-exact64 cache are new.
+- Added the frozen R44A config, Chinese protocol, fail-closed roster builder,
+  and four unit tests. JSON parsing, tests, Ruff, compilation, and whitespace
+  checks pass.
+- The real roster preflight passes without writing a roster: 196,616 eligible
+  rows / 22,622 patients after exact-finding and gold exclusion; deterministic
+  in-memory selection fills 1,000 train and 250 development patients; all
+  selected images exist; train/development are disjoint; 1,075 patients with
+  Resolved support remain outside the selection versus the frozen minimum 500.
+  No GPU job or protected/gold/external outcome read occurred.
+- Added the targeted CheXpert image-to-exact64 cache implementation. It
+  deduplicates selected JPEGs, enforces same-finding cross-patient prior
+  shuffles, materializes frozen BiomedCLIP block-8 features once, applies the
+  unchanged Seed-17 PRTA/checkpoint/query path, and writes token-only
+  true/current/shuffled shards compatible with the existing loader. Six
+  R44A tests, Ruff, compilation, and whitespace checks pass.
+- Generalized the existing R41A runner, aggregate, and two-GPU sequence through
+  optional stage contracts while preserving historical defaults. R44A now has
+  separate runner/aggregate/sequence entrypoints and schema/status registries;
+  a dedicated regression proves that even R44A GO leaves R42/R43 locked.
+  Combined R41A/R44A validation passes 22 tests, Ruff, and compilation.
+- The R44A cache preflight passes with the frozen candidate hash, present PRTA
+  checkpoint/text cache, 1,250 in-memory selected rows, and a fresh token root.
+  The first direct runner-alias preflight stopped at import time because the
+  thin alias lacked the standalone workspace bootstrap; it started no model,
+  roster, cache, or GPU process. Added that bootstrap to all R44A aliases.
+- After bootstrap, the substantive runner preflight passes: local Qwen is
+  present, the prompt contains exactly 64 placeholders and 15 assistant target
+  tokens, both G0/G1 and all four evaluation arms are registered, and the
+  expected optimizer-update count is 94. Bound the receipt to R44A-specific
+  schema/status and corrected only alias lint declarations before final rerun.
+- The final alias rerun emits the R44A-specific preflight receipt and passes
+  the 64-placeholder, 15-target-token, 94-update contract. All current
+  R41A/R44A compatibility tests (22) and targeted Ruff pass. The complete
+  roster/cache/runner/aggregate/two-GPU sequence authority is ready for the
+  required pre-roster commit; runtime roster and token roots remain absent.
+- Final pre-outcome validation passes 36 focused regressions, repository-wide
+  Ruff, compileall, `git diff --check`, and a machine consistency audit of the
+  94-update/downstream-lock contract. The R44A runtime root, roster, and token
+  root are all absent, and `nvidia-smi` reports no compute process before the
+  authority commit.

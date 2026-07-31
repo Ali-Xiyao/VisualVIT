@@ -17,7 +17,7 @@ sys.path.insert(0, str(WORKSPACE))
 sys.path.insert(0, str(WORKSPACE / "src"))
 
 from scripts.build_prta_gen_r40b_smoke_cohort import read_json, write_json
-from scripts.build_prta_gen_r41a_roster import CONFIG_STATUS, ROSTER_STATUS
+from scripts.build_prta_gen_r41a_roster import CONFIG_STATUS
 from scripts.run_prta_gen_r41a_progression_sft import (
     ARM_STATUS,
     MODEL_ARMS,
@@ -26,6 +26,12 @@ from scripts.run_prta_gen_r41a_progression_sft import (
 
 PREFLIGHT_STATUS = "PASS_PRTA_GEN_R41A_SEQUENCE_PREFLIGHT"
 ENGINEERING_STOP = "STOP_PRTA_GEN_R41A_SEQUENCE_ENGINEERING"
+
+
+def _expected_config_status(config: dict[str, Any]) -> str:
+    if config.get("stage_tag") == "R44A":
+        return "FROZEN_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT"
+    return CONFIG_STATUS
 
 
 def utc_now() -> str:
@@ -48,7 +54,8 @@ def validate_arm_result(
     result: dict[str, Any],
 ) -> dict[str, Any]:
     if (
-        result.get("status") != ARM_STATUS
+        result.get("status")
+        != config["result_statuses"].get("arm_complete", ARM_STATUS)
         or result.get("protocol_id") != config["protocol_id"]
         or int(result.get("seed", -1)) != seed
         or result.get("model_arm") != model_arm
@@ -100,14 +107,17 @@ def validate_aggregate(
         if result.get("gate_passed") is True
         else config["result_statuses"]["aggregate_stop"]
     )
+    unlock_expected = bool(result.get("gate_passed")) and bool(
+        config.get("gate", {}).get("downstream_unlock_allowed", True)
+    )
     if (
         result.get("status") != expected
         or result.get("protocol_id") != config["protocol_id"]
         or result.get("study_tier") != config["study_tier"]
         or result.get("seeds") != config["training"]["seeds"]
         or result.get("qwen_free_generation_survival_unlocked")
-        is not result.get("gate_passed")
-        or result.get("r42_unlocked") is not result.get("gate_passed")
+        is not unlock_expected
+        or result.get("r42_unlocked") is not unlock_expected
         or result.get("r43_unlocked") is not False
         or result.get("scientific_claim_allowed") is not False
         or result.get("protected_300_dev_read") is not False
@@ -134,7 +144,7 @@ def sequence_preflight(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     config = read_json(config_path)
     roster = read_json(roster_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") != _expected_config_status(config):
         raise PermissionError("R41A sequence config is not frozen")
     if config["training"]["seeds"] != [17, 29, 43]:
         raise PermissionError("R41A sequence Seed registry drift")
@@ -145,7 +155,7 @@ def sequence_preflight(
     ):
         raise ValueError("R41A sequence requires two distinct CUDA devices")
     if (
-        roster.get("status") != ROSTER_STATUS
+        roster.get("status") != config["result_statuses"]["roster_pass"]
         or roster.get("protocol_id") != config["protocol_id"]
         or roster.get("patient_sets_disjoint") is not True
         or roster.get("one_row_per_patient") is not True
@@ -177,8 +187,13 @@ def sequence_preflight(
             "R41A sequence outputs must be fresh: " + ", ".join(occupied)
         )
     return config, {
-        "schema": "visualvit.prta-gen.r41a-sequence-preflight.v1",
-        "status": PREFLIGHT_STATUS,
+        "schema": config.get("runtime_contract", {}).get(
+            "sequence_preflight_schema",
+            "visualvit.prta-gen.r41a-sequence-preflight.v1",
+        ),
+        "status": config["result_statuses"].get(
+            "sequence_preflight", PREFLIGHT_STATUS
+        ),
         "protocol_id": config["protocol_id"],
         "seeds": config["training"]["seeds"],
         "model_arms": list(MODEL_ARMS),
@@ -273,8 +288,14 @@ def run_sequence(
     logs = root / "sequence_logs"
     status_path = root / "sequence_status.json"
     status: dict[str, Any] = {
-        "schema": "visualvit.prta-gen.r41a-sequence-status.v1",
-        "status": "RUNNING_PRTA_GEN_R41A_AUTHORIZED_SEQUENCE",
+        "schema": config.get("runtime_contract", {}).get(
+            "sequence_status_schema",
+            "visualvit.prta-gen.r41a-sequence-status.v1",
+        ),
+        "status": config["result_statuses"].get(
+            "sequence_running",
+            "RUNNING_PRTA_GEN_R41A_AUTHORIZED_SEQUENCE",
+        ),
         "protocol_id": config["protocol_id"],
         "started_at_utc": utc_now(),
         "updated_at_utc": utc_now(),
@@ -306,8 +327,12 @@ def run_sequence(
                         sys.executable,
                         str(
                             WORKSPACE
-                            / "scripts"
-                            / "run_prta_gen_r41a_progression_sft.py"
+                            / Path(
+                                config.get("runtime_contract", {}).get(
+                                    "runner_script",
+                                    "scripts/run_prta_gen_r41a_progression_sft.py",
+                                )
+                            )
                         ),
                         "--config",
                         str(config_path),
@@ -361,8 +386,12 @@ def run_sequence(
                 sys.executable,
                 str(
                     WORKSPACE
-                    / "scripts"
-                    / "aggregate_prta_gen_r41a_progression_sft.py"
+                    / Path(
+                        config.get("runtime_contract", {}).get(
+                            "aggregate_script",
+                            "scripts/aggregate_prta_gen_r41a_progression_sft.py",
+                        )
+                    )
                 ),
                 "--config",
                 str(config_path),
@@ -387,7 +416,9 @@ def run_sequence(
         write_json(status_path, status)
         return status
     except Exception as error:
-        status["status"] = ENGINEERING_STOP
+        status["status"] = config["result_statuses"].get(
+            "sequence_engineering_stop", ENGINEERING_STOP
+        )
         status["failed_stage"] = status["current_stage"]
         status["error_type"] = type(error).__name__
         status["error"] = str(error)

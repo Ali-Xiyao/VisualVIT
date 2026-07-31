@@ -1,0 +1,309 @@
+{
+  "schema": "visualvit.prta-gen.r44a-cross-source-silver-sft-freeze.v1",
+  "status": "FROZEN_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT",
+  "stage_tag": "R44A",
+  "protocol_id": "prta-gen-r44a-cross-source-silver-sft-v1",
+  "study_tier": "cross_source_silver_progression_only_sft_survival",
+  "authorization": {
+    "user_authorized_downstream_automatic_execution": true,
+    "two_local_gpus_authorized": true,
+    "stop_at_first_failed_gate": true,
+    "outcome_driven_tuning_allowed": false
+  },
+  "closed_support": {
+    "audit": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44_independent_support_v1\\audit.json",
+    "required_status": "PASS_PRTA_GEN_R44_INDEPENDENT_SUPPORT",
+    "required_sha256": "8DE158995C983F7295F68545AE7A65007B98DBB819ACBD33327AA70EC78A5777",
+    "required_gate_passed": true,
+    "required_dataset": "chexpert",
+    "required_source_patients": 22638,
+    "required_image_complete_rows": 197449
+  },
+  "closed_r41a": {
+    "aggregate": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r41a_progression_sft_v1\\aggregate.json",
+    "required_status": "STOP_PRTA_GEN_R41A_PROGRESSION_SFT_SURVIVAL",
+    "required_sha256": "73532ADA33B5B16499DDE98F0910CF1CFFD29FA410EA30B9A438CC7420A75171",
+    "required_gate_passed": false,
+    "r42_must_remain_locked": true
+  },
+  "source": {
+    "repo_id": "anonaccount107240/CheXTemporal",
+    "revision": "81fd9cdd9b1208d8f8bd39d7a914c9b72fed8d79",
+    "license": "CC-BY-NC-4.0",
+    "silver_file": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44_independent_support_v1\\source\\chextemporal\\silver_findings.parquet",
+    "silver_file_bytes": 29502280,
+    "silver_file_sha256": "31237F859D940D6B03748C845EC7C1C791B1837BA6E46E88E69BCA7F45E3C807",
+    "gold_registry": "data\\official\\chextemporal_81fd9cdd\\gold_progression_pairs.parquet",
+    "gold_registry_bytes": 51915,
+    "gold_registry_sha256": "22CDA4E85C01C1D67D905FBBA0C8A1A9169E2E5B99F754B93782B5C67DFED14B",
+    "gold_registry_columns_allowed": [
+      "dataset",
+      "patient_id"
+    ],
+    "expected_excluded_patient_count": 77,
+    "dataset_filter": "chexpert",
+    "parent_image_root": "H:\\Xiyao_Wang\\000_Public Dataset\\CheXpert-v1.0-small",
+    "allowed_findings": [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Enlarged Cardiomediastinum",
+      "Fracture",
+      "Lung Lesion",
+      "Lung Opacity",
+      "Pleural Effusion",
+      "Pleural Other",
+      "Pneumonia",
+      "Pneumothorax"
+    ],
+    "token_index": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_cross_source_silver_sft_v1\\tokens\\index.json",
+    "required_token_status": "PASS_PRTA_GEN_R44A_EXACT64_TOKEN_CACHE",
+    "token_variants": {
+      "true_pair": "true_tokens",
+      "current_only": "current_tokens",
+      "prior_shuffle": "shuffled_tokens"
+    },
+    "query_only_representation": "all_zero_exact64_tokens"
+  },
+  "roster": {
+    "namespace": "prta-gen-r44a-cross-source-silver-sft-v1",
+    "assignment": "rare-class-first stable SHA-256 without replacement; development before training",
+    "class_order": [
+      "Resolved",
+      "New",
+      "Improved",
+      "Worse",
+      "Stable"
+    ],
+    "one_row_per_patient": true,
+    "train_patients": 1000,
+    "development_patients": 250,
+    "train_class_counts": {
+      "Stable": 200,
+      "Improved": 200,
+      "Worse": 200,
+      "New": 200,
+      "Resolved": 200
+    },
+    "development_class_counts": {
+      "Stable": 50,
+      "Improved": 50,
+      "Worse": 50,
+      "New": 50,
+      "Resolved": 50
+    },
+    "minimum_unselected_resolved_patient_reserve": 500,
+    "unselected_patients_must_remain_unused": true,
+    "resplit_allowed": false
+  },
+  "cache": {
+    "source_candidate": "configs/r37/r37_1_candidate_for_r37c_v1.json",
+    "source_candidate_sha256": "8D4437572245199213133AE17E13F8F5E7E3AAC7472D8B2E683A630EA7F3DEF0",
+    "text_cache": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\r37_biomedclip_text_embeddings.pt",
+    "frozen_prta_seed": 17,
+    "prior_shuffle_seed": 44001,
+    "prior_shuffle_namespace": "prta-gen-r44a-prior-shuffle-v1",
+    "batch_size": 16,
+    "shard_size": 128,
+    "workers": 4,
+    "token_shape": [
+      64,
+      768
+    ],
+    "token_dtype": "torch.float16",
+    "variants": [
+      "true_tokens",
+      "current_tokens",
+      "shuffled_tokens"
+    ],
+    "labels_in_cache": false,
+    "sentences_in_cache": false
+  },
+  "model": {
+    "path": "H:\\Xiyao_Wang\\001_models\\Qwen3-VL-4B-Instruct",
+    "local_files_only": true,
+    "dtype": "bfloat16",
+    "attention_implementation": "eager",
+    "hidden_size": 2560,
+    "input_width": 768,
+    "token_budget": 64,
+    "active_tokens": 60,
+    "sentinel_token": "<|fim_pad|>",
+    "placeholder_token_id": 151662,
+    "pixel_image_video_inputs_used": false,
+    "projector_initialization": "fresh_per_seed_and_arm",
+    "qwen_base_initialization": "unchanged_local_checkpoint"
+  },
+  "adapter": {
+    "class": "GenerativeVLMAdapter",
+    "projector": "TierTokenProjector",
+    "arms": {
+      "g0_projector_only": {
+        "trainable_modules": [
+          "TierTokenProjector"
+        ],
+        "qwen_trainable_parameters": 0
+      },
+      "g1_attention_lora": {
+        "trainable_modules": [
+          "TierTokenProjector",
+          "Qwen language attention LoRA"
+        ],
+        "lora": {
+          "target_modules": [
+            "q_proj",
+            "k_proj",
+            "v_proj",
+            "o_proj"
+          ],
+          "rank": 16,
+          "alpha": 32,
+          "dropout": 0.05
+        }
+      }
+    },
+    "frozen_modules": [
+      "BiomedCLIP",
+      "PRTA adapters",
+      "current-to-prior alignment",
+      "exact-64 compiler",
+      "Qwen vision tower",
+      "Qwen base weights",
+      "Qwen embeddings",
+      "Qwen LM head"
+    ]
+  },
+  "target": {
+    "schema_keys_in_order": [
+      "finding",
+      "progression"
+    ],
+    "finding_values": [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Enlarged Cardiomediastinum",
+      "Fracture",
+      "Lung Lesion",
+      "Lung Opacity",
+      "Pleural Effusion",
+      "Pleural Other",
+      "Pneumonia",
+      "Pneumothorax"
+    ],
+    "progression_values": [
+      "Stable",
+      "Improved",
+      "Worse",
+      "New",
+      "Resolved"
+    ],
+    "all_other_fields_omitted": true,
+    "compact_json": true,
+    "append_eos": true,
+    "max_target_tokens": 64,
+    "assistant_only_loss": true
+  },
+  "prompt": {
+    "system": "You are a chest radiograph temporal reasoning assistant. Follow the requested JSON schema exactly.",
+    "user_prefix": "Compare the current chest radiograph with its prior study for the finding {finding}. The next 64 physical positions contain fixed visual tokens. Return one compact JSON object with exactly two keys, finding and progression. Copy the supplied finding exactly. progression must be one of Stable, Improved, Worse, New, or Resolved. Do not add markdown or any other field. Visual tokens:",
+    "chat_template": true,
+    "add_generation_prompt": true
+  },
+  "training": {
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "arms": [
+      "g0_projector_only",
+      "g1_attention_lora"
+    ],
+    "epochs": 3,
+    "batch_size": 1,
+    "gradient_accumulation": 32,
+    "projector_learning_rate": 0.0001,
+    "lora_learning_rate": 0.00002,
+    "optimizer": "AdamW",
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "expected_optimizer_updates": 94,
+    "early_stopping": false,
+    "checkpoint_selection": false,
+    "progression_token_reweighting": false
+  },
+  "evaluation": {
+    "decoding": "free_greedy",
+    "arms": [
+      "true_pair",
+      "current_only",
+      "query_only",
+      "prior_shuffle"
+    ],
+    "required_primary_controls": [
+      "query_only",
+      "prior_shuffle"
+    ],
+    "descriptive_control": "current_only",
+    "primary_model_arm": "g1_attention_lora",
+    "baseline_model_arm": "g0_projector_only",
+    "patient_cluster_bootstrap_replicates": 2000,
+    "patient_cluster_bootstrap_seed": 44002
+  },
+  "gate": {
+    "all_seed_g1_true_macro_f1_at_least": 0.3,
+    "all_seed_g1_all_class_recall_at_least": 0.12,
+    "all_seed_g1_schema_validity_at_least": 0.99,
+    "all_seed_g1_finding_echo_accuracy_at_least": 0.99,
+    "all_seed_g1_required_control_effects_at_least_pp": 2.0,
+    "all_seed_g1_required_control_ci95_lower_above_pp": 0.0,
+    "all_seed_g1_minus_g0_effect_at_least_pp": 1.0,
+    "downstream_unlock_allowed": false,
+    "scientific_claim_allowed": false
+  },
+  "result_statuses": {
+    "roster_pass": "PASS_PRTA_GEN_R44A_ROSTER_SUPPORT",
+    "cache_pass": "PASS_PRTA_GEN_R44A_EXACT64_TOKEN_CACHE",
+    "runner_preflight": "PASS_PRTA_GEN_R44A_RUNNER_PREFLIGHT",
+    "arm_complete": "PASS_PRTA_GEN_R44A_ARM_EVALUATION",
+    "engineering_stop": "STOP_PRTA_GEN_R44A_ENGINEERING_CONTRACT",
+    "aggregate_go": "GO_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL",
+    "aggregate_stop": "STOP_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT_SURVIVAL",
+    "sequence_preflight": "PASS_PRTA_GEN_R44A_SEQUENCE_PREFLIGHT",
+    "sequence_running": "RUNNING_PRTA_GEN_R44A_AUTHORIZED_SEQUENCE",
+    "sequence_engineering_stop": "STOP_PRTA_GEN_R44A_SEQUENCE_ENGINEERING"
+  },
+  "runtime_contract": {
+    "arm_result_schema": "visualvit.prta-gen.r44a-arm-result.v1",
+    "runner_preflight_schema": "visualvit.prta-gen.r44a-runner-preflight.v1",
+    "checkpoint_schema": "visualvit.prta-gen.r44a-trainable-checkpoint.v1",
+    "aggregate_schema": "visualvit.prta-gen.r44a-aggregate.v1",
+    "sequence_preflight_schema": "visualvit.prta-gen.r44a-sequence-preflight.v1",
+    "sequence_status_schema": "visualvit.prta-gen.r44a-sequence-status.v1",
+    "runner_script": "scripts/run_prta_gen_r44a_progression_sft.py",
+    "aggregate_script": "scripts/aggregate_prta_gen_r44a_progression_sft.py"
+  },
+  "runtime": {
+    "root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_cross_source_silver_sft_v1",
+    "roster": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_cross_source_silver_sft_v1\\roster.json",
+    "token_root": "H:\\VisualVIT_runtime\\050_routeD\\r37_prta_cxr\\prta_gen_r44a_cross_source_silver_sft_v1\\tokens"
+  },
+  "firewall": {
+    "cross_source_chexpert_silver_development": true,
+    "independent_expert_confirmation": false,
+    "r41a_development_reused": false,
+    "r41a_outcomes_used_for_roster_selection": false,
+    "gold_patients_excluded": true,
+    "pixel_inputs_used_by_qwen": false,
+    "protected_300_dev_read": false,
+    "revealed_483_test_read": false,
+    "gold_outcomes_read": false,
+    "external_outcomes_read": false,
+    "r42_unlocked": false,
+    "r43_unlocked": false,
+    "scientific_claim_allowed": false
+  }
+}

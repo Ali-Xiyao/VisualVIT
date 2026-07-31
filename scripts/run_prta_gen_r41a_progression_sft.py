@@ -21,7 +21,6 @@ from torch import Tensor
 from scripts.build_prta_gen_r40b_smoke_cohort import read_json, write_json
 from scripts.build_prta_gen_r41a_roster import (
     CONFIG_STATUS,
-    ROSTER_STATUS,
     preflight as roster_preflight,
     validate_authority,
 )
@@ -43,6 +42,37 @@ from visualvit.tier_token_projector import TierTokenProjector
 ARM_STATUS = "PASS_PRTA_GEN_R41A_ARM_EVALUATION"
 MODEL_ARMS = ("g0_projector_only", "g1_attention_lora")
 EVALUATION_ARMS = ("true_pair", "current_only", "query_only", "prior_shuffle")
+
+
+def _expected_config_status(config: dict[str, Any]) -> str:
+    if config.get("stage_tag") == "R44A":
+        return "FROZEN_PRTA_GEN_R44A_CROSS_SOURCE_SILVER_SFT"
+    return CONFIG_STATUS
+
+
+def _validate_stage_authority(
+    config_path: Path, config: dict[str, Any]
+) -> None:
+    if config.get("stage_tag") == "R44A":
+        from scripts.build_prta_gen_r44a_roster import (
+            validate_authority as validate_r44a_authority,
+        )
+
+        validate_r44a_authority(config)
+        return
+    validate_authority(config)
+
+
+def _stage_roster_preflight(
+    config_path: Path, config: dict[str, Any]
+) -> dict[str, Any]:
+    if config.get("stage_tag") == "R44A":
+        from scripts.build_prta_gen_r44a_roster import (
+            preflight as r44a_roster_preflight,
+        )
+
+        return r44a_roster_preflight(config_path)
+    return roster_preflight(config_path)
 
 
 def stable_epoch_key(seed: int, arm: str, epoch: int, example_id: str) -> str:
@@ -94,7 +124,7 @@ def validate_roster(
     config: dict[str, Any], roster: dict[str, Any]
 ) -> None:
     if (
-        roster.get("status") != ROSTER_STATUS
+        roster.get("status") != config["result_statuses"]["roster_pass"]
         or roster.get("protocol_id") != config["protocol_id"]
         or roster.get("patient_sets_disjoint") is not True
         or roster.get("one_row_per_patient") is not True
@@ -249,13 +279,13 @@ def run_arm(
     device_name: str,
 ) -> dict[str, Any]:
     config = read_json(config_path)
-    if config.get("status") != CONFIG_STATUS:
+    if config.get("status") != _expected_config_status(config):
         raise PermissionError("R41A config is not frozen")
     if seed not in [int(value) for value in config["training"]["seeds"]]:
         raise ValueError("R41A Seed is not registered")
     if model_arm not in MODEL_ARMS:
         raise ValueError("R41A model arm is not registered")
-    validate_authority(config)
+    _validate_stage_authority(config_path, config)
     roster = read_json(roster_path)
     validate_roster(config, roster)
     output_root = (
@@ -267,6 +297,23 @@ def run_arm(
     development_rows = _rows_from_roster(roster, "development")
     all_rows = training_rows + development_rows
     token_index = read_json(Path(config["source"]["token_index"]))
+    if config.get("stage_tag") == "R44A":
+        from scripts.audit_prta_gen_r44_independent_support import sha256_file
+
+        if (
+            token_index.get("status")
+            != config["source"]["required_token_status"]
+            or token_index.get("protocol_id") != config["protocol_id"]
+            or token_index.get("roster_sha256") != sha256_file(roster_path)
+            or token_index.get("labels_in_cache") is not False
+            or token_index.get("sentences_in_cache") is not False
+            or token_index.get("pixel_inputs_used_by_qwen") is not False
+            or token_index.get("protected_300_dev_read") is not False
+            or token_index.get("revealed_483_test_read") is not False
+            or token_index.get("gold_outcomes_read") is not False
+            or token_index.get("external_outcomes_read") is not False
+        ):
+            raise PermissionError("R44A token-cache receipt drift")
     token_keys = {
         str(arm): str(key)
         for arm, key in config["source"]["token_variants"].items()
@@ -490,7 +537,10 @@ def run_arm(
     checkpoint = output_root / "trainable_checkpoint.pt"
     torch.save(
         {
-            "schema": "visualvit.prta-gen.r41a-trainable-checkpoint.v1",
+            "schema": config.get("runtime_contract", {}).get(
+                "checkpoint_schema",
+                "visualvit.prta-gen.r41a-trainable-checkpoint.v1",
+            ),
             "seed": seed,
             "model_arm": model_arm,
             "projector": projector.state_dict(),
@@ -506,7 +556,10 @@ def run_arm(
         label: index for index, label in enumerate(PROGRESSION_CLASSES)
     }
     result = {
-        "schema": "visualvit.prta-gen.r41a-arm-result.v1",
+        "schema": config.get("runtime_contract", {}).get(
+            "arm_result_schema",
+            "visualvit.prta-gen.r41a-arm-result.v1",
+        ),
         "status": config["result_statuses"]["arm_complete"],
         "protocol_id": config["protocol_id"],
         "study_tier": config["study_tier"],
@@ -561,7 +614,9 @@ def run_arm(
 
 def preflight(config_path: Path) -> dict[str, Any]:
     config = read_json(config_path)
-    roster_receipt = roster_preflight(config_path)
+    if config.get("status") != _expected_config_status(config):
+        raise PermissionError("R41A config is not frozen")
+    roster_receipt = _stage_roster_preflight(config_path, config)
     if tuple(config["training"]["arms"]) != MODEL_ARMS:
         raise ValueError("R41A model-arm registry drift")
     if tuple(config["evaluation"]["arms"]) != EVALUATION_ARMS:
@@ -607,8 +662,14 @@ def preflight(config_path: Path) -> dict[str, Any]:
     ):
         raise ValueError("R41A tokenizer SFT contract drift")
     return {
-        "schema": "visualvit.prta-gen.r41a-runner-preflight.v1",
-        "status": "PASS_PRTA_GEN_R41A_RUNNER_PREFLIGHT",
+        "schema": config.get("runtime_contract", {}).get(
+            "runner_preflight_schema",
+            "visualvit.prta-gen.r41a-runner-preflight.v1",
+        ),
+        "status": config["result_statuses"].get(
+            "runner_preflight",
+            "PASS_PRTA_GEN_R41A_RUNNER_PREFLIGHT",
+        ),
         "protocol_id": config["protocol_id"],
         "roster_preflight_status": roster_receipt["status"],
         "model_arms": list(MODEL_ARMS),
@@ -628,7 +689,7 @@ def preflight(config_path: Path) -> dict[str, Any]:
 
 
 def receipt_summary(result: dict[str, Any]) -> dict[str, Any]:
-    if result.get("schema") == "visualvit.prta-gen.r41a-runner-preflight.v1":
+    if "runner-preflight" in str(result.get("schema", "")):
         return dict(result)
     keys = (
         "schema",

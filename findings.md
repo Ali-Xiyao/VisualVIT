@@ -1834,3 +1834,38 @@ preserving the encoder's static medical semantics.
   parent root contains 223,650 files, so a one-pass relative-path index is
   semantically equivalent to repeated `Path.is_file` resolution after stripping
   that prefix and is substantially faster on this NTFS/H: layout.
+- The independent CheXpert silver support gate is decisively feasible after
+  gold-patient exclusion: the rare class `Resolved` still has 1,439 unique
+  patients versus the frozen total need of 250. Every registered source row
+  has both local images, and the rare-first deterministic in-memory allocation
+  fills the exact 1,250-patient balanced roster without train/development
+  overlap.
+- This PASS proves data/readiness support only. It does not validate a model,
+  authorize reuse of R41A development outcomes, unlock R42/R43, or convert
+  MedGemma-derived silver labels into expert/gold/external confirmation.
+- R44A can inherit the exact R41A progression target registry without
+  normalization. After gold-patient exclusion, 196,616 CheXpert silver rows
+  use one of the 12 frozen finding strings; 833 casing-variant rows are
+  outcome-independently excluded. Five-class unique-patient support remains
+  Stable 18,244; Improved 10,023; Worse 13,061; New 10,819; Resolved 1,430,
+  still far above the frozen 250-per-class total need.
+- The original R41A runner assumes an existing MIMIC exact64 token cache.
+  R44A requires a new targeted CheXpert cache path: load only the roster's
+  local JPEGs through the same frozen BiomedCLIP block-8 boundary, apply the
+  same frozen PRTA Seed-17 checkpoint and exact64 compiler, then cache the
+  true/current/shuffled variants. This is a source adapter, not a model or gate
+  change.
+- The R44A authority can pin the closed R41A terminal aggregate at SHA-256
+  `73532A...5171`, the CheXTemporal gold registry at `22CDA4...D14B`, and the
+  unchanged R37 candidate config at `8D4437...DEF0`. The frozen PRTA source
+  remains Seed 17 with the existing BiomedCLIP text cache; only selected
+  CheXpert JPEG block-8 features must be materialized anew.
+- The exact deterministic R44A allocation remains well inside the rare-class
+  boundary after cross-label patient consumption: 1,075 unselected patients
+  still have at least one `Resolved` row. The selected 1,250 rows have complete
+  local prior/current images, so the roster gate is feasible without relaxing
+  any class, image, patient-disjointness, or gold-exclusion rule.
+- The pre-outcome package preserves the closed-chain firewall in both config
+  and executable aggregation: `downstream_unlock_allowed=false` forces
+  `qwen_free_generation_survival_unlocked=false` and `r42_unlocked=false`
+  even if the separately named R44A survival gate passes.
