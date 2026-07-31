@@ -3198,3 +3198,8 @@
   and the sole failure is the already registered historical R6 resolution/
   frozen-manifest drift in `tests/test_query_anchor_r4_runner.py`. No R51/R52
   test failed; preserve the closed R6 hashes rather than rewriting history.
+- Final joint R51/R52 closure was committed and pushed as `a28852d`. It contains
+  the R51 report plus synchronized proposal, README, status, report index,
+  experiment registry, gap audit, findings, progress, and plan. Immediately
+  before publication: R51/R52 each had 9 results and one aggregate, related
+  process count was zero, both GPUs were 0 MiB/0%, and staged diff check passed.

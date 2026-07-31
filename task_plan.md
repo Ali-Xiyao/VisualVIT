@@ -796,14 +796,15 @@ smokes during iteration.
 - [x] Execute all registered seeds across both RTX 3090s without result-based
   tuning or seed selection; retain failed scientific arms and retry only
   pre-outcome engineering failures under the frozen authority.
-- [ ] Aggregate patient-paired results, write the R51 case study and update the
+- [x] Aggregate patient-paired results, write the R51 case study and update the
   proposal/status/index/planning bundle, then run terminal tests, hashes,
   process/GPU closure, commit, and push.
-- **Status:** terminal package ready — 9/9 arms and aggregate completed;
+- **Status:** complete — 9/9 arms and aggregate completed;
   PRTA/TILA/B2 means are 0.384796/0.316618/0.255090. PRTA−TILA is
   +6.818 pp CI [+3.512,+10.080] and PRTA−B2 +12.971 pp CI
   [+9.729,+16.286]. Writeback, focused/static/hash/link/process/GPU checks pass;
-  full pytest retains only the known unrelated R6 failure. Commit/push remains.
+  full pytest retains only the known unrelated R6 failure. Terminal result
+  package was committed and pushed as `a28852d`.
 
 ### Phase 29 — R52 matched exact-64 direct-head comparison
 
@@ -822,13 +823,13 @@ smokes during iteration.
 - [x] Execute all nine arm/seed runs on the two authorized GPUs as soon as an
   R51 lane releases, aggregate patient-paired macro-F1 differences and CIs,
   and issue a strict yes/no PRTA-superiority verdict without post-hoc tuning.
-- [ ] Write the R52 case study and synchronize proposal/status/index/planning;
+- [x] Write the R52 case study and synchronize proposal/status/index/planning;
   close both R51 and R52 with terminal tests, process/GPU audit, commit and push.
-- **Status:** terminal package ready — all 9/9 arms passed, aggregate is
+- **Status:** complete — all 9/9 arms passed, aggregate is
   `COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK`, and strict PRTA
   superiority is supported: PRTA−TILA +8.747 pp CI [+4.481,+12.861],
   PRTA−B2 +9.258 pp CI [+4.768,+13.199]. Both matched reports and authority
-  surfaces are synchronized and validated; final commit/push remains.
+  surfaces are synchronized, validated, committed and pushed as `a28852d`.
 
 ## Errors Encountered
 
@@ -993,6 +994,6 @@ smokes during iteration.
 
 ## Next Step
 
-Synchronize the terminal R51/R52 joint result across the active proposal,
-status/index/registry/gap-audit/planning surfaces; run focused/full validation,
-confirm clean process/GPU state, then commit and push the final closure.
+R51 and R52 are terminally closed and pushed. No automatic continuation remains
+inside these authorities; preserve the 500-patient outcomes against retuning and
+await a separately scoped next objective.
