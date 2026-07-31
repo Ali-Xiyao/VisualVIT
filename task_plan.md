@@ -984,6 +984,7 @@ smokes during iteration.
 | First combined R52 planning patch matched PowerShell's mojibake rendering of the live R51 status paragraph | 1 | Insert the new phase against the stable `Errors Encountered` boundary and patch each planning file independently; no runtime or source artifact changed |
 | First R52 synthetic aggregate test guessed a nested `ci95.lower` field, and its follow-up search used Windows-incompatible wildcard paths | 1 | Bind the strict rule to the bootstrap helper's real `ci95_lower_pp` field and search resolved files/directories rather than shell wildcards; no R52 runtime or outcome existed |
 | First R52 process audit counted its own PowerShell inspection command | 1 | Exclude the current shell PID and require a Python-runner or lane-launcher command shape; confirmed zero R52 processes and absent runtime root before publication |
+| R52 result staged diff check found one Markdown hard-break trailing space, but PowerShell continued to commit and push | 1 | Remove the single hard-break, run `git diff --check` as a standalone gate, and publish a dedicated formatting/planning fix; scientific artifacts and results are unchanged |
 
 ## Next Step
 

@@ -3112,3 +3112,7 @@
   proposal, root README, project status, reports index, result registry, gap
   audit, findings, and plan. Meanwhile R51 was never interrupted: TILA Seed
   17/29 completed and both lanes advanced to B2 Seed17/29, bringing R51 to 4/9.
+- Published the R52 result surfaces as `c2c819f`. Its staged diff check exposed
+  one report-header Markdown hard-break, but the sequential PowerShell command
+  still committed and pushed. Remove only that trailing whitespace, validate
+  independently, and push a small hygiene fix; no result value changes.

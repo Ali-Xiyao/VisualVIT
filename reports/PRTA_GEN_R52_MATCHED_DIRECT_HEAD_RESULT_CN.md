@@ -1,6 +1,6 @@
 # PRTA-Gen R52 统一 exact-64 直接分类头 Case Study 与终态结果
 
-> 终态：`COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK`  
+> 终态：`COMPLETE_PRTA_GEN_R52_MATCHED_DIRECT_HEAD_BENCHMARK`
 > 严格判据：`prta_strict_superiority_supported=true`
 
 ## 直接结论
