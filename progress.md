@@ -1,5 +1,19 @@
 # Progress: PRTA-CXR R37
 
+## 2026-08-01 — Server portability and storage audit completed
+
+- Performed a read-only live inventory. Repository is 1.006 GB; Route C is
+  12.128 GB; Route D/R37 is 72.730 GB; Qwen3-VL-4B-Instruct is 8.277 GB.
+  Block-8 cache is 40.742 GB, and the full current R37 runtime is the main
+  storage driver.
+- Verified Python/CUDA dependency declarations, absolute Windows data/runtime
+  path bindings, current free space, and result receipts. The project can run
+  on a Linux CUDA server after explicit path mapping and environment/data-access
+  preflight; no server connection, copy, launch, or source change was made.
+- A direct exact raw-image total did not finish before the bounded timeout.
+  The server estimate therefore retains the recent 12.065 GB MIMIC and
+  11.471 GB CheXpert snapshot as explicitly non-current raw-data evidence.
+
 ## 2026-08-01 — 论文方法、架构与 pipeline 说明启动
 
 - 用户要求新增一份论文级中文 Markdown，详细说明 PRTA-CXR 的方法学、

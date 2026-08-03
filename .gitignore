@@ -21,6 +21,12 @@ artifacts/
 .agents/
 .aris/
 .vscode/
+.codex_tmp/
+.planning/
+
+# Independent clean-room successor project and its local-only bare remote
+PRTA-CXR/
+PRTA-CXR-local.git/
 
 # OS files
 Thumbs.db

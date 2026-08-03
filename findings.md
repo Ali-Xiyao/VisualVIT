@@ -91,6 +91,34 @@ preserving the encoder's static medical semantics.
 
 ## Local asset and capacity inventory
 
+## 2026-08-01 — Server portability and storage audit
+
+- The source repository is technically portable to a Linux CUDA server: it
+  declares Python >=3.10 plus PyTorch, torchvision, timm, NumPy, pandas,
+  Pillow, Transformers, Accelerate, Qwen VL utilities, and optional PEFT.
+  The Qwen routes use BF16 with batch size 1 and gradient accumulation.
+- It is not path-portable as-is. Active JSON/Python launch surfaces contain
+  absolute Windows paths for `F:\\VisualVIT_runtime`,
+  `H:\\VisualVIT_runtime`, `H:\\Xiyao_Wang\\001_models`, and credentialed
+  MIMIC/CheXpert data. Map those roots deliberately or parameterize them before
+  a server launch; data access/DUA and the existing outcome firewalls remain
+  unchanged.
+- Fresh local inventory: repository 1.006 GB; Route C runtime 12.128 GB;
+  Route D/R37 runtime 72.730 GB; Qwen3-VL-4B-Instruct 8.277 GB. The largest
+  single artifact is the R37 Block-8 cache at 40.742 GB. H: has 512.8 GB free,
+  F: 201.6 GB, and E: 244.6 GB.
+- The current exact R37/R51/R52/R40 runtime package is about 82 GB when paired
+  with source and Qwen weights (repository + Route D + model). A full transfer
+  that also retains Route C historical runtime is about 94 GB before source
+  images, Python/Conda environment, and scratch. The previous raw-data snapshot
+  measured MIMIC-CXR at 12.065 GB and CheXpert-small at 11.471 GB; direct
+  verification of those 600k-file roots timed out in this audit, so treat the
+  ~23.5 GB raw-data subtotal as a recent snapshot rather than a fresh total.
+- Recorded successful BF16 Qwen-related runs allocate roughly 9.17–12.96 GB
+  CUDA memory, so a 24 GB NVIDIA GPU is the practical minimum for the current
+  frozen configurations; 40 GB+ VRAM is preferred for headroom. CPU-only audit
+  tasks can run separately.
+
 - Approximate free space is 613.8 GB on `H:`, 245.0 GB on `E:`, and 201.6 GB
   on `F:`. A new Block-8 cache should default to `H:` after row-count and
   tensor-size estimation rather than consume the constrained existing

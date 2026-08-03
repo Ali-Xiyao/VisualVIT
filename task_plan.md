@@ -861,6 +861,15 @@ smokes during iteration.
   commit and push the completed document.
 - **Status:** completed
 
+### Phase 32 — Server portability and storage audit
+
+- [x] Inventory the live repository, Route C/D runtimes, Qwen3-VL-4B weights,
+  configured dataset roots, free capacity, and GPU receipts without copying or
+  starting a workload.
+- [x] Identify deployment requirements and non-portable Windows path bindings.
+- [x] Provide scenario-based server storage sizing with a safety margin.
+- **Status:** completed
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -1025,9 +1034,10 @@ smokes during iteration.
 | First paper-method index probe assumed a `docs/README.md` file that this repository does not contain | 1 | Resolve the actual documentation index with `rg --files` before adding the new paper-method entry |
 | First three paper-method document audits used Unicode or overly specific marker literals through a PowerShell here-string | 3 | Switch to source-constant, relative-link, fence-count, file-size, and ASCII-only structural assertions; the document itself was never modified by these read-only checks |
 | The next standalone audit embedded a Chinese sentence marker through the PowerShell here-string and compared a mojibake literal | 1 | Keep UTF-8 document content unchanged and use stable ASCII numeric/status markers for the gap-audit assertion; the full link/hash/value gate then passed |
+| A combined source-dataset inventory exceeded the 120-second read-only timeout while recursively traversing the MIMIC/CheXpert image roots | 1 | Use the verified configured roots and the prior measured dataset snapshot for the raw-image estimate; do not infer a fresh exact total from the timed-out scan |
 
 ## Next Step
 
-The PRTA-CXR paper-method architecture and pipeline explainer is complete and
-validated. Preserve the frozen methods and evaluation boundaries; await a new,
-separately scoped research or writing objective.
+The server portability and storage audit is complete. The project is portable
+after path/environment preflight; do not launch or copy data without separate
+user authorization.
